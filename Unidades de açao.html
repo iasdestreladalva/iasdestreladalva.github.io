@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Unidades de Ação</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #1a73e8; --bg: #f0f2f5; --text: #202124; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin-top: 20px; }
+        h2 { color: var(--primary); text-align: center; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:disabled { background: #abb2b9; cursor: not-allowed; }
+        .status { text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
+        .ok { background: #e6f4ea; color: #1e8e3e; }
+        .bloqueado { background: #fce8e6; color: #d93025; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="card">
+        <h2>Acesso Unidades</h2>
+        <input type="email" id="email" placeholder="Ex: israel@unidade.com">
+        <input type="password" id="senha" placeholder="Senha">
+        <button onclick="app.entrar()">Entrar</button>
+    </div>
+
+    <div id="main-screen" class="hidden" style="width: 100%; max-width: 500px;">
+        
+        <div id="view-unidade" class="card hidden">
+            <h2 id="txt-unidade">Unidade</h2>
+            <div id="status-dia" class="status"></div>
+            <input type="number" id="valor-input" placeholder="Valor da Semana (R$)">
+            <button id="btn-salvar" onclick="app.salvar()">Enviar Relatório</button>
+            <button onclick="app.sair()" style="background:#5f6368; margin-top:10px;">Sair</button>
+        </div>
+
+        <div id="view-admin" class="card hidden" style="max-width: 600px;">
+            <h2>📊 Balanço Geral</h2>
+            <p style="text-align:center">Total Trimestral: <strong id="total-geral">R$ 0,00</strong></p>
+            <canvas id="graficoGeral"></canvas>
+            <button onclick="app.sair()" style="background:#5f6368; margin-top:20px;">Sair</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik",
+            authDomain: "unidades-de-acao.firebaseapp.com",
+            databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com",
+            projectId: "unidades-de-acao",
+            storageBucket: "unidades-de-acao.firebasestorage.app",
+            messagingSenderId: "1088355029870",
+            appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
+        };
+
+        const fb = initializeApp(firebaseConfig);
+        const auth = getAuth(fb);
+        const db = getDatabase(fb);
+
+        window.app = {
+            entrar: () => {
+                const e = document.getElementById('email').value;
+                const s = document.getElementById('senha').value;
+                signInWithEmailAndPassword(auth, e, s).catch(() => alert("Acesso inválido!"));
+            },
+            sair: () => signOut(auth),
+            salvar: () => {
+                const val = document.getElementById('valor-input').value;
+                if(!val) return alert("Digite o valor!");
+                push(ref(db, 'lancamentos'), {
+                    unidade: auth.currentUser.email.split('@')[0],
+                    valor: Number(val),
+                    data: new Date().toLocaleDateString(),
+                    timestamp: Date.now()
+                }).then(() => {
+                    alert("Dados enviados!");
+                    document.getElementById('valor-input').value = "";
+                });
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const login = document.getElementById('login-screen');
+            const main = document.getElementById('main-screen');
+            const vUnid = document.getElementById('view-unidade');
+            const vAdmin = document.getElementById('view-admin');
+
+            if (user) {
+                login.classList.add('hidden');
+                main.classList.remove('hidden');
+                if(user.email === 'admin@unidade.com') {
+                    vAdmin.classList.remove('hidden');
+                    vUnid.classList.add('hidden');
+                    carregarAdmin();
+                } else {
+                    vUnid.classList.remove('hidden');
+                    vAdmin.classList.add('hidden');
+                    configUnidade(user.email);
+                }
+            } else {
+                login.classList.remove('hidden');
+                main.classList.add('hidden');
+            }
+        });
+
+        function configUnidade(email) {
+            document.getElementById('txt-unidade').innerText = "Unidade: " + email.split('@')[0].toUpperCase();
+            const hoje = new Date().getDay(); // 6 é Sábado
+            const status = document.getElementById('status-dia');
+            const btn = document.getElementById('btn-salvar');
+
+            if(hoje === 6) {
+                status.innerText = "✅ Sábado: Lançamento Liberado";
+                status.className = "status ok";
+                btn.disabled = false;
+            } else {
+                status.innerText = "⚠️ Bloqueado: Apenas aos Sábados";
+                status.className = "status bloqueado";
+                btn.disabled = true;
+            }
+        }
+
+        function carregarAdmin() {
+            onValue(ref(db, 'lancamentos'), (snap) => {
+                const dados = snap.val();
+                let total = 0;
+                if(dados) Object.values(dados).forEach(l => total += l.valor);
+                document.getElementById('total-geral').innerText = "R$ " + total.toFixed(2);
+                // Aqui você pode expandir para gerar o gráfico Chart.js
+            });
+        }
+    </script>
+</body>
+</html>
