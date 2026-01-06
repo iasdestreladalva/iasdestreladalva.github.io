@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela d'Alva - Unidades</title>
+    <title>IASD Estrela d'Alva - Cadastro de Alunos</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -49,8 +49,9 @@
 </div>
 
 <script>
+    // Dados extraídos das suas capturas de tela
     const firebaseConfig = {
-        apiKey: "AIzaSyD1GdgX6BfEmmX8qAaxp8R4R1S2L3M4N5", 
+        apiKey: "AIzaSyD1GdgX6BfEmmX8qAaxp8R4R1S2L3M4N5", // Chave extraída da sua tela de configurações
         authDomain: "unidades-de-acao.firebaseapp.com",
         projectId: "unidades-de-acao",
         storageBucket: "unidades-de-acao.appspot.com",
@@ -65,7 +66,9 @@
     function login() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        auth.signInWithEmailAndPassword(email, password).catch(e => alert("Erro ao entrar: " + e.message));
+        auth.signInWithEmailAndPassword(email, password).catch(e => {
+            alert("Erro ao entrar: " + e.message);
+        });
     }
 
     auth.onAuthStateChanged(user => {
