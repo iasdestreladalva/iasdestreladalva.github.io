@@ -3,140 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Unidades de Ação</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>IASD Estrela d'Alva - Unidades</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --primary: #1a73e8; --bg: #f0f2f5; --text: #202124; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin-top: 20px; }
-        h2 { color: var(--primary); text-align: center; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        button:disabled { background: #abb2b9; cursor: not-allowed; }
-        .status { text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
-        .ok { background: #e6f4ea; color: #1e8e3e; }
-        .bloqueado { background: #fce8e6; color: #d93025; }
+        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { color: #333; text-align: center; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
         .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        th { background-color: #f2f2f2; }
+        .logout-btn { background-color: #dc3545; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="card">
-        <h2>Acesso Unidades</h2>
-        <input type="email" id="email" placeholder="Ex: israel@unidade.com">
-        <input type="password" id="senha" placeholder="Senha">
-        <button onclick="app.entrar()">Entrar</button>
+<div class="container">
+    <div id="login-section">
+        <h2>Acesso à Unidade</h2>
+        <input type="email" id="email" placeholder="E-mail da Unidade (ex: maranata@unidade.com)">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
     </div>
 
-    <div id="main-screen" class="hidden" style="width: 100%; max-width: 500px;">
+    <div id="main-section" class="hidden">
+        <h2 id="welcome-msg">Unidade</h2>
         
-        <div id="view-unidade" class="card hidden">
-            <h2 id="txt-unidade">Unidade</h2>
-            <div id="status-dia" class="status"></div>
-            <input type="number" id="valor-input" placeholder="Valor da Semana (R$)">
-            <button id="btn-salvar" onclick="app.salvar()">Enviar Relatório</button>
-            <button onclick="app.sair()" style="background:#5f6368; margin-top:10px;">Sair</button>
+        <div id="form-cadastro">
+            <h3>Cadastrar Aluno</h3>
+            <input type="text" id="nomeAluno" placeholder="Nome Completo do Aluno">
+            <input type="date" id="dataNasc" placeholder="Data de Nascimento">
+            <button onclick="cadastrarAluno()">Salvar Aluno</button>
         </div>
 
-        <div id="view-admin" class="card hidden" style="max-width: 600px;">
-            <h2>📊 Balanço Geral</h2>
-            <p style="text-align:center">Total Trimestral: <strong id="total-geral">R$ 0,00</strong></p>
-            <canvas id="graficoGeral"></canvas>
-            <button onclick="app.sair()" style="background:#5f6368; margin-top:20px;">Sair</button>
-        </div>
+        <h3>Meus Alunos</h3>
+        <table id="tabela-alunos">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Nascimento</th>
+                </tr>
+            </thead>
+            <tbody id="lista-alunos"></tbody>
+        </table>
+
+        <button class="logout-btn" onclick="logout()">Sair do Sistema</button>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<script>
+    // --- COLE AQUI AS SUAS CONFIGURAÇÕES DO FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_PROJETO.firebaseapp.com",
+        projectId: "SEU_PROJETO",
+        storageBucket: "SEU_PROJETO.appspot.com",
+        messagingSenderId: "SEU_ID",
+        appId: "SEU_APP_ID"
+    };
+    // --------------------------------------------------
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik",
-            authDomain: "unidades-de-acao.firebaseapp.com",
-            databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com",
-            projectId: "unidades-de-acao",
-            storageBucket: "unidades-de-acao.firebasestorage.app",
-            messagingSenderId: "1088355029870",
-            appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
-        };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        const fb = initializeApp(firebaseConfig);
-        const auth = getAuth(fb);
-        const db = getDatabase(fb);
+    // FUNÇÃO DE LOGIN
+    function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        auth.signInWithEmailAndPassword(email, password).catch(e => alert("Erro: " + e.message));
+    }
 
-        window.app = {
-            entrar: () => {
-                const e = document.getElementById('email').value;
-                const s = document.getElementById('senha').value;
-                signInWithEmailAndPassword(auth, e, s).catch(() => alert("Acesso inválido!"));
-            },
-            sair: () => signOut(auth),
-            salvar: () => {
-                const val = document.getElementById('valor-input').value;
-                if(!val) return alert("Digite o valor!");
-                push(ref(db, 'lancamentos'), {
-                    unidade: auth.currentUser.email.split('@')[0],
-                    valor: Number(val),
-                    data: new Date().toLocaleDateString(),
-                    timestamp: Date.now()
-                }).then(() => {
-                    alert("Dados enviados!");
-                    document.getElementById('valor-input').value = "";
-                });
-            }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            const login = document.getElementById('login-screen');
-            const main = document.getElementById('main-screen');
-            const vUnid = document.getElementById('view-unidade');
-            const vAdmin = document.getElementById('view-admin');
-
-            if (user) {
-                login.classList.add('hidden');
-                main.classList.remove('hidden');
-                if(user.email === 'admin@unidade.com') {
-                    vAdmin.classList.remove('hidden');
-                    vUnid.classList.add('hidden');
-                    carregarAdmin();
-                } else {
-                    vUnid.classList.remove('hidden');
-                    vAdmin.classList.add('hidden');
-                    configUnidade(user.email);
-                }
-            } else {
-                login.classList.remove('hidden');
-                main.classList.add('hidden');
-            }
-        });
-
-        function configUnidade(email) {
-            document.getElementById('txt-unidade').innerText = "Unidade: " + email.split('@')[0].toUpperCase();
-            const hoje = new Date().getDay(); // 6 é Sábado
-            const status = document.getElementById('status-dia');
-            const btn = document.getElementById('btn-salvar');
-
-            if(hoje === 6) {
-                status.innerText = "✅ Sábado: Lançamento Liberado";
-                status.className = "status ok";
-                btn.disabled = false;
-            } else {
-                status.innerText = "⚠️ Bloqueado: Apenas aos Sábados";
-                status.className = "status bloqueado";
-                btn.disabled = true;
-            }
+    // MONITORAR ESTADO DO USUÁRIO
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('main-section').classList.remove('hidden');
+            document.getElementById('welcome-msg').innerText = "Unidade: " + user.email;
+            carregarAlunos(user.email);
+        } else {
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('main-section').classList.add('hidden');
         }
+    });
 
-        function carregarAdmin() {
-            onValue(ref(db, 'lancamentos'), (snap) => {
-                const dados = snap.val();
-                let total = 0;
-                if(dados) Object.values(dados).forEach(l => total += l.valor);
-                document.getElementById('total-geral').innerText = "R$ " + total.toFixed(2);
-                // Aqui você pode expandir para gerar o gráfico Chart.js
+    // CADASTRAR ALUNO NO FIRESTORE
+    function cadastrarAluno() {
+        const user = auth.currentUser;
+        const nome = document.getElementById('nomeAluno').value;
+        const data = document.getElementById('dataNasc').value;
+
+        if (nome && data) {
+            db.collection("alunos").add({
+                nome: nome,
+                nascimento: data,
+                liderEmail: user.email, // Vincula o aluno ao líder logado
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('nomeAluno').value = "";
+                document.getElementById('dataNasc').value = "";
+                alert("Aluno cadastrado com sucesso!");
             });
+        } else {
+            alert("Preencha todos os campos!");
         }
-    </script>
+    }
+
+    // CARREGAR APENAS ALUNOS DA UNIDADE LOGADA
+    function carregarAlunos(emailLider) {
+        db.collection("alunos")
+          .where("liderEmail", "==", emailLider)
+          .orderBy("nome")
+          .onSnapshot(snapshot => {
+            const lista = document.getElementById('lista-alunos');
+            lista.innerHTML = "";
+            snapshot.forEach(doc => {
+                const aluno = doc.data();
+                lista.innerHTML += `<tr><td>${aluno.nome}</td><td>${aluno.nascimento}</td></tr>`;
+            });
+        });
+    }
+
+    function logout() {
+        auth.signOut();
+    }
+</script>
+
 </body>
 </html>
