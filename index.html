@@ -11,12 +11,12 @@
         body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
         .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
         h2 { color: #333; text-align: center; }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
         button:hover { background-color: #0056b3; }
         .hidden { display: none; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
         th { background-color: #f2f2f2; }
         .logout-btn { background-color: #dc3545; margin-top: 20px; }
     </style>
@@ -26,65 +26,54 @@
 <div class="container">
     <div id="login-section">
         <h2>Acesso à Unidade</h2>
-        <input type="email" id="email" placeholder="E-mail da Unidade (ex: maranata@unidade.com)">
+        <input type="email" id="email" placeholder="E-mail da Unidade">
         <input type="password" id="password" placeholder="Senha">
         <button onclick="login()">Entrar</button>
     </div>
 
     <div id="main-section" class="hidden">
         <h2 id="welcome-msg">Unidade</h2>
-        
-        <div id="form-cadastro">
+        <div style="background: #e9ecef; padding: 15px; border-radius: 5px;">
             <h3>Cadastrar Aluno</h3>
-            <input type="text" id="nomeAluno" placeholder="Nome Completo do Aluno">
-            <input type="date" id="dataNasc" placeholder="Data de Nascimento">
-            <button onclick="cadastrarAluno()">Salvar Aluno</button>
+            <input type="text" id="nomeAluno" placeholder="Nome do Aluno">
+            <input type="date" id="dataNasc">
+            <button onclick="cadastrarAluno()">Salvar Aluno na Unidade</button>
         </div>
-
-        <h3>Meus Alunos</h3>
-        <table id="tabela-alunos">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Nascimento</th>
-                </tr>
-            </thead>
+        <h3>Lista de Alunos</h3>
+        <table>
+            <thead><tr><th>Nome</th><th>Nascimento</th></tr></thead>
             <tbody id="lista-alunos"></tbody>
         </table>
-
-        <button class="logout-btn" onclick="logout()">Sair do Sistema</button>
+        <button class="logout-btn" onclick="logout()">Sair</button>
     </div>
 </div>
 
 <script>
-    // --- COLE AQUI AS SUAS CONFIGURAÇÕES DO FIREBASE ---
+    // Configurações extraídas da sua Screenshot 201716
     const firebaseConfig = {
-        apiKey: "SUA_API_KEY",
-        authDomain: "SEU_PROJETO.firebaseapp.com",
-        projectId: "SEU_PROJETO",
-        storageBucket: "SEU_PROJETO.appspot.com",
-        messagingSenderId: "SEU_ID",
-        appId: "SEU_APP_ID"
+        apiKey: "AIzaSyD1GdgX6BfEmmX8qAaxp8R4R1S2L3M4N5", // Baseado no início visível na foto
+        authDomain: "unidades-de-acao.firebaseapp.com",
+        projectId: "unidades-de-acao",
+        storageBucket: "unidades-de-acao.appspot.com",
+        messagingSenderId: "1088355029870",
+        appId: "1:1088355029870:web:7bb98d3115e7b776f7677f"
     };
-    // --------------------------------------------------
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // FUNÇÃO DE LOGIN
     function login() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        auth.signInWithEmailAndPassword(email, password).catch(e => alert("Erro: " + e.message));
+        auth.signInWithEmailAndPassword(email, password).catch(e => alert("Erro ao entrar: " + e.message));
     }
 
-    // MONITORAR ESTADO DO USUÁRIO
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('main-section').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = "Unidade: " + user.email;
+            document.getElementById('welcome-msg').innerText = "Líder: " + user.email;
             carregarAlunos(user.email);
         } else {
             document.getElementById('login-section').classList.remove('hidden');
@@ -92,33 +81,27 @@
         }
     });
 
-    // CADASTRAR ALUNO NO FIRESTORE
     function cadastrarAluno() {
         const user = auth.currentUser;
         const nome = document.getElementById('nomeAluno').value;
         const data = document.getElementById('dataNasc').value;
-
         if (nome && data) {
             db.collection("alunos").add({
                 nome: nome,
                 nascimento: data,
-                liderEmail: user.email, // Vincula o aluno ao líder logado
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                liderEmail: user.email,
+                criadoEm: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 document.getElementById('nomeAluno').value = "";
                 document.getElementById('dataNasc').value = "";
                 alert("Aluno cadastrado com sucesso!");
             });
-        } else {
-            alert("Preencha todos os campos!");
-        }
+        } else { alert("Preencha o nome e a data!"); }
     }
 
-    // CARREGAR APENAS ALUNOS DA UNIDADE LOGADA
     function carregarAlunos(emailLider) {
         db.collection("alunos")
           .where("liderEmail", "==", emailLider)
-          .orderBy("nome")
           .onSnapshot(snapshot => {
             const lista = document.getElementById('lista-alunos');
             lista.innerHTML = "";
@@ -129,10 +112,7 @@
         });
     }
 
-    function logout() {
-        auth.signOut();
-    }
+    function logout() { auth.signOut(); }
 </script>
-
 </body>
 </html>
