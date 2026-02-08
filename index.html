@@ -4,154 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>IASD Estrela Dalva - v102.43</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --green: #2ecc71; --red: #ff4757; }
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            background: var(--bg); 
-            color: #e6f1ff; 
-            font-family: system-ui, -apple-system, sans-serif; 
-            padding: 10px;
-            width: 100vw;
-            overflow-x: hidden;
-        }
+        body { background: var(--bg); color: #e6f1ff; font-family: sans-serif; padding: 10px; overflow-x: hidden; }
+        .container { width: 100%; max-width: 1400px; margin: auto; }
 
-        .container { width: 100%; max-width: 100%; margin: auto; }
-
-        /* CABEÇALHO FLEXÍVEL */
-        .header-top { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 10px; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 15px;
-        }
-
-        .nav-buttons { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 5px; 
-            flex: 1;
-            justify-content: flex-end;
-        }
-
-        /* PAINEL ADMIN RESPONSIVO */
-        .admin-box { 
-            display: none; 
-            background: #0f172a; 
-            border: 2px solid var(--orange); 
-            padding: 10px; 
-            border-radius: 10px; 
-            margin-bottom: 15px; 
-        }
-
-        .admin-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 15px; 
-        }
-
-        .admin-section { 
-            background: rgba(255,255,255,0.05); 
-            padding: 10px; 
-            border-radius: 8px; 
-        }
-
-        /* TABELA QUE SE AJUSTA À TELA */
-        .table-wrapper { 
-            width: 100%; 
-            overflow-x: auto; /* Permite scroll lateral no celular em pé */
-            background: white; 
-            border-radius: 8px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            min-width: 700px; /* Base mínima para não esmagar as letras */
-        }
-
-        th { background: #f1f5f9; color: var(--blue); font-size: 12px; padding: 8px; border: 1px solid #cbd5e1; }
-        td { border: 1px solid #cbd5e1; height: 45px; text-align: center; color: black; font-weight: bold; }
-
-        .input-escala { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-            text-align: center; 
-            font-size: 13px; 
-            background: transparent !important;
-            font-weight: bold;
-        }
-
-        /* CORES DOS MINISTÉRIOS */
-        .row-pessoal { background-color: #e0f2fe !important; }
-        .row-mordomia { background-color: #fef3c7 !important; }
-        .row-saude { background-color: #f0fdf4 !important; }
-        .row-homens { background-color: #ecfeff !important; }
-        .row-familia { background-color: #faf5ff !important; }
-        .row-adolescentes { background-color: #f8fafc !important; }
-        .row-mulher { background-color: #fdf2f8 !important; }
-
-        /* UI ELEMENTS */
+        /* HEADER E NAV */
+        .header-top { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .nav-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 5px; font-size: 14px; }
-        .btn-min { 
-            padding: 10px; 
-            border: 1px solid var(--neon); 
-            color: var(--neon); 
-            background: transparent; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-weight: bold;
-            font-size: 12px;
-            width: 100%;
-        }
+
+        /* ESCALA TABELA */
+        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; color: black; }
+        th { background: var(--blue); color: white; padding: 10px; font-size: 12px; border: 1px solid #ccc; }
+        td { border: 1px solid #ddd; height: 45px; text-align: center; font-weight: bold; }
+        .input-escala { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; }
+
+        /* ADMIN PANEL */
+        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .btn-min { padding: 10px; border: 1px solid var(--neon); color: var(--neon); background: transparent; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
         .btn-min.active { background: var(--neon); color: var(--blue); }
 
-        .tesouraria-display { margin-top: 20px; border: 1px solid var(--green); padding: 10px; border-radius: 10px; }
-        .grid-arquivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-        .thumb-doc { width: 100%; height: 90px; border-radius: 5px; border: 1px solid #444; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; cursor: pointer; }
+        /* TESOURARIA E MINIATURAS */
+        .tesouraria-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--green); }
+        .grid-arquivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 15px; }
+        .thumb-box { position: relative; width: 120px; height: 120px; background: #000; border: 2px solid #334155; border-radius: 8px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .thumb-box:hover { border-color: var(--neon); transform: scale(1.05); }
+        .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+        .pdf-icon { color: var(--red); font-weight: bold; font-size: 24px; text-align: center; }
 
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; padding: 10px; }
-        .pop-content { background:var(--bg); border:2px solid var(--orange); padding:15px; border-radius:15px; width:100%; max-width:450px; }
+        /* VISUALIZADOR TELA CHEIA (LIGHTBOX) */
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 20000; justify-content: center; align-items: center; cursor: zoom-out; }
+        .fullscreen-overlay img { max-width: 95%; max-height: 95%; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .fullscreen-overlay iframe { width: 90%; height: 90%; border: none; background: white; }
+
+        /* CORES ESCALA */
+        .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
+        .row-saude { background-color: #f0fdf4 !important; } .row-familia { background-color: #faf5ff !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-top">
-        <h2 style="color:var(--neon); font-size: 1.2rem;">IASD ESTRELA DALVA</h2>
+    <header class="header-top">
+        <h2 style="color:var(--neon)">IASD ESTRELA DALVA</h2>
         <div class="nav-buttons">
-            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:110px;"></select>
-            <button class="input-dark" id="btnTesourariaAdmin" onclick="abrirTesourariaAdmin()" style="display:none; color:var(--green);">⚙️</button>
-            <button class="input-dark" id="btnDados" onclick="abrirPopMissionario()" style="display:none; color:var(--orange);">📊</button>
-            <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓</button>
-            <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; color:red;">🚪</button>
+            <select id="selMes" onchange="renderTodo();" class="input-dark"></select>
+            <button class="input-dark" id="btnTesourariaAdmin" onclick="abrirPainelUpload()" style="display:none; color:var(--green)">➕ ARQUIVO</button>
+            <button class="input-dark" id="btnAcesso" onclick="abrirLogin()">🔓</button>
+            <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; color:red">🚪</button>
         </div>
-    </div>
+    </header>
 
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
-            <div class="admin-section">
-                <h4 style="font-size:11px; color:var(--neon)">1. MINISTÉRIO DO DIA</h4>
-                <div id="listaMinisterios" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;"></div>
-                <button class="btn-min" style="margin-top:5px; border-color:red; color:red;" onclick="limparRegraManual()">LIMPAR</button>
+            <div class="admin-sec">
+                <h4 style="color:var(--neon); margin-bottom:10px">ANCIÃO DO MÊS</h4>
+                <input class="input-dark" id="inAnciao" onchange="atuAnciaoManual(this.value)" style="width:100%" placeholder="Trocar nome...">
             </div>
-            <div class="admin-section">
-                <h4 style="font-size:11px; color:var(--neon)">2. ANCIÃO DO MÊS</h4>
-                <input class="input-dark" style="width:100%; margin-top:5px;" id="inAnciao" onchange="atuAnciaoManual(this.value)" placeholder="Nome do Ancião">
-                <div id="statusAnciao" style="font-size:10px; margin-top:5px;"></div>
-            </div>
-            <div class="admin-section">
-                <h4 style="font-size:11px; color:var(--neon)">3. SENHAS</h4>
-                <div style="font-size:10px; max-height:80px; overflow-y:auto;" id="areaCreds"></div>
+            <div class="admin-sec">
+                <h4 style="color:var(--neon); margin-bottom:10px">COR DO DIA</h4>
+                <div id="listaMinisterios" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px"></div>
             </div>
         </div>
     </div>
@@ -159,24 +77,34 @@
     <div class="table-wrapper">
         <table>
             <thead>
-                <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white;">ESCALA</th></tr>
-                <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); border-top:none;">Responsável: </th></tr>
-                <tr>
-                    <th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
-                </tr>
+                <tr><th colspan="9" id="headerTitulo">ESCALA</th></tr>
+                <tr><th colspan="9" id="headerAnciao" style="color:var(--gold)">Responsável:</th></tr>
+                <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
     </div>
 
-    <div class="tesouraria-display">
-        <h4 style="color:var(--green); margin-bottom:10px;">💰 TESOURARIA - <span id="mesDisplay"></span></h4>
+    <div class="tesouraria-section">
+        <h3 style="color:var(--green)">💰 COMPROVANTES DE TESOURARIA</h3>
+        <p style="font-size: 12px; color: #888;">Clique na miniatura para ampliar</p>
         <div id="gridPublico" class="grid-arquivos"></div>
     </div>
 </div>
 
-<div id="popGen" class="overlay" onclick="this.style.display='none'"><div class="pop-content" id="popContent" onclick="event.stopPropagation()"></div></div>
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:20px; border-radius:10px; width:280px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; width:100%; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; width:100%;"><button class="btn-min" style="background:var(--blue); color:white; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+<div id="visualizador" class="fullscreen-overlay" onclick="fecharVisualizador()">
+    <div id="conteudoMídia" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;"></div>
+</div>
+
+<div id="modalLogin" class="fullscreen-overlay" style="cursor: default;">
+    <div style="background:white; padding:30px; border-radius:15px; width:300px;">
+        <h3 style="color:black; margin-bottom:15px">Acesso Restrito</h3>
+        <input type="text" id="user" placeholder="Usuário" class="input-dark" style="color:black!important; width:100%; margin-bottom:10px">
+        <input type="password" id="pass" placeholder="Senha" class="input-dark" style="color:black!important; width:100%">
+        <button class="btn-min" style="background:var(--blue); color:white; margin-top:20px" onclick="login()">ENTRAR</button>
+        <button onclick="fecharLogin()" style="width:100%; background:none; border:none; margin-top:10px; color:#666; cursor:pointer">Cancelar</button>
+    </div>
+</div>
 
 <script>
     const firebaseConfig = { apiKey: "SUA_API_KEY", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com/", projectId: "unidades-de-acao", appId: "SUA_APP_ID" };
@@ -184,52 +112,34 @@
     const database = firebase.database();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin:"Admin", ger:"Gerência", diaconato:"Diaconato", musica:"Música", sonoplastia:"Sono", mulher:"M. Mulher", sabatina:"Sabatina", pessoal:"Pessoal", mordomia:"Mordomia", saude:"Saúde", homens:"Homens", familia:"Família", adolescentes:"Adol" };
-    const REGRAS = { pessoal:"1S", mordomia:"2S", saude:"1D", homens:"2Q", familia:"3D", adolescentes:"3Q", mulher:"UQ" };
     const ANCIÃOS_AUTO = { 0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert" };
+    const MINS = { pessoal:"Pess.", mordomia:"Mord.", saude:"Saúde", familia:"Fam." };
 
-    let db = { escalas: {}, anciaos_manual: {}, docs: {}, senhas: {}, regras_manuais: {} };
+    let db = { escalas: {}, anciaos_manual: {}, docs: {}, senhas: {admin:"iasd118"} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     let minSel = null;
 
     database.ref('dados_igreja').on('value', (snap) => { if(snap.val()) { db = snap.val(); renderTodo(); } });
 
     function renderTodo() {
-        const u = curUser;
         const m = document.getElementById('selMes').value;
+        const u = curUser;
+        
         document.getElementById('btnSair').style.display = u !== 'visitante' ? 'block' : 'none';
-        document.getElementById('btnAcesso').style.display = u === 'visitante' ? 'block' : 'none';
-        document.getElementById('adminPanel').style.display = (u === 'admin' || u === 'ger') ? 'block' : 'none';
         document.getElementById('btnTesourariaAdmin').style.display = (u === 'admin' || u === 'ger') ? 'block' : 'none';
-        document.getElementById('btnDados').style.display = (u === 'admin' || u === 'pessoal') ? 'block' : 'none';
-        
-        const anciaoFinal = (db.anciaos_manual?.[m]) ? db.anciaos_manual[m] : ANCIÃOS_AUTO[m];
-        document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + anciaoFinal;
-        document.getElementById('mesDisplay').innerText = MESES[m];
-        
-        renderEscala();
-        renderAdmin(anciaoFinal, !!db.anciaos_manual?.[m]);
-        renderDocsPublicos();
-    }
+        document.getElementById('adminPanel').style.display = (u === 'admin') ? 'block' : 'none';
 
-    function renderAdmin(anciaoAtual, isManual) {
-        const list = document.getElementById('listaMinisterios'); list.innerHTML = "";
-        Object.keys(REGRAS).forEach(m => {
-            list.innerHTML += `<button class="btn-min ${minSel===m?'active':''}" onclick="minSel='${m}'; renderAdmin();">${MINS[m]}</button>`;
-        });
-        const mIdx = document.getElementById('selMes').value;
-        document.getElementById('inAnciao').value = db.anciaos_manual?.[mIdx] || '';
-        document.getElementById('statusAnciao').innerText = isManual ? "⚠️ Modo Manual" : "✅ Escala Auto";
-        
-        const area = document.getElementById('areaCreds'); area.innerHTML = "";
-        Object.keys(db.senhas || {}).forEach(k => {
-            area.innerHTML += `<div><b>${k}:</b> ${db.senhas[k]}</div>`;
-        });
+        const anciao = db.anciaos_manual?.[m] || ANCIÃOS_AUTO[m];
+        document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + anciao;
+        document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
+
+        renderEscala();
+        renderMiniaturas();
+        renderBotoesAdmin();
     }
 
     function renderEscala() {
         const mIdx = parseInt(document.getElementById('selMes').value);
-        document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[mIdx] + " 2026";
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const dias = new Date(2026, mIdx + 1, 0).getDate();
 
@@ -237,72 +147,97 @@
             let dt = new Date(2026, mIdx, d); let sem = dt.getDay();
             if([0,3,6].includes(sem)) {
                 let dStr = `${d}/${mIdx+1}/2026`;
-                let tr = `<tr class="${getClasseCor(d, sem, mIdx)}" onclick="setDiaManual('${dStr}')">
+                let cor = db.regras_manuais?.[dStr] ? "row-"+db.regras_manuais[dStr] : "";
+                let tr = `<tr class="${cor}" onclick="pintarLinha('${dStr}')">
                     <td style="font-size:10px">${["DOM","","","QUA","","","SÁB"][sem]}</td>
                     <td>${d}/${mIdx+1}</td>`;
                 ["sa","pr","mu","lo","so","re","di"].forEach(c => {
-                    let val = db.escalas[dStr]?.[c] || "";
-                    let edit = (curUser === 'admin' || curUser === 'ger' || curUser === c);
-                    tr += `<td><input class="input-escala" ${!edit?'readonly':''} value="${val}" onchange="atuCel('${dStr}','${c}',this.value)"></td>`;
+                    let val = db.escalas?.[dStr]?.[c] || "";
+                    tr += `<td><input class="input-escala" value="${val}" onchange="atuCel('${dStr}','${c}',this.value)"></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
     }
 
-    function getClasseCor(d, sem, m) {
-        let dStr = `${d}/${m+1}/2026`;
-        if(db.regras_manuais?.[dStr]) return "row-" + db.regras_manuais[dStr];
-        if(sem === 6) { let sab = Math.ceil(d/7); if(sab===1) return "row-pessoal"; if(sab===2) return "row-mordomia"; }
-        if(sem === 0) { let dom = Math.ceil(d/7); if(dom===1) return "row-saude"; if(dom===3) return "row-familia"; }
-        if(sem === 3) { let qua = Math.ceil(d/7); if(qua===2) return "row-homens"; if(qua===3) return "row-adolescentes"; }
-        return "";
-    }
-
-    function atuAnciaoManual(v) { 
-        const m = document.getElementById('selMes').value;
-        if(!db.anciaos_manual) db.anciaos_manual = {}; 
-        db.anciaos_manual[m] = v; save(); 
-    }
-
-    function setDiaManual(dStr) { if(minSel && (curUser==='admin'||curUser==='ger')) { if(!db.regras_manuais) db.regras_manuais={}; db.regras_manuais[dStr] = minSel; save(); } }
-    function limparRegraManual() { db.regras_manuais = {}; save(); }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function save() { database.ref('dados_igreja').set(db); }
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else { alert("Erro!"); } }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    
-    function renderDocsPublicos() {
+    // FUNÇÕES DE TESOURARIA (UPLOAD E VIEW)
+    function renderMiniaturas() {
         const m = document.getElementById('selMes').value;
         const grid = document.getElementById('gridPublico'); grid.innerHTML = "";
-        (db.docs?.[m] || []).forEach(f => {
-            grid.innerHTML += `<div class="thumb-doc" onclick="window.open('${f.data}')">${f.type.includes('pdf')?'<b style="color:var(--red)">PDF</b>':`<img src="${f.data}" style="width:100%; height:100%; object-fit:cover;">`}</div>`;
+        const arquivos = db.docs?.[m] || [];
+
+        arquivos.forEach((file, index) => {
+            const isPDF = file.type.includes('pdf');
+            const html = `
+                <div class="thumb-box" onclick="abrirVisualizador('${file.data}', '${file.type}')">
+                    ${isPDF ? '<div class="pdf-icon">📄<br><small>PDF</small></div>' : `<img src="${file.data}">`}
+                    ${(curUser==='admin') ? `<button onclick="removerDoc(${index}, event)" style="position:absolute; top:2px; right:2px; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer">X</button>` : ''}
+                </div>`;
+            grid.innerHTML += html;
         });
     }
 
-    function abrirTesourariaAdmin() {
-        const m = document.getElementById('selMes').value;
-        document.getElementById('popContent').innerHTML = `<h3 style="color:white; margin-bottom:10px;">UPLOAD - ${MESES[m]}</h3><input type="file" id="fIn" class="input-dark" style="width:100%" accept="image/*,application/pdf"><button class="btn-min" style="margin-top:10px; background:var(--green); color:white; border:none;" onclick="uploadDoc()">SALVAR</button><div id="gridAdm" class="grid-arquivos" style="margin-top:15px"></div>`;
-        document.getElementById('popGen').style.display='flex';
-        renderDocsAdm();
+    function abrirVisualizador(data, type) {
+        const f = document.getElementById('visualizador');
+        const content = document.getElementById('conteudoMídia');
+        f.style.display = 'flex';
+        
+        if(type.includes('pdf')) {
+            content.innerHTML = `<iframe src="${data}"></iframe>`;
+        } else {
+            content.innerHTML = `<img src="${data}">`;
+        }
     }
 
-    function uploadDoc() {
-        const f = document.getElementById('fIn').files[0]; if(!f) return;
-        const r = new FileReader(); r.onload = (e) => {
-            const m = document.getElementById('selMes').value; if(!db.docs) db.docs={}; if(!db.docs[m]) db.docs[m]=[];
-            db.docs[m].push({data: e.target.result, type: f.type}); save(); renderDocsAdm();
-        }; r.readAsDataURL(f);
+    function fecharVisualizador() {
+        document.getElementById('visualizador').style.display = 'none';
+        document.getElementById('conteudoMídia').innerHTML = "";
     }
 
-    function renderDocsAdm() {
+    function abrirPainelUpload() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*,application/pdf';
+        input.onchange = e => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = event => {
+                const m = document.getElementById('selMes').value;
+                if(!db.docs) db.docs = {};
+                if(!db.docs[m]) db.docs[m] = [];
+                db.docs[m].push({ data: event.target.result, type: file.type });
+                save();
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+
+    function removerDoc(idx, e) {
+        e.stopPropagation();
         const m = document.getElementById('selMes').value;
-        const grid = document.getElementById('gridAdm'); grid.innerHTML = "";
-        (db.docs?.[m] || []).forEach((f, i) => {
-            grid.innerHTML += `<div style="position:relative"><div class="thumb-doc">${f.type.includes('pdf')?'PDF':`<img src="${f.data}" style="width:100%">`}</div><button onclick="db.docs[${m}].splice(${i},1); save(); renderDocsAdm();" style="position:absolute; top:0; right:0; background:red; color:white; border:none; width:20px; height:20px;">X</button></div>`;
+        db.docs[m].splice(idx, 1);
+        save();
+    }
+
+    // ACESSÓRIOS ADMIN
+    function renderBotoesAdmin() {
+        const div = document.getElementById('listaMinisterios'); div.innerHTML = "";
+        Object.keys(MINS).forEach(k => {
+            div.innerHTML += `<button class="btn-min ${minSel===k?'active':''}" onclick="minSel='${k}'; renderBotoesAdmin()">${MINS[k]}</button>`;
         });
     }
 
+    function pintarLinha(dStr) { if(minSel && curUser==='admin') { if(!db.regras_manuais) db.regras_manuais={}; db.regras_manuais[dStr]=minSel; save(); } }
+    function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function atuAnciaoManual(v) { const m = document.getElementById('selMes').value; if(!db.anciaos_manual) db.anciaos_manual={}; db.anciaos_manual[m]=v; save(); }
+    function save() { database.ref('dados_igreja').set(db); }
+    function login() { if(db.senhas[document.getElementById('user').value] === document.getElementById('pass').value) { localStorage.setItem('iasd_curUser', document.getElementById('user').value); location.reload(); } else alert("Erro!"); }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function abrirLogin() { document.getElementById('modalLogin').style.display='flex'; }
+    function fecharLogin() { document.getElementById('modalLogin').style.display='none'; }
+
+    // INICIAR MESES
     const sM = document.getElementById('selMes');
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
     window.onload = renderTodo;
