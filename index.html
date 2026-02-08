@@ -10,7 +10,7 @@
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top:10px; }
         table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; }
         
-        /* CORES DE DESTAQUE DETERMINADAS */
+        /* CORES DE DESTAQUE */
         .row-pessoal td { background-color: #e0f2fe !important; }
         .row-mordomia td { background-color: #ffedd5 !important; }
         .row-divino td { background-color: #fef3c7 !important; }
@@ -18,29 +18,35 @@
         .row-mulher td { background-color: #fce7f3 !important; }
 
         td { border: 1px solid #cbd5e1; text-align: center; height: 55px; padding: 0; }
-        .dia-box { display: flex; flex-direction: column; line-height: 1.2; }
+        .dia-box { display: flex; flex-direction: column; line-height: 1.2; padding: 5px; }
         .dia-txt { font-weight: 800; font-size: 0.85rem; color: #1e293b; }
-        .min-txt { font-size: 0.55rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+        .min-txt { font-size: 0.55rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
         
         .input-cell { width: 100%; height: 55px; border: none; background: transparent; text-align: center; font-weight: bold; font-size: 0.8rem; color: #000; text-transform: uppercase; }
         .btn-min { display: block; width: 100%; padding: 10px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 5px; font-size: 0.7rem; }
-        .btn-active { background: var(--neon); color: #000; box-shadow: 0 0 10px var(--neon); }
+        .btn-active { background: var(--neon) !important; color: #000 !important; }
 
-        .admin-painter { display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 2px solid var(--orange); margin: 15px 0; }
-        .clickable-row { cursor: crosshair; }
+        .admin-panel { display: none; background: #16213e; padding: 15px; border-radius: 12px; border: 2px solid var(--orange); margin-bottom: 15px; }
+        .paint-btn { border: 1px solid #fff; color: #fff; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; font-weight: bold; text-align: center; }
     </style> </head> <body>
+
+<div id="lightbox" onclick="this.style.display='none'; this.innerHTML=''" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; cursor:pointer;"></div>
 
 <h2 style="color:var(--neon); text-align: center; margin:0;">IASD ESTRELA DALVA</h2>
 
-<div id="painterPanel" class="admin-painter">
-    <h4 style="margin:0 0 10px 0; color:var(--orange); text-align:center;">🎨 DETERMINAR MINISTÉRIO DO DIA</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-        <button class="btn-min" id="btn-pessoal" onclick="selPincel('pessoal', 'Min. Pessoal')">M. PESSOAL</button>
-        <button class="btn-min" id="btn-mordomia" onclick="selPincel('mordomia', 'Mordomia')">MORDOMIA</button>
-        <button class="btn-min" id="btn-divino" onclick="selPincel('divino', 'Culto Divino')">C. DIVINO</button>
-        <button class="btn-min" id="btn-jovens" onclick="selPincel('jovens', 'JA / Jovens')">JOVENS</button>
-        <button class="btn-min" id="btn-mulher" onclick="selPincel('mulher', 'M. Mulher')">MULHER</button>
-        <button class="btn-min" style="border-color:#fff; color:#fff;" onclick="selPincel('', '')">BRANCO (LIMPAR)</button>
+<div id="adminMaster" class="admin-panel">
+    <h4 style="margin:0 0 10px 0; color:var(--orange); text-align:center;">🛠️ PAINEL DE CONTROLE</h4>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px;">
+        <div class="paint-btn" id="p-pessoal" style="background:#0ea5e9" onclick="selPincel('pessoal','Min. Pessoal')">M. PESSOAL</div>
+        <div class="paint-btn" id="p-mordomia" style="background:#f97316" onclick="selPincel('mordomia','Mordomia')">MORDOMIA</div>
+        <div class="paint-btn" id="p-divino" style="background:#eab308" onclick="selPincel('divino','Culto Divino')">C. DIVINO</div>
+        <div class="paint-btn" id="p-jovens" style="background:#a855f7" onclick="selPincel('jovens','Jovens')">JOVENS</div>
+        <div class="paint-btn" id="p-mulher" style="background:#ec4899" onclick="selPincel('mulher','M. Mulher')">MULHER</div>
+        <div class="paint-btn" style="background:#444" onclick="selPincel('','')">LIMPAR</div>
+    </div>
+    <div class="nav-buttons">
+        <button class="btn-min" style="border-color:var(--green); color:var(--green)" onclick="document.getElementById('popTes').style.display='flex'">💰 TESOURARIA</button>
+        <button class="btn-min" style="border-color:var(--gold); color:var(--gold)" onclick="abrirPopMis()">📊 DADOS</button>
     </div>
 </div>
 
@@ -63,11 +69,18 @@
 <div id="modalLogin" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:15px;">
     <div style="background:white; color:black; padding:20px; border-radius:15px; width:100%; max-width:400px;">
         <h3 style="text-align:center;">LOGIN</h3>
-        <input type="text" id="userLogin" placeholder="Usuário" style="width:100%; padding:10px; margin-bottom:10px; box-sizing:border-box;">
-        <input type="password" id="passLogin" placeholder="Senha" style="width:100%; padding:10px; margin-bottom:15px; box-sizing:border-box;">
+        <input type="text" id="userLogin" placeholder="Usuário" style="width:100%; padding:10px; margin-bottom:10px;">
+        <input type="password" id="passLogin" placeholder="Senha" style="width:100%; padding:10px; margin-bottom:15px;">
         <button onclick="fazerLogin()" style="width:100%; padding:15px; background:var(--blue); color:white; border:none; border-radius:8px; font-weight:bold;">ENTRAR</button>
     </div>
 </div>
+
+<div id="popTes" style="display:none;" class="admin-panel"><div style="background:#fff; color:#000; padding:20px; border-radius:10px;">
+    <h3>TESOURARIA</h3>
+    <input type="file" id="fileIn" onchange="uploadDoc()">
+    <div id="listaAdminDocs"></div>
+    <button onclick="this.parentElement.parentElement.style.display='none'">Fechar</button>
+</div></div>
 
 <script>
     const firebaseConfig = {
@@ -80,10 +93,9 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_v110');
+    const dbRef = firebase.database().ref('iasd_v112'); // Versão atualizada
 
-    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let db = { senhas:{admin:"iasd118"}, escalas:{}, cores:{} };
+    let db = { senhas:{admin:"iasd118", ger:"gerente123"}, escalas:{}, cores:{}, docs:{}, mis:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
     let pincelAtivo = null;
     let nomePincel = "";
@@ -92,17 +104,20 @@
 
     function save() { dbRef.set(db); }
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
+    
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Senha incorreta"); }
+        if (db.senhas[u] && db.senhas[u] === p) { 
+            localStorage.setItem('iasd_user', u); 
+            location.reload(); 
+        } else { alert("Usuário ou senha inválidos"); }
     }
 
     function selPincel(id, nome) {
-        pincelAtivo = id;
-        nomePincel = nome;
-        document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('btn-active'));
-        if(id) document.getElementById('btn-'+id).classList.add('btn-active');
+        pincelAtivo = id; nomePincel = nome;
+        document.querySelectorAll('.paint-btn').forEach(b => b.style.border = "1px solid #fff");
+        if(id) document.getElementById('p-'+id).style.border = "3px solid #fff";
     }
 
     function pintarLinha(data) {
@@ -116,11 +131,11 @@
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isGestor = (curUser === 'admin' || curUser === 'ger');
+        const isMaster = (curUser === 'admin' || curUser === 'ger');
         
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
-        document.getElementById('painterPanel').style.display = isGestor ? 'block' : 'none';
+        document.getElementById('adminMaster').style.display = isMaster ? 'block' : 'none';
         
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         renderEscala(m);
@@ -129,32 +144,25 @@
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        const diasSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
-        const isGestor = (curUser === 'admin' || curUser === 'ger');
+        const isMaster = (curUser === 'admin' || curUser === 'ger');
 
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d); 
             let sem = dt.getDay();
-            
             if([0,3,6].includes(sem)) {
                 let dStr = `${d}/${mIdx+1}/2026`;
                 let corInfo = db.cores?.[dStr] || { id: "", nome: "" };
                 let classeRow = corInfo.id ? "row-" + corInfo.id : "";
 
-                let row = `<tr class="${classeRow} ${isGestor?'clickable-row':''}" onclick="pintarLinha('${dStr}')">
-                    <td><div class="dia-box"><span class="dia-txt" style="color:${corInfo.id?'#000':'#1e293b'}">${diasSemana[sem]}</span><span class="min-txt">${corInfo.nome}</span></div></td>
-                    <td><div class="dia-txt" style="color:${corInfo.id?'#000':'#1e293b'}">${d}/${mIdx+1}</div></td>`;
+                let row = `<tr class="${classeRow}">
+                    <td onclick="pintarLinha('${dStr}')"><div class="dia-box"><span class="dia-txt">${["DOM","","","QUA","","","SAB"][sem]}</span><span class="min-txt">${corInfo.nome}</span></div></td>
+                    <td onclick="pintarLinha('${dStr}')"><div class="dia-txt">${d}/${mIdx+1}</div></td>`;
 
-                const colunas = [
-                    {id:"sa", p:"sabatina"}, {id:"pr", p:"pregador"}, {id:"mu", p:"musica"}, 
-                    {id:"lo", p:"louvor"}, {id:"so", p:"som"}, {id:"re", p:"recepcao"}, {id:"di", p:"diaconato"}
-                ];
-
+                const colunas = ["sa","pr","mu","lo","so","re","di"];
                 colunas.forEach(col => {
-                    let val = db.escalas?.[dStr]?.[col.id] || "";
-                    // Permissão: Admin/Ger ou o próprio ministério na sua coluna
-                    let canEdit = (isGestor || curUser === col.p || (curUser === 'sonoplastia' && col.id === 'so'));
-                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col.id}',this.value)"></td>`;
+                    let val = db.escalas?.[dStr]?.[col] || "";
+                    let canEdit = isMaster || (curUser === col) || (curUser==='musica' && col==='mu') || (curUser==='sonoplastia' && col==='so');
+                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
             }
