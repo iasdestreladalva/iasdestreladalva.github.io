@@ -10,26 +10,22 @@
         .header-top { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .nav-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
         
-        /* PAINEL ADMIN RESPONSIVO */
         .admin-box { display: none; background: #16213e; border: 2px solid var(--orange); padding: 12px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: flex; flex-direction: column; gap: 15px; } 
         
         .admin-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid #334155; width: 100%; box-sizing: border-box; }
         .admin-section h4 { color: var(--neon); margin: 0 0 12px 0; text-align: center; border-bottom: 1px solid #334155; padding-bottom: 5px; font-size: 0.9rem; }
 
-        /* TABELA */
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; border: 1px solid #444; }
         table { width: 100%; border-collapse: collapse; color: black; min-width: 800px; font-size: 0.8rem; }
         th { background: var(--blue); color: white; padding: 12px 5px; border: 1px solid #cbd5e1; }
         td { border: 1px solid #cbd5e1; text-align: center; height: 48px; font-weight: bold; }
 
-        /* CORES DAS LINHAS */
         .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
         .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
         .row-mulher { background-color: #fdf2f8 !important; }
 
-        /* COMPONENTES */
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; font-size: 0.95rem; }
         .btn-min { display: block; width: 100%; padding: 12px; margin-bottom: 8px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; font-size: 0.85rem; text-align: center; cursor: pointer; }
         .btn-min.active { background: var(--neon); color: #000; box-shadow: 0 0 8px var(--neon); }
@@ -121,8 +117,6 @@
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS_MAP = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "Mulher", sabatina: "Sabatina", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolescentes", especial: "Especial" };
-    
-    // REGRAS AUTOMÁTICAS DEFINIDAS
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
     let db = { senhas:{admin:"iasd118"}, anciaos:{}, escalas:{}, regras_manuais:{}, mis:{} };
@@ -156,39 +150,26 @@
     function renderTodo() {
         const m = document.getElementById('selMes').value || new Date().getMonth();
         const isGestor = (curUser === 'admin' || curUser === 'ger');
-
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
         document.getElementById('btnDados').style.display = (isGestor || curUser === 'pessoal') ? 'block' : 'none';
-        
-        // Exibição do painel admin/gerencia
-        const pnl = document.getElementById('adminPanel');
-        pnl.style.display = isGestor ? 'block' : 'none';
-        if(isGestor) {
-            document.getElementById('secSenhas').style.display = (curUser === 'admin') ? 'block' : 'none';
-        }
-        
+        document.getElementById('adminPanel').style.display = isGestor ? 'block' : 'none';
+        document.getElementById('secSenhas').style.display = (curUser === 'admin') ? 'block' : 'none';
         document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + (db.anciaos?.[m] || "---");
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         document.getElementById('mesMisTitulo').innerText = MESES[m];
-        
-        renderEscala(m);
-        renderGrafico(m);
-        if(isGestor) renderAdmin();
+        renderEscala(m); renderGrafico(m); if(isGestor) renderAdmin();
     }
 
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, parseInt(mIdx) + 1, 0).getDate();
         let cS=0, cD=0, cQ=0;
-
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d); let sem = dt.getDay();
             if([0,3,6].includes(sem)) {
                 if(sem===6) cS++; if(sem===0) cD++; if(sem===3) cQ++;
                 let dStr = `${d}/${parseInt(mIdx)+1}/2026`;
-                
-                // Prioridade 1: Manual | Prioridade 2: Regra Automática
                 let corClas = db.regras_manuais?.[dStr] ? "row-"+db.regras_manuais[dStr] : "";
                 if(!corClas) {
                     Object.keys(REGRAS).forEach(k => {
@@ -198,14 +179,11 @@
                            (r==="UQ" && sem===3 && d > diasNoMes-7)) corClas = "row-"+k;
                     });
                 }
-
                 let row = `<tr class="${corClas}">
                     <td onclick="pintar('${dStr}')">${["DOM","","","QUA","","","SAB"][sem]}</td>
                     <td onclick="pintar('${dStr}')">${d}/${parseInt(mIdx)+1}</td>`;
-                
                 ["sa","pr","mu","lo","so","re","di"].forEach(col => {
                     let val = db.escalas?.[dStr]?.[col] || "";
-                    // Admin e Ger alteram TUDO. Outros apenas suas colunas.
                     let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col);
                     row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
                 });
@@ -214,70 +192,36 @@
         }
     }
 
-    function pintar(d) { 
-        if((curUser==='admin' || curUser==='ger') && window.minSelecionado !== undefined) { 
-            if(!db.regras_manuais) db.regras_manuais={}; 
-            if(!window.minSelecionado) delete db.regras_manuais[d]; 
-            else db.regras_manuais[d]=window.minSelecionado; 
-            save(); 
-        } 
-    }
-
-    function atu(d, c, v) { 
-        if(!db.escalas) db.escalas={}; 
-        if(!db.escalas[d]) db.escalas[d]={}; 
-        db.escalas[d][c]=v.toUpperCase(); 
-        save(); 
-    }
+    function pintar(d) { if((curUser==='admin' || curUser==='ger') && window.minSelecionado !== undefined) { if(!db.regras_manuais) db.regras_manuais={}; if(!window.minSelecionado) delete db.regras_manuais[d]; else db.regras_manuais[d]=window.minSelecionado; save(); } }
+    function atu(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
 
     function renderAdmin() {
-        // Painel Pintar
         const lm = document.getElementById('listaMinisterios'); lm.innerHTML = "";
-        const ocultar = ['admin', 'ger', 'gerencia', 'musica', 'especial', 'diaconato', 'sonoplastia'];
-        Object.keys(MINS_MAP).forEach(k => { 
-            if(!ocultar.includes(k.toLowerCase())) 
-                lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin()">${MINS_MAP[k]}</button>`; 
-        });
-        
-        // Painel Anciãos
+        // REMOVIDO SABATINA DA PINTURA MANUAL
+        const ocultar = ['admin', 'ger', 'gerencia', 'musica', 'especial', 'diaconato', 'sonoplastia', 'sabatina'];
+        Object.keys(MINS_MAP).forEach(k => { if(!ocultar.includes(k.toLowerCase())) lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin()">${MINS_MAP[k]}</button>`; });
         const ga = document.getElementById('gridAnciaos'); ga.innerHTML = "";
-        MESES.forEach((m, i) => { 
-            ga.innerHTML += `<div style="display:flex; align-items:center; gap:5px;"><span style="font-size:0.75rem; width:85px;">${m}</span><input class="input-dark" style="padding:6px;" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save()"></div>`; 
-        });
-        
-        // Painel Senhas (Só Admin vê via renderTodo, mas por segurança limpamos aqui se não for admin)
+        MESES.forEach((m, i) => { ga.innerHTML += `<div style="display:flex; align-items:center; gap:5px;"><span style="font-size:0.75rem; width:85px;">${m}</span><input class="input-dark" style="padding:6px;" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save()"></div>`; });
         const ls = document.getElementById('listaSenhas'); ls.innerHTML = "";
         if(curUser === 'admin') {
-            Object.keys(db.senhas).forEach(u => { 
-                ls.innerHTML += `<div style="display:flex; gap:5px;"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${u}" onchange="renomear('${u}', this.value)"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()"><button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:8px 12px; border-radius:5px;">X</button></div>`; 
-            });
+            Object.keys(db.senhas).forEach(u => { ls.innerHTML += `<div style="display:flex; gap:5px;"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${u}" onchange="renomear('${u}', this.value)"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()"><button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:8px 12px; border-radius:5px;">X</button></div>`; });
         }
     }
-
     function renomear(v, n) { let newN = n.toLowerCase().trim(); if(newN && newN!==v) { db.senhas[newN]=db.senhas[v]; delete db.senhas[v]; save(); } }
     function delUser(u) { if(u!=='admin' && confirm('Remover acesso de '+u+'?')) { delete db.senhas[u]; save(); } }
-    function addUser() { let n=prompt("Nome do novo acesso:"); if(n) { db.senhas[n.toLowerCase().trim()]="123"; save(); } }
-
+    function addUser() { let n=prompt("Nome:"); if(n) { db.senhas[n.toLowerCase().trim()]="123"; save(); } }
     function renderGrafico(m) {
         const ctx = document.getElementById('chartMis').getContext('2d');
         const d = db.mis?.[m] || {b:0, e:0, v:0, d:0};
         if(myChart) myChart.destroy();
         myChart = new Chart(ctx, { type:'bar', data: { labels:['Batismos','Estudos','Visitas','Duplas'], datasets:[{label:'Total', data:[d.b, d.e, d.v, d.d], backgroundColor:['#ffd700','#00d2ff','#2ecc71','#ff7f50']}] }, options:{ maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{color:'#fff'}}, x:{ticks:{color:'#fff'}}} } });
     }
-
     function abrirPopMis() {
-        const m = document.getElementById('selMes').value;
-        const d = db.mis?.[m] || {b:0, e:0, v:0, d:0};
-        document.getElementById('camposMis').innerHTML = `
-            Batismos: <input type="number" class="input-dark" value="${d.b}" onchange="atuMis(${m},'b',this.value)">
-            Estudos: <input type="number" class="input-dark" value="${d.e}" onchange="atuMis(${m},'e',this.value)">
-            Visitas: <input type="number" class="input-dark" value="${d.v}" onchange="atuMis(${m},'v',this.value)">
-            Duplas: <input type="number" class="input-dark" value="${d.d}" onchange="atuMis(${m},'d',this.value)">`;
+        const m = document.getElementById('selMes').value; const d = db.mis?.[m] || {b:0, e:0, v:0, d:0};
+        document.getElementById('camposMis').innerHTML = `Batismos: <input type="number" class="input-dark" value="${d.b}" onchange="atuMis(${m},'b',this.value)">Estudos: <input type="number" class="input-dark" value="${d.e}" onchange="atuMis(${m},'e',this.value)">Visitas: <input type="number" class="input-dark" value="${d.v}" onchange="atuMis(${m},'v',this.value)">Duplas: <input type="number" class="input-dark" value="${d.d}" onchange="atuMis(${m},'d',this.value)">`;
         document.getElementById('popMis').style.display='flex';
     }
     function atuMis(m,k,v) { if(!db.mis[m]) db.mis[m]={b:0,e:0,v:0,d:0}; db.mis[m][k]=parseInt(v); save(); }
-
-    const sM = document.getElementById('selMes'); 
-    MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    const sM = document.getElementById('selMes'); MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
     window.onload = renderTodo;
 </script> </body> </html>
