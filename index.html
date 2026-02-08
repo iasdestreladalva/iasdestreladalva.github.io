@@ -7,30 +7,35 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --green: #2ecc71; }
         body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; }
         .nav-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top:10px; }
-        .admin-box { display: none; background: #16213e; border: 2px solid var(--orange); padding: 12px; border-radius: 12px; margin: 15px 0; }
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top:10px; }
-        table { width: 100%; border-collapse: collapse; color: black; min-width: 800px; font-size: 0.8rem; }
-        th { background: var(--blue); color: white; padding: 10px; }
-        td { border: 1px solid #cbd5e1; text-align: center; height: 45px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; }
+        th { background: var(--blue); color: white; padding: 10px; text-transform: uppercase; }
+        td { border: 1px solid #cbd5e1; text-align: center; height: 50px; font-weight: bold; }
+        
+        /* CORES DOS MINISTÉRIOS NA ESCALA */
+        .row-sab { background-color: #fffbeb !important; } /* Dourado suave */
+        .row-dom { background-color: #fff7ed !important; } /* Laranja suave */
+        .row-qua { background-color: #f0f9ff !important; } /* Azul suave */
+        
+        .min-label { display: block; font-size: 0.6rem; font-weight: normal; margin-top: 2px; color: #666; }
+        
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; }
         .btn-min { display: block; width: 100%; padding: 12px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; }
         
-        /* GALERIA */
         .grid-docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
         .doc-card { background: #1c2541; border: 1px solid var(--green); border-radius: 8px; overflow: hidden; cursor: pointer; height: 110px; position: relative; }
-        .doc-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .doc-card img { width: 100%; height: 100%; object-fit: cover; }
         .pdf-thumb { display:flex; align-items:center; justify-content:center; height:100%; font-size:2.5rem; background:#2d3748; }
 
-        /* LIGHTBOX - ABRE NA MESMA PÁGINA */
-        #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; padding: 20px; cursor: pointer; }
-        #lightbox-content { max-width: 98%; max-height: 95%; border-radius: 8px; pointer-events: auto; }
-        #lightbox-iframe { width: 90vw; height: 85vh; border: none; background: white; border-radius: 8px; }
+        #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; cursor: pointer; }
+        #lightbox-container img { max-width: 95vw; max-height: 90vh; }
+        #lightbox-iframe { width: 90vw; height: 85vh; background: white; }
 
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding: 15px; }
         .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:400px; }
     </style> </head> <body>
 
-<div id="lightbox" onclick="fecharLightbox()">
+<div id="lightbox" onclick="this.style.display='none'; document.getElementById('lightbox-container').innerHTML=''">
     <div id="lightbox-container"></div>
 </div>
 
@@ -48,7 +53,7 @@
 <div class="table-wrap">
     <table>
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="text-align:left;">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerTitulo">ESCALA</th></tr>
             <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
@@ -67,9 +72,9 @@
 </div>
 
 <div id="popTes" class="overlay"><div class="pop-content">
-    <h3 style="color:var(--green)">POSTAR NO TRIMESTRE</h3>
+    <h3 style="color:var(--green)">POSTAR ARQUIVO</h3>
     <input type="file" id="fileIn" accept="image/*,application/pdf" style="display:none" onchange="uploadDoc()">
-    <button onclick="document.getElementById('fileIn').click()" class="btn-min" style="border-color:var(--green); color:var(--green)">+ SELECIONAR ARQUIVO</button>
+    <button onclick="document.getElementById('fileIn').click()" class="btn-min" style="border-color:var(--green); color:var(--green)">+ NOVO ARQUIVO</button>
     <div id="listaAdminDocs" style="margin-top:15px; max-height:200px; overflow-y:auto;"></div>
     <button onclick="document.getElementById('popTes').style.display='none'" class="btn-min" style="margin-top:15px; border-color:#fff; color:#fff;">FECHAR</button>
 </div></div>
@@ -108,6 +113,7 @@
     dbRef.on('value', snap => { if(snap.val()) { db = snap.val(); renderTodo(); } });
     function save() { dbRef.set(db); }
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
+    
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
@@ -132,18 +138,53 @@
         renderEscala(m); renderGrafico(m); renderDocs(tri);
     }
 
+    function renderEscala(mIdx) {
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
+        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+        
+        for(let d=1; d<=diasNoMes; d++) {
+            let dt = new Date(2026, mIdx, d); 
+            let sem = dt.getDay(); // 0: Dom, 3: Qua, 6: Sab
+            
+            if([0,3,6].includes(sem)) {
+                let dStr = `${d}/${mIdx+1}/2026`;
+                let classeCor = "";
+                let nomeDia = "";
+                let minResponsavel = "";
+
+                if(sem === 6) { 
+                    classeCor = "row-sab"; nomeDia = "SÁB"; minResponsavel = "DIVINO"; 
+                } else if(sem === 0) { 
+                    classeCor = "row-dom"; nomeDia = "DOM"; minResponsavel = "MORDOMIA"; 
+                } else if(sem === 3) { 
+                    classeCor = "row-qua"; nomeDia = "QUA"; minResponsavel = "PESSOAL"; 
+                }
+
+                let row = `<tr class="${classeCor}">
+                    <td>${nomeDia}<span class="min-label">${minResponsavel}</span></td>
+                    <td>${d}/${mIdx+1}</td>`;
+
+                ["sa","pr","mu","lo","so","re","di"].forEach(col => {
+                    let val = db.escalas?.[dStr]?.[col] || "";
+                    let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col);
+                    row += `<td><input style="width:100%; border:none; background:transparent; text-align:center; font-weight:bold; height:100%;" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
+                });
+                corpo.innerHTML += row + "</tr>";
+            }
+        }
+    }
+
+    function atu(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+
     function uploadDoc() {
         const m = parseInt(document.getElementById('selMes').value);
         const tri = Math.floor(m / 3);
         if(!db.docs) db.docs = {}; if(!db.docs[tri]) db.docs[tri] = [];
         if(db.docs[tri].length >= 3) { alert("Limite de 3 por trimestre!"); return; }
-
         const file = document.getElementById('fileIn').files[0];
         const reader = new FileReader();
-        reader.onload = (e) => {
-            db.docs[tri].push({ n: file.name, d: e.target.result, t: file.type });
-            save(); alert("Enviado!");
-        }; reader.readAsDataURL(file);
+        reader.onload = (e) => { db.docs[tri].push({ n: file.name, d: e.target.result, t: file.type }); save(); };
+        reader.readAsDataURL(file);
     }
 
     function renderDocs(tri) {
@@ -162,37 +203,11 @@
     }
 
     function abrirLightbox(data, type) {
-        const box = document.getElementById('lightbox');
         const container = document.getElementById('lightbox-container');
-        if(type.includes('pdf')) {
-            container.innerHTML = `<iframe id="lightbox-iframe" src="${data}"></iframe>`;
-        } else {
-            container.innerHTML = `<img id="lightbox-content" src="${data}">`;
-        }
-        box.style.display = 'flex';
+        container.innerHTML = type.includes('pdf') ? `<iframe id="lightbox-iframe" src="${data}"></iframe>` : `<img src="${data}">`;
+        document.getElementById('lightbox').style.display = 'flex';
     }
 
-    function fecharLightbox() { document.getElementById('lightbox').style.display = 'none'; document.getElementById('lightbox-container').innerHTML = ""; }
-
-    function renderEscala(mIdx) {
-        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
-        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d); let sem = dt.getDay();
-            if([0,3,6].includes(sem)) {
-                let dStr = `${d}/${mIdx+1}/2026`;
-                let row = `<tr><td>${["DOM","","","QUA","","","SAB"][sem]}</td><td>${d}/${mIdx+1}</td>`;
-                ["sa","pr","mu","lo","so","re","di"].forEach(col => {
-                    let val = db.escalas?.[dStr]?.[col] || "";
-                    let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col);
-                    row += `<td><input style="width:100%; border:none; text-align:center; font-weight:bold;" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
-                });
-                corpo.innerHTML += row + "</tr>";
-            }
-        }
-    }
-
-    function atu(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function renderGrafico(m) {
         const ctx = document.getElementById('chartMis').getContext('2d');
         const d = db.mis?.[m] || {b:0, e:0, v:0, d:0};
