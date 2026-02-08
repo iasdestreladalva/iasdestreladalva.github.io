@@ -1,5 +1,5 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - OFICIAL</title>
+    <title>IASD Estrela Dalva - GESTÃO</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -7,50 +7,54 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; }
         body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; }
         .admin-box { display: none; background: #16213e; border: 2px solid var(--orange); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .input-dark { width: 100%; background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 5px; box-sizing: border-box; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 15px; }
+        .admin-section { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
+        .input-dark { width: 100%; background: #000; color: #fff; border: 1px solid #444; padding: 8px; border-radius: 5px; box-sizing: border-box; font-size: 0.8rem; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 5px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 0.8rem; }
         .btn-min.active { background: var(--neon); color: #000; }
         
         /* Cores da Escala */
-        .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
-        .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
-        .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
-        .row-mulher { background-color: #fdf2f8 !important; }
+        .row-pessoal { background-color: #e0f2fe !important; color: #000; } 
+        .row-mordomia { background-color: #fef3c7 !important; color: #000; }
+        .row-saude { background-color: #f0fdf4 !important; color: #000; } 
+        .row-homens { background-color: #ecfeff !important; color: #000; }
+        .row-familia { background-color: #faf5ff !important; color: #000; } 
+        .row-adolescentes { background-color: #f8fafc !important; color: #000; }
+        .row-mulher { background-color: #fdf2f8 !important; color: #000; }
         
-        table { width: 100%; border-collapse: collapse; background: white; color: black; }
-        th { background: var(--blue); color: white; padding: 10px; font-size: 0.8rem; border: 1px solid #ccc; }
-        td { border: 1px solid #ccc; text-align: center; height: 45px; font-weight: bold; }
-        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; }
+        table { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
+        th { background: var(--blue); color: white; padding: 8px; font-size: 0.75rem; border: 1px solid #ccc; }
+        td { border: 1px solid #ccc; text-align: center; height: 40px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; color: inherit; }
         
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; }
         .login-card { background: white; padding: 30px; border-radius: 15px; width: 300px; color: black; }
     </style> </head> <body>
 
 <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
-    <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-    <div style="display:flex; gap:10px;">
-        <select id="selMes" onchange="renderTodo()" class="input-dark" style="width:120px;"></select>
+    <h2 style="color:var(--neon); margin:0; font-size: 1.2rem;">IASD ESTRELA DALVA</h2>
+    <div style="display:flex; gap:8px;">
+        <select id="selMes" onchange="renderTodo()" class="input-dark" style="width:110px;"></select>
         <button id="btnAcesso" class="input-dark" style="width:auto; color:var(--neon);" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ENTRAR</button>
-        <button id="btnSair" class="input-dark" style="width:auto; color:red; display:none;" onclick="sair()">🚪 SAIR</button>
+        <button id="btnSair" class="input-dark" style="width:auto; color:red; display:none;" onclick="sair()">Sair</button>
     </div>
 </div>
 
 <div id="adminPanel" class="admin-box">
     <div class="admin-grid">
-        <div>
-            <h4 style="color:var(--neon)">1. PINTAR ESCALA</h4>
+        <div class="admin-section">
+            <h4 style="color:var(--neon); margin:0 0 10px 0;">1. PINTAR ESCALA</h4>
             <div id="listaMinisterios"></div>
-            <button class="btn-min" style="border-color:red; color:red;" onclick="window.minSelecionado=null; renderAdmin()">LIMPAR</button>
+            <button class="btn-min" style="border-color:red; color:red;" onclick="window.minSelecionado=null; renderAdmin()">LIMPAR COR</button>
         </div>
-        <div>
-            <h4 style="color:var(--neon)">2. ANCIÃOS</h4>
-            <div id="gridAnciaos" style="display:grid; grid-template-columns: 1fr; gap:5px; max-height:250px; overflow-y:auto;"></div>
+        <div class="admin-section">
+            <h4 style="color:var(--neon); margin:0 0 10px 0;">2. ANCIÃOS</h4>
+            <div id="gridAnciaos" style="display:grid; gap:5px; max-height:220px; overflow-y:auto;"></div>
         </div>
-        <div>
-            <h4 style="color:var(--neon)">3. SENHAS</h4>
-            <div id="listaSenhas" style="max-height: 250px; overflow-y: auto;"></div>
-            <button onclick="addUser()" style="width:100%; margin-top:10px; background:var(--green); border:none; padding:8px; border-radius:5px; cursor:pointer;">+ NOVO LOGIN</button>
+        <div class="admin-section">
+            <h4 style="color:var(--neon); margin:0 0 10px 0;">3. SENHAS E ACESSOS</h4>
+            <div id="listaSenhas" style="max-height: 220px; overflow-y: auto;"></div>
+            <button onclick="addUser()" style="width:100%; margin-top:8px; background:var(--green); border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold;">+ NOVO ACESSO</button>
         </div>
     </div>
 </div>
@@ -58,9 +62,9 @@
 <div id="area-pdf">
     <table>
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="font-size:1.2rem; text-align:left;">ESCALA</th></tr>
-            <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); text-align:left;">Responsável:</th></tr>
-            <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="font-size:1.1rem; text-align:left; background: var(--blue);">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); text-align:left; background: var(--blue);">Responsável:</th></tr>
+            <tr><th style="width:50px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
@@ -72,7 +76,7 @@
         <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
         <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:15px;">
         <button onclick="fazerLogin()" style="width:100%; padding:12px; background:var(--blue); color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">ENTRAR</button>
-        <button onclick="document.getElementById('modalLogin').style.display='none'" style="width:100%; margin-top:5px; background:none; border:none; color:gray; cursor:pointer;">Cancelar</button>
+        <button onclick="document.getElementById('modalLogin').style.display='none'" style="width:100%; margin-top:10px; background:none; border:none; color:gray; cursor:pointer;">Cancelar</button>
     </div>
 </div>
 
@@ -93,12 +97,20 @@
     const MINS_MAP = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "Mulher", sabatina: "Sabatina", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolescentes", especial: "Especial" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
-    let db = {};
+    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
+    window.minSelecionado = null;
 
     dbRef.on('value', snap => {
-        db = snap.val() || { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, regras_manuais: {} };
-        renderTodo();
+        const val = snap.val();
+        if(val) {
+            db = val;
+            if(!db.senhas) db.senhas = { admin: "iasd118" };
+            if(!db.anciaos) db.anciaos = {};
+            if(!db.escalas) db.escalas = {};
+            if(!db.regras_manuais) db.regras_manuais = {};
+            renderTodo();
+        }
     });
 
     function save() { dbRef.set(db); }
@@ -106,17 +118,12 @@
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-
-        // Tenta buscar no Firebase em tempo real para garantir
-        dbRef.child('senhas').once('value', snap => {
-            const senhas = snap.val() || { admin: "iasd118" };
-            if (senhas[u] && senhas[u] === p) {
-                localStorage.setItem('iasd_user', u);
-                location.reload();
-            } else {
-                alert("Acesso negado: Usuário ou senha incorretos.");
-            }
-        });
+        if (db.senhas[u] && db.senhas[u] === p) {
+            localStorage.setItem('iasd_user', u);
+            location.reload();
+        } else {
+            alert("Erro: Verifique usuário e senha.");
+        }
     }
 
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
@@ -126,7 +133,8 @@
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
         document.getElementById('adminPanel').style.display = curUser === 'admin' ? 'block' : 'none';
-        document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + (db.anciaos?.[m] || "---");
+        
+        document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + (db.anciaos[m] || "---");
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         
         renderEscala(m);
@@ -144,7 +152,7 @@
                 if(sem===6) cS++; if(sem===0) cD++; if(sem===3) cQ++;
                 let dStr = `${d}/${parseInt(mIdx)+1}/2026`;
                 
-                let corClas = db.regras_manuais?.[dStr] ? "row-"+db.regras_manuais[dStr] : "";
+                let corClas = db.regras_manuais[dStr] ? "row-"+db.regras_manuais[dStr] : "";
                 if(!corClas) {
                     Object.keys(REGRAS).forEach(k => {
                         let r = REGRAS[k];
@@ -154,11 +162,12 @@
                     });
                 }
 
-                let row = `<tr class="${corClas}" onclick="pintar('${dStr}')">
-                    <td>${["DOM","","","QUA","","","SAB"][sem]}</td><td>${d}/${parseInt(mIdx)+1}</td>`;
+                let row = `<tr class="${corClas}">
+                    <td onclick="pintar('${dStr}')">${["DOM","","","QUA","","","SAB"][sem]}</td>
+                    <td onclick="pintar('${dStr}')">${d}/${parseInt(mIdx)+1}</td>`;
                 
                 ["sa","pr","mu","lo","so","re","di"].forEach(col => {
-                    let val = db.escalas?.[dStr]?.[col] || "";
+                    let val = db.escalas[dStr] ? (db.escalas[dStr][col] || "") : "";
                     let canEdit = (curUser === 'admin' || curUser === col);
                     row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
                 });
@@ -168,22 +177,24 @@
     }
 
     function pintar(dStr) {
-        if(curUser === 'admin' && window.minSelecionado) {
-            if(!db.regras_manuais) db.regras_manuais = {};
-            db.regras_manuais[dStr] = window.minSelecionado;
+        if(curUser === 'admin' && window.minSelecionado !== undefined) {
+            if(!window.minSelecionado) {
+                delete db.regras_manuais[dStr];
+            } else {
+                db.regras_manuais[dStr] = window.minSelecionado;
+            }
             save();
         }
     }
 
     function atu(d, c, v) {
-        if(!db.escalas) db.escalas = {};
         if(!db.escalas[d]) db.escalas[d] = {};
         db.escalas[d][c] = v.toUpperCase();
         save();
     }
 
     function renderAdmin() {
-        // 1. Pintar Escala (Filtro aplicado aqui)
+        // 1. Painel Pintar
         const lm = document.getElementById('listaMinisterios'); lm.innerHTML = "";
         const ocultar = ['admin', 'ger', 'gerencia', 'musica', 'especial', 'diaconato', 'sonoplastia'];
         Object.keys(MINS_MAP).forEach(k => {
@@ -192,32 +203,35 @@
             }
         });
 
-        // 2. Anciãos
+        // 2. Painel Anciãos
         const ga = document.getElementById('gridAnciaos'); ga.innerHTML = "";
         MESES.forEach((m, i) => {
-            ga.innerHTML += `<div style="display:flex; align-items:center; gap:5px;"><small style="width:70px">${m}</small><input class="input-dark" style="padding:4px;" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save()"></div>`;
+            ga.innerHTML += `<div style="display:flex; align-items:center; gap:5px;"><small style="width:75px">${m}</small><input class="input-dark" style="padding:4px;" value="${db.anciaos[i]||''}" onchange="db.anciaos[${i}]=this.value; save()"></div>`;
         });
 
-        // 3. Senhas
+        // 3. Painel Senhas
         const ls = document.getElementById('listaSenhas'); ls.innerHTML = "";
         Object.keys(db.senhas).forEach(u => {
-            ls.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:5px;">
-                <input class="input-dark" style="padding:4px" value="${u}" onchange="renomear('${u}', this.value)">
-                <input class="input-dark" style="padding:4px" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()">
-                <button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:5px; border-radius:3px;">X</button>
+            ls.innerHTML += `<div style="display:flex; gap:3px; margin-bottom:4px;">
+                <input class="input-dark" style="padding:4px; font-size:0.7rem;" value="${u}" onchange="renomear('${u}', this.value)">
+                <input class="input-dark" style="padding:4px; font-size:0.7rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()">
+                <button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;">X</button>
             </div>`;
         });
     }
 
     function renomear(velho, novo) {
         let n = novo.toLowerCase().trim();
-        if(n && n !== velho) { db.senhas[n] = db.senhas[velho]; delete db.senhas[velho]; save(); }
+        if(n && n !== velho) {
+            db.senhas[n] = db.senhas[velho];
+            delete db.senhas[velho];
+            save();
+        }
     }
 
-    function delUser(u) { if(u !== 'admin' && confirm('Excluir?')) { delete db.senhas[u]; save(); } }
-    function addUser() { let n = prompt("Nome:"); if(n) { db.senhas[n.toLowerCase().trim()] = "123"; save(); } }
+    function delUser(u) { if(u !== 'admin' && confirm('Excluir acesso de '+u+'?')) { delete db.senhas[u]; save(); } }
+    function addUser() { let n = prompt("Novo Login:"); if(n) { db.senhas[n.toLowerCase().trim()] = "123"; save(); } }
 
-    // Setup inicial do seletor de meses
     const sM = document.getElementById('selMes');
     MESES.forEach((m, i) => {
         let opt = document.createElement('option'); opt.value = i; opt.innerText = m;
