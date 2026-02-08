@@ -10,46 +10,42 @@
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top:10px; }
         table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; }
         
-        /* CORES DINÂMICAS POR CLASSE */
+        /* CORES DE DESTAQUE DETERMINADAS */
         .row-pessoal td { background-color: #e0f2fe !important; }
         .row-mordomia td { background-color: #ffedd5 !important; }
         .row-divino td { background-color: #fef3c7 !important; }
         .row-jovens td { background-color: #f3e8ff !important; }
         .row-mulher td { background-color: #fce7f3 !important; }
-        .row-limpar td { background-color: #ffffff !important; }
 
-        td { border: 1px solid #cbd5e1; text-align: center; height: 55px; padding: 0; cursor: pointer; }
-        .dia-box { display: flex; flex-direction: column; line-height: 1.2; pointer-events: none; }
+        td { border: 1px solid #cbd5e1; text-align: center; height: 55px; padding: 0; }
+        .dia-box { display: flex; flex-direction: column; line-height: 1.2; }
         .dia-txt { font-weight: 800; font-size: 0.85rem; color: #1e293b; }
-        .min-txt { font-size: 0.6rem; font-weight: 600; color: #64748b; text-transform: uppercase; }
+        .min-txt { font-size: 0.55rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-top: 2px; }
         
         .input-cell { width: 100%; height: 55px; border: none; background: transparent; text-align: center; font-weight: bold; font-size: 0.8rem; color: #000; text-transform: uppercase; }
-        .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; }
         .btn-min { display: block; width: 100%; padding: 10px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 5px; font-size: 0.7rem; }
-        .btn-active { background: var(--neon); color: #000; }
+        .btn-active { background: var(--neon); color: #000; box-shadow: 0 0 10px var(--neon); }
 
         .admin-painter { display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 2px solid var(--orange); margin: 15px 0; }
+        .clickable-row { cursor: crosshair; }
     </style> </head> <body>
-
-<div id="lightbox" onclick="this.style.display='none'; this.innerHTML=''" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; cursor:pointer;"></div>
 
 <h2 style="color:var(--neon); text-align: center; margin:0;">IASD ESTRELA DALVA</h2>
 
 <div id="painterPanel" class="admin-painter">
-    <h4 style="margin:0 0 10px 0; color:var(--orange);">🎨 PINCEL DE MINISTÉRIOS:</h4>
+    <h4 style="margin:0 0 10px 0; color:var(--orange); text-align:center;">🎨 DETERMINAR MINISTÉRIO DO DIA</h4>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-        <button class="btn-min" id="btn-pessoal" onclick="selPincel('pessoal', 'Pessoal')">PESSOAL</button>
+        <button class="btn-min" id="btn-pessoal" onclick="selPincel('pessoal', 'Min. Pessoal')">M. PESSOAL</button>
         <button class="btn-min" id="btn-mordomia" onclick="selPincel('mordomia', 'Mordomia')">MORDOMIA</button>
-        <button class="btn-min" id="btn-divino" onclick="selPincel('divino', 'Divino')">DIVINO</button>
-        <button class="btn-min" id="btn-jovens" onclick="selPincel('jovens', 'Jovens')">JOVENS</button>
-        <button class="btn-min" id="btn-mulher" onclick="selPincel('mulher', 'Mulher')">MULHER</button>
-        <button class="btn-min" style="border-color:red; color:red;" onclick="selPincel('', '')">LIMPAR</button>
+        <button class="btn-min" id="btn-divino" onclick="selPincel('divino', 'Culto Divino')">C. DIVINO</button>
+        <button class="btn-min" id="btn-jovens" onclick="selPincel('jovens', 'JA / Jovens')">JOVENS</button>
+        <button class="btn-min" id="btn-mulher" onclick="selPincel('mulher', 'M. Mulher')">MULHER</button>
+        <button class="btn-min" style="border-color:#fff; color:#fff;" onclick="selPincel('', '')">BRANCO (LIMPAR)</button>
     </div>
-    <p style="font-size: 0.7rem; margin-top: 10px; color: #aaa;">*Selecione um ministério e clique na linha do dia para pintar.</p>
 </div>
 
 <div class="nav-buttons">
-    <select id="selMes" onchange="renderTodo()" class="input-dark"></select>
+    <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; padding:10px; border-radius:6px;"></select>
     <button id="btnAcesso" class="btn-min" style="margin:0" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
     <button id="btnSair" class="btn-min" style="margin:0; border-color:red; color:red; display:none;" onclick="sair()">SAIR</button>
 </div>
@@ -57,25 +53,18 @@
 <div class="table-wrap">
     <table>
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; padding:10px;">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; padding:12px;">ESCALA</th></tr>
             <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 </div>
 
-<div id="areaRestrita" style="display:none; margin-top:20px;">
-    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px;">
-        <h3 style="color:var(--orange); margin:0;">📊 MISSIONÁRIO - <span id="mesMisTitulo"></span></h3>
-        <div style="height:180px;"><canvas id="chartMis"></canvas></div>
-    </div>
-</div>
-
 <div id="modalLogin" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:15px;">
     <div style="background:white; color:black; padding:20px; border-radius:15px; width:100%; max-width:400px;">
         <h3 style="text-align:center;">LOGIN</h3>
-        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
-        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:15px;">
+        <input type="text" id="userLogin" placeholder="Usuário" style="width:100%; padding:10px; margin-bottom:10px; box-sizing:border-box;">
+        <input type="password" id="passLogin" placeholder="Senha" style="width:100%; padding:10px; margin-bottom:15px; box-sizing:border-box;">
         <button onclick="fazerLogin()" style="width:100%; padding:15px; background:var(--blue); color:white; border:none; border-radius:8px; font-weight:bold;">ENTRAR</button>
     </div>
 </div>
@@ -91,10 +80,10 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_v108');
+    const dbRef = firebase.database().ref('iasd_v110');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let db = { senhas:{admin:"iasd118"}, escalas:{}, mis:{}, cores:{} };
+    let db = { senhas:{admin:"iasd118"}, escalas:{}, cores:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
     let pincelAtivo = null;
     let nomePincel = "";
@@ -132,7 +121,6 @@
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
         document.getElementById('painterPanel').style.display = isGestor ? 'block' : 'none';
-        document.getElementById('areaRestrita').style.display = curUser !== 'visitante' ? 'block' : 'none';
         
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         renderEscala(m);
@@ -142,6 +130,7 @@
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         const diasSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
+        const isGestor = (curUser === 'admin' || curUser === 'ger');
 
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d); 
@@ -152,14 +141,20 @@
                 let corInfo = db.cores?.[dStr] || { id: "", nome: "" };
                 let classeRow = corInfo.id ? "row-" + corInfo.id : "";
 
-                let row = `<tr class="${classeRow}" onclick="pintarLinha('${dStr}')">
-                    <td><div class="dia-box"><span class="dia-txt">${diasSemana[sem]}</span><span class="min-txt">${corInfo.nome}</span></div></td>
-                    <td><div class="dia-txt">${d}/${mIdx+1}</div></td>`;
+                let row = `<tr class="${classeRow} ${isGestor?'clickable-row':''}" onclick="pintarLinha('${dStr}')">
+                    <td><div class="dia-box"><span class="dia-txt" style="color:${corInfo.id?'#000':'#1e293b'}">${diasSemana[sem]}</span><span class="min-txt">${corInfo.nome}</span></div></td>
+                    <td><div class="dia-txt" style="color:${corInfo.id?'#000':'#1e293b'}">${d}/${mIdx+1}</div></td>`;
 
-                ["sa","pr","mu","lo","so","re","di"].forEach(col => {
-                    let val = db.escalas?.[dStr]?.[col] || "";
-                    let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col);
-                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
+                const colunas = [
+                    {id:"sa", p:"sabatina"}, {id:"pr", p:"pregador"}, {id:"mu", p:"musica"}, 
+                    {id:"lo", p:"louvor"}, {id:"so", p:"som"}, {id:"re", p:"recepcao"}, {id:"di", p:"diaconato"}
+                ];
+
+                colunas.forEach(col => {
+                    let val = db.escalas?.[dStr]?.[col.id] || "";
+                    // Permissão: Admin/Ger ou o próprio ministério na sua coluna
+                    let canEdit = (isGestor || curUser === col.p || (curUser === 'sonoplastia' && col.id === 'so'));
+                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col.id}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
             }
