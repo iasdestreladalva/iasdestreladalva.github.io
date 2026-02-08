@@ -1,7 +1,13 @@
-<!DOCTYPE html> <html lang="pt-br"> <head>    <meta charset="UTF-8">    <title>IASD Estrela Dalva - v102.43 ONLINE</title>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>IASD Estrela Dalva</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
@@ -13,30 +19,41 @@
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; border-color: var(--neon) !important; }
-        .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
-        .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
-        .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
-        .row-mulher { background-color: #fdf2f8 !important; } .row-musica { background-color: #fff1f2 !important; }
+        
+        /* Cores das fileiras */
+        .row-pessoal { background-color: #e0f2fe !important; } 
+        .row-mordomia { background-color: #fef3c7 !important; }
+        .row-saude { background-color: #f0fdf4 !important; } 
+        .row-homens { background-color: #ecfeff !important; }
+        .row-familia { background-color: #faf5ff !important; } 
+        .row-adolescentes { background-color: #f8fafc !important; }
+        .row-mulher { background-color: #fdf2f8 !important; } 
+        .row-musica { background-color: #fff1f2 !important; }
         .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--red) !important; }
+
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
-        .tesouraria-display { margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--green); }
-        .chart-container { margin-top: 20px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--orange); }
-        .grid-arquivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
-        .thumb-doc { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid #334155; }
+
+        .tesouraria-display, .chart-container { margin-top: 20px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--orange); }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-    </style> </head> <body>
-<div class="container">
+        
+        /* Ajuste para o PDF não sair escuro */
+        .pdf-mode { background: white !important; color: black !important; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="conteudo-principal">
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; padding:0 15px; border-color:var(--gold); color:var(--gold);" onclick="abrirCalendarioAnual()">📅 ANUAL</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); cursor:pointer;" onclick="gerarPDF()">📥 PDF</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; border-color:var(--gold); color:var(--gold); cursor:pointer;" onclick="abrirCalendarioAnual()">📅 ANUAL</button>
             <button id="btnTesourariaAdmin" class="input-dark" style="display:none; color:var(--green);" onclick="abrirTesourariaAdmin()">⚙️ TESOURARIA</button>
-            <button id="btnDados" class="input-dark" style="display:none; color:var(--orange);" onclick="abrirPop()">📊 MISSIONÁRIO</button>
             <button class="input-dark" style="color:var(--neon);" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button class="input-dark" style="color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
@@ -46,26 +63,26 @@
         <div class="admin-grid">
             <div class="admin-section"><h4>1. MINISTÉRIO DO DIA</h4><div id="listaMinisterios"></div><button class="btn-min" style="border-color:red; color:red;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button></div>
             <div class="admin-section"><h4>2. RESPONSÁVEL MENSAL</h4><div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"></div></div>
-            <div class="admin-section"><h4>3. LOGINS</h4><div style="max-height: 350px; overflow-y: auto;"><table style="width:100%; color:white; font-size:0.75rem;"><tbody id="corpoCreds"></tbody></table></div></div>
+            <div class="admin-section"><h4>3. LOGINS</h4><div id="corpoCreds" style="font-size:0.7rem; color:white;"></div></div>
         </div>
     </div>
 
-    <table id="tabela-main">
-        <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
-        </thead>
-        <tbody id="corpoEscala"></tbody>
-    </table>
-
-    <div class="chart-container"><h3 style="color:var(--orange);">📊 MISSIONÁRIO</h3><div style="height: 300px;"><canvas id="missionaryChart"></canvas></div></div>
+    <div id="area-tabela">
+        <table id="tabela-main">
+            <thead>
+                <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
+                <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+                <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            </thead>
+            <tbody id="corpoEscala"></tbody>
+        </table>
+    </div>
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 
 <script>
-    // --- CONFIGURAÇÃO FIREBASE FINAL ---
+    // CONFIGURAÇÃO FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik",
         authDomain: "unidades-de-acao.firebaseapp.com",
@@ -75,16 +92,14 @@
         messagingSenderId: "1088355029870",
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
-
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     let db = {};
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-    let missionChart;
 
-    // SINCRONIZAÇÃO EM TEMPO REAL
+    // SINCRONIZAÇÃO
     database.ref('iasd_v102').on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -94,7 +109,7 @@
             db = {
                 senhas: { admin: "iasd118", ger: "ger123", diaconato: "diac123", musica: "mus123", sonoplastia: "sono123", mulher: "mulher123", sabatina: "sab123", pessoal: "mp123", mordomia: "mord123", saude: "saude123", homens: "homem123", familia: "fam123", adolescentes: "adol123" },
                 anciaos: ["Jesuino", "Wesley", "Ester", "Marcilio", "Albert", "Albert", "Jesuino", "Jesuino", "Ester", "Marcilio", "Wesley", "Albert"],
-                escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}
+                escalas: {}, regras_manuais: {}, eventos_anuais: {}
             };
             save();
         }
@@ -110,7 +125,6 @@
         document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + (db.anciaos[m] || "");
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         renderEscala();
-        renderGrafico();
     }
 
     function renderEscala() {
@@ -133,7 +147,24 @@
         }
     }
 
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function atuCel(d, c, v) { 
+        if(!db.escalas[d]) db.escalas[d]={}; 
+        db.escalas[d][c]=v.toUpperCase(); 
+        save(); 
+    }
+
+    function gerarPDF() {
+        const elemento = document.getElementById('area-tabela');
+        const opt = {
+            margin: 0.5,
+            filename: `Escala_IASD_${MESES[document.getElementById('selMes').value]}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+        };
+        html2pdf().set(opt).from(elemento).save();
+    }
+
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value; 
@@ -142,15 +173,9 @@
     }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
-    function renderGrafico() {
-        const m = document.getElementById('selMes').value;
-        const ctx = document.getElementById('missionaryChart').getContext('2d');
-        const d = db.mis_v3?.[m] || {almas:0, estudos:0, visitas:0, duplas:0};
-        if(missionChart) missionChart.destroy();
-        missionChart = new Chart(ctx, { type: 'bar', data: { labels: ['Batismos','Estudos','Visitas','Duplas'], datasets: [{label: 'Mensal', data:[d.almas, d.estudos, d.visitas, d.duplas], backgroundColor:'#00d2ff'}] }, options: {maintainAspectRatio:false} });
-    }
-
     const sM = document.getElementById('selMes');
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
     window.onload = renderTodo;
-</script> </body> </html>
+</script>
+</body>
+</html>
