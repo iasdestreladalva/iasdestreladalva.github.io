@@ -8,36 +8,38 @@
         body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; }
         .nav-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top:10px; }
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top:10px; }
-        table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; }
-        th { background: var(--blue); color: white; padding: 10px; text-transform: uppercase; }
-        td { border: 1px solid #cbd5e1; text-align: center; height: 50px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; table-layout: fixed; }
+        th { background: var(--blue); color: white; padding: 12px 5px; font-size: 0.75rem; width: 100px; }
+        th:nth-child(1), th:nth-child(2) { width: 80px; }
+
+        /* ESTILIZAÇÃO DAS LINHAS POR MINISTÉRIO */
+        .row-sab td { background-color: #fef3c7 !important; } /* Amarelo/Sábado */
+        .row-dom td { background-color: #ffedd5 !important; } /* Laranja/Domingo */
+        .row-qua td { background-color: #e0f2fe !important; } /* Azul/Quarta */
         
-        /* CORES DOS MINISTÉRIOS NA ESCALA */
-        .row-sab { background-color: #fffbeb !important; } /* Dourado suave */
-        .row-dom { background-color: #fff7ed !important; } /* Laranja suave */
-        .row-qua { background-color: #f0f9ff !important; } /* Azul suave */
+        td { border: 1px solid #cbd5e1; text-align: center; height: 55px; vertical-align: middle; padding: 0; }
         
-        .min-label { display: block; font-size: 0.6rem; font-weight: normal; margin-top: 2px; color: #666; }
+        .dia-box { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
+        .dia-txt { font-weight: 800; font-size: 0.85rem; color: #1e293b; }
+        .min-txt { font-size: 0.6rem; font-weight: 600; color: #64748b; text-transform: uppercase; margin-top: 2px; }
         
+        .input-cell { width: 100%; height: 55px; border: none; background: transparent; text-align: center; font-weight: bold; font-size: 0.8rem; color: #000; text-transform: uppercase; }
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; }
         .btn-min { display: block; width: 100%; padding: 12px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; }
-        
-        .grid-docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
-        .doc-card { background: #1c2541; border: 1px solid var(--green); border-radius: 8px; overflow: hidden; cursor: pointer; height: 110px; position: relative; }
-        .doc-card img { width: 100%; height: 100%; object-fit: cover; }
-        .pdf-thumb { display:flex; align-items:center; justify-content:center; height:100%; font-size:2.5rem; background:#2d3748; }
 
+        .grid-docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .doc-card { background: #1c2541; border: 1px solid var(--green); border-radius: 8px; overflow: hidden; cursor: pointer; height: 110px; }
+        .doc-card img { width: 100%; height: 100%; object-fit: cover; }
+        
         #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; cursor: pointer; }
-        #lightbox-container img { max-width: 95vw; max-height: 90vh; }
-        #lightbox-iframe { width: 90vw; height: 85vh; background: white; }
+        #lightbox img { max-width: 95vw; max-height: 90vh; }
+        #lightbox iframe { width: 90vw; height: 85vh; background: white; }
 
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding: 15px; }
         .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:400px; }
     </style> </head> <body>
 
-<div id="lightbox" onclick="this.style.display='none'; document.getElementById('lightbox-container').innerHTML=''">
-    <div id="lightbox-container"></div>
-</div>
+<div id="lightbox" onclick="this.style.display='none'; this.innerHTML=''"></div>
 
 <h2 style="color:var(--neon); text-align: center; margin:0;">IASD ESTRELA DALVA</h2>
 <div class="nav-buttons">
@@ -53,7 +55,7 @@
 <div class="table-wrap">
     <table>
         <thead>
-            <tr><th colspan="9" id="headerTitulo">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); font-size: 1rem; padding: 10px;">ESCALA</th></tr>
             <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
@@ -103,7 +105,7 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_v105');
+    const dbRef = firebase.database().ref('iasd_v106');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     let db = { senhas:{admin:"iasd118"}, escalas:{}, mis:{}, docs:{} };
@@ -117,7 +119,7 @@
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Senha incorreta"); }
+        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Acesso negado"); }
     }
 
     function renderTodo() {
@@ -132,7 +134,7 @@
         document.getElementById('btnTesouro').style.display = isGestor ? 'block' : 'none';
         document.getElementById('areaRestrita').style.display = isLogado ? 'block' : 'none';
         
-        document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m];
+        document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         document.getElementById('mesMisTitulo').innerText = MESES[m];
         
         renderEscala(m); renderGrafico(m); renderDocs(tri);
@@ -148,26 +150,20 @@
             
             if([0,3,6].includes(sem)) {
                 let dStr = `${d}/${mIdx+1}/2026`;
-                let classeCor = "";
-                let nomeDia = "";
-                let minResponsavel = "";
+                let classeRow = ""; let nomeDia = ""; let ministerio = "";
 
-                if(sem === 6) { 
-                    classeCor = "row-sab"; nomeDia = "SÁB"; minResponsavel = "DIVINO"; 
-                } else if(sem === 0) { 
-                    classeCor = "row-dom"; nomeDia = "DOM"; minResponsavel = "MORDOMIA"; 
-                } else if(sem === 3) { 
-                    classeCor = "row-qua"; nomeDia = "QUA"; minResponsavel = "PESSOAL"; 
-                }
+                if(sem === 6) { classeRow = "row-sab"; nomeDia = "SÁB"; ministerio = "Sabatina"; }
+                else if(sem === 0) { classeRow = "row-dom"; nomeDia = "DOM"; ministerio = "Mordomia"; }
+                else if(sem === 3) { classeRow = "row-qua"; nomeDia = "QUA"; ministerio = "Pessoal"; }
 
-                let row = `<tr class="${classeCor}">
-                    <td>${nomeDia}<span class="min-label">${minResponsavel}</span></td>
-                    <td>${d}/${mIdx+1}</td>`;
+                let row = `<tr class="${classeRow}">
+                    <td><div class="dia-box"><span class="dia-txt">${nomeDia}</span><span class="min-txt">${ministerio}</span></div></td>
+                    <td><div class="dia-txt">${d}/${mIdx+1}</div></td>`;
 
                 ["sa","pr","mu","lo","so","re","di"].forEach(col => {
                     let val = db.escalas?.[dStr]?.[col] || "";
                     let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col);
-                    row += `<td><input style="width:100%; border:none; background:transparent; text-align:center; font-weight:bold; height:100%;" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
+                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
             }
@@ -180,7 +176,7 @@
         const m = parseInt(document.getElementById('selMes').value);
         const tri = Math.floor(m / 3);
         if(!db.docs) db.docs = {}; if(!db.docs[tri]) db.docs[tri] = [];
-        if(db.docs[tri].length >= 3) { alert("Limite de 3 por trimestre!"); return; }
+        if(db.docs[tri].length >= 3) { alert("Máximo 3 arquivos!"); return; }
         const file = document.getElementById('fileIn').files[0];
         const reader = new FileReader();
         reader.onload = (e) => { db.docs[tri].push({ n: file.name, d: e.target.result, t: file.type }); save(); };
@@ -193,7 +189,7 @@
         grid.innerHTML = ""; listAdmin.innerHTML = "";
         const arquivos = db.docs?.[tri] || [];
         arquivos.forEach((doc, i) => {
-            const thumb = doc.t.includes('pdf') ? `<div class="pdf-thumb">📄</div>` : `<img src="${doc.d}">`;
+            const thumb = doc.t.includes('pdf') ? `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;background:#334155;">📄</div>` : `<img src="${doc.d}">`;
             grid.innerHTML += `<div class="doc-card" onclick="abrirLightbox('${doc.d}','${doc.t}')">${thumb}</div>`;
             listAdmin.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; background:#000; margin-bottom:5px; border-radius:5px; font-size:0.7rem;">
                 <span>${doc.n.substring(0,18)}</span>
@@ -203,9 +199,9 @@
     }
 
     function abrirLightbox(data, type) {
-        const container = document.getElementById('lightbox-container');
-        container.innerHTML = type.includes('pdf') ? `<iframe id="lightbox-iframe" src="${data}"></iframe>` : `<img src="${data}">`;
-        document.getElementById('lightbox').style.display = 'flex';
+        const lb = document.getElementById('lightbox');
+        lb.innerHTML = type.includes('pdf') ? `<iframe src="${data}" style="width:90vw; height:85vh; border:none;"></iframe>` : `<img src="${data}">`;
+        lb.style.display = 'flex';
     }
 
     function renderGrafico(m) {
