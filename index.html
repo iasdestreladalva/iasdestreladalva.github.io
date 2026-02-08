@@ -2,57 +2,129 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva</title>
+    <title>IASD Estrela Dalva - v102.43</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    
     <style>
-        /* Mantenha seus estilos originais aqui */
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
-        /* ... restante do CSS do seu arquivo original ... */
+        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: 220px 1fr 2.5fr; gap: 20px; }
+        .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 4px; box-sizing: border-box; }
+        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; }
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; }
     </style>
 </head>
 <body>
-    <script>
-        // CONFIGURAÇÃO DO SEU FIREBASE
-        const firebaseConfig = {
-            apiKey: "SUA_CHAVE_API_AQUI", // <--- COLOQUE SUA CHAVE AQUI
-            databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com/",
-            projectId: "unidades-de-acao",
-            appId: "SEU_APP_ID_AQUI" // <--- COLOQUE SEU APP ID AQUI
-        };
+<div class="container">
+    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
+        <div style="display:flex; gap:10px;">
+            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px;"></select>
+            <button class="input-dark" style="width:auto; color:var(--gold);" onclick="abrirCalendarioAnual()">📅 ANUAL</button>
+            <button class="input-dark" style="width:auto; color:var(--neon);" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+            <button class="input-dark" style="width:auto; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+        </div>
+    </div>
 
-        // Inicializa o Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+    <div id="adminPanel" class="admin-box">
+        <div class="admin-grid">
+            <div class="admin-section"><h4>ADMINISTRAÇÃO</h4><div id="listaMinisterios"></div></div>
+        </div>
+    </div>
 
-        // Variáveis globais do sistema
-        const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-        let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {} };
-        let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    <table id="tabela-main">
+        <thead>
+            <tr><th colspan="9" style="background:var(--blue); color:white;" id="headerTitulo">ESCALA</th></tr>
+            <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+        </thead>
+        <tbody id="corpoEscala"></tbody>
+    </table>
+</div>
 
-        // FUNÇÃO DE SALVAMENTO ATUALIZADA PARA NUVEM
-        function save() { 
-            localStorage.setItem('iasd_v100', JSON.stringify(db)); // Backup local
-            database.ref('dados_igreja').set(db); // SALVA NO FIREBASE
-        }
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
+    <div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()">
+        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; margin-bottom:10px;">
+        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important;">
+        <button class="btn-min" style="background:var(--blue); color:white; margin-top:15px;" onclick="login()">ENTRAR</button>
+    </div>
+</div>
 
-        // ESCUTA AS MUDANÇAS EM TEMPO REAL
-        database.ref('dados_igreja').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                db = data;
-                renderTodo(); // Atualiza a tela de todos automaticamente
+<script>
+    // CONFIGURAÇÃO DO SEU FIREBASE
+    const firebaseConfig = {
+        apiKey: "COLE_AQUI_SUA_API_KEY", 
+        databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com/",
+        projectId: "unidades-de-acao",
+        appId: "COLE_AQUI_SEU_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    let db = { senhas: {admin:"iasd118"}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {} };
+    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+
+    function save() { 
+        database.ref('dados_igreja').set(db); 
+    }
+
+    database.ref('dados_igreja').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) { db = data; renderTodo(); }
+    });
+
+    function login() {
+        const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value;
+        if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else { alert("Senha incorreta"); }
+    }
+
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+
+    function renderTodo() {
+        const u = curUser;
+        document.getElementById('btnSair').style.display = u !== 'visitante' ? 'block' : 'none';
+        document.getElementById('btnAcesso').style.display = u === 'visitante' ? 'block' : 'none';
+        document.getElementById('adminPanel').style.display = (u === 'admin') ? 'block' : 'none';
+        renderEscala();
+    }
+
+    function renderEscala() {
+        const mIdx = parseInt(document.getElementById('selMes').value);
+        document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[mIdx] + " 2026";
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
+        const dias = new Date(2026, mIdx + 1, 0).getDate();
+
+        for(let d=1; d<=dias; d++) {
+            let dt = new Date(2026, mIdx, d);
+            let sem = dt.getDay();
+            if([0,3,6].includes(sem)) {
+                let dStr = d + "/" + (mIdx+1) + "/2026";
+                let tr = `<tr><td>${["DOMINGO","","","QUARTA","","","SABADO"][sem]}</td><td>${d}/${mIdx+1}</td>`;
+                ["sa","pr","mu","lo","so","re","di"].forEach(c => {
+                    let val = db.escalas[dStr]?.[c] || "";
+                    let edit = (curUser === 'admin' || curUser === c);
+                    tr += `<td><input class="input-dark" style="background:transparent!important; color:black!important; border:none; text-align:center;" ${!edit?'readonly':''} value="${val}" onchange="atuCel('${dStr}','${c}',this.value)"></td>`;
+                });
+                corpo.innerHTML += tr + "</tr>";
             }
-        });
-
-        // Suas funções de renderização (renderTodo, renderEscala, etc.) continuam aqui
-        function renderTodo() {
-            // ... lógica de renderização original
         }
-    </script>
+    }
+
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+
+    const sM = document.getElementById('selMes');
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    window.onload = renderTodo;
+</script>
 </body>
 </html>
