@@ -8,54 +8,56 @@
         body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; }
         .nav-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top:10px; }
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-top:10px; }
-        table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; table-layout: fixed; }
-        th { background: var(--blue); color: white; padding: 12px 5px; font-size: 0.75rem; width: 100px; }
-        th:nth-child(1), th:nth-child(2) { width: 80px; }
+        table { width: 100%; border-collapse: collapse; color: black; min-width: 900px; font-size: 0.8rem; }
+        
+        /* CORES DINÂMICAS POR CLASSE */
+        .row-pessoal td { background-color: #e0f2fe !important; }
+        .row-mordomia td { background-color: #ffedd5 !important; }
+        .row-divino td { background-color: #fef3c7 !important; }
+        .row-jovens td { background-color: #f3e8ff !important; }
+        .row-mulher td { background-color: #fce7f3 !important; }
+        .row-limpar td { background-color: #ffffff !important; }
 
-        /* ESTILIZAÇÃO DAS LINHAS POR MINISTÉRIO */
-        .row-sab td { background-color: #fef3c7 !important; } /* Amarelo/Sábado */
-        .row-dom td { background-color: #ffedd5 !important; } /* Laranja/Domingo */
-        .row-qua td { background-color: #e0f2fe !important; } /* Azul/Quarta */
-        
-        td { border: 1px solid #cbd5e1; text-align: center; height: 55px; vertical-align: middle; padding: 0; }
-        
-        .dia-box { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
+        td { border: 1px solid #cbd5e1; text-align: center; height: 55px; padding: 0; cursor: pointer; }
+        .dia-box { display: flex; flex-direction: column; line-height: 1.2; pointer-events: none; }
         .dia-txt { font-weight: 800; font-size: 0.85rem; color: #1e293b; }
-        .min-txt { font-size: 0.6rem; font-weight: 600; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+        .min-txt { font-size: 0.6rem; font-weight: 600; color: #64748b; text-transform: uppercase; }
         
         .input-cell { width: 100%; height: 55px; border: none; background: transparent; text-align: center; font-weight: bold; font-size: 0.8rem; color: #000; text-transform: uppercase; }
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; }
-        .btn-min { display: block; width: 100%; padding: 12px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-min { display: block; width: 100%; padding: 10px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 5px; font-size: 0.7rem; }
+        .btn-active { background: var(--neon); color: #000; }
 
-        .grid-docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
-        .doc-card { background: #1c2541; border: 1px solid var(--green); border-radius: 8px; overflow: hidden; cursor: pointer; height: 110px; }
-        .doc-card img { width: 100%; height: 100%; object-fit: cover; }
-        
-        #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; cursor: pointer; }
-        #lightbox img { max-width: 95vw; max-height: 90vh; }
-        #lightbox iframe { width: 90vw; height: 85vh; background: white; }
-
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding: 15px; }
-        .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:400px; }
+        .admin-painter { display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 2px solid var(--orange); margin: 15px 0; }
     </style> </head> <body>
 
-<div id="lightbox" onclick="this.style.display='none'; this.innerHTML=''"></div>
+<div id="lightbox" onclick="this.style.display='none'; this.innerHTML=''" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; align-items:center; justify-content:center; cursor:pointer;"></div>
 
 <h2 style="color:var(--neon); text-align: center; margin:0;">IASD ESTRELA DALVA</h2>
+
+<div id="painterPanel" class="admin-painter">
+    <h4 style="margin:0 0 10px 0; color:var(--orange);">🎨 PINCEL DE MINISTÉRIOS:</h4>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
+        <button class="btn-min" id="btn-pessoal" onclick="selPincel('pessoal', 'Pessoal')">PESSOAL</button>
+        <button class="btn-min" id="btn-mordomia" onclick="selPincel('mordomia', 'Mordomia')">MORDOMIA</button>
+        <button class="btn-min" id="btn-divino" onclick="selPincel('divino', 'Divino')">DIVINO</button>
+        <button class="btn-min" id="btn-jovens" onclick="selPincel('jovens', 'Jovens')">JOVENS</button>
+        <button class="btn-min" id="btn-mulher" onclick="selPincel('mulher', 'Mulher')">MULHER</button>
+        <button class="btn-min" style="border-color:red; color:red;" onclick="selPincel('', '')">LIMPAR</button>
+    </div>
+    <p style="font-size: 0.7rem; margin-top: 10px; color: #aaa;">*Selecione um ministério e clique na linha do dia para pintar.</p>
+</div>
+
 <div class="nav-buttons">
     <select id="selMes" onchange="renderTodo()" class="input-dark"></select>
-    <button id="btnAcesso" class="btn-min" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
-    <button id="btnSair" class="btn-min" style="border-color:red; color:red; display:none;" onclick="sair()">SAIR</button>
-</div>
-<div class="nav-buttons">
-    <button id="btnDados" class="btn-min" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopMis()">📊 DADOS</button>
-    <button id="btnTesouro" class="btn-min" style="border-color:var(--green); color:var(--green); display:none;" onclick="document.getElementById('popTes').style.display='flex'">💰 TESOURARIA</button>
+    <button id="btnAcesso" class="btn-min" style="margin:0" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
+    <button id="btnSair" class="btn-min" style="margin:0; border-color:red; color:red; display:none;" onclick="sair()">SAIR</button>
 </div>
 
 <div class="table-wrap">
     <table>
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); font-size: 1rem; padding: 10px;">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; padding:10px;">ESCALA</th></tr>
             <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
@@ -67,32 +69,16 @@
         <h3 style="color:var(--orange); margin:0;">📊 MISSIONÁRIO - <span id="mesMisTitulo"></span></h3>
         <div style="height:180px;"><canvas id="chartMis"></canvas></div>
     </div>
-    <div style="margin-top:20px;">
-        <h3 style="color:var(--green); margin:0;">💰 TESOURARIA (TRIMESTRE)</h3>
-        <div id="gridPublicoDocs" class="grid-docs"></div>
-    </div>
 </div>
 
-<div id="popTes" class="overlay"><div class="pop-content">
-    <h3 style="color:var(--green)">POSTAR ARQUIVO</h3>
-    <input type="file" id="fileIn" accept="image/*,application/pdf" style="display:none" onchange="uploadDoc()">
-    <button onclick="document.getElementById('fileIn').click()" class="btn-min" style="border-color:var(--green); color:var(--green)">+ NOVO ARQUIVO</button>
-    <div id="listaAdminDocs" style="margin-top:15px; max-height:200px; overflow-y:auto;"></div>
-    <button onclick="document.getElementById('popTes').style.display='none'" class="btn-min" style="margin-top:15px; border-color:#fff; color:#fff;">FECHAR</button>
-</div></div>
-
-<div id="modalLogin" class="overlay"><div class="pop-content" style="background:white; color:black;">
-    <h3 style="text-align:center;">LOGIN</h3>
-    <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
-    <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:15px;">
-    <button onclick="fazerLogin()" style="width:100%; padding:15px; background:var(--blue); color:white; border:none; border-radius:8px; font-weight:bold;">ENTRAR</button>
-</div></div>
-
-<div id="popMis" class="overlay"><div class="pop-content">
-    <h3>DADOS MISSIONÁRIOS</h3>
-    <div id="camposMis" style="display:flex; flex-direction:column; gap:10px;"></div>
-    <button onclick="document.getElementById('popMis').style.display='none'; renderTodo();" style="width:100%; padding:15px; background:var(--green); border:none; border-radius:8px; margin-top:15px; font-weight:bold; color:black;">SALVAR</button>
-</div></div>
+<div id="modalLogin" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:15px;">
+    <div style="background:white; color:black; padding:20px; border-radius:15px; width:100%; max-width:400px;">
+        <h3 style="text-align:center;">LOGIN</h3>
+        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
+        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:15px;">
+        <button onclick="fazerLogin()" style="width:100%; padding:15px; background:var(--blue); color:white; border:none; border-radius:8px; font-weight:bold;">ENTRAR</button>
+    </div>
+</div>
 
 <script>
     const firebaseConfig = {
@@ -105,59 +91,69 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_v106');
+    const dbRef = firebase.database().ref('iasd_v108');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let db = { senhas:{admin:"iasd118"}, escalas:{}, mis:{}, docs:{} };
+    let db = { senhas:{admin:"iasd118"}, escalas:{}, mis:{}, cores:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
-    let myChart;
+    let pincelAtivo = null;
+    let nomePincel = "";
 
     dbRef.on('value', snap => { if(snap.val()) { db = snap.val(); renderTodo(); } });
+
     function save() { dbRef.set(db); }
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
-    
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Acesso negado"); }
+        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Senha incorreta"); }
+    }
+
+    function selPincel(id, nome) {
+        pincelAtivo = id;
+        nomePincel = nome;
+        document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('btn-active'));
+        if(id) document.getElementById('btn-'+id).classList.add('btn-active');
+    }
+
+    function pintarLinha(data) {
+        if((curUser === 'admin' || curUser === 'ger') && pincelAtivo !== null) {
+            if(!db.cores) db.cores = {};
+            if(pincelAtivo === "") delete db.cores[data];
+            else db.cores[data] = { id: pincelAtivo, nome: nomePincel };
+            save();
+        }
     }
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isLogado = curUser !== 'visitante';
         const isGestor = (curUser === 'admin' || curUser === 'ger');
-        const tri = Math.floor(m / 3);
-
-        document.getElementById('btnSair').style.display = isLogado ? 'block' : 'none';
-        document.getElementById('btnAcesso').style.display = !isLogado ? 'block' : 'none';
-        document.getElementById('btnDados').style.display = (isGestor || curUser === 'pessoal') ? 'block' : 'none';
-        document.getElementById('btnTesouro').style.display = isGestor ? 'block' : 'none';
-        document.getElementById('areaRestrita').style.display = isLogado ? 'block' : 'none';
+        
+        document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
+        document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
+        document.getElementById('painterPanel').style.display = isGestor ? 'block' : 'none';
+        document.getElementById('areaRestrita').style.display = curUser !== 'visitante' ? 'block' : 'none';
         
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
-        document.getElementById('mesMisTitulo').innerText = MESES[m];
-        
-        renderEscala(m); renderGrafico(m); renderDocs(tri);
+        renderEscala(m);
     }
 
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        
+        const diasSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
+
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d); 
-            let sem = dt.getDay(); // 0: Dom, 3: Qua, 6: Sab
+            let sem = dt.getDay();
             
             if([0,3,6].includes(sem)) {
                 let dStr = `${d}/${mIdx+1}/2026`;
-                let classeRow = ""; let nomeDia = ""; let ministerio = "";
+                let corInfo = db.cores?.[dStr] || { id: "", nome: "" };
+                let classeRow = corInfo.id ? "row-" + corInfo.id : "";
 
-                if(sem === 6) { classeRow = "row-sab"; nomeDia = "SÁB"; ministerio = "Sabatina"; }
-                else if(sem === 0) { classeRow = "row-dom"; nomeDia = "DOM"; ministerio = "Mordomia"; }
-                else if(sem === 3) { classeRow = "row-qua"; nomeDia = "QUA"; ministerio = "Pessoal"; }
-
-                let row = `<tr class="${classeRow}">
-                    <td><div class="dia-box"><span class="dia-txt">${nomeDia}</span><span class="min-txt">${ministerio}</span></div></td>
+                let row = `<tr class="${classeRow}" onclick="pintarLinha('${dStr}')">
+                    <td><div class="dia-box"><span class="dia-txt">${diasSemana[sem]}</span><span class="min-txt">${corInfo.nome}</span></div></td>
                     <td><div class="dia-txt">${d}/${mIdx+1}</div></td>`;
 
                 ["sa","pr","mu","lo","so","re","di"].forEach(col => {
@@ -172,50 +168,9 @@
 
     function atu(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
 
-    function uploadDoc() {
-        const m = parseInt(document.getElementById('selMes').value);
-        const tri = Math.floor(m / 3);
-        if(!db.docs) db.docs = {}; if(!db.docs[tri]) db.docs[tri] = [];
-        if(db.docs[tri].length >= 3) { alert("Máximo 3 arquivos!"); return; }
-        const file = document.getElementById('fileIn').files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => { db.docs[tri].push({ n: file.name, d: e.target.result, t: file.type }); save(); };
-        reader.readAsDataURL(file);
+    const sM = document.getElementById('selMes');
+    if(sM.innerHTML === "") {
+        MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
     }
-
-    function renderDocs(tri) {
-        const grid = document.getElementById('gridPublicoDocs');
-        const listAdmin = document.getElementById('listaAdminDocs');
-        grid.innerHTML = ""; listAdmin.innerHTML = "";
-        const arquivos = db.docs?.[tri] || [];
-        arquivos.forEach((doc, i) => {
-            const thumb = doc.t.includes('pdf') ? `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;background:#334155;">📄</div>` : `<img src="${doc.d}">`;
-            grid.innerHTML += `<div class="doc-card" onclick="abrirLightbox('${doc.d}','${doc.t}')">${thumb}</div>`;
-            listAdmin.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; background:#000; margin-bottom:5px; border-radius:5px; font-size:0.7rem;">
-                <span>${doc.n.substring(0,18)}</span>
-                <button onclick="db.docs[${tri}].splice(${i},1); save();" style="color:red; background:none; border:none; font-weight:bold;">X</button>
-            </div>`;
-        });
-    }
-
-    function abrirLightbox(data, type) {
-        const lb = document.getElementById('lightbox');
-        lb.innerHTML = type.includes('pdf') ? `<iframe src="${data}" style="width:90vw; height:85vh; border:none;"></iframe>` : `<img src="${data}">`;
-        lb.style.display = 'flex';
-    }
-
-    function renderGrafico(m) {
-        const ctx = document.getElementById('chartMis').getContext('2d');
-        const d = db.mis?.[m] || {b:0, e:0, v:0, d:0};
-        if(myChart) myChart.destroy();
-        myChart = new Chart(ctx, { type:'bar', data: { labels:['Batismos','Estudos','Visitas','Duplas'], datasets:[{label:'Total', data:[d.b, d.e, d.v, d.d], backgroundColor:['#ffd700','#00d2ff','#2ecc71','#ff7f50']}] }, options:{ maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{color:'#fff'}}, x:{ticks:{color:'#fff'}}} } });
-    }
-    function abrirPopMis() {
-        const m = document.getElementById('selMes').value; const d = db.mis?.[m] || {b:0, e:0, v:0, d:0};
-        document.getElementById('camposMis').innerHTML = `Batismos: <input type="number" class="input-dark" value="${d.b}" onchange="atuMis(${m},'b',this.value)">Estudos: <input type="number" class="input-dark" value="${d.e}" onchange="atuMis(${m},'e',this.value)">Visitas: <input type="number" class="input-dark" value="${d.v}" onchange="atuMis(${m},'v',this.value)">Duplas: <input type="number" class="input-dark" value="${d.d}" onchange="atuMis(${m},'d',this.value)">`;
-        document.getElementById('popMis').style.display='flex';
-    }
-    function atuMis(m,k,v) { if(!db.mis[m]) db.mis[m]={b:0,e:0,v:0,d:0}; db.mis[m][k]=parseInt(v); save(); }
-    const sM = document.getElementById('selMes'); MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
     window.onload = renderTodo;
 </script> </body> </html>
