@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="pt-br"> <head>    <meta charset="UTF-8">    <title>IASD Estrela Dalva - GESTÃO TOTAL</title>
+<!DOCTYPE html> <html lang="pt-br"> <head>    <meta charset="UTF-8">    <title>IASD Estrela Dalva</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,6 +15,7 @@
         .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; border-color: var(--neon) !important; }
         
+        /* Cores de Fundo */
         .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
         .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
@@ -40,7 +41,7 @@
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
             <button class="input-dark" style="width:auto; padding:0 15px; color:var(--neon);" onclick="gerarPDF()">📥 PDF</button>
-            <button class="input-dark" style="width:auto; padding:0 15px; color:var(--gold);" onclick="abrirCalendarioAnual()">📅 ANUAL</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; color:var(--gold);" onclick="abrirCalendarioAnual()">📅 PLANEJAMENTO ANUAL</button>
             <button id="btnTesourariaAdmin" class="input-dark" style="display:none; color:var(--green);" onclick="abrirTesourariaAdmin()">⚙️ TESOURARIA</button>
             <button id="btnDados" class="input-dark" style="display:none; color:var(--orange);" onclick="abrirPop()">📊 MISSIONÁRIO</button>
             <button class="input-dark" style="color:var(--neon);" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
@@ -74,7 +75,7 @@
             <thead>
                 <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
                 <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-                <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>ESCOLA SABATINA</th><th>PREGADOR</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+                <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
@@ -168,16 +169,17 @@
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
 
     function renderAdmin() {
-        // Painel 1: MINISTÉRIOS QUE PINTAM (Filtro aplicado)
+        // Painel 1: MINISTÉRIOS QUE PINTAM (Filtro Atualizado)
         const lm = document.getElementById('listaMinisterios'); lm.innerHTML = "";
-        const excluirPintura = ['admin', 'ger', 'diaconato', 'sonoplastia', 'especial', 'musica'];
+        const excluirPintura = ['admin', 'ger', 'gerencia', 'musica', 'especial', 'diaconato', 'sonoplastia'];
         Object.keys(MINS_MAP).forEach(k => { 
-            if(!excluirPintura.includes(k)) {
+            // Filtro para não mostrar Admin, Gerência, Música, Especial e Diaconato no painel de pintura
+            if(!excluirPintura.includes(k.toLowerCase()) && k !== 'admin' && k !== 'ger') {
                 lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS_MAP[k]}</button>`; 
             }
         });
 
-        // Painel 2: Anciãos
+        // Painel 2: Responsáveis Mensais
         const mGrid = document.getElementById('gridMeses'); mGrid.innerHTML = "";
         MESES.forEach((m, i) => { mGrid.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i] || ''}" onchange="db.anciaos[${i}]=this.value; save();"></div>`; });
 
@@ -218,13 +220,12 @@
     function abrirTesourariaAdmin(){ renderAdminDocs(); document.getElementById('popTesouraria').style.display='flex'; }
     function renderAdminDocs(){ const m=document.getElementById('selMes').value; const lista=document.getElementById('listaAdminArquivos'); lista.innerHTML=""; (db.docs?.[m]||[]).forEach((doc,i)=>{ lista.innerHTML+=`<div style="display:flex; justify-content:space-between; padding:5px; background:#1e293b; margin:2px; font-size:0.7rem;">${doc.nome} <button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none;">X</button></div>`; }); }
     function uploadArquivo(){ const file=document.getElementById('fileInput').files[0]; if(!file) return; const r=new FileReader(); r.onload=(e)=>{ const m=document.getElementById('selMes').value; if(!db.docs[m])db.docs[m]=[]; db.docs[m].push({nome:file.name, data:e.target.result}); save(); renderAdminDocs(); renderArquivosPublicos(); }; r.readAsDataURL(file); }
-    function renderArquivosPublicos(){ const m=document.getElementById('selMes').value; const grid=document.getElementById('gridArquivosPublicos'); grid.innerHTML=""; (db.docs?.[m]||[]).forEach(doc=>{ grid.innerHTML+=`<img src="${doc.data}" class="thumb-doc" onclick="window.open(this.src)">`; }); }
+    function renderArquivosPublicos(){ const m=document.getElementById('selMes').value; const grid=gridArquivosPublicos=document.getElementById('gridArquivosPublicos'); grid.innerHTML=""; (db.docs?.[m]||[]).forEach(doc=>{ grid.innerHTML+=`<img src="${doc.data}" class="thumb-doc" onclick="window.open(this.src)">`; }); }
     
     function login(){ 
         const u=document.getElementById('userLogin').value.toLowerCase().trim(), p=document.getElementById('passLogin').value; 
-        if(db.senhas[u] === p){ localStorage.setItem('iasd_curUser',u); location.reload(); } else { alert("Erro!"); } 
+        if(db.senhas[u] === p){ localStorage.setItem('iasd_curUser',u); location.reload(); } else { alert("Erro de Login!"); } 
     }
     function sair(){ localStorage.removeItem('iasd_curUser'); location.reload(); }
     const sM = document.getElementById('selMes'); MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    window.onload = renderTodo;
-</script> </body> </html>
+    wi
