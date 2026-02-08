@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>IASD Estrela Dalva - v102.44</title>
+    <title>IASD Estrela Dalva - v102.45</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <style>
@@ -17,35 +17,38 @@
         .nav-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 5px; font-size: 14px; }
 
+        /* PAINEL ADMIN */
+        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .admin-sec { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; }
+        .btn-min { padding: 10px; border: 1px solid var(--neon); color: var(--neon); background: transparent; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; font-size: 11px; }
+        .btn-min.active { background: var(--neon); color: var(--blue); }
+
         /* TABELA */
-        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; color: black; }
-        th { background: var(--blue); color: white; padding: 12px; font-size: 12px; border: 1px solid #ccc; text-transform: uppercase; }
-        td { border: 1px solid #ddd; height: 48px; text-align: center; font-weight: bold; }
+        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; color: black; }
+        th { background: var(--blue); color: white; padding: 10px; font-size: 11px; border: 1px solid #ccc; text-transform: uppercase; }
+        td { border: 1px solid #ddd; height: 45px; text-align: center; font-weight: bold; cursor: pointer; }
         .input-escala { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; font-size: 13px; }
 
-        /* MURAL DE TESOURARIA (ABAIXO DA ESCALA) */
-        .mural-tesouraria { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--green); margin-top: 10px; }
-        .mural-titulo { color: var(--green); border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        
-        .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-        
-        /* ESTILO DA MINIATURA */
-        .thumb-card { position: relative; width: 100%; aspect-ratio: 1/1; background: #000; border: 2px solid #334155; border-radius: 10px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: transform 0.2s, border-color 0.2s; }
-        .thumb-card:hover { transform: scale(1.03); border-color: var(--neon); }
+        /* CORES MINISTÉRIOS */
+        .row-pessoal { background-color: #e0f2fe !important; } /* Azul claro */
+        .row-mordomia { background-color: #fef3c7 !important; } /* Amarelo */
+        .row-saude { background-color: #f0fdf4 !important; } /* Verde */
+        .row-familia { background-color: #faf5ff !important; } /* Roxo */
+        .row-homens { background-color: #ecfeff !important; } /* Ciano */
+        .row-adolescentes { background-color: #f8fafc !important; } /* Cinza */
+        .row-mulher { background-color: #fdf2f8 !important; } /* Rosa */
+
+        /* MURAL TESOURARIA */
+        .mural-tesouraria { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--green); }
+        .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
+        .thumb-card { position: relative; aspect-ratio: 1/1; background: #000; border: 1px solid #444; border-radius: 8px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
-        .pdf-preview { text-align: center; color: var(--red); font-weight: bold; }
 
-        /* BOTÃO DE REMOVER (SÓ ADMIN) */
-        .btn-del { position: absolute; top: 5px; right: 5px; background: var(--red); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-weight: bold; z-index: 10; }
-
-        /* VISUALIZADOR TELA CHEIA */
-        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 99999; justify-content: center; align-items: center; cursor: zoom-out; padding: 20px; }
-        .lightbox img { max-width: 100%; max-height: 100%; border-radius: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .lightbox iframe { width: 90%; height: 90%; background: white; border-radius: 5px; }
-
-        /* LOGIN */
-        .modal-login { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; }
+        /* LIGHTBOX */
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; }
+        .lightbox img, .lightbox iframe { max-width: 90%; max-height: 90%; background: white; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -55,43 +58,58 @@
         <h2 style="color:var(--neon)">IASD ESTRELA DALVA</h2>
         <div class="nav-buttons">
             <select id="selMes" onchange="renderTodo();" class="input-dark"></select>
-            <button class="input-dark" id="btnUpload" onclick="dispararUpload()" style="display:none; color:var(--green); font-weight:bold;">+ COMPROVANTE</button>
-            <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓</button>
-            <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; color:red">🚪</button>
+            <button class="input-dark" id="btnUpload" onclick="dispararUpload()" style="display:none; color:var(--green);">+ COMPROVANTE</button>
+            <button class="input-dark" onclick="document.getElementById('modalLogin').style.display='flex'" id="btnAcesso">🔓</button>
+            <button class="input-dark" onclick="sair()" id="btnSair" style="display:none; color:red">🚪</button>
         </div>
     </header>
+
+    <div id="adminPanel" class="admin-box">
+        <div class="admin-grid">
+            <div class="admin-sec">
+                <h4 style="color:var(--gold); margin-bottom:10px;">👤 ANCIÃOS DO ANO</h4>
+                <div id="listaAnciaos" style="max-height: 200px; overflow-y: auto;">
+                    </div>
+            </div>
+            <div class="admin-sec">
+                <h4 style="color:var(--neon); margin-bottom:10px;">🎨 CORES DA ESCALA</h4>
+                <p style="font-size: 10px; margin-bottom: 5px;">Selecione abaixo e clique no dia na tabela:</p>
+                <div id="gridMinisterios" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"></div>
+                <button class="btn-min" style="margin-top:10px; border-color:red; color:red;" onclick="limparRegras()">Limpar Cores Manuais</button>
+            </div>
+            <div class="admin-sec">
+                <h4 style="color:var(--orange); margin-bottom:10px;">🔑 SENHAS</h4>
+                <div id="verSenhas" style="font-size: 11px;"></div>
+            </div>
+        </div>
+    </div>
 
     <div class="table-wrapper">
         <table>
             <thead>
-                <tr><th colspan="9" id="headerTitulo">ESCALA</th></tr>
-                <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); border-top:none;">Responsável:</th></tr>
-                <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+                <tr><th colspan="9" id="headerTitulo" style="font-size:16px; padding:15px;">ESCALA</th></tr>
+                <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); border-top:none;">Responsável: </th></tr>
+                <tr>
+                    <th style="width:70px">DIA</th><th style="width:60px">DATA</th>
+                    <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+                </tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
     </div>
 
     <div class="mural-tesouraria">
-        <div class="mural-titulo">
-            <h3>💰 MURAL DA TESOURARIA</h3>
-            <span id="mesNome" style="color:white; font-size: 0.9rem;"></span>
-        </div>
-        <div id="gridMural" class="grid-mural">
-            </div>
+        <h3 style="color:var(--green)">💰 COMPROVANTES - <span id="mesNome"></span></h3>
+        <div id="gridMural" class="grid-mural"></div>
     </div>
 </div>
 
-<div id="lightbox" class="lightbox" onclick="fecharVisualizador()">
-    <div id="mediaContainer" style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;"></div>
-</div>
-
-<div id="modalLogin" class="modal-login" onclick="this.style.display='none'">
-    <div style="background:white; padding:30px; border-radius:15px; width:300px;" onclick="event.stopPropagation()">
-        <h3 style="color:black; margin-bottom:15px">Acesso Admin</h3>
-        <input type="text" id="userInput" placeholder="Usuário" class="input-dark" style="color:black!important; width:100%; margin-bottom:10px">
-        <input type="password" id="passInput" placeholder="Senha" class="input-dark" style="color:black!important; width:100%">
-        <button class="input-dark" style="background:var(--blue); color:white; border:none; width:100%; margin-top:20px; cursor:pointer" onclick="login()">ENTRAR</button>
+<div id="lightbox" class="lightbox" onclick="this.style.display='none'"><div id="mediaBox"></div></div>
+<div id="modalLogin" class="lightbox" onclick="this.style.display='none'">
+    <div style="background:white; padding:25px; border-radius:10px; width:280px;" onclick="event.stopPropagation()">
+        <input type="text" id="u" placeholder="Usuário" class="input-dark" style="color:black!important; width:100%; margin-bottom:10px">
+        <input type="password" id="p" placeholder="Senha" class="input-dark" style="color:black!important; width:100%">
+        <button class="btn-min" style="background:var(--blue); color:white; margin-top:15px;" onclick="login()">ENTRAR</button>
     </div>
 </div>
 
@@ -102,29 +120,57 @@
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const ANCIÃOS_AUTO = { 0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert" };
+    const MINS = { pessoal:"Pessoal", mordomia:"Mordomia", saude:"Saúde", familia:"Família", homens:"Homens", adolescentes:"Adol.", mulher:"Mulher" };
 
-    let db = { escalas: {}, anciaos_manual: {}, docs: {}, senhas: {admin:"iasd118"} };
+    let db = { escalas: {}, anciaos_manual: {}, docs: {}, regras_manuais: {}, senhas: {admin:"iasd118"} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    let minSel = null;
 
     database.ref('dados_igreja').on('value', (snap) => { if(snap.val()) { db = snap.val(); renderTodo(); } });
 
     function renderTodo() {
         const m = document.getElementById('selMes').value;
         const u = curUser;
-        
-        // Controle de botões
+
         document.getElementById('btnSair').style.display = u !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = u === 'visitante' ? 'block' : 'none';
+        document.getElementById('adminPanel').style.display = (u === 'admin') ? 'block' : 'none';
         document.getElementById('btnUpload').style.display = (u === 'admin' || u === 'ger') ? 'block' : 'none';
 
-        // Cabeçalhos
         const anciao = db.anciaos_manual?.[m] || ANCIÃOS_AUTO[m];
         document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + anciao;
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         document.getElementById('mesNome').innerText = MESES[m];
 
         renderEscala();
+        renderAdmin();
         renderMural();
+    }
+
+    function renderAdmin() {
+        // Lista de Anciãos para o ano todo
+        const lista = document.getElementById('listaAnciaos'); lista.innerHTML = "";
+        MESES.forEach((nome, i) => {
+            let valor = db.anciaos_manual?.[i] || "";
+            let auto = ANCIÃOS_AUTO[i];
+            lista.innerHTML += `
+                <div style="display:flex; align-items:center; gap:5px; margin-bottom:5px;">
+                    <small style="width:70px; font-size:9px;">${nome}:</small>
+                    <input class="input-dark" style="padding:4px; font-size:11px; flex:1" 
+                        placeholder="${auto}" value="${valor}" 
+                        onchange="atuAnciaoAno(${i}, this.value)">
+                </div>`;
+        });
+
+        // Grid de Ministérios para Cores
+        const grid = document.getElementById('gridMinisterios'); grid.innerHTML = "";
+        Object.keys(MINS).forEach(k => {
+            grid.innerHTML += `<button class="btn-min ${minSel===k?'active':''}" onclick="minSel='${k}'; renderAdmin();">${MINS[k]}</button>`;
+        });
+
+        // Senhas
+        const sArea = document.getElementById('verSenhas'); sArea.innerHTML = "";
+        Object.keys(db.senhas || {}).forEach(k => sArea.innerHTML += `<div>${k.toUpperCase()}: ${db.senhas[k]}</div>`);
     }
 
     function renderEscala() {
@@ -136,9 +182,11 @@
             let dt = new Date(2026, mIdx, d); let sem = dt.getDay();
             if([0,3,6].includes(sem)) {
                 let dStr = `${d}/${mIdx+1}/2026`;
-                let tr = `<tr>
-                    <td style="font-size:10px; background:#f9f9f9">${["DOM","","","QUA","","","SÁB"][sem]}</td>
-                    <td style="background:#f9f9f9">${d}/${mIdx+1}</td>`;
+                let corClasse = getCorDia(d, sem, mIdx, dStr);
+                
+                let tr = `<tr class="${corClasse}" onclick="aplicarCor('${dStr}')">
+                    <td style="font-size:10px">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</td>
+                    <td>${d}/${mIdx+1}</td>`;
                 ["sa","pr","mu","lo","so","re","di"].forEach(c => {
                     let val = db.escalas?.[dStr]?.[c] || "";
                     let edit = (curUser === 'admin' || curUser === c);
@@ -149,90 +197,74 @@
         }
     }
 
-    // LÓGICA DO MURAL DE MINIATURAS
-    function renderMural() {
-        const m = document.getElementById('selMes').value;
-        const grid = document.getElementById('gridMural'); grid.innerHTML = "";
-        const arquivos = db.docs?.[m] || [];
+    function getCorDia(d, sem, m, dStr) {
+        // Se houver regra manual (clicada pelo admin), ela manda
+        if(db.regras_manuais?.[dStr]) return "row-" + db.regras_manuais[dStr];
 
-        if(arquivos.length === 0) {
-            grid.innerHTML = `<p style="color:#666; font-style:italic;">Nenhum comprovante enviado este mês.</p>`;
-            return;
+        // Escala Automática de Cores
+        if(sem === 6) { // Sábados
+            let sab = Math.ceil(d/7);
+            if(sab === 1) return "row-pessoal";
+            if(sab === 2) return "row-mordomia";
         }
-
-        arquivos.forEach((file, index) => {
-            const isPDF = file.type.includes('pdf');
-            const card = document.createElement('div');
-            card.className = 'thumb-card';
-            card.onclick = () => abrirVisualizador(file.data, file.type);
-            
-            card.innerHTML = isPDF ? 
-                `<div class="pdf-preview">📄<br><small>PDF</small></div>` : 
-                `<img src="${file.data}">`;
-
-            if(curUser === 'admin' || curUser === 'ger') {
-                const del = document.createElement('button');
-                del.className = 'btn-del';
-                del.innerText = 'X';
-                del.onclick = (e) => { e.stopPropagation(); removerArquivo(index); };
-                card.appendChild(del);
-            }
-            grid.appendChild(card);
-        });
-    }
-
-    function abrirVisualizador(data, type) {
-        const box = document.getElementById('lightbox');
-        const container = document.getElementById('mediaContainer');
-        box.style.display = 'flex';
-        
-        if(type.includes('pdf')) {
-            container.innerHTML = `<iframe src="${data}"></iframe>`;
-        } else {
-            container.innerHTML = `<img src="${data}">`;
+        if(sem === 0) { // Domingos
+            let dom = Math.ceil(d/7);
+            if(dom === 1) return "row-saude";
+            if(dom === 3) return "row-familia";
         }
+        if(sem === 3) { // Quartas
+            let qua = Math.ceil(d/7);
+            if(qua === 2) return "row-homens";
+            if(qua === 3) return "row-adolescentes";
+        }
+        return "";
     }
 
-    function fecharVisualizador() {
-        document.getElementById('lightbox').style.display = 'none';
-        document.getElementById('mediaContainer').innerHTML = "";
-    }
-
-    function dispararUpload() {
-        const fInput = document.createElement('input');
-        fInput.type = 'file';
-        fInput.accept = 'image/*,application/pdf';
-        fInput.onchange = e => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const m = document.getElementById('selMes').value;
-                if(!db.docs) db.docs = {};
-                if(!db.docs[m]) db.docs[m] = [];
-                db.docs[m].push({ data: ev.target.result, type: file.type });
-                save();
-            };
-            reader.readAsDataURL(file);
-        };
-        fInput.click();
-    }
-
-    function removerArquivo(idx) {
-        if(confirm("Deseja apagar este comprovante?")) {
-            const m = document.getElementById('selMes').value;
-            db.docs[m].splice(idx, 1);
+    function aplicarCor(dStr) {
+        if(minSel && curUser === 'admin') {
+            if(!db.regras_manuais) db.regras_manuais = {};
+            db.regras_manuais[dStr] = minSel;
             save();
         }
     }
 
-    // AUXILIARES
-    function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function save() { database.ref('dados_igreja').set(db); }
-    function login() { 
-        const u = document.getElementById('userInput').value;
-        const p = document.getElementById('passInput').value;
-        if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Acesso Negado!"); 
+    function renderMural() {
+        const m = document.getElementById('selMes').value;
+        const grid = document.getElementById('gridMural'); grid.innerHTML = "";
+        (db.docs?.[m] || []).forEach((f, i) => {
+            grid.innerHTML += `
+                <div class="thumb-card" onclick="abrirLightbox('${f.data}', '${f.type}')">
+                    ${f.type.includes('pdf') ? '<small>PDF</small>' : `<img src="${f.data}">`}
+                    ${curUser==='admin' ? `<button onclick="removerDoc(${i}, event)" style="position:absolute;top:0;right:0;background:red;color:white;border:none;padding:2px 5px">X</button>` : ''}
+                </div>`;
+        });
     }
+
+    function abrirLightbox(data, type) {
+        const lb = document.getElementById('lightbox');
+        const box = document.getElementById('mediaBox');
+        lb.style.display = 'flex';
+        box.innerHTML = type.includes('pdf') ? `<iframe src="${data}"></iframe>` : `<img src="${data}">`;
+    }
+
+    function dispararUpload() {
+        const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*,application/pdf';
+        inp.onchange = e => {
+            const f = e.target.files[0]; const r = new FileReader();
+            r.onload = ev => {
+                const m = document.getElementById('selMes').value;
+                if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = [];
+                db.docs[m].push({data: ev.target.result, type: f.type}); save();
+            }; r.readAsDataURL(f);
+        }; inp.click();
+    }
+
+    function removerDoc(i, e) { e.stopPropagation(); const m = document.getElementById('selMes').value; db.docs[m].splice(i, 1); save(); }
+    function atuAnciaoAno(m, v) { if(!db.anciaos_manual) db.anciaos_manual = {}; db.anciaos_manual[m] = v; save(); }
+    function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function limparRegras() { db.regras_manuais = {}; save(); }
+    function save() { database.ref('dados_igreja').set(db); }
+    function login() { const user = document.getElementById('u').value, pass = document.getElementById('p').value; if(db.senhas[user] === pass) { localStorage.setItem('iasd_curUser', user); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
     const sM = document.getElementById('selMes');
