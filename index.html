@@ -6,37 +6,31 @@
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --green: #2ecc71; }
         body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; box-sizing: border-box; }
-        
         .header-top { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .nav-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
-        
         .admin-box { display: none; background: #16213e; border: 2px solid var(--orange); padding: 12px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: flex; flex-direction: column; gap: 15px; } 
-        
         .admin-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid #334155; width: 100%; box-sizing: border-box; }
         .admin-section h4 { color: var(--neon); margin: 0 0 12px 0; text-align: center; border-bottom: 1px solid #334155; padding-bottom: 5px; font-size: 0.9rem; }
-
         .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; border: 1px solid #444; }
         table { width: 100%; border-collapse: collapse; color: black; min-width: 800px; font-size: 0.8rem; }
         th { background: var(--blue); color: white; padding: 12px 5px; border: 1px solid #cbd5e1; }
         td { border: 1px solid #cbd5e1; text-align: center; height: 48px; font-weight: bold; }
-
         .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
         .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
         .row-mulher { background-color: #fdf2f8 !important; }
-
         .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; font-size: 0.95rem; }
         .btn-min { display: block; width: 100%; padding: 12px; margin-bottom: 8px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; font-size: 0.85rem; text-align: center; cursor: pointer; }
         .btn-min.active { background: var(--neon); color: #000; box-shadow: 0 0 8px var(--neon); }
         .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; color: inherit; font-size: 0.8rem; }
+        
+        /* Galeria de Arquivos */
+        .grid-docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
+        .doc-card { background: #16213e; border: 1px solid #334155; border-radius: 8px; padding: 5px; text-align: center; }
+        .doc-thumb { width: 100%; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; background: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
 
-        @media (min-width: 900px) {
-            .admin-grid { flex-direction: row; align-items: flex-start; }
-            .header-top { flex-direction: row; justify-content: space-between; }
-            .nav-buttons { display: flex; }
-        }
-
+        @media (min-width: 900px) { .admin-grid { flex-direction: row; align-items: flex-start; } .header-top { flex-direction: row; justify-content: space-between; } .nav-buttons { display: flex; } }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding: 15px; }
         .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:400px; }
     </style> </head> <body>
@@ -46,8 +40,9 @@
     <div class="nav-buttons">
         <select id="selMes" onchange="renderTodo()" class="input-dark"></select>
         <button id="btnAcesso" class="btn-min" style="margin:0;" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
-        <button id="btnDados" class="btn-min" style="margin:0; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopMis()">📊 DADOS</button>
         <button id="btnSair" class="btn-min" style="margin:0; border-color:red; color:red; display:none;" onclick="sair()">SAIR</button>
+        <button id="btnDados" class="btn-min" style="margin:0; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopMis()">📊 DADOS</button>
+        <button id="btnTesouro" class="btn-min" style="margin:0; border-color:var(--green); color:var(--green); display:none;" onclick="document.getElementById('popTes').style.display='flex'">💰 POSTAR</button>
     </div>
 </div>
 
@@ -58,12 +53,10 @@
             <div id="listaMinisterios" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
             <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin()">LIMPAR COR</button>
         </div>
-        
         <div class="admin-section" id="secAnciao">
             <h4>ANCIÃOS POR MÊS</h4>
             <div id="gridAnciaos" style="display: flex; flex-direction: column; gap: 6px;"></div>
         </div>
-        
         <div class="admin-section" id="secSenhas">
             <h4>ACESSO E SENHAS</h4>
             <div id="listaSenhas" style="display: flex; flex-direction: column; gap: 6px;"></div>
@@ -83,10 +76,22 @@
     </table>
 </div>
 
-<div style="margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border: 1px solid #334155;">
+<div id="areaRestrita" style="display:none; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border: 1px solid #334155;">
     <h3 style="color:var(--orange); margin-top:0; font-size: 1rem;">📊 MISSIONÁRIO - <span id="mesMisTitulo"></span></h3>
-    <div style="height:250px;"><canvas id="chartMis"></canvas></div>
+    <div style="height:220px;"><canvas id="chartMis"></canvas></div>
+    
+    <h3 style="color:var(--green); margin-top:20px; font-size: 1rem; border-top: 1px solid #334155; padding-top:15px;">💰 TESOURARIA - COMPROVANTES</h3>
+    <div id="gridPublicoDocs" class="grid-docs"></div>
 </div>
+
+<div id="popTes" class="overlay"><div class="pop-content">
+    <h3>POSTAR ARQUIVO</h3>
+    <p style="font-size:0.8rem; color:gray;">PDF ou Imagem (JPG/PNG)</p>
+    <input type="file" id="fileIn" onchange="uploadDoc()" style="display:none">
+    <button onclick="document.getElementById('fileIn').click()" class="btn-min">+ SELECIONAR ARQUIVO</button>
+    <div id="listaAdminDocs" style="margin-top:15px; border-top:1px solid #334155; padding-top:10px;"></div>
+    <button onclick="document.getElementById('popTes').style.display='none'" style="width:100%; padding:10px; background:#444; border:none; border-radius:8px; margin-top:10px; color:white;">FECHAR</button>
+</div></div>
 
 <div id="modalLogin" class="overlay"><div class="pop-content" style="background:white; color:black;">
     <h3 style="margin:0 0 15px 0; text-align:center;">LOGIN</h3>
@@ -119,7 +124,7 @@
     const MINS_MAP = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "Mulher", sabatina: "Sabatina", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolescentes", especial: "Especial" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
-    let db = { senhas:{admin:"iasd118"}, anciaos:{}, escalas:{}, regras_manuais:{}, mis:{} };
+    let db = { senhas:{admin:"iasd118"}, anciaos:{}, escalas:{}, regras_manuais:{}, mis:{}, docs:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
     let myChart;
 
@@ -127,40 +132,82 @@
         const val = snap.val();
         if(val) {
             db = val;
-            if(!db.mis) db.mis = {}; 
-            if(!db.regras_manuais) db.regras_manuais = {};
-            if(!db.senhas) db.senhas = {admin:"iasd118"};
+            if(!db.mis) db.mis = {}; if(!db.docs) db.docs = {}; if(!db.senhas) db.senhas = {admin:"iasd118"};
             renderTodo();
         }
     });
 
     function save() { dbRef.set(db); }
-
+    function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        if (db.senhas[u] && db.senhas[u] === p) {
-            localStorage.setItem('iasd_user', u);
-            location.reload();
-        } else { alert("Login incorreto."); }
+        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Login incorreto."); }
     }
-
-    function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
 
     function renderTodo() {
         const m = document.getElementById('selMes').value || new Date().getMonth();
+        const isLogado = curUser !== 'visitante';
         const isGestor = (curUser === 'admin' || curUser === 'ger');
-        document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
-        document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
+
+        document.getElementById('btnSair').style.display = isLogado ? 'block' : 'none';
+        document.getElementById('btnAcesso').style.display = !isLogado ? 'block' : 'none';
         document.getElementById('btnDados').style.display = (isGestor || curUser === 'pessoal') ? 'block' : 'none';
+        document.getElementById('btnTesouro').style.display = isGestor ? 'block' : 'none';
         document.getElementById('adminPanel').style.display = isGestor ? 'block' : 'none';
         document.getElementById('secSenhas').style.display = (curUser === 'admin') ? 'block' : 'none';
+        
+        // Área de Gráficos e Docs só aparece para quem logar
+        document.getElementById('areaRestrita').style.display = isLogado ? 'block' : 'none';
+        
         document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + (db.anciaos?.[m] || "---");
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
         document.getElementById('mesMisTitulo').innerText = MESES[m];
-        renderEscala(m); renderGrafico(m); if(isGestor) renderAdmin();
+        
+        renderEscala(m); renderGrafico(m); renderPublicoDocs(m);
+        if(isGestor) { renderAdmin(); renderAdminDocs(m); }
     }
 
+    function uploadDoc() {
+        const file = document.getElementById('fileIn').files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const m = document.getElementById('selMes').value;
+            if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = [];
+            db.docs[m].push({ n: file.name, d: e.target.result, t: file.type });
+            save(); alert("Postado!");
+        }; reader.readAsDataURL(file);
+    }
+
+    function renderAdminDocs(m) {
+        const div = document.getElementById('listaAdminDocs'); div.innerHTML = "";
+        (db.docs?.[m] || []).forEach((doc, i) => {
+            div.innerHTML += `<div style="display:flex; justify-content:space-between; background:#000; padding:8px; margin-bottom:5px; font-size:0.7rem; border-radius:4px;">
+                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:180px;">${doc.n}</span>
+                <button onclick="db.docs[${m}].splice(${i},1); save();" style="color:red; background:none; border:none; font-weight:bold;">EXCLUIR</button>
+            </div>`;
+        });
+    }
+
+    function renderPublicoDocs(m) {
+        const grid = document.getElementById('gridPublicoDocs'); grid.innerHTML = "";
+        const list = db.docs?.[m] || [];
+        if(list.length === 0) grid.innerHTML = "<p style='color:gray; font-size:0.8rem;'>Nenhum comprovante este mês.</p>";
+        list.forEach(doc => {
+            const isPdf = doc.t === 'application/pdf';
+            grid.innerHTML += `<div class="doc-card" onclick="abrirDoc('${doc.d}')">
+                <div class="doc-thumb">${isPdf ? '📄' : `<img src="${doc.d}" style="width:100%; height:100%; object-fit:cover;">`}</div>
+                <div style="font-size:0.6rem; color:white; margin-top:5px; overflow:hidden;">${doc.n.substring(0,15)}</div>
+            </div>`;
+        });
+    }
+
+    function abrirDoc(data) {
+        const win = window.open();
+        win.document.write('<iframe src="' + data + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+    }
+
+    // --- FUNÇÕES DE ESCALA E ADMIN (MANTIDAS) ---
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, parseInt(mIdx) + 1, 0).getDate();
@@ -174,14 +221,10 @@
                 if(!corClas) {
                     Object.keys(REGRAS).forEach(k => {
                         let r = REGRAS[k];
-                        if((r==="1S" && sem===6 && cS===1) || (r==="2S" && sem===6 && cS===2) ||
-                           (r==="1D" && sem===0 && cD===1) || (r==="2Q" && sem===3 && cQ===2) ||
-                           (r==="UQ" && sem===3 && d > diasNoMes-7)) corClas = "row-"+k;
+                        if((r==="1S" && sem===6 && cS===1) || (r==="2S" && sem===6 && cS===2) || (r==="1D" && sem===0 && cD===1) || (r==="2Q" && sem===3 && cQ===2) || (r==="UQ" && sem===3 && d > diasNoMes-7)) corClas = "row-"+k;
                     });
                 }
-                let row = `<tr class="${corClas}">
-                    <td onclick="pintar('${dStr}')">${["DOM","","","QUA","","","SAB"][sem]}</td>
-                    <td onclick="pintar('${dStr}')">${d}/${parseInt(mIdx)+1}</td>`;
+                let row = `<tr class="${corClas}"><td onclick="pintar('${dStr}')">${["DOM","","","QUA","","","SAB"][sem]}</td><td onclick="pintar('${dStr}')">${d}/${parseInt(mIdx)+1}</td>`;
                 ["sa","pr","mu","lo","so","re","di"].forEach(col => {
                     let val = db.escalas?.[dStr]?.[col] || "";
                     let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col);
@@ -191,24 +234,19 @@
             }
         }
     }
-
     function pintar(d) { if((curUser==='admin' || curUser==='ger') && window.minSelecionado !== undefined) { if(!db.regras_manuais) db.regras_manuais={}; if(!window.minSelecionado) delete db.regras_manuais[d]; else db.regras_manuais[d]=window.minSelecionado; save(); } }
     function atu(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-
     function renderAdmin() {
         const lm = document.getElementById('listaMinisterios'); lm.innerHTML = "";
-        // REMOVIDO SABATINA DA PINTURA MANUAL
         const ocultar = ['admin', 'ger', 'gerencia', 'musica', 'especial', 'diaconato', 'sonoplastia', 'sabatina'];
         Object.keys(MINS_MAP).forEach(k => { if(!ocultar.includes(k.toLowerCase())) lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin()">${MINS_MAP[k]}</button>`; });
         const ga = document.getElementById('gridAnciaos'); ga.innerHTML = "";
         MESES.forEach((m, i) => { ga.innerHTML += `<div style="display:flex; align-items:center; gap:5px;"><span style="font-size:0.75rem; width:85px;">${m}</span><input class="input-dark" style="padding:6px;" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save()"></div>`; });
         const ls = document.getElementById('listaSenhas'); ls.innerHTML = "";
-        if(curUser === 'admin') {
-            Object.keys(db.senhas).forEach(u => { ls.innerHTML += `<div style="display:flex; gap:5px;"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${u}" onchange="renomear('${u}', this.value)"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()"><button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:8px 12px; border-radius:5px;">X</button></div>`; });
-        }
+        if(curUser === 'admin') { Object.keys(db.senhas).forEach(u => { ls.innerHTML += `<div style="display:flex; gap:5px;"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${u}" onchange="renomear('${u}', this.value)"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()"><button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:8px 12px; border-radius:5px;">X</button></div>`; }); }
     }
     function renomear(v, n) { let newN = n.toLowerCase().trim(); if(newN && newN!==v) { db.senhas[newN]=db.senhas[v]; delete db.senhas[v]; save(); } }
-    function delUser(u) { if(u!=='admin' && confirm('Remover acesso de '+u+'?')) { delete db.senhas[u]; save(); } }
+    function delUser(u) { if(u!=='admin' && confirm('Remover '+u+'?')) { delete db.senhas[u]; save(); } }
     function addUser() { let n=prompt("Nome:"); if(n) { db.senhas[n.toLowerCase().trim()]="123"; save(); } }
     function renderGrafico(m) {
         const ctx = document.getElementById('chartMis').getContext('2d');
@@ -221,7 +259,4 @@
         document.getElementById('camposMis').innerHTML = `Batismos: <input type="number" class="input-dark" value="${d.b}" onchange="atuMis(${m},'b',this.value)">Estudos: <input type="number" class="input-dark" value="${d.e}" onchange="atuMis(${m},'e',this.value)">Visitas: <input type="number" class="input-dark" value="${d.v}" onchange="atuMis(${m},'v',this.value)">Duplas: <input type="number" class="input-dark" value="${d.d}" onchange="atuMis(${m},'d',this.value)">`;
         document.getElementById('popMis').style.display='flex';
     }
-    function atuMis(m,k,v) { if(!db.mis[m]) db.mis[m]={b:0,e:0,v:0,d:0}; db.mis[m][k]=parseInt(v); save(); }
-    const sM = document.getElementById('selMes'); MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    window.onload = renderTodo;
-</script> </body> </html>
+    function atuMis(m,k,v) { if(!db.mis[m]) db.mis[m]={b:0,e:0,v:0,
