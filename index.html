@@ -3,83 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>IASD Estrela Dalva - v102.45</title>
+    <title>IASD Estrela Dalva - v102.46</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <style>
-        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --green: #2ecc71; --red: #ff4757; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #e6f1ff; font-family: sans-serif; padding: 10px; overflow-x: hidden; }
+        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --green: #2ecc71; --red: #ff4757; --glass: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', system-ui, sans-serif; padding: 10px; }
+        
         .container { width: 100%; max-width: 1400px; margin: auto; }
 
         /* HEADER */
-        .header-top { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .nav-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
-        .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 5px; font-size: 14px; }
+        .header-top { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .nav-buttons { display: flex; gap: 8px; }
+        .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 8px; font-size: 14px; outline: none; }
+        .input-dark:focus { border-color: var(--neon); }
+
+        /* TABELA E ESCALA */
+        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; color: #333; }
+        th { background: var(--blue); color: white; padding: 12px; font-size: 11px; border: 1px solid #dee2e6; text-transform: uppercase; }
+        td { border: 1px solid #dee2e6; height: 50px; text-align: center; font-weight: bold; }
+        .input-escala { width: 100%; height: 100%; border: none; text-align: center; font-weight: 700; background: transparent; font-size: 13px; color: inherit; }
+
+        /* CORES MINISTÉRIOS */
+        .row-pessoal { background-color: #e0f2fe !important; } 
+        .row-mordomia { background-color: #fef3c7 !important; } 
+        .row-saude { background-color: #f0fdf4 !important; } 
+        .row-familia { background-color: #faf5ff !important; }
+        .row-homens { background-color: #ecfeff !important; }
+        .row-adolescentes { background-color: #f8fafc !important; }
+        .row-mulher { background-color: #fdf2f8 !important; }
+
+        /* MURAL TESOURARIA */
+        .mural-section { background: var(--glass); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .mural-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        
+        .thumb-card { position: relative; aspect-ratio: 1/1; background: #000; border-radius: 12px; border: 2px solid transparent; cursor: pointer; overflow: hidden; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .thumb-card:hover { transform: translateY(-5px); border-color: var(--neon); }
+        .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-card .pdf-label { display: flex; flex-direction: column; align-items: center; color: var(--red); font-weight: bold; }
+
+        /* LOGIN POPUP INTELIGENTE */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; }
+        .login-card { background: #16213e; padding: 40px; border-radius: 20px; width: 100%; max-width: 350px; border: 1px solid var(--neon); box-shadow: 0 0 20px var(--neon); text-align: center; }
+        .login-card h2 { margin-bottom: 25px; color: var(--neon); letter-spacing: 2px; }
+        .btn-login { background: var(--neon); color: var(--blue); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; transition: 0.3s; }
+        .btn-login:hover { filter: brightness(1.2); }
+
+        /* LIGHTBOX TELA CHEIA */
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; padding: 10px; }
+        .lightbox-content { max-width: 95%; max-height: 95%; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        .lightbox iframe { width: 90vw; height: 85vh; border: none; background: white; border-radius: 8px; }
 
         /* PAINEL ADMIN */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .admin-sec { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; }
-        .btn-min { padding: 10px; border: 1px solid var(--neon); color: var(--neon); background: transparent; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; font-size: 11px; }
-        .btn-min.active { background: var(--neon); color: var(--blue); }
-
-        /* TABELA */
-        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 8px; margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; min-width: 850px; color: black; }
-        th { background: var(--blue); color: white; padding: 10px; font-size: 11px; border: 1px solid #ccc; text-transform: uppercase; }
-        td { border: 1px solid #ddd; height: 45px; text-align: center; font-weight: bold; cursor: pointer; }
-        .input-escala { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; font-size: 13px; }
-
-        /* CORES MINISTÉRIOS */
-        .row-pessoal { background-color: #e0f2fe !important; } /* Azul claro */
-        .row-mordomia { background-color: #fef3c7 !important; } /* Amarelo */
-        .row-saude { background-color: #f0fdf4 !important; } /* Verde */
-        .row-familia { background-color: #faf5ff !important; } /* Roxo */
-        .row-homens { background-color: #ecfeff !important; } /* Ciano */
-        .row-adolescentes { background-color: #f8fafc !important; } /* Cinza */
-        .row-mulher { background-color: #fdf2f8 !important; } /* Rosa */
-
-        /* MURAL TESOURARIA */
-        .mural-tesouraria { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--green); }
-        .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
-        .thumb-card { position: relative; aspect-ratio: 1/1; background: #000; border: 1px solid #444; border-radius: 8px; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* LIGHTBOX */
-        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; }
-        .lightbox img, .lightbox iframe { max-width: 90%; max-height: 90%; background: white; border-radius: 5px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .btn-action { padding: 8px; border: 1px solid var(--neon); color: var(--neon); background: transparent; border-radius: 5px; cursor: pointer; font-size: 11px; }
+        .btn-action.active { background: var(--neon); color: var(--blue); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header class="header-top">
-        <h2 style="color:var(--neon)">IASD ESTRELA DALVA</h2>
+        <h1 style="color:var(--neon); font-size: 1.5rem;">IASD ESTRELA DALVA</h1>
         <div class="nav-buttons">
             <select id="selMes" onchange="renderTodo();" class="input-dark"></select>
-            <button class="input-dark" id="btnUpload" onclick="dispararUpload()" style="display:none; color:var(--green);">+ COMPROVANTE</button>
-            <button class="input-dark" onclick="document.getElementById('modalLogin').style.display='flex'" id="btnAcesso">🔓</button>
-            <button class="input-dark" onclick="sair()" id="btnSair" style="display:none; color:red">🚪</button>
+            <button class="input-dark" id="btnUpload" onclick="dispararUpload()" style="display:none; color:var(--green); border-color: var(--green);">➕ COMPROVANTE</button>
+            <button class="input-dark" id="btnAcesso" onclick="abrirLogin()">🔓 ACESSAR</button>
+            <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; color:var(--red);">🚪 SAIR</button>
         </div>
     </header>
 
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
-            <div class="admin-sec">
-                <h4 style="color:var(--gold); margin-bottom:10px;">👤 ANCIÃOS DO ANO</h4>
-                <div id="listaAnciaos" style="max-height: 200px; overflow-y: auto;">
-                    </div>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                <h4 style="color:var(--gold); margin-bottom:10px;">👤 RESPONSÁVEIS (ANCIÃOS)</h4>
+                <div id="listaAnciaos" style="max-height: 150px; overflow-y: auto;"></div>
             </div>
-            <div class="admin-sec">
-                <h4 style="color:var(--neon); margin-bottom:10px;">🎨 CORES DA ESCALA</h4>
-                <p style="font-size: 10px; margin-bottom: 5px;">Selecione abaixo e clique no dia na tabela:</p>
-                <div id="gridMinisterios" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"></div>
-                <button class="btn-min" style="margin-top:10px; border-color:red; color:red;" onclick="limparRegras()">Limpar Cores Manuais</button>
-            </div>
-            <div class="admin-sec">
-                <h4 style="color:var(--orange); margin-bottom:10px;">🔑 SENHAS</h4>
-                <div id="verSenhas" style="font-size: 11px;"></div>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                <h4 style="color:var(--neon); margin-bottom:10px;">🎨 PINTAR ESCALA</h4>
+                <div id="gridCores" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"></div>
             </div>
         </div>
     </div>
@@ -87,10 +93,10 @@
     <div class="table-wrapper">
         <table>
             <thead>
-                <tr><th colspan="9" id="headerTitulo" style="font-size:16px; padding:15px;">ESCALA</th></tr>
-                <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); border-top:none;">Responsável: </th></tr>
+                <tr><th colspan="9" id="headerTitulo" style="font-size:18px;">ESCALA</th></tr>
+                <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); border-top:none; background: #1a365d;">Responsável: </th></tr>
                 <tr>
-                    <th style="width:70px">DIA</th><th style="width:60px">DATA</th>
+                    <th style="width:80px">DIA</th><th style="width:70px">DATA</th>
                     <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
                 </tr>
             </thead>
@@ -98,19 +104,27 @@
         </table>
     </div>
 
-    <div class="mural-tesouraria">
-        <h3 style="color:var(--green)">💰 COMPROVANTES - <span id="mesNome"></span></h3>
+    <div class="mural-section">
+        <div class="mural-header">
+            <h3 style="color:var(--green)">💰 COMPROVANTES DE TESOURARIA</h3>
+            <span id="labelMes" style="font-weight: bold; opacity: 0.8;"></span>
+        </div>
         <div id="gridMural" class="grid-mural"></div>
     </div>
 </div>
 
-<div id="lightbox" class="lightbox" onclick="this.style.display='none'"><div id="mediaBox"></div></div>
-<div id="modalLogin" class="lightbox" onclick="this.style.display='none'">
-    <div style="background:white; padding:25px; border-radius:10px; width:280px;" onclick="event.stopPropagation()">
-        <input type="text" id="u" placeholder="Usuário" class="input-dark" style="color:black!important; width:100%; margin-bottom:10px">
-        <input type="password" id="p" placeholder="Senha" class="input-dark" style="color:black!important; width:100%">
-        <button class="btn-min" style="background:var(--blue); color:white; margin-top:15px;" onclick="login()">ENTRAR</button>
+<div id="modalLogin" class="modal-overlay" onclick="fecharLogin()">
+    <div class="login-card" onclick="event.stopPropagation()">
+        <h2>LOGIN</h2>
+        <input type="text" id="userIn" placeholder="Usuário" class="input-dark" style="width:100%; margin-bottom:15px; color:white!important;">
+        <input type="password" id="passIn" placeholder="Senha" class="input-dark" style="width:100%; margin-bottom:10px; color:white!important;">
+        <button class="btn-login" onclick="login()">ENTRAR NO SISTEMA</button>
+        <p onclick="fecharLogin()" style="margin-top:20px; cursor:pointer; font-size:12px; opacity:0.6;">Cancelar</p>
     </div>
+</div>
+
+<div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+    <div id="lbContent"></div>
 </div>
 
 <script>
@@ -124,7 +138,7 @@
 
     let db = { escalas: {}, anciaos_manual: {}, docs: {}, regras_manuais: {}, senhas: {admin:"iasd118"} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-    let minSel = null;
+    let corAtiva = null;
 
     database.ref('dados_igreja').on('value', (snap) => { if(snap.val()) { db = snap.val(); renderTodo(); } });
 
@@ -134,43 +148,17 @@
 
         document.getElementById('btnSair').style.display = u !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = u === 'visitante' ? 'block' : 'none';
-        document.getElementById('adminPanel').style.display = (u === 'admin') ? 'block' : 'none';
         document.getElementById('btnUpload').style.display = (u === 'admin' || u === 'ger') ? 'block' : 'none';
+        document.getElementById('adminPanel').style.display = (u === 'admin') ? 'block' : 'none';
 
         const anciao = db.anciaos_manual?.[m] || ANCIÃOS_AUTO[m];
         document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + anciao;
         document.getElementById('headerTitulo').innerText = "ESCALA - " + MESES[m] + " 2026";
-        document.getElementById('mesNome').innerText = MESES[m];
+        document.getElementById('labelMes').innerText = MESES[m];
 
         renderEscala();
-        renderAdmin();
         renderMural();
-    }
-
-    function renderAdmin() {
-        // Lista de Anciãos para o ano todo
-        const lista = document.getElementById('listaAnciaos'); lista.innerHTML = "";
-        MESES.forEach((nome, i) => {
-            let valor = db.anciaos_manual?.[i] || "";
-            let auto = ANCIÃOS_AUTO[i];
-            lista.innerHTML += `
-                <div style="display:flex; align-items:center; gap:5px; margin-bottom:5px;">
-                    <small style="width:70px; font-size:9px;">${nome}:</small>
-                    <input class="input-dark" style="padding:4px; font-size:11px; flex:1" 
-                        placeholder="${auto}" value="${valor}" 
-                        onchange="atuAnciaoAno(${i}, this.value)">
-                </div>`;
-        });
-
-        // Grid de Ministérios para Cores
-        const grid = document.getElementById('gridMinisterios'); grid.innerHTML = "";
-        Object.keys(MINS).forEach(k => {
-            grid.innerHTML += `<button class="btn-min ${minSel===k?'active':''}" onclick="minSel='${k}'; renderAdmin();">${MINS[k]}</button>`;
-        });
-
-        // Senhas
-        const sArea = document.getElementById('verSenhas'); sArea.innerHTML = "";
-        Object.keys(db.senhas || {}).forEach(k => sArea.innerHTML += `<div>${k.toUpperCase()}: ${db.senhas[k]}</div>`);
+        if(u === 'admin') renderAdmin();
     }
 
     function renderEscala() {
@@ -182,11 +170,12 @@
             let dt = new Date(2026, mIdx, d); let sem = dt.getDay();
             if([0,3,6].includes(sem)) {
                 let dStr = `${d}/${mIdx+1}/2026`;
-                let corClasse = getCorDia(d, sem, mIdx, dStr);
+                let cor = db.regras_manuais?.[dStr] ? "row-"+db.regras_manuais[dStr] : getCorAuto(d, sem);
                 
-                let tr = `<tr class="${corClasse}" onclick="aplicarCor('${dStr}')">
-                    <td style="font-size:10px">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</td>
-                    <td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr class="${cor}" onclick="pintarDia('${dStr}')">
+                    <td style="font-size:11px; background: rgba(0,0,0,0.03);">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</td>
+                    <td style="background: rgba(0,0,0,0.03);">${d}/${mIdx+1}</td>`;
+                
                 ["sa","pr","mu","lo","so","re","di"].forEach(c => {
                     let val = db.escalas?.[dStr]?.[c] || "";
                     let edit = (curUser === 'admin' || curUser === c);
@@ -197,74 +186,69 @@
         }
     }
 
-    function getCorDia(d, sem, m, dStr) {
-        // Se houver regra manual (clicada pelo admin), ela manda
-        if(db.regras_manuais?.[dStr]) return "row-" + db.regras_manuais[dStr];
-
-        // Escala Automática de Cores
-        if(sem === 6) { // Sábados
-            let sab = Math.ceil(d/7);
-            if(sab === 1) return "row-pessoal";
-            if(sab === 2) return "row-mordomia";
-        }
-        if(sem === 0) { // Domingos
-            let dom = Math.ceil(d/7);
-            if(dom === 1) return "row-saude";
-            if(dom === 3) return "row-familia";
-        }
-        if(sem === 3) { // Quartas
-            let qua = Math.ceil(d/7);
-            if(qua === 2) return "row-homens";
-            if(qua === 3) return "row-adolescentes";
-        }
+    function getCorAuto(d, sem) {
+        if(sem === 6) { let sab = Math.ceil(d/7); if(sab===1) return "row-pessoal"; if(sab===2) return "row-mordomia"; }
+        if(sem === 0) { let dom = Math.ceil(d/7); if(dom===1) return "row-saude"; if(dom===3) return "row-familia"; }
+        if(sem === 3) { let qua = Math.ceil(d/7); if(qua===2) return "row-homens"; if(qua===3) return "row-adolescentes"; }
         return "";
-    }
-
-    function aplicarCor(dStr) {
-        if(minSel && curUser === 'admin') {
-            if(!db.regras_manuais) db.regras_manuais = {};
-            db.regras_manuais[dStr] = minSel;
-            save();
-        }
     }
 
     function renderMural() {
         const m = document.getElementById('selMes').value;
         const grid = document.getElementById('gridMural'); grid.innerHTML = "";
-        (db.docs?.[m] || []).forEach((f, i) => {
+        const docs = db.docs?.[m] || [];
+
+        docs.forEach((f, i) => {
+            const isPDF = f.type.includes('pdf');
             grid.innerHTML += `
                 <div class="thumb-card" onclick="abrirLightbox('${f.data}', '${f.type}')">
-                    ${f.type.includes('pdf') ? '<small>PDF</small>' : `<img src="${f.data}">`}
-                    ${curUser==='admin' ? `<button onclick="removerDoc(${i}, event)" style="position:absolute;top:0;right:0;background:red;color:white;border:none;padding:2px 5px">X</button>` : ''}
+                    ${isPDF ? '<div class="pdf-label">📄<br>PDF</div>' : `<img src="${f.data}">`}
+                    ${curUser==='admin' ? `<button onclick="removerDoc(${i}, event)" style="position:absolute; top:5px; right:5px; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; z-index:10;">×</button>` : ''}
                 </div>`;
         });
     }
 
     function abrirLightbox(data, type) {
         const lb = document.getElementById('lightbox');
-        const box = document.getElementById('mediaBox');
+        const content = document.getElementById('lbContent');
         lb.style.display = 'flex';
-        box.innerHTML = type.includes('pdf') ? `<iframe src="${data}"></iframe>` : `<img src="${data}">`;
+        content.innerHTML = type.includes('pdf') ? `<iframe src="${data}"></iframe>` : `<img src="${data}" class="lightbox-content">`;
     }
 
     function dispararUpload() {
         const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*,application/pdf';
         inp.onchange = e => {
-            const f = e.target.files[0]; const r = new FileReader();
-            r.onload = ev => {
+            const f = e.target.files[0]; const reader = new FileReader();
+            reader.onload = ev => {
                 const m = document.getElementById('selMes').value;
                 if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = [];
-                db.docs[m].push({data: ev.target.result, type: f.type}); save();
-            }; r.readAsDataURL(f);
+                db.docs[m].push({ data: ev.target.result, type: f.type });
+                save();
+            }; reader.readAsDataURL(f);
         }; inp.click();
     }
 
-    function removerDoc(i, e) { e.stopPropagation(); const m = document.getElementById('selMes').value; db.docs[m].splice(i, 1); save(); }
-    function atuAnciaoAno(m, v) { if(!db.anciaos_manual) db.anciaos_manual = {}; db.anciaos_manual[m] = v; save(); }
+    function renderAdmin() {
+        const aArea = document.getElementById('listaAnciaos'); aArea.innerHTML = "";
+        MESES.forEach((mes, i) => {
+            aArea.innerHTML += `<div style="margin-bottom:5px; font-size:11px;">${mes}: <input class="input-dark" style="padding:2px; width:120px" value="${db.anciaos_manual?.[i]||''}" placeholder="${ANCIÃOS_AUTO[i]}" onchange="atuAnciao(${i}, this.value)"></div>`;
+        });
+
+        const cArea = document.getElementById('gridCores'); cArea.innerHTML = "";
+        Object.keys(MINS).forEach(k => {
+            cArea.innerHTML += `<button class="btn-action ${corAtiva===k?'active':''}" onclick="corAtiva='${k}'; renderAdmin()">${MINS[k]}</button>`;
+        });
+    }
+
+    function pintarDia(dStr) { if(corAtiva && curUser==='admin') { if(!db.regras_manuais) db.regras_manuais={}; db.regras_manuais[dStr] = corAtiva; save(); } }
+    function atuAnciao(m, v) { if(!db.anciaos_manual) db.anciaos_manual={}; db.anciaos_manual[m]=v; save(); }
     function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function limparRegras() { db.regras_manuais = {}; save(); }
+    function removerDoc(i, e) { e.stopPropagation(); const m = document.getElementById('selMes').value; db.docs[m].splice(i, 1); save(); }
     function save() { database.ref('dados_igreja').set(db); }
-    function login() { const user = document.getElementById('u').value, pass = document.getElementById('p').value; if(db.senhas[user] === pass) { localStorage.setItem('iasd_curUser', user); location.reload(); } else alert("Erro!"); }
+    
+    function abrirLogin() { document.getElementById('modalLogin').style.display='flex'; }
+    function fecharLogin() { document.getElementById('modalLogin').style.display='none'; }
+    function login() { const u = document.getElementById('userIn').value, p = document.getElementById('passIn').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Dados incorretos!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
     const sM = document.getElementById('selMes');
