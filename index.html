@@ -1,4 +1,4 @@
-<!DOCTYPE html> <html lang="pt-br"> <head>    <meta charset="UTF-8">    <title>IASD Estrela Dalva</title>
+<!DOCTYPE html> <html lang="pt-br"> <head>    <meta charset="UTF-8">    <title>IASD Estrela Dalva - GESTÃO TOTAL</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,7 +15,6 @@
         .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; border-color: var(--neon) !important; }
         
-        /* Cores de Fundo da Escala */
         .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
         .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
@@ -54,18 +53,18 @@
             <div class="admin-section">
                 <h4>1. PINTAR ESCALA</h4>
                 <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; text-align:center;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
+                <button class="btn-min" style="border-color:red; color:red; text-align:center;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
             </div>
             <div class="admin-section"><h4>2. RESPONSÁVEIS</h4><div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"></div></div>
             <div class="admin-section">
-                <h4>3. GESTÃO DE ACESSOS (LOGINS E SENHAS)</h4>
+                <h4>3. GESTÃO DE ACESSOS (SENHAS)</h4>
                 <div style="max-height: 250px; overflow-y: auto;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.75rem;">
-                        <thead><tr style="color:var(--gold); text-align:left;"><th>USUÁRIO (LOGIN)</th><th>SENHA</th><th>AÇÃO</th></tr></thead>
+                        <thead><tr style="color:var(--gold); text-align:left;"><th>LOGIN</th><th>SENHA</th><th>AÇÃO</th></tr></thead>
                         <tbody id="corpoCreds"></tbody>
                     </table>
                 </div>
-                <button onclick="addNovoUsuario()" style="width:100%; margin-top:10px; background:var(--green); color:black; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">+ ADICIONAR NOVO ACESSO</button>
+                <button onclick="addNovoUsuario()" style="width:100%; margin-top:10px; background:var(--green); color:black; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">+ NOVO ACESSO</button>
             </div>
         </div>
     </div>
@@ -75,7 +74,7 @@
             <thead>
                 <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
                 <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-                <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+                <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>ESCOLA SABATINA</th><th>PREGADOR</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
@@ -104,7 +103,7 @@
     const database = firebase.database();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS_MAP = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sono", mulher: "Mulher", sabatina: "Sabatina", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolescentes", especial: "Especial" };
+    const MINS_MAP = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "Mulher", sabatina: "Sabatina", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolescentes", especial: "Especial" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
     let db = {};
@@ -169,15 +168,20 @@
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
 
     function renderAdmin() {
-        // Painel 1: Ministérios
+        // Painel 1: MINISTÉRIOS QUE PINTAM (Filtro aplicado)
         const lm = document.getElementById('listaMinisterios'); lm.innerHTML = "";
-        Object.keys(MINS_MAP).forEach(k => { lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS_MAP[k]}</button>`; });
+        const excluirPintura = ['admin', 'ger', 'diaconato', 'sonoplastia', 'especial', 'musica'];
+        Object.keys(MINS_MAP).forEach(k => { 
+            if(!excluirPintura.includes(k)) {
+                lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS_MAP[k]}</button>`; 
+            }
+        });
 
         // Painel 2: Anciãos
         const mGrid = document.getElementById('gridMeses'); mGrid.innerHTML = "";
         MESES.forEach((m, i) => { mGrid.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i] || ''}" onchange="db.anciaos[${i}]=this.value; save();"></div>`; });
 
-        // Painel 3: Gestão de Senhas REAL
+        // Painel 3: Gestão de Acessos
         const corpo = document.getElementById('corpoCreds'); corpo.innerHTML = "";
         Object.keys(db.senhas).forEach(user => {
             corpo.innerHTML += `<tr>
@@ -188,18 +192,10 @@
         });
     }
 
-    function addNovoUsuario() { let n = prompt("Nome do novo login:"); if(n) { db.senhas[n.toLowerCase().trim()] = "123"; save(); } }
-    function removerUsuario(u) { if(confirm("Remover o acesso de "+u+"?")) { delete db.senhas[u]; save(); } }
-    function renomearUsuario(velho, novo) {
-        let n = novo.toLowerCase().trim();
-        if(n && n !== velho) {
-            db.senhas[n] = db.senhas[velho];
-            delete db.senhas[velho];
-            save();
-        }
-    }
+    function addNovoUsuario() { let n = prompt("Nome do login:"); if(n) { db.senhas[n.toLowerCase().trim()] = "123"; save(); } }
+    function removerUsuario(u) { if(confirm("Remover "+u+"?")) { delete db.senhas[u]; save(); } }
+    function renomearUsuario(v, n) { let newN = n.toLowerCase().trim(); if(newN && newN!==v) { db.senhas[newN]=db.senhas[v]; delete db.senhas[v]; save(); } }
 
-    // Funções de PDF, Gráfico e Upload
     function gerarPDF() { html2pdf().from(document.getElementById('area-pdf')).set({margin:0.2, filename:'Escala.pdf', jsPDF:{orientation:'landscape'}}).save(); }
     function abrirCalendarioAnual() {
         const container = document.getElementById('listaEventosAnuais'); container.innerHTML = "";
@@ -220,13 +216,13 @@
     function atuMis(m,k,v){ if(!db.mis_v3[m])db.mis_v3[m]={}; db.mis_v3[m][k]=parseInt(v); save(); }
     function fecharPop(){ document.getElementById('popOverlay').style.display='none'; renderTodo(); }
     function abrirTesourariaAdmin(){ renderAdminDocs(); document.getElementById('popTesouraria').style.display='flex'; }
-    function renderAdminDocs(){ const m=document.getElementById('selMes').value; const lista=document.getElementById('listaAdminArquivos'); lista.innerHTML=""; (db.docs?.[m]||[]).forEach((doc,i)=>{ lista.innerHTML+=`<div style="display:flex; justify-content:space-between; padding:5px; background:#1e293b; margin:2px; font-size:0.7rem;">${doc.nome} <button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">EXCLUIR</button></div>`; }); }
+    function renderAdminDocs(){ const m=document.getElementById('selMes').value; const lista=document.getElementById('listaAdminArquivos'); lista.innerHTML=""; (db.docs?.[m]||[]).forEach((doc,i)=>{ lista.innerHTML+=`<div style="display:flex; justify-content:space-between; padding:5px; background:#1e293b; margin:2px; font-size:0.7rem;">${doc.nome} <button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none;">X</button></div>`; }); }
     function uploadArquivo(){ const file=document.getElementById('fileInput').files[0]; if(!file) return; const r=new FileReader(); r.onload=(e)=>{ const m=document.getElementById('selMes').value; if(!db.docs[m])db.docs[m]=[]; db.docs[m].push({nome:file.name, data:e.target.result}); save(); renderAdminDocs(); renderArquivosPublicos(); }; r.readAsDataURL(file); }
     function renderArquivosPublicos(){ const m=document.getElementById('selMes').value; const grid=document.getElementById('gridArquivosPublicos'); grid.innerHTML=""; (db.docs?.[m]||[]).forEach(doc=>{ grid.innerHTML+=`<img src="${doc.data}" class="thumb-doc" onclick="window.open(this.src)">`; }); }
     
     function login(){ 
         const u=document.getElementById('userLogin').value.toLowerCase().trim(), p=document.getElementById('passLogin').value; 
-        if(db.senhas[u] === p){ localStorage.setItem('iasd_curUser',u); location.reload(); } else { alert("Login Incorreto!"); } 
+        if(db.senhas[u] === p){ localStorage.setItem('iasd_curUser',u); location.reload(); } else { alert("Erro!"); } 
     }
     function sair(){ localStorage.removeItem('iasd_curUser'); location.reload(); }
     const sM = document.getElementById('selMes'); MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
