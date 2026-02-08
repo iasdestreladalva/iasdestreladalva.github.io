@@ -10,91 +10,88 @@
         .nav-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
         .admin-box { display: none; background: #16213e; border: 2px solid var(--orange); padding: 12px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: flex; flex-direction: column; gap: 15px; } 
-        .admin-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid #334155; width: 100%; box-sizing: border-box; }
-        .admin-section h4 { color: var(--neon); margin: 0 0 12px 0; text-align: center; border-bottom: 1px solid #334155; padding-bottom: 5px; font-size: 0.9rem; }
-        .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; border: 1px solid #444; }
+        .admin-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid #334155; }
+        .table-wrap { width: 100%; overflow-x: auto; background: white; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; color: black; min-width: 800px; font-size: 0.8rem; }
-        th { background: var(--blue); color: white; padding: 12px 5px; border: 1px solid #cbd5e1; }
+        th { background: var(--blue); color: white; padding: 12px 5px; }
         td { border: 1px solid #cbd5e1; text-align: center; height: 48px; font-weight: bold; }
         .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; } .row-homens { background-color: #ecfeff !important; }
         .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
         .row-mulher { background-color: #fdf2f8 !important; }
-        .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; font-size: 0.95rem; }
-        .btn-min { display: block; width: 100%; padding: 12px; margin-bottom: 8px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; font-size: 0.85rem; text-align: center; cursor: pointer; }
-        .btn-min.active { background: var(--neon); color: #000; box-shadow: 0 0 8px var(--neon); }
-        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; color: inherit; font-size: 0.8rem; }
+        .input-dark { background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; }
+        .btn-min { display: block; width: 100%; padding: 12px; background: none; border: 1px solid var(--neon); color: var(--neon); border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; }
         
-        /* Galeria de Arquivos */
-        .grid-docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
-        .doc-card { background: #16213e; border: 1px solid #334155; border-radius: 8px; padding: 5px; text-align: center; }
-        .doc-thumb { width: 100%; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; background: #000; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        /* Ajuste Galeria */
+        .grid-docs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .doc-card { background: #1c2541; border: 1px solid var(--green); border-radius: 8px; padding: 10px; text-align: center; }
+        .btn-abrir { background: var(--green); color: #000; border: none; padding: 8px; width: 100%; border-radius: 4px; font-weight: bold; margin-top: 5px; font-size: 0.7rem; }
 
-        @media (min-width: 900px) { .admin-grid { flex-direction: row; align-items: flex-start; } .header-top { flex-direction: row; justify-content: space-between; } .nav-buttons { display: flex; } }
+        @media (min-width: 900px) { .admin-grid { flex-direction: row; } .header-top { flex-direction: row; } .grid-docs { grid-template-columns: repeat(4, 1fr); } }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding: 15px; }
-        .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:400px; }
+        .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:400px; max-height: 80vh; overflow-y: auto; }
     </style> </head> <body>
 
 <div class="header-top">
     <h2 style="color:var(--neon); margin:0; text-align: center;">IASD ESTRELA DALVA</h2>
     <div class="nav-buttons">
         <select id="selMes" onchange="renderTodo()" class="input-dark"></select>
-        <button id="btnAcesso" class="btn-min" style="margin:0;" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
-        <button id="btnSair" class="btn-min" style="margin:0; border-color:red; color:red; display:none;" onclick="sair()">SAIR</button>
-        <button id="btnDados" class="btn-min" style="margin:0; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopMis()">📊 DADOS</button>
-        <button id="btnTesouro" class="btn-min" style="margin:0; border-color:var(--green); color:var(--green); display:none;" onclick="document.getElementById('popTes').style.display='flex'">💰 POSTAR</button>
+        <button id="btnAcesso" class="btn-min" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
+        <button id="btnSair" class="btn-min" style="border-color:red; color:red; display:none;" onclick="sair()">SAIR</button>
+        <button id="btnDados" class="btn-min" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopMis()">📊 DADOS</button>
+        <button id="btnTesouro" class="btn-min" style="border-color:var(--green); color:var(--green); display:none;" onclick="document.getElementById('popTes').style.display='flex'">💰 TESOURARIA</button>
     </div>
 </div>
 
 <div id="adminPanel" class="admin-box">
     <div class="admin-grid">
-        <div class="admin-section" id="secPintar">
+        <div class="admin-section">
             <h4>PINTAR ESCALA</h4>
             <div id="listaMinisterios" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
             <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin()">LIMPAR COR</button>
         </div>
-        <div class="admin-section" id="secAnciao">
-            <h4>ANCIÃOS POR MÊS</h4>
-            <div id="gridAnciaos" style="display: flex; flex-direction: column; gap: 6px;"></div>
-        </div>
         <div class="admin-section" id="secSenhas">
-            <h4>ACESSO E SENHAS</h4>
-            <div id="listaSenhas" style="display: flex; flex-direction: column; gap: 6px;"></div>
-            <button onclick="addUser()" style="width:100%; margin-top:10px; background:var(--green); color:black; border:none; padding:12px; border-radius:8px; font-weight:bold;">+ NOVO ACESSO</button>
+            <h4>SENHAS</h4>
+            <div id="listaSenhas"></div>
+            <button onclick="addUser()" style="width:100%; margin-top:10px; background:var(--green); border:none; padding:10px; border-radius:5px;">+ NOVO</button>
         </div>
     </div>
 </div>
 
-<div class="table-wrap" id="area-pdf">
+<div class="table-wrap">
     <table>
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="font-size:1.1rem; text-align:left;">ESCALA</th></tr>
-            <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); text-align:left; font-size:0.9rem;">Responsável:</th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="text-align:left;">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerAnciao" style="color:var(--gold); text-align:left;">Responsável:</th></tr>
             <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 </div>
 
-<div id="areaRestrita" style="display:none; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border: 1px solid #334155;">
-    <h3 style="color:var(--orange); margin-top:0; font-size: 1rem;">📊 MISSIONÁRIO - <span id="mesMisTitulo"></span></h3>
-    <div style="height:220px;"><canvas id="chartMis"></canvas></div>
+<div id="areaRestrita" style="display:none; margin-top:20px;">
+    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px;">
+        <h3 style="color:var(--orange); margin:0 0 10px 0;">📊 MISSIONÁRIO - <span id="mesMisTitulo"></span></h3>
+        <div style="height:200px;"><canvas id="chartMis"></canvas></div>
+    </div>
     
-    <h3 style="color:var(--green); margin-top:20px; font-size: 1rem; border-top: 1px solid #334155; padding-top:15px;">💰 TESOURARIA - COMPROVANTES</h3>
-    <div id="gridPublicoDocs" class="grid-docs"></div>
+    <div style="margin-top:20px;">
+        <h3 style="color:var(--green); margin-bottom:10px;">💰 COMPROVANTES TESOURARIA</h3>
+        <div id="gridPublicoDocs" class="grid-docs"></div>
+    </div>
 </div>
 
 <div id="popTes" class="overlay"><div class="pop-content">
-    <h3>POSTAR ARQUIVO</h3>
-    <p style="font-size:0.8rem; color:gray;">PDF ou Imagem (JPG/PNG)</p>
-    <input type="file" id="fileIn" onchange="uploadDoc()" style="display:none">
-    <button onclick="document.getElementById('fileIn').click()" class="btn-min">+ SELECIONAR ARQUIVO</button>
-    <div id="listaAdminDocs" style="margin-top:15px; border-top:1px solid #334155; padding-top:10px;"></div>
-    <button onclick="document.getElementById('popTes').style.display='none'" style="width:100%; padding:10px; background:#444; border:none; border-radius:8px; margin-top:10px; color:white;">FECHAR</button>
+    <h3 style="color:var(--green)">POSTAR ARQUIVO</h3>
+    <input type="file" id="fileIn" accept="image/*,application/pdf" style="display:none" onchange="uploadDoc()">
+    <button onclick="document.getElementById('fileIn').click()" class="btn-min" style="border-color:var(--green); color:var(--green)">+ SELECIONAR (PDF/FOTO)</button>
+    <div id="listaAdminDocs" style="margin-top:20px; border-top:1px solid #334155;"></div>
+    <button onclick="document.getElementById('popTes').style.display='none'" class="btn-min" style="margin-top:20px; border-color:#fff; color:#fff;">VOLTAR</button>
 </div></div>
 
 <div id="modalLogin" class="overlay"><div class="pop-content" style="background:white; color:black;">
-    <h3 style="margin:0 0 15px 0; text-align:center;">LOGIN</h3>
+    <h3 style="text-align:center;">LOGIN</h3>
     <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
     <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:15px;">
     <button onclick="fazerLogin()" style="width:100%; padding:15px; background:var(--blue); color:white; border:none; border-radius:8px; font-weight:bold;">ENTRAR</button>
@@ -121,28 +118,21 @@
     const dbRef = firebase.database().ref('iasd_v102');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS_MAP = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "Mulher", sabatina: "Sabatina", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolescentes", especial: "Especial" };
+    const MINS_MAP = { diaconato: "Diaconato", musica: "Música", sonoplastia: "Som", mulher: "Mulher", pessoal: "Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "Homens", familia: "Família", adolescentes: "Adolesc." };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
     let db = { senhas:{admin:"iasd118"}, anciaos:{}, escalas:{}, regras_manuais:{}, mis:{}, docs:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
     let myChart;
 
-    dbRef.on('value', snap => {
-        const val = snap.val();
-        if(val) {
-            db = val;
-            if(!db.mis) db.mis = {}; if(!db.docs) db.docs = {}; if(!db.senhas) db.senhas = {admin:"iasd118"};
-            renderTodo();
-        }
-    });
+    dbRef.on('value', snap => { if(snap.val()) { db = snap.val(); if(!db.docs) db.docs = {}; renderTodo(); } });
 
     function save() { dbRef.set(db); }
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
     function fazerLogin() {
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Login incorreto."); }
+        if (db.senhas[u] && db.senhas[u] === p) { localStorage.setItem('iasd_user', u); location.reload(); } else { alert("Acesso negado."); }
     }
 
     function renderTodo() {
@@ -156,8 +146,6 @@
         document.getElementById('btnTesouro').style.display = isGestor ? 'block' : 'none';
         document.getElementById('adminPanel').style.display = isGestor ? 'block' : 'none';
         document.getElementById('secSenhas').style.display = (curUser === 'admin') ? 'block' : 'none';
-        
-        // Área de Gráficos e Docs só aparece para quem logar
         document.getElementById('areaRestrita').style.display = isLogado ? 'block' : 'none';
         
         document.getElementById('headerAnciao').innerText = "Responsável: Ancião " + (db.anciaos?.[m] || "---");
@@ -168,23 +156,26 @@
         if(isGestor) { renderAdmin(); renderAdminDocs(m); }
     }
 
+    // --- SISTEMA DE ARQUIVOS (CORRIGIDO) ---
     function uploadDoc() {
         const file = document.getElementById('fileIn').files[0]; if(!file) return;
+        if(file.size > 2000000 && file.type.includes('image')) { alert("A imagem é muito grande. Tente uma menor."); return; }
+        
         const reader = new FileReader();
         reader.onload = (e) => {
             const m = document.getElementById('selMes').value;
             if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = [];
-            db.docs[m].push({ n: file.name, d: e.target.result, t: file.type });
-            save(); alert("Postado!");
+            db.docs[m].push({ n: file.name.substring(0,20), d: e.target.result, t: file.type });
+            save(); alert("Enviado com sucesso!");
         }; reader.readAsDataURL(file);
     }
 
     function renderAdminDocs(m) {
         const div = document.getElementById('listaAdminDocs'); div.innerHTML = "";
         (db.docs?.[m] || []).forEach((doc, i) => {
-            div.innerHTML += `<div style="display:flex; justify-content:space-between; background:#000; padding:8px; margin-bottom:5px; font-size:0.7rem; border-radius:4px;">
-                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:180px;">${doc.n}</span>
-                <button onclick="db.docs[${m}].splice(${i},1); save();" style="color:red; background:none; border:none; font-weight:bold;">EXCLUIR</button>
+            div.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
+                <span style="font-size:0.7rem;">${doc.n}</span>
+                <button onclick="db.docs[${m}].splice(${i},1); save();" style="color:red; background:none; border:none;">X</button>
             </div>`;
         });
     }
@@ -192,22 +183,23 @@
     function renderPublicoDocs(m) {
         const grid = document.getElementById('gridPublicoDocs'); grid.innerHTML = "";
         const list = db.docs?.[m] || [];
-        if(list.length === 0) grid.innerHTML = "<p style='color:gray; font-size:0.8rem;'>Nenhum comprovante este mês.</p>";
+        if(list.length === 0) grid.innerHTML = "<p style='color:gray;'>Nenhum arquivo.</p>";
         list.forEach(doc => {
-            const isPdf = doc.t === 'application/pdf';
-            grid.innerHTML += `<div class="doc-card" onclick="abrirDoc('${doc.d}')">
-                <div class="doc-thumb">${isPdf ? '📄' : `<img src="${doc.d}" style="width:100%; height:100%; object-fit:cover;">`}</div>
-                <div style="font-size:0.6rem; color:white; margin-top:5px; overflow:hidden;">${doc.n.substring(0,15)}</div>
+            grid.innerHTML += `<div class="doc-card">
+                <div style="font-size:2rem;">${doc.t.includes('pdf') ? '📄' : '🖼️'}</div>
+                <div style="font-size:0.6rem; margin:5px 0;">${doc.n}</div>
+                <button class="btn-abrir" onclick="abrirDoc('${doc.d}')">ABRIR</button>
             </div>`;
         });
     }
 
-    function abrirDoc(data) {
+    function abrirDoc(base64) {
         const win = window.open();
-        win.document.write('<iframe src="' + data + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+        if(!win) { alert("O navegador bloqueou a janela. Autorize pop-ups."); return; }
+        win.document.write(`<iframe src="${base64}" frameborder="0" style="width:100%; height:100vh;"></iframe>`);
     }
 
-    // --- FUNÇÕES DE ESCALA E ADMIN (MANTIDAS) ---
+    // --- RESTANTE DAS FUNÇÕES (ESTÁVEIS) ---
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, parseInt(mIdx) + 1, 0).getDate();
@@ -238,15 +230,12 @@
     function atu(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function renderAdmin() {
         const lm = document.getElementById('listaMinisterios'); lm.innerHTML = "";
-        const ocultar = ['admin', 'ger', 'gerencia', 'musica', 'especial', 'diaconato', 'sonoplastia', 'sabatina'];
-        Object.keys(MINS_MAP).forEach(k => { if(!ocultar.includes(k.toLowerCase())) lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin()">${MINS_MAP[k]}</button>`; });
-        const ga = document.getElementById('gridAnciaos'); ga.innerHTML = "";
-        MESES.forEach((m, i) => { ga.innerHTML += `<div style="display:flex; align-items:center; gap:5px;"><span style="font-size:0.75rem; width:85px;">${m}</span><input class="input-dark" style="padding:6px;" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save()"></div>`; });
+        Object.keys(MINS_MAP).forEach(k => { lm.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin()" style="margin-bottom:5px; font-size:0.7rem;">${MINS_MAP[k]}</button>`; });
         const ls = document.getElementById('listaSenhas'); ls.innerHTML = "";
-        if(curUser === 'admin') { Object.keys(db.senhas).forEach(u => { ls.innerHTML += `<div style="display:flex; gap:5px;"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${u}" onchange="renomear('${u}', this.value)"><input class="input-dark" style="padding:6px; font-size:0.8rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save()"><button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:8px 12px; border-radius:5px;">X</button></div>`; }); }
+        if(curUser === 'admin') { Object.keys(db.senhas).forEach(u => { ls.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:5px;"><input class="input-dark" value="${u}" onchange="renomear('${u}', this.value)"><button onclick="delUser('${u}')" style="background:red; color:white; border:none; padding:5px;">X</button></div>`; }); }
     }
     function renomear(v, n) { let newN = n.toLowerCase().trim(); if(newN && newN!==v) { db.senhas[newN]=db.senhas[v]; delete db.senhas[v]; save(); } }
-    function delUser(u) { if(u!=='admin' && confirm('Remover '+u+'?')) { delete db.senhas[u]; save(); } }
+    function delUser(u) { if(u!=='admin' && confirm('Excluir?')) { delete db.senhas[u]; save(); } }
     function addUser() { let n=prompt("Nome:"); if(n) { db.senhas[n.toLowerCase().trim()]="123"; save(); } }
     function renderGrafico(m) {
         const ctx = document.getElementById('chartMis').getContext('2d');
@@ -259,4 +248,7 @@
         document.getElementById('camposMis').innerHTML = `Batismos: <input type="number" class="input-dark" value="${d.b}" onchange="atuMis(${m},'b',this.value)">Estudos: <input type="number" class="input-dark" value="${d.e}" onchange="atuMis(${m},'e',this.value)">Visitas: <input type="number" class="input-dark" value="${d.v}" onchange="atuMis(${m},'v',this.value)">Duplas: <input type="number" class="input-dark" value="${d.d}" onchange="atuMis(${m},'d',this.value)">`;
         document.getElementById('popMis').style.display='flex';
     }
-    function atuMis(m,k,v) { if(!db.mis[m]) db.mis[m]={b:0,e:0,v:0,
+    function atuMis(m,k,v) { if(!db.mis[m]) db.mis[m]={b:0,e:0,v:0,d:0}; db.mis[m][k]=parseInt(v); save(); }
+    const sM = document.getElementById('selMes'); MESES.forEach((m,i)=>sM.innerHTML+=`<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    window.onload = renderTodo;
+</script> </body> </html>
