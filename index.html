@@ -1,127 +1,107 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v160 Final</title>
+    <title>IASD Estrela Dalva - v170 Gestão Total</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { 
-            --iasd-blue: #002b5c; 
-            --bg-dark: #070a0f; 
-            --card-bg: #0f172a;
-            --neon-blue: #38bdf8; 
-            --text-main: #f1f5f9;
-            --border: #1e293b;
-        }
-        
+        :root { --iasd-blue: #002b5c; --bg-dark: #070a0f; --card-bg: #0f172a; --neon-blue: #38bdf8; --text-main: #f1f5f9; --border: #1e293b; }
         body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
-        .container { max-width: 1400px; margin: auto; }
+        .container { max-width: 1450px; margin: auto; }
 
-        /* PINCEL DISCRETO (LINHA LATERAL NA TABELA BRANCA) */
+        /* PINCEL DISCRETO (LINHA LATERAL) */
         .row-pessoal td:first-child { border-left: 8px solid #0ea5e9 !important; }
         .row-mordomia td:first-child { border-left: 8px solid #f59e0b !important; }
         .row-divino td:first-child { border-left: 8px solid #10b981 !important; }
         .row-jovens td:first-child { border-left: 8px solid #8b5cf6 !important; }
         .row-mulher td:first-child { border-left: 8px solid #ec4899 !important; }
 
-        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
         
-        /* PAINEL ADMIN */
+        /* PAINEL ADMIN 3 COLUNAS */
         .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
+        .admin-grid { display: grid; grid-template-columns: 240px 1fr 2fr; gap: 25px; }
+        .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
 
-        /* BOTÕES UNIFICADOS */
-        .btn-min { 
-            display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 8px; 
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; 
-            cursor: pointer; border-radius: 6px; font-size: 0.75rem; transition: 0.2s; 
-        }
-        .btn-min:hover { border-color: var(--neon-blue); background: rgba(56, 189, 248, 0.05); }
+        /* BOTÕES UNIFICADOS COM LED */
+        .btn-min { display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; cursor: pointer; border-radius: 6px; font-size: 0.75rem; transition: 0.2s; }
+        .btn-min:hover { border-color: var(--neon-blue); }
         .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; }
-        
-        .led { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; border: 1px solid rgba(0,0,0,0.2); }
-        .pessoal .led { background: #0ea5e9; box-shadow: 0 0 5px #0ea5e9; }
-        .mordomia .led { background: #f59e0b; box-shadow: 0 0 5px #f59e0b; }
-        .divino .led { background: #10b981; box-shadow: 0 0 5px #10b981; }
-        .jovens .led { background: #8b5cf6; box-shadow: 0 0 5px #8b5cf6; }
-        .mulher .led { background: #ec4899; box-shadow: 0 0 5px #ec4899; }
+        .led { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
+        .pessoal .led { background: #0ea5e9; } .mordomia .led { background: #f59e0b; } .divino .led { background: #10b981; } .jovens .led { background: #8b5cf6; } .mulher .led { background: #ec4899; }
 
-        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 10px; border-radius: 6px; width: 100%; font-size: 0.85rem; }
+        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 8px; border-radius: 6px; width: 100%; font-size: 0.85rem; }
         
-        /* TABELA BRANCA (CONFORME O PRINT) */
-        .table-wrap { background: white; border-radius: 8px; overflow-x: auto; color: black; }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { background: #1e3a8a; color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #ddd; }
+        /* TABELA LIMPA */
+        .table-wrap { background: white; border-radius: 8px; overflow-x: auto; color: black; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { background: #002b5c; color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #ddd; }
         td { border: 1px solid #ddd; height: 50px; text-align: center; font-weight: bold; }
-        
-        .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #000; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; }
+        .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #000; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .input-cell[readonly] { color: #888; cursor: not-allowed; font-weight: normal; }
 
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; }
-        .pop-content { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; }
+        .pop-content { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 12px; width: 400px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-main">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <h2 style="margin: 0; font-weight: bold; color: var(--neon-blue); font-size: 1.2rem;">IASD ESTRELA DALVA</h2>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <h2 style="margin: 0; color: var(--neon-blue); font-size: 1.2rem;">IASD ESTRELA DALVA</h2>
+        <div style="display: flex; gap: 8px;">
             <select id="selMes" onchange="renderTodo()" class="input-dark" style="width: 130px; border-color: var(--neon-blue);"></select>
-            <button class="btn-min" style="width:auto; margin:0" onclick="abrirCalendario()">📅 ANUAL</button>
-            <button id="btnAcc" class="btn-min" style="width:auto; margin:0; border-color: var(--neon-blue);" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
-            <button id="btnSair" class="btn-min" style="width:auto; margin:0; border-color: #ef4444; color: #ef4444; display:none;" onclick="sair()">SAIR</button>
+            <button class="btn-min" style="width:auto; margin:0" onclick="document.getElementById('modalLogin').style.display='flex'" id="btnAcc">🔓 LOGIN</button>
+            <button class="btn-min" style="width:auto; margin:0; border-color: #ef4444; color: #ef4444; display:none;" onclick="sair()" id="btnSair">🚪 SAIR</button>
         </div>
     </div>
 
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
-                <h4>1. PINCEL DE MINISTÉRIO</h4>
+                <h4>MINISTÉRIO DO DIA</h4>
                 <button id="p-pessoal" class="btn-min pessoal" onclick="selPincel('pessoal','M. PESSOAL')"><div class="led"></div> M. PESSOAL</button>
                 <button id="p-mordomia" class="btn-min mordomia" onclick="selPincel('mordomia','MORDOMIA')"><div class="led"></div> MORDOMIA</button>
                 <button id="p-divino" class="btn-min divino" onclick="selPincel('divino','C. DIVINO')"><div class="led"></div> C. DIVINO</button>
                 <button id="p-jovens" class="btn-min jovens" onclick="selPincel('jovens','JOVENS')"><div class="led"></div> JOVENS</button>
                 <button id="p-mulher" class="btn-min mulher" onclick="selPincel('mulher','M. MULHER')"><div class="led"></div> M. MULHER</button>
-                <button class="btn-min" style="margin-top: 5px; border-color: red; color: red;" onclick="selPincel('','')">LIMPAR COR</button>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:5px" onclick="selPincel('','')">LIMPAR</button>
             </div>
 
             <div class="admin-section">
-                <h4>2. RESPONSÁVEL MENSAL</h4>
-                <input type="text" id="ancMesInput" class="input-dark" placeholder="Nome do Ancião" onchange="salvarAnciao(this.value)">
-                <div style="margin-top: 20px;">
-                    <button class="btn-min" onclick="document.getElementById('popTesouraria').style.display='flex'">⚙️ TESOURARIA</button>
-                    <button class="btn-min" style="margin-top:8px" onclick="abrirMissionario()">📊 MISSIONÁRIO</button>
+                <h4>GESTÃO MENSAL</h4>
+                <label style="font-size: 0.6rem; color: #64748b;">ANCIÃO DO MÊS</label>
+                <input type="text" id="ancMesInput" class="input-dark" onchange="salvarAnciao(this.value)">
+                
+                <div style="margin-top: 15px;">
+                    <button class="btn-min" onclick="document.getElementById('popTesouraria').style.display='flex'">💰 TESOURARIA</button>
+                    <button class="btn-min" onclick="abrirMissionario()">📈 MISSIONÁRIO</button>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h4>3. LOGINS ATIVOS</h4>
-                <div id="corpoCreds" style="font-size: 0.7rem; color: #94a3b8; line-height: 1.6;"></div>
+                <h4>LOGINS E SENHAS</h4>
+                <div style="max-height: 180px; overflow-y: auto;">
+                    <table style="width:100%; font-size: 0.7rem; color: #94a3b8; text-align: left;">
+                        <thead><tr style="color:var(--neon-blue)"><th>MINISTÉRIO</th><th>USER</th><th>SENHA</th></tr></thead>
+                        <tbody id="corpoCreds"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="table-wrap">
-        <div style="padding: 15px; background: #002b5c; color: white; border-bottom: 2px solid var(--neon-blue);">
-            <div id="headerTitulo" style="font-weight: bold; text-transform: uppercase; font-size: 0.9rem;"></div>
-            <div id="headerAnciao" style="color: #ffd700; font-size: 0.8rem; margin-top: 4px;"></div>
+        <div style="padding: 15px; background: #002b5c; color: white;">
+            <div id="headerTitulo" style="font-weight: bold; font-size: 0.9rem;"></div>
+            <div id="headerAnciao" style="color: #ffd700; font-size: 0.75rem;"></div>
         </div>
         <table id="tabela-main">
             <thead>
                 <tr>
-                    <th style="width: 120px;">DIA</th>
-                    <th style="width: 70px;">DATA</th>
-                    <th>SABATINA</th>
-                    <th>PREGADOR</th>
-                    <th>MÚSICA</th>
-                    <th>LOUVOR</th>
-                    <th>SONO</th>
-                    <th>RECEPÇÃO</th>
-                    <th>DIACONATO</th>
+                    <th style="width: 120px;">DIA</th><th style="width: 70px;">DATA</th>
+                    <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
                 </tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
@@ -130,10 +110,10 @@
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
-    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">ACESSO GESTOR</h3>
+    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">LOGIN GESTOR</h3>
     <input type="text" id="uLog" placeholder="Usuário" class="input-dark" style="margin-bottom:10px">
     <input type="password" id="pLog" placeholder="Senha" class="input-dark">
-    <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR NO SISTEMA</button>
+    <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR</button>
 </div></div>
 
 <script>
@@ -147,10 +127,9 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    // Versão sincronizada para não "sumir" os dados se você já usava outra
-    const dbRef = firebase.database().ref('iasd_estrela_v160');
+    const dbRef = firebase.database().ref('iasd_estrela_v170');
 
-    let db = { senhas:{admin:"iasd118"}, escalas:{}, cores:{}, anciaos:{} };
+    let db = { senhas:{admin:"iasd118", musica:"mus123", sonoplastia:"sono123", recepcao:"recep123", diaconato:"diac123"}, escalas:{}, cores:{}, anciaos:{} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     let pincelAtivo = null; let nomePincel = "";
 
@@ -163,7 +142,7 @@
         const u = document.getElementById('uLog').value.toLowerCase().trim();
         const p = document.getElementById('pLog').value;
         if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); }
-        else alert("Credenciais incorretas!");
+        else alert("Erro!");
     }
 
     function selPincel(id, nome) {
@@ -192,11 +171,11 @@
         document.getElementById('btnAcc').style.display = curUser === 'visitante' ? 'block' : 'none';
         
         document.getElementById('headerTitulo').innerText = "ESCALA: " + ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"][m] + " / 2026";
-        document.getElementById('headerAnciao').innerText = "RESPONSÁVEL: " + (db.anciaos?.[m] || "NÃO DEFINIDO");
+        document.getElementById('headerAnciao').innerText = "RESPONSÁVEL: " + (db.anciaos?.[m] || "DEFINIR");
         document.getElementById('ancMesInput').value = db.anciaos?.[m] || "";
 
         if(isMaster) {
-            document.getElementById('corpoCreds').innerHTML = Object.entries(db.senhas).map(([u,p])=>`<div>• ${u.toUpperCase()}: <b>${p}</b></div>`).join('');
+            document.getElementById('corpoCreds').innerHTML = Object.entries(db.senhas).map(([u,p])=>`<tr><td>${u.toUpperCase()}</td><td>${u}</td><td>${p}</td></tr>`).join('');
         }
         renderEscala(m);
     }
@@ -213,16 +192,21 @@
                 let dStr = `${d}/${mIdx+1}/2026`;
                 let cor = db.cores?.[dStr] || {id:'', nome:''};
                 let row = `<tr class="row-${cor.id}">
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background: #f8fafc;">
-                        <div style="font-size:0.75rem">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</div>
-                        <div style="font-size:0.6rem; color:#0369a1">${cor.nome}</div>
-                    </td>
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; color:#64748b; background: #f8fafc;">${d}/${mIdx+1}</td>`;
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f1f5f9">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}<br><small style="color:#0ea5e9">${cor.nome}</small></td>
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f1f5f9">${d}/${mIdx+1}</td>`;
 
-                ["sa","pr","mu","lo","so","re","di"].forEach(c => {
-                    let val = db.escalas?.[dStr]?.[c] || "";
-                    let canEdit = isMaster || (curUser === c);
-                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${c}',this.value)"></td>`;
+                // Restrição por Coluna
+                const colunas = [
+                    {id: "sa", user: "sabatina"}, {id: "pr", user: "ancião"},
+                    {id: "mu", user: "musica"}, {id: "lo", user: "musica"},
+                    {id: "so", user: "sonoplastia"}, {id: "re", user: "recepcao"},
+                    {id: "di", user: "diaconato"}
+                ];
+
+                colunas.forEach(col => {
+                    let val = db.escalas?.[dStr]?.[col.id] || "";
+                    let canEdit = isMaster || (curUser === col.user);
+                    row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col.id}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
             }
