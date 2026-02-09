@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v198 Final</title>
+    <title>IASD Estrela Dalva - v200 Responsabilidade</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -9,7 +9,7 @@
         body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
 
-        /* PINCEL (BARRA LATERAL NA TABELA) */
+        /* CORES DO PINCEL (BARRA LATERAL) */
         .row-pessoal td:first-child { border-left: 10px solid #0ea5e9 !important; }
         .row-mordomia td:first-child { border-left: 10px solid #f59e0b !important; }
         .row-divino td:first-child { border-left: 10px solid #10b981 !important; }
@@ -19,28 +19,28 @@
         .row-infantil td:first-child { border-left: 10px solid #fbbf24 !important; }
         .row-familia td:first-child { border-left: 10px solid #f87171 !important; }
 
-        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
+        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .admin-grid { display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
         .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
 
-        .btn-min { display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; cursor: pointer; border-radius: 6px; font-size: 0.75rem; transition: 0.2s; }
-        .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; border-color: var(--neon-blue); }
+        .btn-min { display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; cursor: pointer; border-radius: 6px; font-size: 0.75rem; }
+        .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; }
         .led { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
         
-        /* CORES DOS LEDS */
+        /* LED COLORS */
         .pessoal .led { background: #0ea5e9; } .mordomia .led { background: #f59e0b; } .divino .led { background: #10b981; } 
         .jovens .led { background: #8b5cf6; } .mulher .led { background: #ec4899; } .anciao .led { background: #94a3b8; }
         .infantil .led { background: #fbbf24; } .familia .led { background: #f87171; }
 
         .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 8px; border-radius: 4px; width: 100%; font-size: 0.75rem; }
-        .table-wrap { background: white; border-radius: 8px; overflow-x: auto; color: black; border: 1px solid #ddd; }
-        table.escala-principal { width: 100%; border-collapse: collapse; min-width: 950px; }
+        .table-wrap { background: white; border-radius: 8px; overflow: auto; color: black; margin-top: 20px; }
+        table.escala-principal { width: 100%; border-collapse: collapse; min-width: 1000px; }
         table.escala-principal th { background: #002b5c; color: white; padding: 12px; font-size: 0.7rem; border: 1px solid #ddd; }
         table.escala-principal td { border: 1px solid #ddd; height: 55px; text-align: center; font-weight: bold; }
         
         .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #000; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-        .input-cell[readonly] { color: #aaa; font-weight: normal; cursor: not-allowed; }
+        .input-cell[readonly] { color: #ccc; font-weight: normal; background: #fafafa; }
         
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; }
         .pop-content { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 12px; width: 400px; }
@@ -50,49 +50,46 @@
 
 <div class="container">
     <div class="header-main">
-        <h2 style="margin: 0; color: var(--neon-blue); font-size: 1.2rem; letter-spacing: 2px;">IASD ESTRELA DALVA</h2>
+        <h2 style="margin: 0; color: var(--neon-blue); font-size: 1.1rem; letter-spacing: 1px;">IASD ESTRELA DALVA</h2>
         <div style="display: flex; gap: 10px;">
-            <select id="selMes" onchange="renderTodo()" class="input-dark" style="width: 140px; border-color: var(--neon-blue); font-weight: bold;"></select>
-            <button class="btn-min" style="width:auto; margin:0" id="btnAcc" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
-            <button class="btn-min" style="width:auto; margin:0; border-color: #ef4444; color: #ef4444; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+            <select id="selMes" onchange="renderTodo()" class="input-dark" style="width: 140px; border-color: var(--neon-blue);"></select>
+            <button class="btn-min" style="width:auto; margin:0" id="btnAcc" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+            <button class="btn-min" style="width:auto; margin:0; border-color: #ef4444; color: #ef4444; display:none;" id="btnSair" onclick="sair()">SAIR</button>
         </div>
     </div>
 
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
-                <h4>PINCEL DO MINISTÉRIO</h4>
+                <h4>RESPONSÁVEL PELA ESCALA (PINCEL)</h4>
+                <button id="p-anciao" class="btn-min anciao" onclick="selPincel('anciao','ANCIÃO')"><div class="led"></div> ANCIÃO</button>
                 <button id="p-pessoal" class="btn-min pessoal" onclick="selPincel('pessoal','M. PESSOAL')"><div class="led"></div> M. PESSOAL</button>
                 <button id="p-mordomia" class="btn-min mordomia" onclick="selPincel('mordomia','MORDOMIA')"><div class="led"></div> MORDOMIA</button>
-                <button id="p-divino" class="btn-min divino" onclick="selPincel('divino','C. DIVINO')"><div class="led"></div> C. DIVINO</button>
                 <button id="p-jovens" class="btn-min jovens" onclick="selPincel('jovens','JOVENS')"><div class="led"></div> JOVENS</button>
                 <button id="p-mulher" class="btn-min mulher" onclick="selPincel('mulher','M. MULHER')"><div class="led"></div> M. MULHER</button>
-                <button id="p-anciao" class="btn-min anciao" onclick="selPincel('anciao','ANCIÃO')"><div class="led"></div> ANCIÃO</button>
                 <button id="p-infantil" class="btn-min infantil" onclick="selPincel('infantil','M. INFANTIL')"><div class="led"></div> M. INFANTIL</button>
                 <button id="p-familia" class="btn-min familia" onclick="selPincel('familia','FAMÍLIA')"><div class="led"></div> FAMÍLIA</button>
-                <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:5px" onclick="selPincel('','')">LIMPAR COR</button>
+                <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:5px" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
             </div>
 
             <div class="admin-section">
-                <h4>PLANO ANUAL DE ANCIÃOS (CLIQUE NO NOME PARA EDITAR)</h4>
-                <div style="max-height: 420px; overflow-y: auto;">
-                    <table style="width:100%; border-collapse: collapse; font-size: 0.75rem;">
-                        <tbody id="listaAnualAnciaos"></tbody>
-                    </table>
+                <h4>GESTÃO ANUAL DE ANCIÃOS</h4>
+                <div style="max-height: 380px; overflow-y: auto;">
+                    <table style="width:100%; border-collapse: collapse; font-size: 0.75rem;"><tbody id="listaAnualAnciaos"></tbody></table>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="table-wrap">
-        <div style="padding: 15px; background: #002b5c; color: white; display: flex; justify-content: space-between; align-items: center;">
-            <div id="headerTitulo" style="font-weight: bold; font-size: 0.9rem;"></div>
-            <div id="headerAnciao" style="color: #ffd700; font-size: 0.85rem; font-weight: bold;"></div>
+        <div style="padding: 12px; background: #002b5c; color: white; display: flex; justify-content: space-between; align-items: center;">
+            <div id="headerTitulo" style="font-weight: bold;"></div>
+            <div id="headerAnciao" style="color: #ffd700; font-size: 0.8rem;"></div>
         </div>
         <table class="escala-principal">
             <thead>
                 <tr>
-                    <th style="width: 120px;">DIA</th><th style="width: 70px;">DATA</th>
+                    <th style="width: 130px;">DIA</th><th style="width: 70px;">DATA</th>
                     <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
                 </tr>
             </thead>
@@ -102,10 +99,10 @@
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
-    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">ACESSO GESTOR</h3>
-    <input type="text" id="uLog" placeholder="Usuário" class="input-dark" style="margin-bottom:10px">
+    <h3 style="margin:0 0 15px 0; color:var(--neon-blue); font-size: 1rem;">LOGIN DE MINISTÉRIO</h3>
+    <input type="text" id="uLog" placeholder="Usuário (ex: jovens, musica...)" class="input-dark" style="margin-bottom:10px">
     <input type="password" id="pLog" placeholder="Senha" class="input-dark">
-    <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR</button>
+    <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR NO SISTEMA</button>
 </div></div>
 
 <script>
@@ -119,9 +116,13 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v198');
+    const dbRef = firebase.database().ref('iasd_estrela_v200');
 
-    let db = { senhas:{admin:"iasd118", musica:"mus123", sonoplastia:"sono123", recepcao:"recep123", diaconato:"diac123", anciao:"anc123"}, escalas:{}, cores:{}, anciaos:{} };
+    // CONFIGURAÇÃO DE LOGINS: o user do ministério deve ser igual ao ID do pincel
+    let db = { 
+        senhas:{ admin:"iasd118", anciao:"anc123", jovens:"jov123", mulher:"mul123", pessoal:"pes123", mordomia:"mor123", infantil:"inf123", familia:"fam123", musica:"mus123", sonoplastia:"sono123", recepcao:"recep123", diaconato:"diac123" }, 
+        escalas:{}, cores:{}, anciaos:{} 
+    };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     let pincelAtivo = null; let nomePincel = "";
     const mesesNomes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
@@ -145,35 +146,28 @@
     }
 
     function pintar(dStr) {
-        if((curUser === 'admin' || curUser === 'ger') && pincelAtivo !== null) {
+        if((curUser === 'admin' || curUser === 'anciao') && pincelAtivo !== null) {
             if(!db.cores) db.cores = {};
             if(pincelAtivo === "") delete db.cores[dStr];
             else db.cores[dStr] = { id: pincelAtivo, nome: nomePincel };
             save();
-            renderTodo(); // Força atualização visual
         }
-    }
-
-    function atuAnciaoAnual(mesIdx, nome) {
-        if(!db.anciaos) db.anciaos = {};
-        db.anciaos[mesIdx] = nome.toUpperCase();
-        save();
     }
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isMaster = (curUser === 'admin' || curUser === 'ger');
+        const isGestor = (curUser === 'admin' || curUser === 'anciao');
         
-        document.getElementById('adminPanel').style.display = isMaster ? 'block' : 'none';
+        document.getElementById('adminPanel').style.display = isGestor ? 'block' : 'none';
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcc').style.display = curUser === 'visitante' ? 'block' : 'none';
         
-        document.getElementById('headerTitulo').innerText = "ESCALA: " + mesesNomes[m].toUpperCase() + " / 2026";
-        document.getElementById('headerAnciao').innerText = "ANCIÃO DO MÊS: " + (db.anciaos?.[m] || "DEFINIR");
+        document.getElementById('headerTitulo').innerText = "ESCALA " + mesesNomes[m].toUpperCase() + " / 2026";
+        document.getElementById('headerAnciao').innerText = "ANCIÃO DO MÊS: " + (db.anciaos?.[m] || "---");
 
         let htmlAnual = "";
         mesesNomes.forEach((nome, idx) => {
-            htmlAnual += `<tr style="border-bottom: 1px solid #1e293b;"><td style="color:#38bdf8; padding:8px; width:100px; font-weight:bold;">${nome}</td><td><input type="text" class="input-dark" value="${db.anciaos?.[idx] || ''}" onchange="atuAnciaoAnual(${idx}, this.value)" placeholder="..."></td></tr>`;
+            htmlAnual += `<tr style="border-bottom: 1px solid #1e293b;"><td style="color:#38bdf8; padding:8px; width:100px;">${nome}</td><td><input type="text" class="input-dark" value="${db.anciaos?.[idx] || ''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${idx}]=this.value.toUpperCase(); save()"></td></tr>`;
         });
         document.getElementById('listaAnualAnciaos').innerHTML = htmlAnual;
         renderEscala(m);
@@ -182,7 +176,6 @@
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        const isMaster = (curUser === 'admin' || curUser === 'ger');
 
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d);
@@ -191,22 +184,26 @@
                 let dStr = `${d}/${mIdx+1}/2026`;
                 let cor = db.cores?.[dStr] || {id:'', nome:''};
                 let row = `<tr class="row-${cor.id}">
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 1px solid #ddd;">
-                        <div style="font-size:0.65rem; color:#64748b">${["DOMINGO","","","QUARTA-FEIRA","","","SÁBADO"][sem]}</div>
-                        <div style="font-size:0.6rem; color:#002b5c;">${cor.nome}</div>
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc;">
+                        <div style="font-size:0.6rem; color:#64748b">${["DOMINGO","","","QUARTA-FEIRA","","","SÁBADO"][sem]}</div>
+                        <div style="font-size:0.55rem; color:#002b5c;">${cor.nome || '---'}</div>
                     </td>
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 1px solid #ddd;">${d}/${mIdx+1}</td>`;
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc;">${d}/${mIdx+1}</td>`;
 
                 const colunas = [
-                    {id: "sa", user: "sabatina"}, {id: "pr", user: "anciao"},
-                    {id: "mu", user: "musica"}, {id: "lo", user: "musica"},
-                    {id: "so", user: "sonoplastia"}, {id: "re", user: "recepcao"},
-                    {id: "di", user: "diaconato"}
+                    {id: "sa", resp: "anciao"}, // Sabatina
+                    {id: "pr", resp: cor.id},    // Pregador (Dinamico pelo Pincel!)
+                    {id: "mu", resp: "musica"},  // Musica
+                    {id: "lo", resp: "musica"},  // Louvor
+                    {id: "so", resp: "sonoplastia"}, // Sono
+                    {id: "re", resp: "recepcao"},    // Recepção
+                    {id: "di", resp: "diaconato"}    // Diaconato
                 ];
 
                 colunas.forEach(col => {
                     let val = db.escalas?.[dStr]?.[col.id] || "";
-                    let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col.user);
+                    // Regra de Ouro: Admin edita tudo, ou o usuário logado é o responsável pela coluna
+                    let canEdit = (curUser === 'admin' || curUser === col.resp);
                     row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col.id}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
