@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v195 Final</title>
+    <title>IASD Estrela Dalva - v198 Final</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -9,35 +9,39 @@
         body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
 
-        /* PINCEL (BARRA LATERAL) */
+        /* PINCEL (BARRA LATERAL NA TABELA) */
         .row-pessoal td:first-child { border-left: 10px solid #0ea5e9 !important; }
         .row-mordomia td:first-child { border-left: 10px solid #f59e0b !important; }
         .row-divino td:first-child { border-left: 10px solid #10b981 !important; }
         .row-jovens td:first-child { border-left: 10px solid #8b5cf6 !important; }
         .row-mulher td:first-child { border-left: 10px solid #ec4899 !important; }
         .row-anciao td:first-child { border-left: 10px solid #94a3b8 !important; }
+        .row-infantil td:first-child { border-left: 10px solid #fbbf24 !important; }
+        .row-familia td:first-child { border-left: 10px solid #f87171 !important; }
 
         .header-main { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
         .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
 
         .btn-min { display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; cursor: pointer; border-radius: 6px; font-size: 0.75rem; transition: 0.2s; }
         .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; border-color: var(--neon-blue); }
         .led { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
-        .pessoal .led { background: #0ea5e9; } .mordomia .led { background: #f59e0b; } .divino .led { background: #10b981; } .jovens .led { background: #8b5cf6; } .mulher .led { background: #ec4899; } .anciao .led { background: #94a3b8; }
+        
+        /* CORES DOS LEDS */
+        .pessoal .led { background: #0ea5e9; } .mordomia .led { background: #f59e0b; } .divino .led { background: #10b981; } 
+        .jovens .led { background: #8b5cf6; } .mulher .led { background: #ec4899; } .anciao .led { background: #94a3b8; }
+        .infantil .led { background: #fbbf24; } .familia .led { background: #f87171; }
 
-        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 8px; border-radius: 4px; width: 100%; font-size: 0.75rem; outline: none; }
-        .tabla-anual { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-        .tabla-anual td { border: 1px solid #1e293b; padding: 4px 10px; height: 35px; text-align: left; background: rgba(0,0,0,0.2); color: white; }
-        .td-mes { color: var(--neon-blue); font-weight: bold; width: 120px; text-transform: uppercase; }
-
+        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 8px; border-radius: 4px; width: 100%; font-size: 0.75rem; }
         .table-wrap { background: white; border-radius: 8px; overflow-x: auto; color: black; border: 1px solid #ddd; }
         table.escala-principal { width: 100%; border-collapse: collapse; min-width: 950px; }
-        table.escala-principal th { background: #002b5c; color: white; padding: 12px; font-size: 0.7rem; border: 1px solid #ddd; text-transform: uppercase; }
+        table.escala-principal th { background: #002b5c; color: white; padding: 12px; font-size: 0.7rem; border: 1px solid #ddd; }
         table.escala-principal td { border: 1px solid #ddd; height: 55px; text-align: center; font-weight: bold; }
+        
         .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #000; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-        .input-cell[readonly] { color: #999; font-weight: normal; cursor: not-allowed; }
+        .input-cell[readonly] { color: #aaa; font-weight: normal; cursor: not-allowed; }
+        
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; }
         .pop-content { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 12px; width: 400px; }
     </style>
@@ -57,20 +61,24 @@
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
-                <h4>MINISTÉRIO DO DIA (PINCEL)</h4>
+                <h4>PINCEL DO MINISTÉRIO</h4>
                 <button id="p-pessoal" class="btn-min pessoal" onclick="selPincel('pessoal','M. PESSOAL')"><div class="led"></div> M. PESSOAL</button>
                 <button id="p-mordomia" class="btn-min mordomia" onclick="selPincel('mordomia','MORDOMIA')"><div class="led"></div> MORDOMIA</button>
                 <button id="p-divino" class="btn-min divino" onclick="selPincel('divino','C. DIVINO')"><div class="led"></div> C. DIVINO</button>
                 <button id="p-jovens" class="btn-min jovens" onclick="selPincel('jovens','JOVENS')"><div class="led"></div> JOVENS</button>
                 <button id="p-mulher" class="btn-min mulher" onclick="selPincel('mulher','M. MULHER')"><div class="led"></div> M. MULHER</button>
                 <button id="p-anciao" class="btn-min anciao" onclick="selPincel('anciao','ANCIÃO')"><div class="led"></div> ANCIÃO</button>
+                <button id="p-infantil" class="btn-min infantil" onclick="selPincel('infantil','M. INFANTIL')"><div class="led"></div> M. INFANTIL</button>
+                <button id="p-familia" class="btn-min familia" onclick="selPincel('familia','FAMÍLIA')"><div class="led"></div> FAMÍLIA</button>
                 <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:5px" onclick="selPincel('','')">LIMPAR COR</button>
             </div>
 
             <div class="admin-section">
-                <h4>PLANO ANUAL DE ANCIÃOS (GESTÃO POR MÊS)</h4>
-                <div style="max-height: 350px; overflow-y: auto;">
-                    <table class="tabla-anual"><tbody id="listaAnualAnciaos"></tbody></table>
+                <h4>PLANO ANUAL DE ANCIÃOS (CLIQUE NO NOME PARA EDITAR)</h4>
+                <div style="max-height: 420px; overflow-y: auto;">
+                    <table style="width:100%; border-collapse: collapse; font-size: 0.75rem;">
+                        <tbody id="listaAnualAnciaos"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -78,10 +86,10 @@
 
     <div class="table-wrap">
         <div style="padding: 15px; background: #002b5c; color: white; display: flex; justify-content: space-between; align-items: center;">
-            <div id="headerTitulo" style="font-weight: bold; font-size: 0.9rem; letter-spacing: 1px;"></div>
-            <div id="headerAnciao" style="color: #ffd700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;"></div>
+            <div id="headerTitulo" style="font-weight: bold; font-size: 0.9rem;"></div>
+            <div id="headerAnciao" style="color: #ffd700; font-size: 0.85rem; font-weight: bold;"></div>
         </div>
-        <table class="escala-principal" id="tabela-main">
+        <table class="escala-principal">
             <thead>
                 <tr>
                     <th style="width: 120px;">DIA</th><th style="width: 70px;">DATA</th>
@@ -94,7 +102,7 @@
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
-    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">LOGIN GESTOR</h3>
+    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">ACESSO GESTOR</h3>
     <input type="text" id="uLog" placeholder="Usuário" class="input-dark" style="margin-bottom:10px">
     <input type="password" id="pLog" placeholder="Senha" class="input-dark">
     <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR</button>
@@ -111,7 +119,7 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v195');
+    const dbRef = firebase.database().ref('iasd_estrela_v198');
 
     let db = { senhas:{admin:"iasd118", musica:"mus123", sonoplastia:"sono123", recepcao:"recep123", diaconato:"diac123", anciao:"anc123"}, escalas:{}, cores:{}, anciaos:{} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
@@ -137,11 +145,12 @@
     }
 
     function pintar(dStr) {
-        if(['admin','ger'].includes(curUser) && pincelAtivo !== null) {
+        if((curUser === 'admin' || curUser === 'ger') && pincelAtivo !== null) {
             if(!db.cores) db.cores = {};
             if(pincelAtivo === "") delete db.cores[dStr];
             else db.cores[dStr] = { id: pincelAtivo, nome: nomePincel };
             save();
+            renderTodo(); // Força atualização visual
         }
     }
 
@@ -153,16 +162,18 @@
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isMaster = ['admin','ger'].includes(curUser);
+        const isMaster = (curUser === 'admin' || curUser === 'ger');
+        
         document.getElementById('adminPanel').style.display = isMaster ? 'block' : 'none';
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcc').style.display = curUser === 'visitante' ? 'block' : 'none';
+        
         document.getElementById('headerTitulo').innerText = "ESCALA: " + mesesNomes[m].toUpperCase() + " / 2026";
         document.getElementById('headerAnciao').innerText = "ANCIÃO DO MÊS: " + (db.anciaos?.[m] || "DEFINIR");
 
         let htmlAnual = "";
         mesesNomes.forEach((nome, idx) => {
-            htmlAnual += `<tr><td class="td-mes">${nome}</td><td><input type="text" class="input-dark" value="${db.anciaos?.[idx] || ''}" onchange="atuAnciaoAnual(${idx}, this.value)"></td></tr>`;
+            htmlAnual += `<tr style="border-bottom: 1px solid #1e293b;"><td style="color:#38bdf8; padding:8px; width:100px; font-weight:bold;">${nome}</td><td><input type="text" class="input-dark" value="${db.anciaos?.[idx] || ''}" onchange="atuAnciaoAnual(${idx}, this.value)" placeholder="..."></td></tr>`;
         });
         document.getElementById('listaAnualAnciaos').innerHTML = htmlAnual;
         renderEscala(m);
@@ -171,7 +182,7 @@
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        const isMaster = ['admin','ger'].includes(curUser);
+        const isMaster = (curUser === 'admin' || curUser === 'ger');
 
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d);
@@ -180,11 +191,11 @@
                 let dStr = `${d}/${mIdx+1}/2026`;
                 let cor = db.cores?.[dStr] || {id:'', nome:''};
                 let row = `<tr class="row-${cor.id}">
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc;">
-                        <div style="font-size:0.7rem; color:#64748b">${["DOMINGO","","","QUARTA-FEIRA","","","SÁBADO"][sem]}</div>
-                        <div style="font-size:0.6rem; color:var(--iasd-blue); font-weight:normal">${cor.nome}</div>
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 1px solid #ddd;">
+                        <div style="font-size:0.65rem; color:#64748b">${["DOMINGO","","","QUARTA-FEIRA","","","SÁBADO"][sem]}</div>
+                        <div style="font-size:0.6rem; color:#002b5c;">${cor.nome}</div>
                     </td>
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc;">${d}/${mIdx+1}</td>`;
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 1px solid #ddd;">${d}/${mIdx+1}</td>`;
 
                 const colunas = [
                     {id: "sa", user: "sabatina"}, {id: "pr", user: "anciao"},
@@ -195,7 +206,7 @@
 
                 colunas.forEach(col => {
                     let val = db.escalas?.[dStr]?.[col.id] || "";
-                    let canEdit = isMaster || (curUser === col.user);
+                    let canEdit = (curUser === 'admin' || curUser === 'ger' || curUser === col.user);
                     row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${col.id}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
