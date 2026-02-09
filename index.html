@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v180 Final</title>
+    <title>IASD Estrela Dalva - v190 Gestão Anual</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -18,22 +18,29 @@
 
         .header-main { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
         
-        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .admin-grid { display: grid; grid-template-columns: 240px 1fr 1.5fr; gap: 25px; }
+        /* PAINEL ADMIN 2 COLUNAS */
+        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
         .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
 
         .btn-min { display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; cursor: pointer; border-radius: 6px; font-size: 0.75rem; transition: 0.2s; }
-        .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; border-color: var(--neon-blue); }
+        .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; }
         .led { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
         .pessoal .led { background: #0ea5e9; } .mordomia .led { background: #f59e0b; } .divino .led { background: #10b981; } .jovens .led { background: #8b5cf6; } .mulher .led { background: #ec4899; }
 
-        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 10px; border-radius: 6px; width: 100%; font-size: 0.85rem; outline: none; }
-        .input-dark:focus { border-color: var(--neon-blue); }
+        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 8px; border-radius: 4px; width: 100%; font-size: 0.75rem; outline: none; }
         
+        /* TABELA PLANO ANUAL */
+        .tabla-anual { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .tabla-anual td { border: 1px solid #1e293b; padding: 4px 10px; height: 35px; text-align: left; background: rgba(0,0,0,0.2); color: white; }
+        .td-mes { color: var(--neon-blue); font-weight: bold; width: 120px; text-transform: uppercase; }
+
+        /* TABELA ESCALA PRINCIPAL */
         .table-wrap { background: white; border-radius: 8px; overflow-x: auto; color: black; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; min-width: 950px; }
-        th { background: #002b5c; color: white; padding: 12px; font-size: 0.7rem; border: 1px solid #ddd; text-transform: uppercase; }
-        td { border: 1px solid #ddd; height: 55px; text-align: center; font-weight: bold; }
+        table.escala-principal { width: 100%; border-collapse: collapse; min-width: 950px; }
+        table.escala-principal th { background: #002b5c; color: white; padding: 12px; font-size: 0.7rem; border: 1px solid #ddd; text-transform: uppercase; }
+        table.escala-principal td { border: 1px solid #ddd; height: 55px; text-align: center; font-weight: bold; }
+        
         .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #000; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
         .input-cell[readonly] { color: #999; font-weight: normal; cursor: not-allowed; }
 
@@ -56,33 +63,33 @@
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
-                <h4>MINISTÉRIO DO DIA</h4>
+                <h4>MINISTÉRIO DO DIA (PINCEL)</h4>
                 <button id="p-pessoal" class="btn-min pessoal" onclick="selPincel('pessoal','M. PESSOAL')"><div class="led"></div> M. PESSOAL</button>
                 <button id="p-mordomia" class="btn-min mordomia" onclick="selPincel('mordomia','MORDOMIA')"><div class="led"></div> MORDOMIA</button>
                 <button id="p-divino" class="btn-min divino" onclick="selPincel('divino','C. DIVINO')"><div class="led"></div> C. DIVINO</button>
                 <button id="p-jovens" class="btn-min jovens" onclick="selPincel('jovens','JOVENS')"><div class="led"></div> JOVENS</button>
                 <button id="p-mulher" class="btn-min mulher" onclick="selPincel('mulher','M. MULHER')"><div class="led"></div> M. MULHER</button>
                 <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:5px" onclick="selPincel('','')">LIMPAR COR</button>
-            </div>
-
-            <div class="admin-section">
-                <h4>CONFIGURAÇÃO MENSAL</h4>
-                <label style="font-size: 0.6rem; color: #64748b; display: block; margin-bottom: 5px;">ANCIÃO RESPONSÁVEL</label>
-                <input type="text" id="ancMesInput" class="input-dark" placeholder="Nome do Ancião" onchange="salvarAnciao(this.value)">
                 
-                <div style="margin-top: 20px;">
-                    <button class="btn-min" onclick="alert('Funcionalidade de Tesouraria')">💰 COMPROVANTES</button>
-                    <button class="btn-min" onclick="alert('Funcionalidade Missionário')">📈 DADOS MISSIONÁRIOS</button>
-                </div>
+                <h4 style="margin-top: 20px;">OUTROS SISTEMAS</h4>
+                <button class="btn-min" onclick="alert('Módulo Tesouraria')">💰 COMPROVANTES</button>
+                <button class="btn-min" onclick="alert('Módulo Missionário')">📈 MISSIONÁRIO</button>
             </div>
 
             <div class="admin-section">
-                <h4>PLANO ANUAL DE ANCIÃOS</h4>
-                <div style="max-height: 220px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;">
-                    <table style="width:100%; font-size: 0.7rem; color: #94a3b8; text-align: left; border-collapse: collapse;">
+                <h4>PLANO ANUAL DE ANCIÃOS (GESTÃO POR MÊS)</h4>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table class="tabla-anual">
+                        <thead>
+                            <tr style="text-align: left; color: #64748b; font-size: 0.6rem;">
+                                <th>MÊS</th>
+                                <th>ANCIÃO RESPONSÁVEL</th>
+                            </tr>
+                        </thead>
                         <tbody id="listaAnualAnciaos"></tbody>
                     </table>
                 </div>
+                <p style="font-size: 0.65rem; color: #475569; margin-top: 10px;">* As alterações nesta lista atualizam automaticamente o cabeçalho da escala principal.</p>
             </div>
         </div>
     </div>
@@ -90,9 +97,9 @@
     <div class="table-wrap">
         <div style="padding: 15px; background: #002b5c; color: white; display: flex; justify-content: space-between; align-items: center;">
             <div id="headerTitulo" style="font-weight: bold; font-size: 0.9rem; letter-spacing: 1px;"></div>
-            <div id="headerAnciao" style="color: #ffd700; font-size: 0.8rem; font-weight: bold;"></div>
+            <div id="headerAnciao" style="color: #ffd700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;"></div>
         </div>
-        <table id="tabela-main">
+        <table class="escala-principal" id="tabela-main">
             <thead>
                 <tr>
                     <th style="width: 120px;">DIA</th><th style="width: 70px;">DATA</th>
@@ -105,7 +112,7 @@
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
-    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">ACESSO RESTRITO</h3>
+    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">LOGIN GESTOR</h3>
     <input type="text" id="uLog" placeholder="Usuário" class="input-dark" style="margin-bottom:10px">
     <input type="password" id="pLog" placeholder="Senha" class="input-dark">
     <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR</button>
@@ -122,12 +129,12 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v180');
+    const dbRef = firebase.database().ref('iasd_estrela_v190');
 
     let db = { senhas:{admin:"iasd118", musica:"mus123", sonoplastia:"sono123", recepcao:"recep123", diaconato:"diac123"}, escalas:{}, cores:{}, anciaos:{} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     let pincelAtivo = null; let nomePincel = "";
-    const mesesNomes = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+    const mesesNomes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 
     dbRef.on('value', snap => { if(snap.val()) db = snap.val(); renderTodo(); });
 
@@ -138,7 +145,7 @@
         const u = document.getElementById('uLog').value.toLowerCase().trim();
         const p = document.getElementById('pLog').value;
         if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); }
-        else alert("Acesso incorreto!");
+        else alert("Credenciais incorretas!");
     }
 
     function selPincel(id, nome) {
@@ -156,7 +163,11 @@
         }
     }
 
-    function salvarAnciao(v) { const m = document.getElementById('selMes').value; if(!db.anciaos) db.anciaos={}; db.anciaos[m]=v.toUpperCase(); save(); }
+    function atuAnciaoAnual(mesIdx, nome) {
+        if(!db.anciaos) db.anciaos = {};
+        db.anciaos[mesIdx] = nome.toUpperCase();
+        save();
+    }
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
@@ -166,14 +177,16 @@
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcc').style.display = curUser === 'visitante' ? 'block' : 'none';
         
-        document.getElementById('headerTitulo').innerText = "ESCALA: " + mesesNomes[m] + " / 2026";
-        document.getElementById('headerAnciao').innerText = "ANCIÃO DO MÊS: " + (db.anciaos?.[m] || "---");
-        document.getElementById('ancMesInput').value = db.anciaos?.[m] || "";
+        document.getElementById('headerTitulo').innerText = "ESCALA: " + mesesNomes[m].toUpperCase() + " / 2026";
+        document.getElementById('headerAnciao').innerText = "ANCIÃO DO MÊS: " + (db.anciaos?.[m] || "DEFINIR");
 
-        // Gerar Lista Anual Automática
+        // Gerar Lista Anual Editável
         let htmlAnual = "";
         mesesNomes.forEach((nome, idx) => {
-            htmlAnual += `<tr style="border-bottom: 1px solid #1e293b;"><td style="padding:5px; color:#38bdf8; width:80px">${nome}</td><td style="color:white">${db.anciaos?.[idx] || '--'}</td></tr>`;
+            htmlAnual += `<tr>
+                <td class="td-mes">${nome}</td>
+                <td><input type="text" class="input-dark" value="${db.anciaos?.[idx] || ''}" onchange="atuAnciaoAnual(${idx}, this.value)" placeholder="Digite o nome..."></td>
+            </tr>`;
         });
         document.getElementById('listaAnualAnciaos').innerHTML = htmlAnual;
 
@@ -192,11 +205,11 @@
                 let dStr = `${d}/${mIdx+1}/2026`;
                 let cor = db.cores?.[dStr] || {id:'', nome:''};
                 let row = `<tr class="row-${cor.id}">
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 2px solid #ddd;">
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 2px solid #eee;">
                         <div style="font-size:0.7rem; color:#64748b">${["DOMINGO","","","QUARTA-FEIRA","","","SÁBADO"][sem]}</div>
                         <div style="font-size:0.6rem; color:var(--iasd-blue); font-weight:normal">${cor.nome}</div>
                     </td>
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 2px solid #ddd;">${d}/${mIdx+1}</td>`;
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background:#f8fafc; border-right: 2px solid #eee;">${d}/${mIdx+1}</td>`;
 
                 const colunas = [
                     {id: "sa", user: "sabatina"}, {id: "pr", user: "ancião"},
@@ -218,6 +231,6 @@
     function atu(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
 
     const sM = document.getElementById('selMes');
-    mesesNomes.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    mesesNomes.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m.toUpperCase()}</option>`);
 </script>
 </body> </html>
