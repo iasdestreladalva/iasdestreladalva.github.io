@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v120 Tech</title>
+    <title>IASD Estrela Dalva - v160 Final</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,113 +13,108 @@
             --neon-blue: #38bdf8; 
             --text-main: #f1f5f9;
             --border: #1e293b;
-            --row-hover: rgba(56, 189, 248, 0.03);
         }
         
-        body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
+        body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1400px; margin: auto; }
 
-        /* PINCEL DISCRETO (LINHA LATERAL) */
-        .row-pessoal td:first-child { border-left: 5px solid #0ea5e9 !important; }
-        .row-mordomia td:first-child { border-left: 5px solid #f59e0b !important; }
-        .row-divino td:first-child { border-left: 5px solid #10b981 !important; }
-        .row-jovens td:first-child { border-left: 5px solid #8b5cf6 !important; }
-        .row-mulher td:first-child { border-left: 5px solid #ec4899 !important; }
+        /* PINCEL DISCRETO (LINHA LATERAL NA TABELA BRANCA) */
+        .row-pessoal td:first-child { border-left: 8px solid #0ea5e9 !important; }
+        .row-mordomia td:first-child { border-left: 8px solid #f59e0b !important; }
+        .row-divino td:first-child { border-left: 8px solid #10b981 !important; }
+        .row-jovens td:first-child { border-left: 8px solid #8b5cf6 !important; }
+        .row-mulher td:first-child { border-left: 8px solid #ec4899 !important; }
 
-        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 30px 0; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
+        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         
-        /* PAINEL ADMIN UNIFICADO */
-        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .admin-grid { display: grid; grid-template-columns: 240px 1fr 2fr; gap: 30px; }
-        .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; }
+        /* PAINEL ADMIN */
+        .admin-box { display: none; background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .admin-section h4 { color: #64748b; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
 
-        /* BOTÕES DOS MINISTÉRIOS UNIFICADOS */
+        /* BOTÕES UNIFICADOS */
         .btn-min { 
-            display: flex; align-items: center; width: 100%; padding: 12px; margin-bottom: 8px; 
+            display: flex; align-items: center; width: 100%; padding: 10px; margin-bottom: 8px; 
             background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #cbd5e1; 
-            cursor: pointer; border-radius: 8px; font-size: 0.75rem; transition: 0.2s; 
+            cursor: pointer; border-radius: 6px; font-size: 0.75rem; transition: 0.2s; 
         }
         .btn-min:hover { border-color: var(--neon-blue); background: rgba(56, 189, 248, 0.05); }
-        .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; border-color: var(--neon-blue); font-weight: bold; }
+        .btn-min.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; }
         
-        /* LEDS DOS BOTÕES */
-        .led { width: 8px; height: 8px; border-radius: 50%; margin-right: 12px; }
-        .pessoal .led { background: #0ea5e9; }
-        .mordomia .led { background: #f59e0b; }
-        .divino .led { background: #10b981; }
-        .jovens .led { background: #8b5cf6; }
-        .mulher .led { background: #ec4899; }
+        .led { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; border: 1px solid rgba(0,0,0,0.2); }
+        .pessoal .led { background: #0ea5e9; box-shadow: 0 0 5px #0ea5e9; }
+        .mordomia .led { background: #f59e0b; box-shadow: 0 0 5px #f59e0b; }
+        .divino .led { background: #10b981; box-shadow: 0 0 5px #10b981; }
+        .jovens .led { background: #8b5cf6; box-shadow: 0 0 5px #8b5cf6; }
+        .mulher .led { background: #ec4899; box-shadow: 0 0 5px #ec4899; }
 
-        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 6px; width: 100%; outline: none; }
+        .input-dark { background: #000; color: #fff; border: 1px solid var(--border); padding: 10px; border-radius: 6px; width: 100%; font-size: 0.85rem; }
         
-        /* TABELA TECH */
-        .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #0f172a; color: #64748b; padding: 18px; font-size: 0.7rem; letter-spacing: 1.5px; border-bottom: 1px solid var(--border); }
-        td { border-bottom: 1px solid rgba(255,255,255,0.02); height: 65px; position: relative; }
+        /* TABELA BRANCA (CONFORME O PRINT) */
+        .table-wrap { background: white; border-radius: 8px; overflow-x: auto; color: black; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { background: #1e3a8a; color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #ddd; }
+        td { border: 1px solid #ddd; height: 50px; text-align: center; font-weight: bold; }
         
-        .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #fff; font-size: 0.85rem; outline: none; }
-        .input-cell:focus { background: var(--row-hover); }
-        .input-cell[readonly] { color: #475569; cursor: default; }
+        .input-cell { width: 100%; height: 100%; border: none; background: transparent; text-align: center; color: #000; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; }
 
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:999; align-items:center; justify-content:center; }
-        .pop-content { background: var(--bg-dark); border: 1px solid var(--border); padding: 30px; border-radius: 15px; width: 450px; }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; }
+        .pop-content { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-main">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 35px; height: 35px; background: var(--neon-blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000;">E</div>
-            <h2 style="margin: 0; font-weight: 300; letter-spacing: 3px; font-size: 1.2rem;">ESTRELA DALVA</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="margin: 0; font-weight: bold; color: var(--neon-blue); font-size: 1.2rem;">IASD ESTRELA DALVA</h2>
         </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <select id="selMes" onchange="renderTodo()" class="input-dark" style="width: 150px; border: none; color: var(--neon-blue); font-weight: bold; cursor:pointer;"></select>
-            <button class="input-dark" style="width: auto; padding: 10px 20px;" onclick="abrirCalendario()">ANUAL</button>
-            <button id="btnAcc" class="input-dark" style="width: auto; padding: 10px 20px; border-color: var(--neon-blue);" onclick="document.getElementById('modalLogin').style.display='flex'">ACESSAR</button>
-            <button id="btnSair" class="input-dark" style="width: auto; padding: 10px 20px; border-color: #ef4444; color: #ef4444; display:none;" onclick="sair()">SAIR</button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <select id="selMes" onchange="renderTodo()" class="input-dark" style="width: 130px; border-color: var(--neon-blue);"></select>
+            <button class="btn-min" style="width:auto; margin:0" onclick="abrirCalendario()">📅 ANUAL</button>
+            <button id="btnAcc" class="btn-min" style="width:auto; margin:0; border-color: var(--neon-blue);" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
+            <button id="btnSair" class="btn-min" style="width:auto; margin:0; border-color: #ef4444; color: #ef4444; display:none;" onclick="sair()">SAIR</button>
         </div>
     </div>
 
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
-                <h4>ATIVAR PINCEL</h4>
+                <h4>1. PINCEL DE MINISTÉRIO</h4>
                 <button id="p-pessoal" class="btn-min pessoal" onclick="selPincel('pessoal','M. PESSOAL')"><div class="led"></div> M. PESSOAL</button>
                 <button id="p-mordomia" class="btn-min mordomia" onclick="selPincel('mordomia','MORDOMIA')"><div class="led"></div> MORDOMIA</button>
                 <button id="p-divino" class="btn-min divino" onclick="selPincel('divino','C. DIVINO')"><div class="led"></div> C. DIVINO</button>
                 <button id="p-jovens" class="btn-min jovens" onclick="selPincel('jovens','JOVENS')"><div class="led"></div> JOVENS</button>
                 <button id="p-mulher" class="btn-min mulher" onclick="selPincel('mulher','M. MULHER')"><div class="led"></div> M. MULHER</button>
-                <button class="btn-min" style="margin-top: 10px; opacity: 0.5;" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
+                <button class="btn-min" style="margin-top: 5px; border-color: red; color: red;" onclick="selPincel('','')">LIMPAR COR</button>
             </div>
 
             <div class="admin-section">
-                <h4>RESPONSÁVEL DO MÊS</h4>
+                <h4>2. RESPONSÁVEL MENSAL</h4>
                 <input type="text" id="ancMesInput" class="input-dark" placeholder="Nome do Ancião" onchange="salvarAnciao(this.value)">
-                <div style="margin-top: 25px; display: grid; gap: 10px;">
+                <div style="margin-top: 20px;">
                     <button class="btn-min" onclick="document.getElementById('popTesouraria').style.display='flex'">⚙️ TESOURARIA</button>
-                    <button class="btn-min" onclick="abrirMissionario()">📊 MISSIONÁRIO</button>
+                    <button class="btn-min" style="margin-top:8px" onclick="abrirMissionario()">📊 MISSIONÁRIO</button>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h4>SISTEMA</h4>
-                <div id="corpoCreds" style="font-size: 0.7rem; color: #475569; display: grid; gap: 5px;"></div>
+                <h4>3. LOGINS ATIVOS</h4>
+                <div id="corpoCreds" style="font-size: 0.7rem; color: #94a3b8; line-height: 1.6;"></div>
             </div>
         </div>
     </div>
 
     <div class="table-wrap">
-        <div style="padding: 20px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.01);">
-            <div id="headerTitulo" style="font-size: 0.8rem; letter-spacing: 2px; color: #64748b;"></div>
-            <div id="headerAnciao" style="font-size: 0.75rem; color: var(--neon-blue); margin-top: 5px;"></div>
+        <div style="padding: 15px; background: #002b5c; color: white; border-bottom: 2px solid var(--neon-blue);">
+            <div id="headerTitulo" style="font-weight: bold; text-transform: uppercase; font-size: 0.9rem;"></div>
+            <div id="headerAnciao" style="color: #ffd700; font-size: 0.8rem; margin-top: 4px;"></div>
         </div>
         <table id="tabela-main">
             <thead>
                 <tr>
-                    <th style="width: 130px;">DIA</th>
-                    <th style="width: 80px;">DATA</th>
+                    <th style="width: 120px;">DIA</th>
+                    <th style="width: 70px;">DATA</th>
                     <th>SABATINA</th>
                     <th>PREGADOR</th>
                     <th>MÚSICA</th>
@@ -135,17 +130,10 @@
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
-    <h3 style="margin-top:0">LOGIN</h3>
+    <h3 style="margin:0 0 15px 0; color:var(--neon-blue)">ACESSO GESTOR</h3>
     <input type="text" id="uLog" placeholder="Usuário" class="input-dark" style="margin-bottom:10px">
     <input type="password" id="pLog" placeholder="Senha" class="input-dark">
-    <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR</button>
-</div></div>
-
-<div id="popTesouraria" class="overlay"><div class="pop-content">
-    <h3>COMPROVANTES</h3>
-    <input type="file" id="fileInput" onchange="uploadArquivo()" class="input-dark">
-    <div id="listaAdminArquivos" style="margin-top:20px"></div>
-    <button class="btn-min" style="margin-top:20px" onclick="document.getElementById('popTesouraria').style.display='none'">FECHAR</button>
+    <button class="btn-min active" style="margin-top:20px; justify-content:center" onclick="login()">ENTRAR NO SISTEMA</button>
 </div></div>
 
 <script>
@@ -159,9 +147,10 @@
         appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
     firebase.initializeApp(firebaseConfig);
+    // Versão sincronizada para não "sumir" os dados se você já usava outra
     const dbRef = firebase.database().ref('iasd_estrela_v160');
 
-    let db = { senhas:{admin:"iasd118"}, escalas:{}, cores:{}, mis_v3:{}, docs:{}, anciaos:{} };
+    let db = { senhas:{admin:"iasd118"}, escalas:{}, cores:{}, anciaos:{} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     let pincelAtivo = null; let nomePincel = "";
 
@@ -174,7 +163,7 @@
         const u = document.getElementById('uLog').value.toLowerCase().trim();
         const p = document.getElementById('pLog').value;
         if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); }
-        else alert("Acesso negado");
+        else alert("Credenciais incorretas!");
     }
 
     function selPincel(id, nome) {
@@ -202,12 +191,12 @@
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcc').style.display = curUser === 'visitante' ? 'block' : 'none';
         
-        document.getElementById('headerTitulo').innerText = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"][m] + " / 2026";
-        document.getElementById('headerAnciao').innerText = "RESPONSÁVEL: " + (db.anciaos?.[m] || "AGUARDANDO");
+        document.getElementById('headerTitulo').innerText = "ESCALA: " + ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"][m] + " / 2026";
+        document.getElementById('headerAnciao').innerText = "RESPONSÁVEL: " + (db.anciaos?.[m] || "NÃO DEFINIDO");
         document.getElementById('ancMesInput').value = db.anciaos?.[m] || "";
 
         if(isMaster) {
-            document.getElementById('corpoCreds').innerHTML = Object.entries(db.senhas).map(([u,p])=>`<div>${u.toUpperCase()}: ${p}</div>`).join('');
+            document.getElementById('corpoCreds').innerHTML = Object.entries(db.senhas).map(([u,p])=>`<div>• ${u.toUpperCase()}: <b>${p}</b></div>`).join('');
         }
         renderEscala(m);
     }
@@ -224,15 +213,15 @@
                 let dStr = `${d}/${mIdx+1}/2026`;
                 let cor = db.cores?.[dStr] || {id:'', nome:''};
                 let row = `<tr class="row-${cor.id}">
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer">
-                        <div style="font-size:0.8rem; font-weight:bold">${["DOMINGO","","","QUARTA-FEIRA","","","SÁBADO"][sem]}</div>
-                        <div style="font-size:0.6rem; color:var(--neon-blue); opacity:0.7">${cor.nome}</div>
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; background: #f8fafc;">
+                        <div style="font-size:0.75rem">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</div>
+                        <div style="font-size:0.6rem; color:#0369a1">${cor.nome}</div>
                     </td>
-                    <td onclick="pintar('${dStr}')" style="cursor:pointer; color:#64748b">${d}/${mIdx+1}</td>`;
+                    <td onclick="pintar('${dStr}')" style="cursor:pointer; color:#64748b; background: #f8fafc;">${d}/${mIdx+1}</td>`;
 
                 ["sa","pr","mu","lo","so","re","di"].forEach(c => {
                     let val = db.escalas?.[dStr]?.[c] || "";
-                    let canEdit = isMaster || (curUser === c) || (curUser==='musica' && c==='mu') || (curUser==='sonoplastia' && c==='so');
+                    let canEdit = isMaster || (curUser === c);
                     row += `<td><input class="input-cell" ${!canEdit?'readonly':''} value="${val}" onchange="atu('${dStr}','${c}',this.value)"></td>`;
                 });
                 corpo.innerHTML += row + "</tr>";
