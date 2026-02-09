@@ -1,69 +1,85 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v230</title>
+    <title>IASD Estrela Dalva - v235</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root { --iasd-blue: #002b5c; --bg-dark: #070a0f; --neon-blue: #38bdf8; }
-        body { background: var(--bg-dark); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         
-        /* CORES DAS LINHAS - FORÇADAS */
+        /* --- CORES DAS LINHAS POR MINISTÉRIO --- */
         tr.pessoal td { background-color: #e0f2fe !important; color: #000; }
         tr.mordomia td { background-color: #fef3c7 !important; color: #000; }
-        tr.divino td { background-color: #d1fae5 !important; color: #000; }
-        tr.jovens td { background-color: #ede9fe !important; color: #000; }
         tr.mulher td { background-color: #fce7f3 !important; color: #000; }
-        tr.anciao td { background-color: #f1f5f9 !important; color: #000; }
-        tr.infantil td { background-color: #fffbeb !important; color: #000; }
+        tr.homens td { background-color: #dcfce7 !important; color: #000; }
+        tr.infantil td { background-color: #ffedd5 !important; color: #000; }
         tr.familia td { background-color: #fee2e2 !important; color: #000; }
+        tr.jovem td { background-color: #ede9fe !important; color: #000; }
+        tr.saude td { background-color: #f1f5f9 !important; color: #000; }
+        tr.anciao td { background-color: #ffffff !important; color: #000; }
 
         .admin-panel { display: none; background: #0f172a; border: 1px solid var(--neon-blue); padding: 15px; border-radius: 8px; margin: 10px 0; }
-        .btn { padding: 8px; border: 1px solid #1e293b; border-radius: 4px; cursor: pointer; background: rgba(255,255,255,0.05); color: white; width: 100%; margin-bottom: 4px; display: flex; align-items: center; }
+        .btn { padding: 8px; border: 1px solid #1e293b; border-radius: 4px; cursor: pointer; background: rgba(255,255,255,0.05); color: white; width: 100%; margin-bottom: 4px; display: flex; align-items: center; font-size: 0.8rem; }
         .btn.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; }
-        .led { width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; border: 1px solid #000; }
+        .led { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; border: 1px solid #000; flex-shrink: 0; }
 
-        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
-        th { background: #002b5c; color: white; padding: 10px; font-size: 0.7rem; border: 1px solid #ddd; }
+        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        table { width: 100%; border-collapse: collapse; color: black; min-width: 1100px; }
+        th { background: #002b5c; color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #ddd; text-transform: uppercase; }
         td { border: 1px solid #ddd; height: 55px; text-align: center; }
         
         .clickable { cursor: pointer; font-weight: bold; background: #f8fafc; }
-        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: transparent; }
+        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: transparent; font-size: 0.85rem; }
+        
+        select, .input-anciao { padding: 5px; background: #000; color: #fff; border: 1px solid var(--neon-blue); border-radius: 4px; }
     </style>
 </head>
 <body>
 
-<div style="display: flex; justify-content: space-between; align-items: center;">
-    <h3 style="color: var(--neon-blue);">IASD ESTRELA DALVA</h3>
-    <div style="display: flex; gap: 5px;">
-        <select id="selMes" onchange="renderTodo()" style="padding: 5px;"></select>
-        <button id="btnLog" onclick="login()" style="padding: 5px; cursor: pointer;">🔓 LOGIN ADMIN</button>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA</h2>
+    <div style="display: flex; gap: 10px;">
+        <select id="selMes" onchange="renderTodo()"></select>
+        <button id="btnLog" onclick="login()" style="padding: 8px 15px; cursor: pointer; background: var(--neon-blue); border:none; border-radius:4px; font-weight:bold;">🔓 ACESSO GESTOR</button>
     </div>
 </div>
 
 <div id="adminPanel" class="admin-panel">
-    <div style="display: grid; grid-template-columns: 250px 1fr; gap: 20px;">
+    <div style="display: grid; grid-template-columns: 280px 1fr; gap: 30px;">
         <div id="listaPinceis">
+            <h4 style="color:var(--neon-blue); margin: 0 0 10px 0;">PINCEL DE MINISTÉRIO</h4>
             <button class="btn" onclick="selPincel('anciao','ANCIÃO')"><div class="led" style="background:#94a3b8"></div> ANCIÃO</button>
-            <button class="btn" onclick="selPincel('pessoal','M. PESSOAL')"><div class="led" style="background:#0ea5e9"></div> M. PESSOAL</button>
+            <button class="btn" onclick="selPincel('pessoal','MIN. PESSOAL')"><div class="led" style="background:#0ea5e9"></div> MIN. PESSOAL</button>
             <button class="btn" onclick="selPincel('mordomia','MORDOMIA')"><div class="led" style="background:#f59e0b"></div> MORDOMIA</button>
-            <button class="btn" onclick="selPincel('jovens','JOVENS')"><div class="led" style="background:#8b5cf6"></div> JOVENS</button>
-            <button class="btn" onclick="selPincel('mulher','M. MULHER')"><div class="led" style="background:#ec4899"></div> M. MULHER</button>
-            <button class="btn" onclick="selPincel('infantil','M. INFANTIL')"><div class="led" style="background:#fbbf24"></div> M. INFANTIL</button>
-            <button class="btn" onclick="selPincel('familia','FAMÍLIA')"><div class="led" style="background:#f87171"></div> FAMÍLIA</button>
-            <button class="btn" onclick="selPincel('','')">❌ LIMPAR PINCEL</button>
+            <button class="btn" onclick="selPincel('mulher','MIN. MULHER')"><div class="led" style="background:#ec4899"></div> MIN. MULHER</button>
+            <button class="btn" onclick="selPincel('homens','MIN. HOMENS')"><div class="led" style="background:#22c55e"></div> MIN. HOMENS</button>
+            <button class="btn" onclick="selPincel('infantil','MIN. INFANTIL')"><div class="led" style="background:#fbbf24"></div> MIN. INFANTIL</button>
+            <button class="btn" onclick="selPincel('familia','MIN. FAMÍLIA')"><div class="led" style="background:#f87171"></div> MIN. FAMÍLIA</button>
+            <button class="btn" onclick="selPincel('jovem','MIN. JOVEM')"><div class="led" style="background:#8b5cf6"></div> MIN. JOVEM</button>
+            <button class="btn" onclick="selPincel('saude','MIN. SAÚDE E TEMP.')"><div class="led" style="background:#64748b"></div> MIN. SAÚDE E TEMP.</button>
+            <button class="btn" style="margin-top:10px; color:#ff4444;" onclick="selPincel('','')">❌ LIMPAR SELEÇÃO</button>
         </div>
-        <div id="listaAnciaos" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;"></div>
+        <div>
+            <h4 style="color:var(--neon-blue); margin: 0 0 10px 0;">ANCIÕES DO MÊS (ANUAL)</h4>
+            <div id="listaAnciaos" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
+        </div>
     </div>
 </div>
 
 <div class="table-container">
-    <table id="tabelaEscala">
+    <table>
         <thead>
             <tr>
-                <th style="width: 120px;">DIA</th><th style="width: 70px;">DATA</th>
-                <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+                <th style="width: 140px;">DIA</th>
+                <th style="width: 80px;">DATA</th>
+                <th>SABATINA</th>
+                <th>PREGADOR</th>
+                <th>MÚSICA</th>
+                <th>LOUVOR</th>
+                <th>SONO</th>
+                <th>RECEPÇÃO</th>
+                <th>DIACONATO</th>
             </tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
@@ -77,7 +93,7 @@
         projectId: "unidades-de-acao",
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v230');
+    const dbRef = firebase.database().ref('iasd_estrela_v235');
 
     let db = { escalas:{}, cores:{}, anciaos:{} };
     let user = localStorage.getItem('iasd_user') || 'v';
@@ -85,8 +101,9 @@
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
     function login() {
-        const p = prompt("Senha:");
+        const p = prompt("Senha do Gestor:");
         if(p === 'iasd118') { localStorage.setItem('iasd_user', 'admin'); location.reload(); }
+        else { alert("Senha incorreta!"); }
     }
 
     dbRef.on('value', snap => {
@@ -102,7 +119,7 @@
 
     function pintar(dStr) {
         if(user !== 'admin') return;
-        if(pID === null) { alert("Selecione um ministério primeiro!"); return; }
+        if(pID === null) return alert("Selecione um ministério no painel acima primeiro!");
         
         if(!db.cores) db.cores = {};
         if(pID === "") delete db.cores[dStr];
@@ -115,14 +132,14 @@
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('adminPanel').style.display = (user === 'admin') ? 'block' : 'none';
 
-        // Anciãos
+        // Render Anciãos
         let hAnc = "";
         meses.forEach((n, i) => {
-            hAnc += `<div style="font-size:0.6rem;">${n}<input style="width:100%;" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i}, this.value)"></div>`;
+            hAnc += `<div style="font-size:0.7rem; color:#cbd5e1">${n}<input class="input-anciao" style="width:100%;" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i}, this.value)"></div>`;
         });
         document.getElementById('listaAnciaos').innerHTML = hAnc;
 
-        // Escala
+        // Render Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
 
@@ -130,7 +147,7 @@
             let dt = new Date(2026, m, d);
             let sem = dt.getDay();
             if([0,3,6].includes(sem)) {
-                let dStr = `${d}_${m+1}_2026`; // ID único sem barras para o Firebase
+                let dStr = `${d}_${m+1}_2026`;
                 let c = db.cores?.[dStr] || {id:'', nome:''};
                 
                 let tr = document.createElement('tr');
@@ -138,8 +155,8 @@
 
                 tr.innerHTML = `
                     <td class="clickable" onclick="pintar('${dStr}')">
-                        <div style="font-size:0.6rem; color:#64748b">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</div>
-                        <div style="font-size:0.65rem; font-weight:bold">${c.nome || ''}</div>
+                        <div style="font-size:0.65rem; color:#64748b">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</div>
+                        <div style="font-size:0.7rem; font-weight:bold">${c.nome || ''}</div>
                     </td>
                     <td class="clickable" onclick="pintar('${dStr}')">${d}/${m+1}</td>
                     ${["sa","pr","mu","lo","so","re","di"].map(col => `
