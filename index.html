@@ -1,14 +1,14 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v240</title>
+    <title>IASD Estrela Dalva - v245</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root { --iasd-blue: #002b5c; --bg-dark: #070a0f; --neon-blue: #38bdf8; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         
-        /* CORES DAS LINHAS - IDENTIFICAÇÃO EXATA */
+        /* CORES DAS LINHAS - PADRÃO SOLICITADO */
         tr.pessoal td { background-color: #e0f2fe !important; color: #000; }
         tr.mordomia td { background-color: #fef3c7 !important; color: #000; }
         tr.mulher td { background-color: #fce7f3 !important; color: #000; }
@@ -17,21 +17,20 @@
         tr.familia td { background-color: #fee2e2 !important; color: #000; }
         tr.jovem td { background-color: #ede9fe !important; color: #000; }
         tr.saude td { background-color: #f1f5f9 !important; color: #000; }
-        tr.anciao td { background-color: #ffffff !important; color: #000; }
 
         .admin-panel { display: none; background: #0f172a; border: 1px solid var(--neon-blue); padding: 15px; border-radius: 8px; margin: 10px 0; }
-        .btn { padding: 9px; border: 1px solid #1e293b; border-radius: 4px; cursor: pointer; background: rgba(255,255,255,0.05); color: white; width: 100%; margin-bottom: 4px; display: flex; align-items: center; font-size: 0.85rem; }
+        .btn { padding: 10px; border: 1px solid #1e293b; border-radius: 4px; cursor: pointer; background: rgba(255,255,255,0.05); color: white; width: 100%; margin-bottom: 5px; display: flex; align-items: center; font-size: 0.9rem; }
         .btn.active { background: var(--neon-blue) !important; color: #000 !important; font-weight: bold; }
-        .led { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; border: 1px solid #000; flex-shrink: 0; }
+        .led { width: 12px; height: 12px; border-radius: 50%; margin-right: 12px; border: 1px solid #000; flex-shrink: 0; }
 
         .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; color: black; min-width: 1100px; }
-        th { background: #002b5c; color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #ddd; }
-        td { border: 1px solid #ddd; height: 55px; text-align: center; }
+        th { background: #002b5c; color: white; padding: 12px; font-size: 0.8rem; border: 1px solid #ddd; }
+        td { border: 1px solid #ddd; height: 58px; text-align: center; }
         
         .clickable { cursor: pointer; font-weight: bold; }
         .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: transparent; }
-        select { padding: 6px; background: #000; color: #fff; border: 1px solid var(--neon-blue); }
+        select { padding: 8px; background: #000; color: #fff; border: 1px solid var(--neon-blue); border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -40,15 +39,15 @@
     <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA</h2>
     <div style="display: flex; gap: 10px;">
         <select id="selMes" onchange="renderTodo()"></select>
-        <button onclick="login()" style="padding: 8px 15px; cursor: pointer; background: var(--neon-blue); border:none; font-weight:bold; border-radius:4px;">🔓 GESTÃO</button>
+        <button onclick="login()" style="padding: 10px 20px; cursor: pointer; background: var(--neon-blue); border:none; font-weight:bold; border-radius:4px;">🔓 GESTÃO</button>
     </div>
 </div>
 
 <div id="adminPanel" class="admin-panel">
-    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 30px;">
+    <div style="display: grid; grid-template-columns: 350px 1fr; gap: 30px;">
         <div id="listaPinceis">
-            <h4 style="color:var(--neon-blue); margin: 0 0 10px 0;">SELECIONE O MINISTÉRIO</h4>
-            <button class="btn" onclick="selPincel('anciao','ANCIÃO')"><div class="led" style="background:#94a3b8"></div> ANCIÃO</button>
+            <h4 style="color:var(--neon-blue); margin: 0 0 15px 0; letter-spacing: 1px;">SELECIONE O MINISTÉRIO</h4>
+            
             <button class="btn" onclick="selPincel('pessoal','Min. Pessoal')"><div class="led" style="background:#0ea5e9"></div> Min. Pessoal</button>
             <button class="btn" onclick="selPincel('mordomia','Mordomia')"><div class="led" style="background:#f59e0b"></div> Mordomia</button>
             <button class="btn" onclick="selPincel('mulher','Min. Mulher')"><div class="led" style="background:#ec4899"></div> Min. Mulher</button>
@@ -57,11 +56,12 @@
             <button class="btn" onclick="selPincel('familia','Min. Família')"><div class="led" style="background:#f87171"></div> Min. Família</button>
             <button class="btn" onclick="selPincel('jovem','Min. Jovem')"><div class="led" style="background:#8b5cf6"></div> Min. Jovem</button>
             <button class="btn" onclick="selPincel('saude','Min. Saúde e temperança')"><div class="led" style="background:#64748b"></div> Min. Saúde e temperança</button>
-            <button class="btn" style="margin-top:10px; color:#ff4444;" onclick="selPincel('','')">❌ LIMPAR SELEÇÃO</button>
+            
+            <button class="btn" style="margin-top:15px; color:#ff4444; border-color: #ff4444;" onclick="selPincel('','')">❌ LIMPAR SELEÇÃO</button>
         </div>
         <div>
-            <h4 style="color:var(--neon-blue); margin: 0 0 10px 0;">ANCIÕES DO MÊS</h4>
-            <div id="listaAnciaos" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
+            <h4 style="color:var(--neon-blue); margin: 0 0 15px 0;">ANCIÕES DO MÊS</h4>
+            <div id="listaAnciaos" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;"></div>
         </div>
     </div>
 </div>
@@ -70,8 +70,15 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 150px;">DIA</th><th style="width: 80px;">DATA</th>
-                <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+                <th style="width: 160px;">DIA</th>
+                <th style="width: 90px;">DATA</th>
+                <th>SABATINA</th>
+                <th>PREGADOR</th>
+                <th>MÚSICA</th>
+                <th>LOUVOR</th>
+                <th>SONO</th>
+                <th>RECEPÇÃO</th>
+                <th>DIACONATO</th>
             </tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
@@ -85,7 +92,7 @@
         projectId: "unidades-de-acao",
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v240');
+    const dbRef = firebase.database().ref('iasd_estrela_v245');
 
     let db = { escalas:{}, cores:{}, anciaos:{} };
     let user = localStorage.getItem('iasd_user') || 'v';
@@ -121,7 +128,7 @@
 
         let hAnc = "";
         meses.forEach((n, i) => {
-            hAnc += `<div><label style="font-size:10px">${n}</label><input style="width:100%;background:#000;color:#fff;border:1px solid #333" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i}, this.value)"></div>`;
+            hAnc += `<div><label style="font-size:11px; color:#aaa">${n}</label><input style="width:100%;background:#000;color:#fff;border:1px solid #444;padding:4px;" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i}, this.value)"></div>`;
         });
         document.getElementById('listaAnciaos').innerHTML = hAnc;
 
@@ -139,8 +146,8 @@
 
                 tr.innerHTML = `
                     <td class="clickable" onclick="pintar('${dStr}')">
-                        <div style="font-size:0.65rem; color:#64748b">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</div>
-                        <div style="font-size:0.75rem; font-weight:bold">${c.nome || ''}</div>
+                        <div style="font-size:0.7rem; color:#64748b; margin-bottom:2px">${["DOMINGO","","","QUARTA","","","SÁBADO"][sem]}</div>
+                        <div style="font-size:0.8rem; font-weight:bold">${c.nome || ''}</div>
                     </td>
                     <td class="clickable" onclick="pintar('${dStr}')">${d}/${m+1}</td>
                     ${["sa","pr","mu","lo","so","re","di"].map(col => `
