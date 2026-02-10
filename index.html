@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v340</title>
+    <title>IASD Estrela Dalva - MASTER v350</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -19,7 +19,7 @@
         .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         
         /* Coluna 1: Pincéis */
-        .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-align: center; }
         .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
         .btn-min.limpar { border-color: #ef4444; color: #ef4444; }
 
@@ -29,8 +29,9 @@
         .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 0.8rem; }
 
         /* Coluna 3: Logins EDITÁVEIS */
+        .login-scroll { max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; }
-        .login-table th { text-align: left; font-size: 0.7rem; padding-bottom: 8px; border-bottom: 1px solid #1e293b; }
+        .login-table th { text-align: left; font-size: 0.7rem; padding-bottom: 8px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #0f172a; }
         .login-table td { padding: 5px 0; border-bottom: 1px solid #1e293b; }
         .input-login { background: transparent; border: none; color: #fbbf24; width: 100%; font-size: 0.8rem; }
         .input-login.user { color: var(--neon-blue); font-weight: bold; }
@@ -42,7 +43,7 @@
         table.escala td { border: 1px solid #000 !important; height: 40px; text-align: center; font-weight: bold; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
-        /* CORES */
+        /* Cores de Fundo */
         tr.pessoal td { background-color: #e0f2fe !important; }
         tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; }
@@ -56,7 +57,7 @@
 <body>
 
 <div class="main-header">
-    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - GESTÃO</h2>
+    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - PAINEL DE GESTÃO</h2>
     <div>
         <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px;"></select>
     </div>
@@ -65,32 +66,31 @@
 <div class="admin-main-box">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Selecionar Ministério</div>
-            <div id="listaBotoes">
-                <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
-                <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
-                <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
-                <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
-                <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
-                <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-                <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
-                <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-                <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
-            </div>
+            <div class="col-header">1. Ministério do Dia</div>
+            <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
+            <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
+            <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
+            <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
+            <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
+            <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
+            <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
+            <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
+            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
         </div>
         
         <div class="column">
-            <div class="col-header">2. Responsável do Mês</div>
+            <div class="col-header">2. Responsáveis Mensais</div>
             <div id="gridResponsaveis" class="resp-grid"></div>
         </div>
 
         <div class="column">
             <div class="col-header">3. Controle de Logins e Senhas</div>
-            <table class="login-table">
-                <thead><tr><th>CARGO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
-                <tbody id="corpoLogins">
-                    </tbody>
-            </table>
+            <div class="login-scroll">
+                <table class="login-table">
+                    <thead><tr><th>CARGO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
+                    <tbody id="corpoLogins"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -110,40 +110,36 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v340');
+    const dbRef = firebase.database().ref('iasd_master_v350');
 
-    let db = { escalas:{}, cores:{}, anciaos:{}, logins:{} };
+    let db = { escalas:{}, cores:{}, anciaos:{}, logins:[] };
     let pID = null; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
-    // Lista inicial de logins se o banco estiver vazio
     const loginsPadrao = [
-        {id:0, c:"ADMINISTRADOR", u:"admin", s:"iasd118"},
-        {id:1, c:"GERÊNCIA", u:"ger", s:"ger123"},
-        {id:2, c:"DIACONATO", u:"diaconato", s:"diac123"},
-        {id:3, c:"MÚSICA", u:"musica", s:"mus123"},
-        {id:4, c:"SONOPLASTIA", u:"sono", s:"sono123"},
-        {id:5, c:"M. MULHER", u:"mulher", s:"mul123"},
-        {id:6, c:"SABATINA", u:"sabatina", s:"sab123"},
-        {id:7, c:"TESOURARIA", u:"tesouro", s:"tes123"}
+        {c:"Administrador", u:"admin", s:"iasd118"}, {c:"Gerência", u:"ger", s:"ger123"},
+        {c:"Diaconato", u:"diaconato", s:"diac123"}, {c:"Música", u:"musica", s:"mus123"},
+        {c:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {c:"M. Mulher", u:"mulher", s:"mulher123"},
+        {c:"Escola Sabatina", u:"sabatina", s:"sab123"}, {c:"M. Pessoal", u:"pessoal", s:"mp123"},
+        {c:"Mordomia", u:"mordomia", s:"mord123"}, {c:"Saúde", u:"saude", s:"saude123"},
+        {c:"M. Homens", u:"homens", s:"homem123"}, {c:"M. Família", u:"familia", s:"fam123"},
+        {c:"Adolescentes", u:"adolescentes", s:"adol123"}
     ];
 
     dbRef.on('value', snap => { 
         db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao }; 
-        if(!db.logins) db.logins = loginsPadrao;
+        if(!db.logins || db.logins.length === 0) db.logins = loginsPadrao;
         renderTodo(); 
     });
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
 
-        // Render Responsáveis
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
             <div><label class="label-mes">${n}</label>
             <input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        // Render Logins EDITÁVEIS
         document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
             <tr>
                 <td><input class="input-login" value="${l.c}" onchange="atuLogin(${idx},'c',this.value)"></td>
@@ -152,7 +148,6 @@
             </tr>
         `).join('');
 
-        // Render Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -170,7 +165,6 @@
         }
     }
 
-    // Funções de atualização
     function atuLogin(idx, campo, valor) { db.logins[idx][campo] = valor; dbRef.child('logins').set(db.logins); }
     function atuAnc(i,v) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }
     function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
