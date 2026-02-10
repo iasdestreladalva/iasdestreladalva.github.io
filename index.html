@@ -1,21 +1,29 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v390</title>
+    <title>IASD Estrela Dalva - MASTER v400</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --neon-blue: #38bdf8; --accent-orange: #f97316; }
-        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; padding-top: 70px; }
         
-        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .user-status { background: #1e293b; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon-blue); font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
-        .dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
+        /* BARRA DE FERRAMENTAS FIXA NO TOPO */
+        .toolbar { 
+            position: fixed; top: 0; left: 0; right: 0; height: 60px; 
+            background: #1e293b; display: flex; align-items: center; 
+            padding: 0 20px; z-index: 1000; border-bottom: 2px solid var(--neon-blue);
+            gap: 15px; justify-content: space-between;
+        }
 
-        /* BOTÕES DE IMPRESSÃO */
-        .btn-print { background: #22c55e; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 10px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-print { 
+            background: #22c55e; color: white; border: none; padding: 10px 20px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; 
+            font-size: 0.9rem; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
         .btn-print.anual { background: #8b5cf6; }
-        .btn-print:hover { opacity: 0.8; }
+        .btn-print:hover { transform: scale(1.05); opacity: 0.9; }
 
         /* PAINEL DE GESTÃO */
         .admin-main-box { background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
@@ -26,10 +34,7 @@
         .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
         .btn-min.limpar { border-color: #ef4444; color: #ef4444; }
 
-        .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; font-size: 0.8rem; }
-
-        .login-table { width: 100%; border-collapse: collapse; }
         .input-login { background: #000; border: 1px solid #1e293b; color: #fbbf24; width: 95%; padding: 5px; border-radius: 4px; font-size: 0.8rem; }
 
         /* ESCALA */
@@ -43,30 +48,23 @@
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
         /* PLANEJAMENTO */
-        #secaoAnual { margin-bottom: 20px; }
         .anual-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .card-mes { background: #000; border: 1.5px solid #334155; border-radius: 10px; padding: 12px; }
         .card-mes h4 { color: var(--neon-blue); margin: 0 0 8px 0; font-size: 0.75rem; border-bottom: 1px solid #1e293b; }
         .txt-anual { width: 100%; height: 70px; background: transparent; border: none; color: #fff; resize: none; font-size: 0.8rem; outline: none; }
 
-        /* REGRAS DE IMPRESSÃO (CSS PRINT) */
+        /* REGRAS DE IMPRESSÃO */
         @media print {
-            body { background: white !important; color: black !important; padding: 0; margin: 0; }
-            .admin-main-box, .main-header, .btn-print, .btn-min, .col-header, #selMes, .user-status { display: none !important; }
-            
-            /* Se estiver imprimindo a escala, esconde o anual */
+            body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
+            .toolbar, .admin-main-box, .btn-min, .col-header, h3 { display: none !important; }
             body.print-escala #secaoAnual { display: none !important; }
-            /* Se estiver imprimindo o anual, esconde a escala */
             body.print-anual #secaoEscala { display: none !important; }
-            body.print-anual .card-mes { border: 1px solid #000 !important; background: white !important; }
+            body.print-anual .card-mes { border: 1px solid #000 !important; background: white !important; page-break-inside: avoid; }
             body.print-anual .card-mes h4, body.print-anual .txt-anual { color: black !important; }
-
-            #secaoEscala { border: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            table.escala { min-width: 100% !important; border: 2px solid #000 !important; }
-            .cell-input { color: black !important; }
+            #secaoEscala { border: none !important; }
         }
 
-        /* Cores Ministérios */
+        /* CORES MINISTÉRIOS */
         tr.pessoal td { background-color: #e0f2fe !important; } tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; } tr.homens td { background-color: #dcfce7 !important; }
         tr.familia td { background-color: #fee2e2 !important; } tr.adolescentes td { background-color: #f0fdf4 !important; }
@@ -75,20 +73,21 @@
 </head>
 <body>
 
-<div class="main-header">
-    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA</h2>
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <button class="btn-print" onclick="imprimir('escala')">🖨️ Imprimir Escala</button>
-        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ Imprimir Planejamento</button>
-        <div class="user-status"><span class="dot"></span> <strong id="userNome">ADMIN</strong></div>
+<div class="toolbar">
+    <div style="display: flex; gap: 10px;">
+        <button class="btn-print" onclick="imprimir('escala')">🖨️ IMPRIMIR ESCALA</button>
+        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ IMPRIMIR PLANEJAMENTO</button>
+    </div>
+    <div style="display: flex; gap: 15px; align-items: center;">
         <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
+        <div style="font-size: 0.8rem;">Logado: <strong>ADMIN</strong></div>
     </div>
 </div>
 
 <div class="admin-main-box">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Pincel de Ministério</div>
+            <div class="col-header">1. Pincéis</div>
             <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
             <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
             <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
@@ -97,16 +96,16 @@
             <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
             <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
             <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR</button>
+            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR COR</button>
         </div>
         <div class="column">
-            <div class="col-header">2. Responsáveis Mensais</div>
-            <div id="gridResponsaveis" class="resp-grid"></div>
+            <div class="col-header">2. Responsáveis</div>
+            <div id="gridResponsaveis" class="admin-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. Logins e Senhas</div>
-            <div id="listaLogins" class="resp-grid" style="display:block; max-height:300px; overflow-y:auto;">
-                <table class="login-table"><tbody id="corpoLogins"></tbody></table>
+            <div class="col-header">3. Logins Editáveis</div>
+            <div style="max-height:280px; overflow-y:auto;">
+                <table style="width:100%; border-collapse:collapse;"><tbody id="corpoLogins"></tbody></table>
             </div>
         </div>
     </div>
@@ -129,23 +128,28 @@
 </div>
 
 <div id="secaoAnual">
-    <h3 style="color: var(--accent-orange); text-transform: uppercase; font-size: 0.9rem;">🗓️ Planejamento Anual 2026</h3>
+    <h3 style="color: var(--accent-orange);">🗓️ PLANEJAMENTO ANUAL 2026</h3>
     <div id="gridAnual" class="anual-grid"></div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_master_v390');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v400');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let pID = null; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
-    const loginsPadrao = [{c:"Admin", u:"admin", s:"iasd118"},{c:"Música", u:"musica", s:"mus123"},{c:"Diaconato", u:"diac", s:"diac123"}];
+    const loginsPadrao = [
+        {c:"Admin", u:"admin", s:"iasd118"}, {c:"Música", u:"musica", s:"mus123"},
+        {c:"Diaconato", u:"diac", s:"diac123"}, {c:"Sonoplastia", u:"sono", s:"sono123"},
+        {c:"M. Mulher", u:"mulher", s:"mul123"}, {c:"Esc. Sabatina", u:"sabatina", s:"sab123"}
+    ];
 
     dbRef.on('value', snap => { 
         db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao, anual:{} }; 
+        if(!db.logins) db.logins = loginsPadrao;
         renderTodo(); 
     });
 
@@ -155,11 +159,11 @@
         document.getElementById('anciaoDestaque').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "(NÃO DEFINIDO)"}`;
 
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
-            <div><label style="font-size:10px; color:#94a3b8">${n}</label>
+            <div><label style="font-size:9px; color:#94a3b8">${n}</label>
             <input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        document.getElementById('corpoLogins').innerHTML = (db.logins || loginsPadrao).map((l, idx) => `
+        document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
             <tr><td><input class="input-login" value="${l.c}" onchange="atuLogin(${idx},'c',this.value)"></td>
             <td><input class="input-login" style="color:var(--neon-blue)" value="${l.u}" onchange="atuLogin(${idx},'u',this.value)"></td>
             <td><input class="input-login" value="${l.s}" onchange="atuLogin(${idx},'s',this.value)"></td></tr>
@@ -190,7 +194,7 @@
     function imprimir(tipo) {
         document.body.classList.remove('print-escala', 'print-anual');
         document.body.classList.add('print-' + tipo);
-        window.print();
+        setTimeout(() => { window.print(); }, 200);
     }
 
     function atuLogin(idx, campo, valor) { db.logins[idx][campo] = valor; dbRef.child('logins').set(db.logins); }
@@ -204,3 +208,4 @@
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body> </html>
+
