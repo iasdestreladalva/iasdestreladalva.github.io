@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v360</title>
+    <title>IASD Estrela Dalva - MASTER v370</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -10,7 +10,7 @@
         
         .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
-        /* PAINEL DE GESTÃO PRINCIPAL */
+        /* PAINEL DE GESTÃO */
         .admin-main-box { 
             background: #0f172a; border: 2px solid var(--accent-orange); 
             border-radius: 15px; padding: 20px; margin-bottom: 25px;
@@ -18,38 +18,48 @@
         .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 25px; }
         .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         
-        /* Coluna 1: Pincéis */
+        /* Pincéis */
         .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-align: center; }
         .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
         .btn-min.limpar { border-color: #ef4444; color: #ef4444; }
 
-        /* Coluna 2: Responsáveis */
+        /* Responsáveis */
         .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .label-mes { font-size: 0.6rem; color: #94a3b8; display: block; margin-bottom: 2px; }
         .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 0.8rem; }
 
-        /* Coluna 3: Logins EDITÁVEIS */
+        /* LOGINS EDITÁVEIS (ESTILO INPUT REVERSO) */
         .login-scroll { max-height: 350px; overflow-y: auto; padding-right: 5px; }
-        .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; }
-        .login-table th { text-align: left; font-size: 0.7rem; padding-bottom: 8px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #0f172a; }
-        .login-table td { padding: 5px 0; border-bottom: 1px solid #1e293b; }
-        .input-login { background: transparent; border: none; color: #fbbf24; width: 100%; font-size: 0.8rem; }
+        .login-table { width: 100%; border-collapse: collapse; }
+        .login-table th { text-align: left; font-size: 0.7rem; color: var(--accent-orange); padding-bottom: 8px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #0f172a; }
+        .login-table td { padding: 5px 2px; border-bottom: 1px solid #1e293b; }
+        
+        .input-login { 
+            background: #000; 
+            border: 1px solid #1e293b; 
+            color: #fbbf24; 
+            width: 95%; 
+            padding: 5px; 
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .input-login:focus { border-color: var(--neon-blue); outline: none; }
         .input-login.user { color: var(--neon-blue); font-weight: bold; }
 
-        /* ESCALA COM GRADES */
+        /* ESCALA */
         .table-wrap { background: white; border-radius: 8px; padding: 8px; overflow-x: auto; margin-bottom: 30px;}
         table.escala { width: 100%; border-collapse: collapse !important; color: black; min-width: 1000px; border: 2px solid #000 !important; }
         table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 10px; border: 1px solid #000 !important; font-size: 0.75rem; }
         table.escala td { border: 1px solid #000 !important; height: 40px; text-align: center; font-weight: bold; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
-        /* PLANEJAMENTO ANUAL */
+        /* ANUAL */
         .anual-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .card-mes { background: #000; border: 1.5px solid #334155; border-radius: 10px; padding: 12px; }
         .card-mes h4 { color: var(--neon-blue); margin: 0 0 8px 0; font-size: 0.75rem; border-bottom: 1px solid #1e293b; }
         .txt-anual { width: 100%; height: 70px; background: transparent; border: none; color: #fff; resize: none; font-size: 0.8rem; outline: none; }
 
-        /* CORES */
+        /* CORES MINISTÉRIOS */
         tr.pessoal td { background-color: #e0f2fe !important; } tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; } tr.homens td { background-color: #dcfce7 !important; }
         tr.familia td { background-color: #fee2e2 !important; } tr.adolescentes td { background-color: #f0fdf4 !important; }
@@ -59,14 +69,14 @@
 <body>
 
 <div class="main-header">
-    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - PAINEL MASTER</h2>
+    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - GESTÃO</h2>
     <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
 </div>
 
 <div class="admin-main-box">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Ministério do Dia</div>
+            <div class="col-header">1. Selecionar Ministério</div>
             <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
             <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
             <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
@@ -84,7 +94,7 @@
         </div>
 
         <div class="column">
-            <div class="col-header">3. Logins e Senhas (Editáveis)</div>
+            <div class="col-header">3. Logins e Senhas (EDITÁVEIS)</div>
             <div class="login-scroll">
                 <table class="login-table">
                     <thead><tr><th>CARGO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
@@ -107,7 +117,7 @@
     </table>
 </div>
 
-<div style="margin-bottom: 20px;">
+<div>
     <h3 style="color: var(--accent-orange); text-transform: uppercase; font-size: 0.9rem;">🗓️ Planejamento Anual 2026</h3>
     <div id="gridAnual" class="anual-grid"></div>
 </div>
@@ -115,7 +125,7 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v360');
+    const dbRef = firebase.database().ref('iasd_master_v370');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let pID = null; let pNome = "";
@@ -146,7 +156,7 @@
             <input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        // 2. Logins
+        // 2. Logins Editáveis
         document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
             <tr>
                 <td><input class="input-login" value="${l.c}" onchange="atuLogin(${idx},'c',this.value)"></td>
