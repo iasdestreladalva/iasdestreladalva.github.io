@@ -1,11 +1,11 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v285</title>
+    <title>IASD Estrela Dalva - v290</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.9); --neon-blue: #38bdf8; --accent-orange: #f97316; }
+        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.95); --neon-blue: #38bdf8; --accent-orange: #f97316; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
         
         /* HEADER */
@@ -13,30 +13,40 @@
         .nav-btns { display: flex; gap: 8px; }
         .btn-nav { background: transparent; border: 1px solid #fff; color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
         .btn-nav.orange { border-color: var(--accent-orange); color: var(--accent-orange); }
-        .btn-nav.active { background: #fff; color: #000; }
+        .btn-nav.active { background: #fff !important; color: #000 !important; }
 
-        /* CONTROLE DE SEÇÕES */
         .section { display: none; }
         .section.active { display: block !important; }
 
-        /* ESCALA SEM LINHAS */
+        /* ESCALA COM LINHAS (Recuperadas conforme pedido) */
         .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; padding: 10px; }
-        table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
-        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; font-size: 0.75rem; border: none; }
-        table.escala td { border: none; height: 45px; text-align: center; padding: 2px; }
-        .input-cell { width: 95%; height: 35px; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: rgba(0,0,0,0.04); border-radius: 4px; }
+        table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; border: 1px solid #ccc; }
+        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #444; text-transform: uppercase; }
+        table.escala td { border: 1px solid #ddd; height: 45px; text-align: center; padding: 2px; }
+        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: transparent; }
 
-        /* PAINEL DE GESTÃO (3 COLUNAS) - REATIVADO */
+        /* PAINEL DE GESTÃO (Visual da Foto) */
         .admin-grid { 
-            display: grid; grid-template-columns: 260px 320px 1fr; gap: 25px; 
-            background: var(--card-bg); border: 2px solid var(--neon-blue); 
+            display: grid; grid-template-columns: 240px 320px 1fr; gap: 20px; 
+            background: #0f172a; border: 1.5px solid var(--accent-orange); 
             border-radius: 12px; padding: 25px; margin-top: 10px;
         }
-        .col-title { color: var(--neon-blue); font-size: 0.9rem; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 15px; }
-        .btn-min { width: 100%; padding: 12px; margin-bottom: 6px; background: transparent; border: 1px solid var(--neon-blue); color: #fff; border-radius: 6px; cursor: pointer; text-align: left; font-weight: bold; }
+        .col-title { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
+        
+        /* Coluna 1 - Botões */
+        .btn-min { width: 100%; padding: 10px; margin-bottom: 8px; background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); border-radius: 6px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.75rem; }
         .btn-min.active { background: var(--neon-blue); color: #000; }
+        .btn-min.limpar { border-color: #ff4444; color: #ff4444; }
 
-        /* CORES DAS LINHAS */
+        /* Coluna 2 - Responsáveis */
+        .mes-input { background: #000; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 0.8rem; }
+        .label-mes { font-size: 0.65rem; color: #94a3b8; display: block; margin-top: 5px; }
+
+        /* Coluna 3 - Logins */
+        .login-row { display: grid; grid-template-columns: 100px 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
+        .login-head { color: #fbbf24; font-size: 0.7rem; font-weight: bold; margin-bottom: 10px; }
+
+        /* CORES DAS LINHAS DA ESCALA */
         tr.pessoal td { background-color: #e0f2fe !important; }
         tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; }
@@ -48,8 +58,7 @@
 
         /* PLANEJAMENTO ANUAL */
         .grid-anual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .mes-card { background: rgba(0,0,0,0.4); border: 1px solid #334155; border-radius: 10px; padding: 15px; }
-        .mes-textarea { width: 100%; height: 100px; background: #000; color: #fff; border: none; border-radius: 4px; padding: 8px; resize: none; }
+        .mes-card { background: #000; border: 1px solid #334155; border-radius: 10px; padding: 15px; }
     </style>
 </head>
 <body>
@@ -82,7 +91,7 @@
 </div>
 
 <div id="secAnual" class="section">
-    <div style="background: var(--card-bg); border: 2px solid var(--accent-orange); border-radius: 15px; padding: 25px;">
+    <div style="background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 25px;">
         <h3 style="color: var(--accent-orange); text-align:center; margin-top:0;">PLANEJAMENTO ANUAL 2026</h3>
         <div id="gridAnual" class="grid-anual"></div>
     </div>
@@ -91,24 +100,25 @@
 <div id="secGestao" class="section">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-title">1. MINISTÉRIO DO DIA</div>
-            <button class="btn-min" onclick="selPincel('pessoal','Min. Pessoal')">M. Pessoal</button>
+            <div class="col-title">1. Ministério do Dia</div>
+            <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
             <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
             <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
-            <button class="btn-min" onclick="selPincel('homens','Min. Homens')">M. Homens</button>
-            <button class="btn-min" onclick="selPincel('familia','Min. Família')">M. Família</button>
+            <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
+            <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
             <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-            <button class="btn-min" onclick="selPincel('mulher','Min. Mulher')">M. Mulher</button>
+            <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
             <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:10px;" onclick="selPincel('','')">LIMPAR</button>
+            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR</button>
         </div>
         <div class="column">
-            <div class="col-title">2. RESPONSÁVEL MENSAL</div>
-            <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+            <div class="col-title">2. Responsável Mensal</div>
+            <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
         </div>
         <div class="column">
-            <div class="col-title">3. LOGINS E SENHAS</div>
-            <div id="listaLogins" style="font-size: 0.8rem; color: #fbbf24;"></div>
+            <div class="col-title">3. Controle de Logins e Senhas</div>
+            <div class="login-row login-head"><div>MINISTÉRIO</div><div>USUÁRIO</div><div>SENHA</div></div>
+            <div id="listaLogins"></div>
         </div>
     </div>
 </div>
@@ -116,7 +126,7 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v285');
+    const dbRef = firebase.database().ref('iasd_estrela_v290');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, anual:{} };
     let user = localStorage.getItem('iasd_user') || 'v';
@@ -134,7 +144,7 @@
 
     function abrirGestao() {
         if(user === 'admin') showSec('secGestao');
-        else { const p = prompt("Senha Master:"); if(p==='iasd118'){ localStorage.setItem('iasd_user','admin'); location.reload(); }}
+        else { const p = prompt("Senha:"); if(p==='iasd118'){ localStorage.setItem('iasd_user','admin'); location.reload(); }}
     }
 
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
@@ -145,22 +155,28 @@
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('btnSair').style.display = (user === 'admin') ? 'block' : 'none';
 
-        // Render Anual
+        // Planejamento
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div class="mes-card"><div style="color:var(--neon-blue); font-size:0.7rem; font-weight:bold; margin-bottom:5px;">${n}</div>
-            <textarea class="mes-textarea" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
+            <div class="mes-card"><div style="color:var(--neon-blue); font-size:0.75rem; font-weight:bold; margin-bottom:8px;">${n}</div>
+            <textarea style="width:100%; height:80px; background:#111; color:#fff; border:none;" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
         `).join('');
 
-        // Render Responsáveis
+        // Responsáveis (Grid 2 colunas como na foto)
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
-            <div><label style="font-size:10px; color:#aaa">${n}</label><input style="width:100%; background:#000; color:#fff; border:1px solid #444; padding:5px; border-radius:4px" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
+            <div><span class="label-mes">${n}</span><input class="mes-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        // Render Logins (Exemplo conforme sua foto)
-        const logs = [{m:"Admin", u:"admin", s:"iasd118"}, {m:"Música", u:"musica", s:"mus123"}, {m:"Diaconato", u:"diac", s:"diac123"}];
-        document.getElementById('listaLogins').innerHTML = logs.map(l => `<div style="margin-bottom:8px;">${l.m} | User: ${l.u} | Pass: ${l.s}</div>`).join('');
+        // Logins (Visual de tabela como na foto)
+        const logs = [
+            {m:"Administrador", u:"admin", s:"iasd118"}, {m:"Gerência", u:"ger", s:"ger123"},
+            {m:"Diaconato", u:"diaconato", s:"diac123"}, {m:"Música", u:"musica", s:"mus123"},
+            {m:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {m:"M. Mulher", u:"mulher", s:"mulher123"}
+        ];
+        document.getElementById('listaLogins').innerHTML = logs.map(l => `
+            <div class="login-row"><div>${l.m}</div><div style="color:var(--neon-blue)">${l.u}</div><div><input class="mes-input" style="padding:4px" value="${l.s}" readonly></div></div>
+        `).join('');
 
-        // Render Escala
+        // Escala com LINHAS
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -190,8 +206,6 @@
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    
-    // Inicia na escala
     showSec('secEscala');
 </script>
 </body> </html>
