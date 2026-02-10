@@ -1,56 +1,48 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v300</title>
+    <title>IASD Estrela Dalva - GESTÃO TOTAL v320</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(15, 23, 42, 0.98); --neon-blue: #38bdf8; --accent-orange: #f97316; }
-        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
+        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --neon-blue: #38bdf8; --accent-orange: #f97316; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
         
-        /* HEADER - BOTÕES SUPERIORES CONFORME FOTOS */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .nav-btns { display: flex; gap: 8px; }
-        .btn-nav { background: transparent; border: 1.5px solid #fff; color: #fff; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-        .btn-nav.orange { border-color: var(--accent-orange); color: #fff; }
-        .btn-nav.active { background: #fff !important; color: #000 !important; }
+        .header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--neon-blue); padding-bottom: 10px; }
 
-        .section { display: none; }
-        .section.active { display: block !important; }
-
-        /* PAINEL DE GESTÃO - LAYOUT 3 COLUNAS (FOTO REF) */
-        .admin-box { 
-            background: var(--bg-dark); border: 2.5px solid var(--accent-orange); 
-            border-radius: 20px; padding: 30px; margin-top: 5px;
+        /* PAINEL DE GESTÃO - SEMPRE VISÍVEL E NO TOPO */
+        .admin-container { 
+            background: rgba(15, 23, 42, 0.95); 
+            border: 2px solid var(--accent-orange); 
+            border-radius: 15px; padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .admin-grid { display: grid; grid-template-columns: 240px 320px 1fr; gap: 25px; }
-        .col-title { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+        .admin-grid { display: grid; grid-template-columns: 240px 320px 1fr; gap: 20px; }
+        .col-title { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         
-        /* Coluna 1 - Botões de Ministério */
-        .btn-min { width: 100%; padding: 12px; margin-bottom: 8px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 10px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.8rem; transition: 0.2s; }
-        .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
-        .btn-min.limpar { border-color: #ef4444; color: #ef4444; margin-top: 10px; }
+        /* Coluna 1: Pincéis */
+        .btn-min { width: 100%; padding: 10px; margin-bottom: 6px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; text-align: center; }
+        .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
+        .btn-min.limpar { border-color: #ef4444; color: #ef4444; }
 
-        /* Coluna 2 - Responsáveis (Grid 2 colunas) */
-        .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .mes-group { margin-bottom: 10px; }
-        .label-mes { font-size: 0.65rem; color: #fff; display: block; margin-bottom: 4px; font-weight: bold; }
-        .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box; font-weight: bold; }
+        /* Coluna 2: Responsáveis */
+        .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .label-mes { font-size: 0.6rem; color: #94a3b8; display: block; margin-bottom: 2px; text-transform: uppercase; }
+        .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 0.8rem; }
 
-        /* Coluna 3 - Logins (Tabela Amarela) */
-        .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; font-size: 0.85rem; }
-        .login-table th { text-align: left; padding-bottom: 12px; border-bottom: 1.5px solid #1e293b; color: #fbbf24; }
-        .login-table td { padding: 12px 0; border-bottom: 1px solid #1e293b; }
-        .login-input { background: #000; border: 1px solid #334155; color: var(--neon-blue); padding: 5px; border-radius: 4px; width: 90%; }
+        /* Coluna 3: Logins */
+        .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; font-size: 0.8rem; }
+        .login-table td { padding: 6px 0; border-bottom: 1px solid #1e293b; }
 
         /* ESCALA COM LINHAS E COLUNAS VISÍVEIS */
-        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; padding: 5px; }
+        .escala-container { background: white; border-radius: 8px; padding: 10px; overflow-x: auto; }
         table.escala { width: 100%; border-collapse: collapse !important; color: black; min-width: 1000px; border: 2px solid #000 !important; }
-        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 12px; font-size: 0.75rem; border: 1px solid #000 !important; }
-        table.escala td { border: 1px solid #000 !important; height: 45px; text-align: center; font-weight: bold; }
-        .cell-in { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
+        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 10px; border: 1px solid #000 !important; font-size: 0.75rem; }
+        table.escala td { border: 1px solid #000 !important; height: 40px; text-align: center; font-weight: bold; }
+        .cell-in { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; font-size: 0.85rem; }
 
-        /* CORES DE MINISTÉRIO */
+        /* CORES DAS LINHAS (FIEIS AOS MINISTÉRIOS) */
         tr.pessoal td { background-color: #e0f2fe !important; }
         tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; }
@@ -60,138 +52,100 @@
         tr.mulher td { background-color: #fce7f3 !important; }
         tr.musica td { background-color: #ede9fe !important; }
 
-        /* PLANEJAMENTO ANUAL */
-        .grid-anual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .mes-card { background: #000; border: 1.5px solid #334155; border-radius: 12px; padding: 15px; height: 160px; }
-        .mes-card h4 { color: var(--neon-blue); margin: 0 0 10px 0; font-size: 0.8rem; }
-        .anual-text { width: 100%; height: 110px; background: transparent; border: none; color: #fff; resize: none; font-size: 0.9rem; }
+        /* SEÇÃO ANUAL NO RODAPÉ */
+        .anual-section { margin-top: 40px; border-top: 1px solid #334155; padding-top: 20px; }
+        .grid-anual { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .mes-card { background: #000; border: 1px solid #334155; border-radius: 8px; padding: 10px; }
+        .anual-text { width: 100%; height: 60px; background: transparent; border: none; color: #fff; resize: none; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <h2 style="color: var(--neon-blue); margin:0; letter-spacing: 1px;">IASD ESTRELA DALVA</h2>
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1.5px solid var(--neon-blue); padding:6px 12px; border-radius:6px; font-weight:bold;"></select>
-        <div class="nav-btns">
-            <button class="btn-nav active" id="btnGoEscala" onclick="showSec('secEscala')">📊 ESCALA</button>
-            <button class="btn-nav" id="btnGoAnual" onclick="showSec('secAnual')">🗓️ ANUAL</button>
-            <button class="btn-nav orange" onclick="abrirGestao()" id="btnGestao">🔓 GESTÃO</button>
-            <button class="btn-nav orange" onclick="sair()" id="btnSair" style="display:none;">SAIR</button>
+<div class="header-main">
+    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - PAINEL MASTER</h2>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <label>MÊS DA ESCALA:</label>
+        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;"></select>
+        <button onclick="window.print()" style="background:var(--accent-orange); color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">🖨️ IMPRIMIR</button>
+    </div>
+</div>
+
+<div class="admin-container">
+    <div class="admin-grid">
+        <div class="column">
+            <div class="col-title">1. Selecionar Ministério</div>
+            <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
+            <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
+            <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
+            <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
+            <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
+            <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
+            <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
+            <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
+            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
+        </div>
+        <div class="column">
+            <div class="col-title">2. Responsáveis Mensais</div>
+            <div id="gridResponsaveis" class="resp-grid"></div>
+        </div>
+        <div class="column">
+            <div class="col-title">3. Logins de Acesso</div>
+            <table class="login-table">
+                <tbody id="listaLogins"></tbody>
+            </table>
+            <p style="font-size: 0.65rem; color: #94a3b8; margin-top: 15px;">* Clique no Dia ou na Data na tabela abaixo para aplicar a cor do ministério selecionado.</p>
         </div>
     </div>
 </div>
 
-<div id="secGestao" class="section">
-    <div class="admin-box">
-        <div class="admin-grid">
-            <div class="column">
-                <div class="col-title">1. Ministério do Dia</div>
-                <div id="botoesMin">
-                    <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
-                    <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
-                    <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
-                    <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
-                    <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
-                    <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-                    <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
-                    <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-                    <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
-                </div>
-            </div>
-            <div class="column">
-                <div class="col-title">2. Responsável Mensal</div>
-                <div id="gridResponsaveis" class="resp-grid"></div>
-            </div>
-            <div class="column">
-                <div class="col-title">3. Controle de Logins e Senhas</div>
-                <table class="login-table">
-                    <thead><tr><th>MINISTÉRIO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
-                    <tbody id="listaLogins"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="escala-container">
+    <table class="escala">
+        <thead>
+            <tr>
+                <th style="width: 140px;">DIA</th><th style="width: 80px;">DATA</th>
+                <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+            </tr>
+        </thead>
+        <tbody id="corpoEscala"></tbody>
+    </table>
 </div>
 
-<div id="secEscala" class="section active">
-    <div class="table-container">
-        <table class="escala">
-            <thead>
-                <tr>
-                    <th style="width: 140px;">DIA</th><th style="width: 80px;">DATA</th>
-                    <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
-                </tr>
-            </thead>
-            <tbody id="corpoEscala"></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="secAnual" class="section">
-    <div class="admin-box" style="border-color: var(--neon-blue);">
-        <h3 style="color: var(--neon-blue); text-align:center; margin-top:0;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-        <div id="gridAnual" class="grid-anual"></div>
-    </div>
+<div class="anual-section">
+    <h3 style="color: var(--accent-orange); font-size: 0.9rem;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+    <div id="gridAnual" class="grid-anual"></div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v300');
+    const dbRef = firebase.database().ref('iasd_fixed_admin_v320');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, anual:{} };
-    let user = localStorage.getItem('iasd_user') || 'v';
     let pID = null; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-
-    function showSec(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-        if(id==='secEscala') document.getElementById('btnGoEscala').classList.add('active');
-        if(id==='secAnual') document.getElementById('btnGoAnual').classList.add('active');
-        if(id==='secGestao') document.getElementById('btnGestao').classList.add('active');
-    }
-
-    // LOGIN ADMIN JÁ ABRE NA GESTÃO
-    function abrirGestao() {
-        if(user === 'admin') showSec('secGestao');
-        else { const p = prompt("Senha Master:"); if(p==='iasd118'){ localStorage.setItem('iasd_user','admin'); user='admin'; showSec('secGestao'); renderTodo(); } }
-    }
-
-    function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
 
     dbRef.on('value', snap => { db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, anual:{} }; renderTodo(); });
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        document.getElementById('btnSair').style.display = (user === 'admin') ? 'block' : 'none';
 
-        // 1. Render Responsáveis
+        // Render Responsáveis
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
-            <div class="mes-group"><label class="label-mes">${n}</label>
+            <div><label class="label-mes">${n}</label>
             <input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        // 2. Render Logins
-        const logs = [
-            {m:"Administrador", u:"admin", s:"iasd118"}, {m:"Gerência", u:"ger", s:"ger123"},
-            {m:"Diaconato", u:"diaconato", s:"diac123"}, {m:"Música", u:"musica", s:"mus123"},
-            {m:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {m:"M. Mulher", u:"mulher", s:"mulher123"}
-        ];
-        document.getElementById('listaLogins').innerHTML = logs.map(l => `
-            <tr><td>${l.m}</td><td><span style="color:var(--neon-blue)">${l.u}</span></td>
-            <td><input class="login-input" value="${l.s}" readonly></td></tr>
-        `).join('');
+        // Render Logins
+        const logs = [{m:"Admin", u:"admin", s:"iasd118"}, {m:"Música", u:"musica", s:"mus123"}, {m:"Diac.", u:"diac", s:"diac123"}];
+        document.getElementById('listaLogins').innerHTML = logs.map(l => `<tr><td>${l.m}</td><td style="color:var(--neon-blue)">${l.u}</td><td>${l.s}</td></tr>`).join('');
 
-        // 3. Render Anual
+        // Render Anual
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div class="mes-card"><h4>${n}</h4>
+            <div class="mes-card"><div style="color:var(--neon-blue); font-size:0.65rem; font-weight:bold; margin-bottom:5px;">${n}</div>
             <textarea class="anual-text" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
         `).join('');
 
-        // 4. Render Escala com BORDAS
+        // Render Escala com BORDAS REAIS
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -214,15 +168,13 @@
         document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active'));
         event.currentTarget.classList.add('active');
     }
-    function pintar(dStr) { if(user==='admin' && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
+
+    function pintar(dStr) { if(pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
     function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
     function atuAnc(i,v) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }
     function atuAnual(i,v) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    
-    // Se já estiver logado como admin, abre na gestão
-    if(user === 'admin') showSec('secGestao'); else showSec('secEscala');
 </script>
 </body> </html>
