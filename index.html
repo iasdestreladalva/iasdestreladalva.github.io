@@ -1,43 +1,42 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v280</title>
+    <title>IASD Estrela Dalva - v285</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.7); --neon-blue: #38bdf8; --accent-orange: #f97316; }
+        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.9); --neon-blue: #38bdf8; --accent-orange: #f97316; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
         
-        /* NAVEGAÇÃO */
+        /* HEADER */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .nav-btns { display: flex; gap: 8px; }
         .btn-nav { background: transparent; border: 1px solid #fff; color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
         .btn-nav.orange { border-color: var(--accent-orange); color: var(--accent-orange); }
         .btn-nav.active { background: #fff; color: #000; }
 
-        /* SEÇÕES */
+        /* CONTROLE DE SEÇÕES */
         .section { display: none; }
-        .section.active { display: block; }
+        .section.active { display: block !important; }
 
-        /* ESCALA SEM LINHAS (v280) */
+        /* ESCALA SEM LINHAS */
         .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; padding: 10px; }
         table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
-        
-        /* Cabeçalho mantém a cor azul das fotos */
-        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; font-size: 0.75rem; border: none; text-transform: uppercase; }
-        
-        /* REMOÇÃO DAS LINHAS DAS CÉLULAS */
+        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; font-size: 0.75rem; border: none; }
         table.escala td { border: none; height: 45px; text-align: center; padding: 2px; }
-        
-        /* Inputs transparentes para efeito de "sem bordas" */
-        .input-cell { 
-            width: 100%; height: 35px; border: none; text-align: center; 
-            font-weight: bold; text-transform: uppercase; background: rgba(0,0,0,0.03); 
-            border-radius: 4px; font-size: 0.85rem;
-        }
-        .input-cell:focus { background: rgba(0,0,0,0.08); outline: none; }
+        .input-cell { width: 95%; height: 35px; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: rgba(0,0,0,0.04); border-radius: 4px; }
 
-        /* CORES DE FUNDO DAS LINHAS (FIEIS AOS MINISTÉRIOS) */
+        /* PAINEL DE GESTÃO (3 COLUNAS) - REATIVADO */
+        .admin-grid { 
+            display: grid; grid-template-columns: 260px 320px 1fr; gap: 25px; 
+            background: var(--card-bg); border: 2px solid var(--neon-blue); 
+            border-radius: 12px; padding: 25px; margin-top: 10px;
+        }
+        .col-title { color: var(--neon-blue); font-size: 0.9rem; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 15px; }
+        .btn-min { width: 100%; padding: 12px; margin-bottom: 6px; background: transparent; border: 1px solid var(--neon-blue); color: #fff; border-radius: 6px; cursor: pointer; text-align: left; font-weight: bold; }
+        .btn-min.active { background: var(--neon-blue); color: #000; }
+
+        /* CORES DAS LINHAS */
         tr.pessoal td { background-color: #e0f2fe !important; }
         tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; }
@@ -47,10 +46,9 @@
         tr.mulher td { background-color: #fce7f3 !important; }
         tr.musica td { background-color: #ede9fe !important; }
 
-        /* PAINEL DE GESTÃO E PLANEJAMENTO (ESTILO IMAGENS) */
-        .admin-grid { display: grid; grid-template-columns: 260px 320px 1fr; gap: 20px; background: var(--card-bg); border: 1px solid var(--neon-blue); border-radius: 12px; padding: 20px; }
+        /* PLANEJAMENTO ANUAL */
         .grid-anual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .mes-card { background: rgba(0,0,0,0.3); border: 1px solid #334155; border-radius: 10px; padding: 12px; }
+        .mes-card { background: rgba(0,0,0,0.4); border: 1px solid #334155; border-radius: 10px; padding: 15px; }
         .mes-textarea { width: 100%; height: 100px; background: #000; color: #fff; border: none; border-radius: 4px; padding: 8px; resize: none; }
     </style>
 </head>
@@ -58,8 +56,8 @@
 
 <div class="top-bar">
     <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA</h2>
-    <div style="display: flex; gap: 10px;">
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:5px; border-radius:4px;"></select>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:6px; border-radius:4px;"></select>
         <div class="nav-btns">
             <button class="btn-nav active" id="btnGoEscala" onclick="showSec('secEscala')">ESCALA</button>
             <button class="btn-nav" id="btnGoAnual" onclick="showSec('secAnual')">🗓️ ANUAL</button>
@@ -74,7 +72,7 @@
         <table class="escala">
             <thead>
                 <tr>
-                    <th style="width: 130px;">DIA</th><th style="width: 70px;">DATA</th>
+                    <th style="width: 140px;">DIA</th><th style="width: 80px;">DATA</th>
                     <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
                 </tr>
             </thead>
@@ -84,7 +82,7 @@
 </div>
 
 <div id="secAnual" class="section">
-    <div style="background: var(--card-bg); border: 1px solid var(--accent-orange); border-radius: 12px; padding: 20px;">
+    <div style="background: var(--card-bg); border: 2px solid var(--accent-orange); border-radius: 15px; padding: 25px;">
         <h3 style="color: var(--accent-orange); text-align:center; margin-top:0;">PLANEJAMENTO ANUAL 2026</h3>
         <div id="gridAnual" class="grid-anual"></div>
     </div>
@@ -93,24 +91,24 @@
 <div id="secGestao" class="section">
     <div class="admin-grid">
         <div class="column">
-            <h4 style="color:var(--neon-blue)">1. MINISTÉRIO DO DIA</h4>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('pessoal','Min. Pessoal')">M. Pessoal</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('saude','Saúde')">Saúde</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('homens','Min. Homens')">M. Homens</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('familia','Min. Família')">M. Família</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('mulher','Min. Mulher')">M. Mulher</button>
-            <button class="btn-nav" style="width:100%; margin-bottom:5px; text-align:left;" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-nav orange" style="width:100%; margin-top:10px" onclick="selPincel('','')">LIMPAR</button>
+            <div class="col-title">1. MINISTÉRIO DO DIA</div>
+            <button class="btn-min" onclick="selPincel('pessoal','Min. Pessoal')">M. Pessoal</button>
+            <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
+            <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
+            <button class="btn-min" onclick="selPincel('homens','Min. Homens')">M. Homens</button>
+            <button class="btn-min" onclick="selPincel('familia','Min. Família')">M. Família</button>
+            <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
+            <button class="btn-min" onclick="selPincel('mulher','Min. Mulher')">M. Mulher</button>
+            <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
+            <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:10px;" onclick="selPincel('','')">LIMPAR</button>
         </div>
         <div class="column">
-            <h4 style="color:var(--neon-blue)">2. RESPONSÁVEL MENSAL</h4>
-            <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
+            <div class="col-title">2. RESPONSÁVEL MENSAL</div>
+            <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
         </div>
         <div class="column">
-            <h4 style="color:var(--neon-blue)">3. LOGINS</h4>
-            <div id="listaLogins" style="font-size: 0.8rem;"></div>
+            <div class="col-title">3. LOGINS E SENHAS</div>
+            <div id="listaLogins" style="font-size: 0.8rem; color: #fbbf24;"></div>
         </div>
     </div>
 </div>
@@ -118,7 +116,7 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v280');
+    const dbRef = firebase.database().ref('iasd_estrela_v285');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, anual:{} };
     let user = localStorage.getItem('iasd_user') || 'v';
@@ -131,11 +129,12 @@
         document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
         if(id==='secEscala') document.getElementById('btnGoEscala').classList.add('active');
         if(id==='secAnual') document.getElementById('btnGoAnual').classList.add('active');
+        if(id==='secGestao') document.getElementById('btnGestao').classList.add('active');
     }
 
     function abrirGestao() {
         if(user === 'admin') showSec('secGestao');
-        else { const p = prompt("Senha:"); if(p==='iasd118'){ localStorage.setItem('iasd_user','admin'); location.reload(); }}
+        else { const p = prompt("Senha Master:"); if(p==='iasd118'){ localStorage.setItem('iasd_user','admin'); location.reload(); }}
     }
 
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
@@ -146,18 +145,22 @@
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('btnSair').style.display = (user === 'admin') ? 'block' : 'none';
 
-        // Anual
+        // Render Anual
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
             <div class="mes-card"><div style="color:var(--neon-blue); font-size:0.7rem; font-weight:bold; margin-bottom:5px;">${n}</div>
             <textarea class="mes-textarea" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
         `).join('');
 
-        // Responsáveis
+        // Render Responsáveis
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
-            <div><label style="font-size:10px; color:#aaa">${n}</label><input style="width:100%; background:#000; color:#fff; border:1px solid #444;" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
+            <div><label style="font-size:10px; color:#aaa">${n}</label><input style="width:100%; background:#000; color:#fff; border:1px solid #444; padding:5px; border-radius:4px" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        // Escala (Sem linhas)
+        // Render Logins (Exemplo conforme sua foto)
+        const logs = [{m:"Admin", u:"admin", s:"iasd118"}, {m:"Música", u:"musica", s:"mus123"}, {m:"Diaconato", u:"diac", s:"diac123"}];
+        document.getElementById('listaLogins').innerHTML = logs.map(l => `<div style="margin-bottom:8px;">${l.m} | User: ${l.u} | Pass: ${l.s}</div>`).join('');
+
+        // Render Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -175,7 +178,11 @@
         }
     }
 
-    function selPincel(id, nome) { pID = id; pNome = nome; }
+    function selPincel(id, nome) { 
+        pID = id; pNome = nome; 
+        document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
     function pintar(dStr) { if(user==='admin' && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
     function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
     function atuAnc(i,v) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }
@@ -183,6 +190,8 @@
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    // Inicia na escala
     showSec('secEscala');
 </script>
 </body> </html>
