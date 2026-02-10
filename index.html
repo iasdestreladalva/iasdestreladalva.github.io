@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v350</title>
+    <title>IASD Estrela Dalva - MASTER v360</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -29,7 +29,7 @@
         .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 0.8rem; }
 
         /* Coluna 3: Logins EDITÁVEIS */
-        .login-scroll { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .login-scroll { max-height: 350px; overflow-y: auto; padding-right: 5px; }
         .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; }
         .login-table th { text-align: left; font-size: 0.7rem; padding-bottom: 8px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #0f172a; }
         .login-table td { padding: 5px 0; border-bottom: 1px solid #1e293b; }
@@ -37,30 +37,30 @@
         .input-login.user { color: var(--neon-blue); font-weight: bold; }
 
         /* ESCALA COM GRADES */
-        .table-wrap { background: white; border-radius: 8px; padding: 8px; overflow-x: auto; }
+        .table-wrap { background: white; border-radius: 8px; padding: 8px; overflow-x: auto; margin-bottom: 30px;}
         table.escala { width: 100%; border-collapse: collapse !important; color: black; min-width: 1000px; border: 2px solid #000 !important; }
         table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 10px; border: 1px solid #000 !important; font-size: 0.75rem; }
         table.escala td { border: 1px solid #000 !important; height: 40px; text-align: center; font-weight: bold; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
-        /* Cores de Fundo */
-        tr.pessoal td { background-color: #e0f2fe !important; }
-        tr.mordomia td { background-color: #fef3c7 !important; }
-        tr.saude td { background-color: #f1f5f9 !important; }
-        tr.homens td { background-color: #dcfce7 !important; }
-        tr.familia td { background-color: #fee2e2 !important; }
-        tr.adolescentes td { background-color: #f0fdf4 !important; }
-        tr.mulher td { background-color: #fce7f3 !important; }
-        tr.musica td { background-color: #ede9fe !important; }
+        /* PLANEJAMENTO ANUAL */
+        .anual-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .card-mes { background: #000; border: 1.5px solid #334155; border-radius: 10px; padding: 12px; }
+        .card-mes h4 { color: var(--neon-blue); margin: 0 0 8px 0; font-size: 0.75rem; border-bottom: 1px solid #1e293b; }
+        .txt-anual { width: 100%; height: 70px; background: transparent; border: none; color: #fff; resize: none; font-size: 0.8rem; outline: none; }
+
+        /* CORES */
+        tr.pessoal td { background-color: #e0f2fe !important; } tr.mordomia td { background-color: #fef3c7 !important; }
+        tr.saude td { background-color: #f1f5f9 !important; } tr.homens td { background-color: #dcfce7 !important; }
+        tr.familia td { background-color: #fee2e2 !important; } tr.adolescentes td { background-color: #f0fdf4 !important; }
+        tr.mulher td { background-color: #fce7f3 !important; } tr.musica td { background-color: #ede9fe !important; }
     </style>
 </head>
 <body>
 
 <div class="main-header">
-    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - PAINEL DE GESTÃO</h2>
-    <div>
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px;"></select>
-    </div>
+    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA - PAINEL MASTER</h2>
+    <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
 </div>
 
 <div class="admin-main-box">
@@ -84,7 +84,7 @@
         </div>
 
         <div class="column">
-            <div class="col-header">3. Controle de Logins e Senhas</div>
+            <div class="col-header">3. Logins e Senhas (Editáveis)</div>
             <div class="login-scroll">
                 <table class="login-table">
                     <thead><tr><th>CARGO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
@@ -107,12 +107,17 @@
     </table>
 </div>
 
+<div style="margin-bottom: 20px;">
+    <h3 style="color: var(--accent-orange); text-transform: uppercase; font-size: 0.9rem;">🗓️ Planejamento Anual 2026</h3>
+    <div id="gridAnual" class="anual-grid"></div>
+</div>
+
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_master_v350');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v360');
 
-    let db = { escalas:{}, cores:{}, anciaos:{}, logins:[] };
+    let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let pID = null; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
@@ -127,7 +132,7 @@
     ];
 
     dbRef.on('value', snap => { 
-        db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao }; 
+        db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao, anual:{} }; 
         if(!db.logins || db.logins.length === 0) db.logins = loginsPadrao;
         renderTodo(); 
     });
@@ -135,11 +140,13 @@
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
 
+        // 1. Responsáveis
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
             <div><label class="label-mes">${n}</label>
             <input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
+        // 2. Logins
         document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
             <tr>
                 <td><input class="input-login" value="${l.c}" onchange="atuLogin(${idx},'c',this.value)"></td>
@@ -148,6 +155,13 @@
             </tr>
         `).join('');
 
+        // 3. Anual
+        document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
+            <div class="card-mes"><h4>${n}</h4>
+            <textarea class="txt-anual" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
+        `).join('');
+
+        // 4. Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -167,6 +181,7 @@
 
     function atuLogin(idx, campo, valor) { db.logins[idx][campo] = valor; dbRef.child('logins').set(db.logins); }
     function atuAnc(i,v) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }
+    function atuAnual(i,v) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }
     function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
     function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); event.currentTarget.classList.add('active'); }
     function pintar(dStr) { if(pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
