@@ -1,49 +1,45 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v260 Gestor</title>
+    <title>IASD Estrela Dalva - v270</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --iasd-blue: #002b5c; --bg-dark: #1e293b; --card-bg: rgba(15, 23, 42, 0.8); --neon-blue: #38bdf8; --border-blue: #1e40af; }
-        body { background: #0f172a; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
+        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.7); --neon-blue: #38bdf8; --accent-orange: #f97316; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
         
-        /* HEADER E BOTÕES SUPERIORES */
+        /* HEADER E NAVEGAÇÃO */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .nav-btns { display: flex; gap: 8px; }
-        .btn-nav { background: transparent; border: 1px solid #fff; color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .btn-nav { background: transparent; border: 1px solid #fff; color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
         .btn-nav:hover { background: rgba(255,255,255,0.1); }
-        .btn-nav.orange { border-color: #f97316; color: #f97316; }
+        .btn-nav.orange { border-color: var(--accent-orange); color: var(--accent-orange); }
         .btn-nav.active { background: #fff; color: #000; }
 
-        /* PAINEL DE GESTÃO - 3 COLUNAS */
-        .admin-panel { background: var(--card-bg); border: 2px solid var(--border-blue); border-radius: 15px; padding: 25px; display: none; gap: 25px; grid-template-columns: 240px 300px 1fr; }
-        .column { display: flex; flex-direction: column; gap: 10px; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 20px; }
-        .column:last-child { border: none; }
-        .col-title { color: var(--neon-blue); font-size: 0.9rem; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--border-blue); padding-bottom: 5px; }
+        /* SEÇÕES */
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* COLUNA 1 - BOTÕES MINISTÉRIOS */
-        .btn-min { width: 100%; padding: 12px; border: 1.5px solid var(--neon-blue); background: transparent; color: #fff; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.3s; }
-        .btn-min.active { background: var(--neon-blue); color: #000; }
-        .btn-min.limpar { border-color: #ef4444; color: #ef4444; margin-top: 10px; }
+        /* PAINEL DE GESTÃO (3 COLUNAS) */
+        .admin-grid { display: grid; grid-template-columns: 260px 320px 1fr; gap: 20px; background: var(--card-bg); border: 1px solid var(--neon-blue); border-radius: 12px; padding: 20px; }
+        .col-title { color: var(--neon-blue); font-size: 0.85rem; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 15px; text-transform: uppercase; }
+        .btn-min { width: 100%; padding: 10px; margin-bottom: 6px; background: transparent; border: 1px solid var(--neon-blue); color: #fff; border-radius: 6px; cursor: pointer; text-align: left; padding-left: 15px; font-weight: 500; }
+        .btn-min.active { background: var(--neon-blue); color: #000; font-weight: bold; }
 
-        /* COLUNA 2 - RESPONSÁVEIS (ANCIÃOS) */
-        .grid-meses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .mes-box { display: flex; flex-direction: column; gap: 4px; }
-        .mes-label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; }
-        .mes-input { background: #000; border: 1px solid #334155; color: #fff; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        /* PLANEJAMENTO ANUAL (ESTILO IMAGEM) */
+        .anual-container { background: var(--card-bg); border: 2px solid var(--accent-orange); border-radius: 15px; padding: 25px; }
+        .anual-header { color: #fbbf24; text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .grid-anual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .mes-card { background: rgba(0,0,0,0.3); border: 1px solid #334155; border-radius: 10px; padding: 15px; }
+        .mes-card-title { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .mes-textarea { width: 100%; height: 120px; background: #000; color: #fff; border: 1px solid #1e293b; border-radius: 6px; padding: 10px; resize: none; box-sizing: border-box; font-family: inherit; }
 
-        /* COLUNA 3 - TABELA LOGINS */
-        .login-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .login-table th { text-align: left; color: #fbbf24; padding-bottom: 10px; font-size: 0.75rem; text-transform: uppercase; }
-        .login-table td { padding: 5px 0; }
-        .login-input { background: rgba(0,0,0,0.5); border: 1px solid #334155; color: #fff; padding: 8px; width: 95%; border-radius: 4px; }
-
-        /* TABELA DA ESCALA (FINAL) */
-        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 20px; }
+        /* TABELA DE ESCALA */
+        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; }
         table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
-        table.escala th { background: #002b5c; color: white; padding: 10px; font-size: 0.75rem; border: 1px solid #ddd; }
-        table.escala td { border: 1px solid #ddd; height: 50px; text-align: center; }
+        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #ddd; }
+        table.escala td { border: 1px solid #ddd; height: 50px; text-align: center; font-weight: bold; }
         
         /* CORES DAS LINHAS */
         tr.pessoal td { background-color: #e0f2fe !important; }
@@ -55,123 +51,121 @@
         tr.mulher td { background-color: #fce7f3 !important; }
         tr.musica td { background-color: #ede9fe !important; }
 
-        .modal-login { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; }
+        .login-input { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; width: 100%; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <div class="top-bar">
-    <h2 style="color: var(--neon-blue); margin:0;">IASD ESTRELA DALVA</h2>
-    <div style="display: flex; gap: 15px;">
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:5px; border-radius:4px;"></select>
+    <h2 style="color: var(--neon-blue); margin:0; letter-spacing: 1px;">IASD ESTRELA DALVA</h2>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:6px; border-radius:4px;"></select>
         <div class="nav-btns">
-            <button class="btn-nav">📅 ANUAL</button>
-            <button class="btn-nav orange">🔥 EVENTOS</button>
-            <button class="btn-nav">⚙️ TESOURARIA</button>
-            <button class="btn-nav">📊 MISSIONÁRIO</button>
-            <button onclick="abrirLogin()" id="btnGestao" class="btn-nav active">🔓 GESTÃO</button>
-            <button onclick="sair()" id="btnSair" class="btn-nav orange" style="display:none;">🚪 SAIR</button>
+            <button class="btn-nav" id="btnGoEscala" onclick="showSec('secEscala')">ESCALA</button>
+            <button class="btn-nav" id="btnGoAnual" onclick="showSec('secAnual')">🗓️ ANUAL</button>
+            <button class="btn-nav orange" onclick="alert('Módulo em desenvolvimento')">🔥 EVENTOS</button>
+            <button class="btn-nav" onclick="abrirGestao()" id="btnGestao">🔓 GESTÃO</button>
+            <button class="btn-nav orange" onclick="sair()" id="btnSair" style="display:none;">SAIR</button>
         </div>
     </div>
 </div>
 
-<div id="adminPanel" class="admin-panel">
-    <div class="column">
-        <div class="col-title">1. MINISTÉRIO DO DIA</div>
-        <button class="btn-min" onclick="selPincel('pessoal','Min. Pessoal')">M. Pessoal</button>
-        <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
-        <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
-        <button class="btn-min" onclick="selPincel('homens','Min. Homens')">M. Homens</button>
-        <button class="btn-min" onclick="selPincel('familia','Min. Família')">M. Família</button>
-        <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-        <button class="btn-min" onclick="selPincel('mulher','Min. Mulher')">M. Mulher</button>
-        <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-        <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR</button>
-    </div>
-
-    <div class="column">
-        <div class="col-title">2. RESPONSÁVEL MENSAL</div>
-        <div id="gridMeses" class="grid-meses"></div>
-    </div>
-
-    <div class="column">
-        <div class="col-title">3. CONTROLE DE LOGINS E SENHAS</div>
-        <table class="login-table">
+<div id="secEscala" class="section active">
+    <div class="table-container">
+        <table class="escala">
             <thead>
-                <tr><th>MINISTÉRIO</th><th>USUÁRIO</th><th>SENHA</th></tr>
+                <tr>
+                    <th style="width: 140px;">DIA</th><th style="width: 80px;">DATA</th>
+                    <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+                </tr>
             </thead>
-            <tbody id="listaLogins"></tbody>
+            <tbody id="corpoEscala"></tbody>
         </table>
     </div>
 </div>
 
-<div class="table-container">
-    <table class="escala">
-        <thead>
-            <tr>
-                <th style="width: 150px;">DIA</th><th style="width: 80px;">DATA</th>
-                <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
-            </tr>
-        </thead>
-        <tbody id="corpoEscala"></tbody>
-    </table>
+<div id="secAnual" class="section">
+    <div class="anual-container">
+        <div class="anual-header">🗓️ PLANEJAMENTO ANUAL 2026</div>
+        <div id="gridAnual" class="grid-anual"></div>
+    </div>
 </div>
 
-<div id="modalLogin" class="modal-login">
-    <div style="background: #1e293b; padding: 30px; border-radius: 10px; border: 1px solid var(--neon-blue); text-align: center;">
-        <h3>ACESSO DO GESTOR</h3>
-        <input type="password" id="pass" placeholder="Senha" style="padding: 10px; width: 200px; border-radius: 4px; border: none;"><br><br>
-        <button onclick="checkPass()" style="padding: 10px 30px; background: var(--neon-blue); border: none; font-weight: bold; cursor: pointer;">ENTRAR</button>
+<div id="secGestao" class="section">
+    <div class="admin-grid">
+        <div class="column">
+            <div class="col-title">1. Ministério do Dia</div>
+            <button class="btn-min" onclick="selPincel('pessoal','Min. Pessoal')">M. Pessoal</button>
+            <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
+            <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
+            <button class="btn-min" onclick="selPincel('homens','Min. Homens')">M. Homens</button>
+            <button class="btn-min" onclick="selPincel('familia','Min. Família')">M. Família</button>
+            <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
+            <button class="btn-min" onclick="selPincel('mulher','Min. Mulher')">M. Mulher</button>
+            <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
+            <button class="btn-min" style="border-color:#ef4444; color:#ef4444; margin-top:10px;" onclick="selPincel('','')">LIMPAR</button>
+        </div>
+        <div class="column">
+            <div class="col-title">2. Responsável Mensal (Ancião)</div>
+            <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
+        </div>
+        <div class="column">
+            <div class="col-title">3. Controle de Logins</div>
+            <table style="width:100%; font-size:0.75rem; color:#fbbf24;">
+                <tr style="text-align: left;"><th>MINISTÉRIO</th><th>USUÁRIO</th><th>SENHA</th></tr>
+                <tbody id="listaLogins"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v260');
+    const dbRef = firebase.database().ref('iasd_v270');
 
-    let db = { escalas:{}, cores:{}, anciaos:{}, logins:{} };
+    let db = { escalas:{}, cores:{}, anciaos:{}, anual:{} };
     let user = localStorage.getItem('iasd_user') || 'v';
     let pID = null; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
-    function abrirLogin() { document.getElementById('modalLogin').style.display='flex'; }
-    function checkPass() { if(document.getElementById('pass').value === 'iasd118'){ localStorage.setItem('iasd_user','admin'); location.reload(); } }
+    function showSec(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+        if(id === 'secEscala') document.getElementById('btnGoEscala').classList.add('active');
+        if(id === 'secAnual') document.getElementById('btnGoAnual').classList.add('active');
+    }
+
+    function abrirGestao() {
+        if(user === 'admin') showSec('secGestao');
+        else { const p = prompt("Senha Master:"); if(p === 'iasd118'){ localStorage.setItem('iasd_user','admin'); location.reload(); } }
+    }
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
 
-    dbRef.on('value', snap => { db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:{} }; renderTodo(); });
-
-    function selPincel(id, nome) {
-        pID = id; pNome = nome;
-        document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
+    dbRef.on('value', snap => { db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, anual:{} }; renderTodo(); });
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isAdmin = user === 'admin';
-        document.getElementById('adminPanel').style.display = isAdmin ? 'grid' : 'none';
+        const isAdmin = (user === 'admin');
         document.getElementById('btnSair').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('btnGestao').style.display = isAdmin ? 'none' : 'block';
+        document.getElementById('btnGestao').classList.toggle('active', document.getElementById('secGestao').classList.contains('active'));
 
-        // Coluna 2: Meses
-        let hMes = "";
+        // Render Planejamento Anual (Cards pretos)
+        let hAnual = "";
         meses.forEach((n, i) => {
-            hMes += `<div class="mes-box"><label class="mes-label">${n}</label><input class="mes-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>`;
+            hAnual += `<div class="mes-card"><div class="mes-card-title">${n}</div><textarea class="mes-textarea" onchange="atuAnual(${i}, this.value)">${db.anual?.[i] || ''}</textarea></div>`;
         });
-        document.getElementById('gridMeses').innerHTML = hMes;
+        document.getElementById('gridAnual').innerHTML = hAnual;
 
-        // Coluna 3: Logins (Como na imagem)
-        const dLogs = [
-            {m:"Administrator", u:"admin", s:"lasd118"}, {m:"Gerência", u:"ger", s:"ger123"},
-            {m:"Diaconato", u:"diaconato", s:"diac123"}, {m:"Música", u:"musica", s:"mus123"},
-            {m:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {m:"M. Mulher", u:"mulher", s:"mulher123"}
-        ];
-        document.getElementById('listaLogins').innerHTML = dLogs.map(l => `
-            <tr><td>${l.m}</td><td><input class="login-input" value="${l.u}" readonly></td><td><input class="login-input" value="${l.s}" readonly></td></tr>
-        `).join('');
+        // Render Responsáveis Mensais
+        let hResp = "";
+        meses.forEach((n, i) => {
+            hResp += `<div><div style="font-size:0.6rem; color:#94a3b8">${n}</div><input class="login-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>`;
+        });
+        document.getElementById('gridResponsaveis').innerHTML = hResp;
 
-        // Tabela Escala
+        // Render Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++){
@@ -181,18 +175,25 @@
                 let c = db.cores?.[dStr] || {id:'', nome:''};
                 let tr = document.createElement('tr');
                 if(c.id) tr.className = c.id;
-                tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:0.7rem; font-weight:bold">${c.nome||''}</div></td><td onclick="pintar('${dStr}')" style="cursor:pointer">${d}/${m+1}</td>` + 
-                ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input class="input-cell" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)"></td>`).join('');
+                tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:0.7rem; color:#64748b">${c.nome||''}</div></td><td onclick="pintar('${dStr}')" style="cursor:pointer">${d}/${m+1}</td>` + 
+                ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input style="width:100%;height:100%;border:none;text-align:center;font-weight:bold;text-transform:uppercase;background:transparent" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)"></td>`).join('');
                 corpo.appendChild(tr);
             }
         }
+
+        // Logins Fixos (Exemplo da imagem)
+        const logs = [{m:"Administrator", u:"admin", s:"lasd118"}, {m:"Gerência", u:"ger", s:"ger123"}, {m:"Música", u:"musica", s:"mus123"}];
+        document.getElementById('listaLogins').innerHTML = logs.map(l => `<tr><td>${l.m}</td><td><input class="login-input" value="${l.u}" readonly></td><td><input class="login-input" value="${l.s}" readonly></td></tr>`).join('');
     }
 
+    function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); event.currentTarget.classList.add('active'); }
     function pintar(dStr) { if(user==='admin' && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
-    function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
+    function atu(d,c,v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
     function atuAnc(i,v) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }
+    function atuAnual(i,v) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    showSec('secEscala');
 </script>
 </body> </html>
