@@ -1,11 +1,11 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v290</title>
+    <title>IASD Estrela Dalva - v295</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.95); --neon-blue: #38bdf8; --accent-orange: #f97316; }
+        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --neon-blue: #38bdf8; --accent-orange: #f97316; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
         
         /* HEADER */
@@ -18,35 +18,36 @@
         .section { display: none; }
         .section.active { display: block !important; }
 
-        /* ESCALA COM LINHAS (Recuperadas conforme pedido) */
-        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; padding: 10px; }
-        table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; border: 1px solid #ccc; }
-        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; font-size: 0.75rem; border: 1px solid #444; text-transform: uppercase; }
-        table.escala td { border: 1px solid #ddd; height: 45px; text-align: center; padding: 2px; }
-        .input-cell { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; text-transform: uppercase; background: transparent; }
+        /* ESCALA COM LINHAS FORTES (FORÇADO COM !IMPORTANT) */
+        .table-container { background: white; border-radius: 8px; overflow: auto; margin-top: 10px; padding: 5px; }
+        table.escala { width: 100%; border-collapse: collapse !important; color: black; min-width: 1000px; border: 2px solid #333 !important; }
+        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 12px; font-size: 0.75rem; border: 1px solid #000 !important; text-transform: uppercase; }
+        table.escala td { border: 1px solid #ccc !important; height: 45px; text-align: center; padding: 0; }
+        .input-cell { width: 100%; height: 100%; border: none !important; text-align: center; font-weight: bold; text-transform: uppercase; background: transparent; display: block; }
 
-        /* PAINEL DE GESTÃO (Visual da Foto) */
-        .admin-grid { 
-            display: grid; grid-template-columns: 240px 320px 1fr; gap: 20px; 
-            background: #0f172a; border: 1.5px solid var(--accent-orange); 
-            border-radius: 12px; padding: 25px; margin-top: 10px;
+        /* PAINEL DE GESTÃO (IGUAL À FOTO) */
+        .admin-box { 
+            background: #0f172a; border: 2px solid var(--accent-orange); 
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
         }
-        .col-title { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
+        .admin-grid { display: grid; grid-template-columns: 240px 320px 1fr; gap: 30px; }
+        .col-title { color: var(--neon-blue); font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
         
-        /* Coluna 1 - Botões */
-        .btn-min { width: 100%; padding: 10px; margin-bottom: 8px; background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); border-radius: 6px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.75rem; }
+        /* Coluna 1 - Botões Azuis */
+        .btn-min { width: 100%; padding: 12px; margin-bottom: 8px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; }
         .btn-min.active { background: var(--neon-blue); color: #000; }
         .btn-min.limpar { border-color: #ff4444; color: #ff4444; }
 
-        /* Coluna 2 - Responsáveis */
-        .mes-input { background: #000; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 0.8rem; }
-        .label-mes { font-size: 0.65rem; color: #94a3b8; display: block; margin-top: 5px; }
+        /* Coluna 2 - Meses */
+        .mes-input { background: #000; border: 1px solid #334155; color: #fff; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        .label-mes { font-size: 0.65rem; color: #94a3b8; display: block; margin-bottom: 2px; margin-top: 8px; }
 
         /* Coluna 3 - Logins */
-        .login-row { display: grid; grid-template-columns: 100px 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
-        .login-head { color: #fbbf24; font-size: 0.7rem; font-weight: bold; margin-bottom: 10px; }
+        .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; font-size: 0.8rem; }
+        .login-table th { text-align: left; padding-bottom: 10px; border-bottom: 1px solid #1e293b; }
+        .login-table td { padding: 8px 0; border-bottom: 1px solid #1e293b; }
 
-        /* CORES DAS LINHAS DA ESCALA */
+        /* CORES DAS LINHAS */
         tr.pessoal td { background-color: #e0f2fe !important; }
         tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; }
@@ -56,7 +57,7 @@
         tr.mulher td { background-color: #fce7f3 !important; }
         tr.musica td { background-color: #ede9fe !important; }
 
-        /* PLANEJAMENTO ANUAL */
+        /* ANUAL */
         .grid-anual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .mes-card { background: #000; border: 1px solid #334155; border-radius: 10px; padding: 15px; }
     </style>
@@ -72,6 +73,36 @@
             <button class="btn-nav" id="btnGoAnual" onclick="showSec('secAnual')">🗓️ ANUAL</button>
             <button class="btn-nav orange" onclick="abrirGestao()" id="btnGestao">🔓 GESTÃO</button>
             <button class="btn-nav orange" onclick="sair()" id="btnSair" style="display:none;">SAIR</button>
+        </div>
+    </div>
+</div>
+
+<div id="secGestao" class="section">
+    <div class="admin-box">
+        <div class="admin-grid">
+            <div class="column">
+                <div class="col-title">1. Ministério do Dia</div>
+                <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
+                <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
+                <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
+                <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
+                <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
+                <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
+                <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
+                <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
+                <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
+            </div>
+            <div class="column">
+                <div class="col-title">2. Responsável Mensal</div>
+                <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+            </div>
+            <div class="column">
+                <div class="col-title">3. Controle de Logins e Senhas</div>
+                <table class="login-table">
+                    <thead><tr><th>MINISTÉRIO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
+                    <tbody id="listaLogins"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -97,36 +128,10 @@
     </div>
 </div>
 
-<div id="secGestao" class="section">
-    <div class="admin-grid">
-        <div class="column">
-            <div class="col-title">1. Ministério do Dia</div>
-            <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
-            <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
-            <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
-            <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
-            <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
-            <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-            <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
-            <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR</button>
-        </div>
-        <div class="column">
-            <div class="col-title">2. Responsável Mensal</div>
-            <div id="gridResponsaveis" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
-        </div>
-        <div class="column">
-            <div class="col-title">3. Controle de Logins e Senhas</div>
-            <div class="login-row login-head"><div>MINISTÉRIO</div><div>USUÁRIO</div><div>SENHA</div></div>
-            <div id="listaLogins"></div>
-        </div>
-    </div>
-</div>
-
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v290');
+    const dbRef = firebase.database().ref('iasd_estrela_v295');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, anual:{} };
     let user = localStorage.getItem('iasd_user') || 'v';
@@ -155,28 +160,22 @@
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('btnSair').style.display = (user === 'admin') ? 'block' : 'none';
 
-        // Planejamento
-        document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div class="mes-card"><div style="color:var(--neon-blue); font-size:0.75rem; font-weight:bold; margin-bottom:8px;">${n}</div>
-            <textarea style="width:100%; height:80px; background:#111; color:#fff; border:none;" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
-        `).join('');
-
-        // Responsáveis (Grid 2 colunas como na foto)
+        // Responsáveis
         document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
-            <div><span class="label-mes">${n}</span><input class="mes-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
+            <div><label class="label-mes">${n}</label><input class="mes-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)"></div>
         `).join('');
 
-        // Logins (Visual de tabela como na foto)
-        const logs = [
-            {m:"Administrador", u:"admin", s:"iasd118"}, {m:"Gerência", u:"ger", s:"ger123"},
-            {m:"Diaconato", u:"diaconato", s:"diac123"}, {m:"Música", u:"musica", s:"mus123"},
-            {m:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {m:"M. Mulher", u:"mulher", s:"mulher123"}
-        ];
-        document.getElementById('listaLogins').innerHTML = logs.map(l => `
-            <div class="login-row"><div>${l.m}</div><div style="color:var(--neon-blue)">${l.u}</div><div><input class="mes-input" style="padding:4px" value="${l.s}" readonly></div></div>
+        // Logins
+        const logs = [{m:"Administrator", u:"admin", s:"iasd118"}, {m:"Gerência", u:"ger", s:"ger123"}, {m:"Música", u:"musica", s:"mus123"}, {m:"M. Mulher", u:"mulher", s:"mulher123"}];
+        document.getElementById('listaLogins').innerHTML = logs.map(l => `<tr><td>${l.m}</td><td style="color:var(--neon-blue)">${l.u}</td><td>${l.s}</td></tr>`).join('');
+
+        // Anual
+        document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
+            <div class="mes-card"><div style="color:var(--neon-blue); font-size:0.7rem; font-weight:bold; margin-bottom:5px;">${n}</div>
+            <textarea style="width:100%; height:70px; background:#111; color:#fff; border:none; resize:none;" onchange="atuAnual(${i}, this.value)">${db.anual?.[i]||''}</textarea></div>
         `).join('');
 
-        // Escala com LINHAS
+        // Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -186,7 +185,7 @@
                 let c = db.cores?.[dStr] || {id:'', nome:''};
                 let tr = document.createElement('tr');
                 if(c.id) tr.className = c.id;
-                tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:10px; color:#666">${c.nome||''}</div></td>
+                tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:10px; font-weight:bold">${c.nome||''}</div></td>
                 <td onclick="pintar('${dStr}')" style="cursor:pointer">${d}/${m+1}</td>` + 
                 ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input class="input-cell" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)"></td>`).join('');
                 corpo.appendChild(tr);
@@ -194,11 +193,7 @@
         }
     }
 
-    function selPincel(id, nome) { 
-        pID = id; pNome = nome; 
-        document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
+    function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); event.currentTarget.classList.add('active'); }
     function pintar(dStr) { if(user==='admin' && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
     function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
     function atuAnc(i,v) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }
