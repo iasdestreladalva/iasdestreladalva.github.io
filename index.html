@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v410</title>
+    <title>IASD Estrela Dalva - MASTER v420</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -18,25 +18,25 @@
         .btn-print { background: #22c55e; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
         .btn-print.anual { background: #8b5cf6; }
 
-        /* PAINEL DE GESTÃO (RESTAURADO) */
+        /* PAINEL DE GESTÃO */
         .admin-main-box { background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
         .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 25px; }
         .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         
-        /* Pincéis */
         .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
         .btn-min.limpar { border-color: #ef4444; color: #ef4444; }
 
-        /* Responsáveis */
         .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; font-size: 0.8rem; }
 
-        /* LOGINS (RESTAURADO COM ROLAGEM) */
-        .login-scroll { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        /* TABELA DE LOGINS COMPLETA */
+        .login-scroll { max-height: 350px; overflow-y: auto; padding-right: 5px; border: 1px solid #1e293b; border-radius: 8px; background: #000; }
         .login-table { width: 100%; border-collapse: collapse; }
-        .login-table th { text-align: left; font-size: 0.7rem; color: var(--accent-orange); padding-bottom: 8px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #0f172a; }
-        .input-login { background: #000; border: 1px solid #1e293b; color: #fbbf24; width: 95%; padding: 5px; border-radius: 4px; font-size: 0.8rem; }
+        .login-table th { text-align: left; font-size: 0.7rem; color: var(--accent-orange); padding: 10px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #111827; z-index: 10; }
+        .login-table td { padding: 5px; border-bottom: 1px solid #111827; }
+        .input-login { background: transparent; border: 1px solid transparent; color: #fbbf24; width: 90%; padding: 5px; border-radius: 4px; font-size: 0.8rem; }
+        .input-login:hover { border-color: #334155; }
         .input-login.user { color: var(--neon-blue); font-weight: bold; }
 
         /* ESCALA */
@@ -64,7 +64,7 @@
             body.print-anual .card-mes h4, body.print-anual .txt-anual { color: black !important; }
         }
 
-        /* CORES */
+        /* CORES MINISTÉRIOS */
         tr.pessoal td { background-color: #e0f2fe !important; } tr.mordomia td { background-color: #fef3c7 !important; }
         tr.saude td { background-color: #f1f5f9 !important; } tr.homens td { background-color: #dcfce7 !important; }
         tr.familia td { background-color: #fee2e2 !important; } tr.adolescentes td { background-color: #f0fdf4 !important; }
@@ -87,7 +87,7 @@
 <div class="admin-main-box">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Ministério do Dia</div>
+            <div class="col-header">1. Pincéis</div>
             <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
             <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
             <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
@@ -96,14 +96,14 @@
             <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
             <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
             <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
+            <button class="btn-min limpar" onclick="selPincel('','')">LIMPAR</button>
         </div>
         <div class="column">
-            <div class="col-header">2. Responsáveis Mensais</div>
+            <div class="col-header">2. Responsáveis</div>
             <div id="gridResponsaveis" class="resp-grid"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. Logins e Senhas (Editáveis)</div>
+            <div class="col-header">3. Logins e Senhas (Completo)</div>
             <div class="login-scroll">
                 <table class="login-table">
                     <thead><tr><th>CARGO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
@@ -138,25 +138,31 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v410');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v420');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
-    let pID = null; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
+    // TODOS OS 13 DEPARTAMENTOS INSERIDOS MANUALMENTE
     const loginsPadrao = [
-        {c:"Administrador", u:"admin", s:"iasd118"}, {c:"Gerência", u:"ger", s:"ger123"},
-        {c:"Diaconato", u:"diaconato", s:"diac123"}, {c:"Música", u:"musica", s:"mus123"},
-        {c:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {c:"M. Mulher", u:"mulher", s:"mulher123"},
-        {c:"Escola Sabatina", u:"sabatina", s:"sab123"}, {c:"M. Pessoal", u:"pessoal", s:"mp123"},
-        {c:"Mordomia", u:"mordomia", s:"mord123"}, {c:"Saúde", u:"saude", s:"saude123"},
-        {c:"M. Homens", u:"homens", s:"homem123"}, {c:"M. Família", u:"familia", s:"fam123"},
+        {c:"Administrador", u:"admin", s:"iasd118"},
+        {c:"Gerência", u:"ger", s:"ger123"},
+        {c:"Diaconato", u:"diaconato", s:"diac123"},
+        {c:"Música", u:"musica", s:"mus123"},
+        {c:"Sonoplastia", u:"sonoplastia", s:"sono123"},
+        {c:"M. Mulher", u:"mulher", s:"mulher123"},
+        {c:"Escola Sabatina", u:"sabatina", s:"sab123"},
+        {c:"M. Pessoal", u:"pessoal", s:"mp123"},
+        {c:"Mordomia", u:"mordomia", s:"mord123"},
+        {c:"Saúde", u:"saude", s:"saude123"},
+        {c:"M. Homens", u:"homens", s:"homem123"},
+        {c:"M. Família", u:"familia", s:"fam123"},
         {c:"Adolescentes", u:"adolescentes", s:"adol123"}
     ];
 
     dbRef.on('value', snap => { 
         db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao, anual:{} }; 
-        if(!db.logins || db.logins.length === 0) db.logins = loginsPadrao;
+        if(!db.logins || db.logins.length < 13) db.logins = loginsPadrao;
         renderTodo(); 
     });
 
