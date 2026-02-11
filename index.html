@@ -1,99 +1,83 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v630 GESTÃO TOTAL</title>
+    <title>IASD Estrela Dalva - v640 FINAL</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --neon-blue: #38bdf8; --accent-orange: #f97316; --exit-red: #ef4444; --success-green: #22c55e; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; padding-top: 85px; }
         
-        /* TOOLBAR */
-        .toolbar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: #111827; display: flex; align-items: center; padding: 0 20px; z-index: 1000; border-bottom: 3px solid var(--neon-blue); gap: 10px; justify-content: space-between; }
+        /* TOOLBAR v560 STYLE */
+        .toolbar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: #111827; display: flex; align-items: center; padding: 0 20px; z-index: 1000; border-bottom: 3px solid var(--neon-blue); gap: 10px; }
         .btn-tool { background: #1e293b; color: white; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         
         #btnTesouraria, #btnEventos, #painelAdmin { display: none; }
         #btnTesouraria { border-color: var(--success-green); color: var(--success-green); }
         #btnEventos { border-color: var(--accent-orange); color: var(--accent-orange); }
 
-        /* PAINEL DE GESTÃO v560 ORIGINAL */
-        #painelAdmin { background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
-        .admin-grid { display: grid; grid-template-columns: 1fr 1.2fr 2fr; gap: 30px; }
-        .col-header { color: var(--neon-blue); font-size: 0.85rem; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 5px; }
-        
-        /* COLUNA 1: PINCEIS */
-        .btn-min { width: 100%; padding: 12px; margin-bottom: 8px; background: #1e293b; border: 1px solid var(--neon-blue); color: white; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; font-size: 0.75rem; }
-        .btn-min:hover { background: var(--neon-blue); color: #000; }
-        
-        /* COLUNA 2: RESPONSÁVEL */
-        .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .resp-group { display: flex; flex-direction: column; gap: 3px; }
-        .resp-label { font-size: 0.65rem; color: #94a3b8; font-weight: bold; }
-        .resp-input { background: #000; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
-
-        /* COLUNA 3: LOGINS */
-        .login-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 0.75rem; }
-        .login-cargo { color: #fbbf24; font-weight: bold; }
-        .login-user { color: var(--neon-blue); }
+        /* PAINEL GESTÃO RESTAURADO */
+        #painelAdmin { background: #1e293b; border: 2px solid var(--accent-orange); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1.5fr 2fr; gap: 20px; }
+        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #334155; }
+        .btn-min { width: 100%; padding: 8px; margin-bottom: 5px; background: transparent; border: 1px solid var(--neon-blue); color: #fff; border-radius: 5px; cursor: pointer; font-size: 0.7rem; }
+        .resp-input { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 4px; font-size: 0.7rem; }
 
         /* ESCALA E ANUAL */
         #secaoEscala { background: white; border-radius: 8px; padding: 20px; overflow-x: auto; margin-bottom: 30px; border: 3px solid #000; color: #000; }
         table.escala { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        table.escala th { background: var(--iasd-blue); color: white; padding: 12px; border: 1px solid #000; font-size: 0.75rem; }
-        table.escala td { border: 1px solid #000; text-align: center; font-weight: bold; height: 55px; }
-        .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: 900; background: transparent; text-transform: uppercase; font-size: 0.85rem; }
+        table.escala th { background: var(--iasd-blue); color: white; padding: 10px; border: 1px solid #000; }
+        table.escala td { border: 1px solid #000; text-align: center; font-weight: bold; height: 45px; }
+        .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
+
+        /* TESOURARIA MINIATURAS */
+        #containerTesouraria { margin-top: 30px; border-top: 1px solid #334155; padding-top: 20px; }
+        .grid-tes { display: grid; grid-template-columns: repeat(3, 150px); gap: 20px; }
+        .thumb-tes { width: 150px; height: 150px; border: 2px solid var(--success-green); border-radius: 8px; cursor: pointer; object-fit: cover; background: #000; }
         
-        .grid-anual { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 10px; }
-        .card-mes-anual { background: #1e293b; padding: 10px; border-radius: 8px; border-left: 4px solid var(--accent-orange); }
-        .area-anual { width: 100%; height: 60px; background: transparent; color: #fff; border: none; font-size: 0.75rem; resize: none; margin-top: 5px; }
+        /* FULLSCREEN OVERLAY */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; }
+        #overlay img, #overlay embed { max-width: 90%; max-height: 90%; }
 
-        /* MODAIS */
-        .modal-master { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; align-items: center; justify-content: center; }
-        .card-modal { background: #1e293b; padding: 30px; border-radius: 15px; border: 2px solid var(--accent-orange); width: 450px; }
-
-        @media print { .toolbar, #painelAdmin, .modal-master { display: none !important; } }
+        @media print { .toolbar, #painelAdmin, .modal-master { display: none !important; } .print-escala #secaoAnual, .print-escala #containerTesouraria { display: none; } .print-anual #secaoEscala { display: none; } }
         tr.pessoal td { background-color: #e0f2fe !important; } tr.mordomia td { background-color: #fef3c7 !important; }
     </style>
 </head>
 <body>
 
 <div class="toolbar">
-    <div style="display: flex; gap: 8px; align-items: center;">
-        <span style="font-weight: 900; color: var(--neon-blue); font-size: 0.9rem; letter-spacing: 1px;">ESTRELA DALVA</span>
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid #444; padding:8px; border-radius:6px; font-weight:bold;"></select>
-        <button class="btn-tool" onclick="window.print()">🖨️ IMPRIMIR</button>
-        <button id="btnEventos" class="btn-tool" onclick="abrirEv()">🔥 CRIAR EVENTOS</button>
-        <button id="btnTesouraria" class="btn-tool" onclick="abrirTes()">💰 TESOURARIA</button>
-    </div>
+    <span style="font-weight: 900; color: var(--neon-blue); margin-right: 15px;">ESTRELA DALVA</span>
+    <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid #444; padding:5px; border-radius:5px;"></select>
+    <button class="btn-tool" onclick="imprimir('escala')">🖨️ ESCALA</button>
+    <button class="btn-tool" onclick="imprimir('anual')">🗓️ ANUAL</button>
+    <button id="btnEventos" class="btn-tool" onclick="abrirEv()">🔥 EVENTOS</button>
+    <button id="btnTesouraria" class="btn-tool" onclick="abrirTes()">💰 TESOURARIA</button>
+    <div style="flex-grow: 1;"></div>
     <button id="btnEntrar" class="btn-tool" style="background:var(--neon-blue); color:#000" onclick="fazerLogin()">ENTRAR</button>
-    <button id="btnSair" style="display:none; background:var(--exit-red); color:white; border:none; padding:10px 15px; border-radius:6px; cursor:pointer; font-weight:bold" onclick="location.reload()">SAIR</button>
+    <button id="btnSair" style="display:none; background:red; border:none; padding:8px; border-radius:5px; color:white;" onclick="location.reload()">SAIR</button>
 </div>
 
 <div id="painelAdmin">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Ministério do Dia (Pincel)</div>
+            <div class="col-header">MINISTÉRIOS (PINCEL)</div>
             <div id="contPinceis"></div>
         </div>
         <div class="column">
-            <div class="col-header">2. Ancião / Responsável</div>
-            <div id="gridAnciaos" class="resp-grid"></div>
+            <div class="col-header">ANCIÃOS RESPONSÁVEIS</div>
+            <div id="gridAnciaos" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. Logins Ativos</div>
-            <div id="listaLogins">
-                <div class="login-row"><span class="login-cargo">Administrador</span><span class="login-user">admin</span></div>
-                <div class="login-row"><span class="login-cargo">Gerência</span><span class="login-user">gerente</span></div>
-                <div class="login-row"><span class="login-cargo">Ministérios</span><span class="login-user">ministerio</span></div>
-            </div>
+            <div class="col-header">LOGINS DO SISTEMA</div>
+            <div style="color:#fbbf24; font-size:0.7rem;">Admin (123) | Gerente (123) | Ministerio (123)</div>
         </div>
     </div>
 </div>
 
 <div id="secaoEscala">
-    <div style="text-align:center; color:#000; margin-bottom:20px">
-        <div id="txtAnciao" style="font-size:1.2rem; font-weight:900; color:var(--iasd-blue); text-transform:uppercase;">---</div>
-        <div style="font-weight:bold; font-size:1rem">ESCALA DE <span id="txtMes">---</span></div>
+    <div style="text-align:center; color:#000; margin-bottom:10px">
+        <div id="txtAnciao" style="font-size:1.2rem; font-weight:900; color:var(--iasd-blue)">---</div>
+        <div style="font-weight:bold;">ESCALA DE <span id="txtMes">---</span></div>
     </div>
     <table class="escala">
         <thead><tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr></thead>
@@ -102,54 +86,45 @@
 </div>
 
 <div id="secaoAnual">
-    <h3 style="color:var(--accent-orange); font-size:0.9rem; margin-bottom:15px; text-transform:uppercase; border-bottom:1px solid #334155">🗓️ Planejamento Anual 2026</h3>
-    <div id="gridAnual" class="grid-anual"></div>
+    <h3 style="color:var(--accent-orange); font-size:0.8rem;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+    <div id="gridAnual" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;"></div>
 </div>
 
-<div id="modalEventos" class="modal-master">
-    <div class="card-modal">
-        <h2 style="color:var(--accent-orange); text-align:center; margin-top:0">NOVO EVENTO</h2>
-        <input type="text" id="evNome" placeholder="NOME DO EVENTO (EX: ACAMPAMENTO)" class="resp-input" style="width:100%; margin-bottom:15px; padding:12px">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px">
-            <div class="resp-group"><label class="resp-label">INÍCIO</label><input type="date" id="evIni" class="resp-input"></div>
-            <div class="resp-group"><label class="resp-label">FIM</label><input type="date" id="evFim" class="resp-input"></div>
-        </div>
-        <button class="btn-tool" style="width:100%; background:var(--accent-orange); border:none; padding:15px; margin-bottom:10px" onclick="salvarEvento()">CRIAR NO PERÍODO</button>
-        <button class="btn-tool" style="width:100%; background:#444; border:none" onclick="document.getElementById('modalEventos').style.display='none'">CANCELAR</button>
-    </div>
+<div id="containerTesouraria">
+    <h3 style="color:var(--success-green); font-size:0.8rem;">💰 ARQUIVOS TESOURARIA (TRIMESTRE)</h3>
+    <div id="gridTes" class="grid-tes"></div>
 </div>
 
-<div id="modalTesouraria" class="modal-master">
-    <div class="card-modal" style="border-color:var(--success-green)">
-        <h2 style="color:var(--success-green); text-align:center; margin-top:0">ARQUIVOS DA TESOURARIA</h2>
-        <div id="listaFiles" style="margin-bottom:20px; max-height:200px; overflow-y:auto"></div>
-        <input type="file" id="fInput" accept=".jpg,.jpeg,.pdf" style="display:none" onchange="uploadFile(this)">
-        <button class="btn-tool" style="width:100%; border-color:var(--neon-blue); color:var(--neon-blue); margin-bottom:10px" onclick="document.getElementById('fInput').click()">FAZER UPLOAD (MÁX 3)</button>
-        <button class="btn-tool" style="width:100%; background:#444; border:none" onclick="document.getElementById('modalTesouraria').style.display='none'">FECHAR</button>
+<div id="overlay" onclick="this.style.display='none'"></div>
+
+<div id="modalTes" style="display:none;" class="overlay-modal">
+    <div style="background:#1e293b; padding:20px; border-radius:10px; border:2px solid var(--success-green); position:fixed; top:20%; left:35%; z-index:11000; width:300px;">
+        <h3 style="color:var(--success-green)">Upload Tesouraria</h3>
+        <input type="file" id="fInput" onchange="uploadFile(this)">
+        <button class="btn-tool" style="width:100%; margin-top:10px;" onclick="document.getElementById('modalTes').style.display='none'">FECHAR</button>
     </div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v630');
+    const dbRef = firebase.database().ref('iasd_estrela_v640');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, anual:{}, eventos:{}, tesouraria:{} };
-    let logado = false;
-    let cargoAtual = "";
+    let logado = false; let cargo = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
     function fazerLogin() {
-        let u = prompt("Usuário:"), s = prompt("Senha:");
+        let u = prompt("User:"), s = prompt("Pass:");
         if((u=="admin" || u=="gerente" || u=="ministerio") && s=="123") {
-            logado = true; cargoAtual = u;
+            logado = true; cargo = u;
             document.getElementById('btnEntrar').style.display = 'none';
             document.getElementById('btnSair').style.display = 'block';
             document.getElementById('painelAdmin').style.display = 'block';
             document.getElementById('btnEventos').style.display = 'block';
-            if(u == "admin" || u == "gerente") document.getElementById('btnTesouraria').style.display = 'block';
+            if(u == 'admin' || u == 'gerente') document.getElementById('btnTesouraria').style.display = 'block';
             renderTodo();
-        } else { alert("Erro: Login ou Senha inválidos."); }
+        } else { alert("Acesso negado"); }
     }
 
     dbRef.on('value', snap => { db = snap.val() || db; renderTodo(); });
@@ -160,11 +135,11 @@
         document.getElementById('txtAnciao').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "---"}`;
 
         // PINCEIS
-        const mins = [['pessoal','M. Pessoal'],['mordomia','Mordomia'],['saude','Saúde'],['homens','M. Homens'],['familia','M. Família']];
-        document.getElementById('contPinceis').innerHTML = mins.map(min => `<button class="btn-min" onclick="selPincel('${min[0]}')">${min[1]}</button>`).join('') + `<button class="btn-min" style="color:var(--exit-red); border-color:var(--exit-red)" onclick="selPincel('')">LIMPAR COR</button>`;
+        const ms = [['pessoal','M. Pessoal'],['mordomia','Mordomia'],['saude','Saúde'],['homens','M. Homens'],['familia','M. Família']];
+        document.getElementById('contPinceis').innerHTML = ms.map(x => `<button class="btn-min" onclick="pincel='${x[0]}'">${x[1]}</button>`).join('') + `<button class="btn-min" onclick="pincel=''">LIMPAR</button>`;
 
-        // RESPONSÁVEL MENSAL
-        document.getElementById('gridAnciaos').innerHTML = meses.map((n, i) => `<div class="resp-group"><label class="resp-label">${n}</label><input class="resp-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>`).join('');
+        // ANCIAOS
+        document.getElementById('gridAnciaos').innerHTML = meses.map((n,i) => `<div><label style="font-size:0.6rem">${n}</label><input class="resp-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>`).join('');
 
         // ESCALA
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
@@ -178,43 +153,48 @@
             if([0,3,6].includes(dt.getDay()) || ev) {
                 const tr = document.createElement('tr');
                 if(db.cores?.[dStr]) tr.classList.add(db.cores[dStr]);
-                tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer">${ev?`<span class="tag-evento">${ev.nome}</span>`:''} ${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][dt.getDay()]}</td><td>${d}/${m+1}</td>` + 
-                ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input class="cell-input" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)" ${!logado?'disabled':''}></td>`).join('');
+                tr.innerHTML = `<td onclick="pintar('${dStr}')">${ev?`<div style="background:red;color:white;font-size:0.6rem">${ev.nome}</div>`:''} ${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][dt.getDay()]}</td><td>${d}/${m+1}</td>` + 
+                ["sa","pr","mu","lo","so","re","di"].map(c => `<td><input class="cell-input" value="${db.escalas?.[dStr]?.[c]||''}" onchange="atu('${dStr}','${c}',this.value)" ${!logado?'disabled':''}></td>`).join('');
                 corpo.appendChild(tr);
             }
         }
         // ANUAL
-        document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `<div class="card-mes-anual"><h6 style="margin:0; font-size:0.65rem; color:var(--neon-blue); text-transform:uppercase">${n}</h6><textarea class="area-anual" onchange="atuAnu(${i},this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>`).join('');
-    }
+        document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `<div style="background:#1e293b;padding:5px;border-radius:5px"><h6>${n}</h6><textarea style="width:100%;background:transparent;color:white;border:none;font-size:0.7rem" onchange="atuAnu(${i},this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>`).join('');
 
-    function atuAnc(i,v) { if(logado) dbRef.child('anciaos').child(i).set(v.toUpperCase()); }
-    function atu(d,c,v) { if(logado) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }}
-    function atuAnu(i,v) { if(logado) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
-
-    function abrirEv() { document.getElementById('modalEventos').style.display='flex'; }
-    function salvarEvento() {
-        const n=document.getElementById('evNome').value.toUpperCase(), i=document.getElementById('evIni').value, f=document.getElementById('evFim').value;
-        if(i && f) { dbRef.child('eventos').child(Date.now()).set({nome:n, ini:i, fim:f}); alert("Evento Criado!"); document.getElementById('modalEventos').style.display='none'; }
-    }
-
-    function abrirTes() { document.getElementById('modalTesouraria').style.display='flex'; renderFiles(); }
-    function renderFiles() {
-        const tri = Math.floor(parseInt(document.getElementById('selMes').value)/3)+1;
-        const list = document.getElementById('listaFiles'); list.innerHTML = "";
+        // MINIATURAS TESOURARIA
+        const tri = Math.floor(m/3)+1;
+        const gTes = document.getElementById('gridTes'); gTes.innerHTML = "";
         const arqs = db.tesouraria?.[tri] || [];
-        arqs.forEach((a, i) => { list.innerHTML += `<div style="display:flex; justify-content:space-between; background:#000; padding:10px; margin-bottom:5px; border-left:3px solid var(--success-green)"><span>📄 ${a.nome}</span><button onclick="delFile(${tri},${i})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold">X</button></div>`; });
+        arqs.forEach(a => {
+            const el = a.url.includes("pdf") ? `<div class="thumb-tes" onclick="verFull('${a.url}')" style="display:flex;align-items:center;justify-content:center;color:white">PDF</div>` : `<img src="${a.url}" class="thumb-tes" onclick="verFull('${a.url}')">`;
+            gTes.innerHTML += el;
+        });
     }
+
+    function verFull(url) {
+        const ov = document.getElementById('overlay');
+        ov.innerHTML = url.includes("pdf") ? `<embed src="${url}" type="application/pdf">` : `<img src="${url}">`;
+        ov.style.display = 'flex';
+    }
+
+    function abrirTes() { document.getElementById('modalTes').style.display='block'; }
     function uploadFile(inp) {
         const f = inp.files[0]; if(!f) return;
         const tri = Math.floor(parseInt(document.getElementById('selMes').value)/3)+1;
         const arqs = db.tesouraria?.[tri] || [];
-        if(arqs.length >= 3) { alert("Limite de 3 arquivos por trimestre atingido."); return; }
         const r = new FileReader(); r.onload=(e)=>{ arqs.push({nome:f.name, url:e.target.result}); dbRef.child('tesouraria').child(tri).set(arqs); }; r.readAsDataURL(f);
     }
-    function delFile(t,i) { let a=db.tesouraria[t]; a.splice(i,1); dbRef.child('tesouraria').child(t).set(a); }
 
-    let pCor = ""; function selPincel(c) { pCor = c; }
-    function pintar(d) { if(logado) { if(!db.cores) db.cores={}; if(!pCor) delete db.cores[d]; else db.cores[d]=pCor; dbRef.child('cores').set(db.cores); }}
+    function abrirEv() { 
+        let n = prompt("Nome:"), i = prompt("Início (AAAA-MM-DD):"), f = prompt("Fim (AAAA-MM-DD):");
+        if(n && i && f) dbRef.child('eventos').child(Date.now()).set({nome:n, ini:i, fim:f});
+    }
+
+    function imprimir(t) { document.body.className = 'print-'+t; window.print(); document.body.className = ''; }
+    function atuAnc(i,v) { dbRef.child('anciaos').child(i).set(v.toUpperCase()); }
+    function atu(d,c,v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }
+    function atuAnu(i,v) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }
+    let pincel = ""; function pintar(d) { if(!db.cores) db.cores={}; if(!pincel) delete db.cores[d]; else db.cores[d]=pincel; dbRef.child('cores').set(db.cores); }
 
     const sM = document.getElementById('selMes'); meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
