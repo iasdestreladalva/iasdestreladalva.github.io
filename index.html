@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v510</title>
+    <title>IASD Estrela Dalva - MASTER v520</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -17,28 +17,27 @@
 
         /* MODAL EVENTOS */
         .modal-eventos { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
-        .card-eventos { background: #1e293b; padding: 25px; border-radius: 15px; border: 2px solid var(--accent-orange); width: 450px; max-height: 90vh; overflow-y: auto; }
+        .card-eventos { background: #1e293b; padding: 25px; border-radius: 15px; border: 2px solid var(--accent-orange); width: 450px; }
         .ev-label { display: block; color: var(--neon-blue); font-size: 0.7rem; font-weight: bold; margin: 10px 0 5px; }
-        .ev-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 10px; border-radius: 6px; }
+        .ev-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 10px; border-radius: 6px; font-family: sans-serif; }
         .btn-criar { width: 100%; background: #f87171; color: white; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; cursor: pointer; }
-        .ev-item { background: #0f172a; padding: 8px; border-radius: 5px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 0.8rem; border-left: 4px solid var(--accent-orange); }
+        .lista-ev { margin-top: 15px; max-height: 150px; overflow-y: auto; background: #000; padding: 5px; border-radius: 5px; }
+        .ev-item { background: #1e293b; padding: 8px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.75rem; border-left: 3px solid var(--accent-orange); }
 
         /* PAINEL GESTÃO */
         #painelAdmin { display: none; background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
         .admin-grid { display: grid; grid-template-columns: 220px 250px 1fr; gap: 20px; }
-        .login-scroll { max-height: 250px; overflow-y: auto; background: #000; border-radius: 8px; border: 1px solid #334155; }
         .login-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; color: #fbbf24; }
-        .login-table th { color: var(--accent-orange); text-align: left; padding: 5px; position: sticky; top: 0; background: #000; border-bottom: 1px solid #1e293b; }
+        .login-table th { color: var(--accent-orange); text-align: left; padding: 5px; border-bottom: 1px solid #1e293b; }
 
         /* ESCALA E DESTAQUE EVENTO */
-        .tag-evento { background: var(--exit-red); color: white; font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 4px; font-weight: bold; }
+        .tag-evento { background: var(--exit-red); color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; display: block; margin-bottom: 3px; font-weight: bold; text-align: center; }
         #secaoEscala { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 30px; border: 2px solid #000; }
         table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
         table.escala th { background: var(--iasd-blue); color: white; padding: 10px; border: 1px solid #000; font-size: 0.7rem; }
-        table.escala td { border: 1px solid #000; text-align: center; font-weight: bold; height: 40px; }
+        table.escala td { border: 1px solid #000; text-align: center; font-weight: bold; height: 45px; vertical-align: middle; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; font-size: 0.75rem; }
 
-        .card-mes { background: #1e293b; border: 1px solid #334155; padding: 8px; border-radius: 8px; }
         @media print { .toolbar, #painelAdmin, .modal-eventos { display: none !important; } body { padding-top: 0; } body.print-escala #secaoAnual { display: none !important; } body.print-anual #secaoEscala { display: none !important; } }
         
         /* CORES MINISTÉRIOS */
@@ -66,20 +65,27 @@
 
 <div id="modalEventos" class="modal-eventos">
     <div class="card-eventos">
-        <h2 style="color:#f87171; text-align:center; font-size:1.1rem">GESTOR DE EVENTOS</h2>
-        <label class="ev-label">NOME DO EVENTO</label>
-        <input type="text" id="evNome" class="ev-input" placeholder="Ex: SEMANA SANTA">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-            <div><label class="ev-label">INÍCIO (AAAA-MM-DD)</label><input type="date" id="evIni" class="ev-input"></div>
-            <div><label class="ev-label">FIM (AAAA-MM-DD)</label><input type="date" id="evFim" class="ev-input"></div>
-        </div>
-        <button class="btn-criar" onclick="salvarEvento()">CRIAR EVENTO NO PERÍODO</button>
+        <h2 style="color:#f87171; text-align:center; font-size:1.1rem; margin-top:0">GERENCIAR EVENTOS</h2>
         
-        <div style="margin-top:20px; border-top:1px solid #334155; padding-top:10px">
-            <label class="ev-label">EVENTOS ATIVOS (CLIQUE NO X PARA EXCLUIR)</label>
-            <div id="listaEventos"></div>
+        <label class="ev-label">NOME DO EVENTO</label>
+        <input type="text" id="evNome" class="ev-input" placeholder="Ex: SEMANA DE ORAÇÃO">
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+            <div>
+                <label class="ev-label">DATA INÍCIO</label>
+                <input type="date" id="evIni" class="ev-input">
+            </div>
+            <div>
+                <label class="ev-label">DATA FIM</label>
+                <input type="date" id="evFim" class="ev-input">
+            </div>
         </div>
-        <button class="btn-concluir" style="width:100%; margin-top:15px; padding:10px; background:#444; border:none; color:#fff; border-radius:8px; cursor:pointer" onclick="fecharEventos()">FECHAR</button>
+
+        <button class="btn-criar" onclick="salvarEvento()">SALVAR EVENTO NO CALENDÁRIO</button>
+        
+        <div class="lista-ev" id="listaEventos"></div>
+
+        <button style="width:100%; margin-top:15px; padding:10px; background:#444; border:none; color:#fff; border-radius:8px; cursor:pointer" onclick="fecharEventos()">CONCLUÍDO</button>
     </div>
 </div>
 
@@ -87,15 +93,15 @@
     <div class="admin-grid">
         <div class="column">
             <div class="col-header">1. PINCÉIS</div>
-            <div id="pinceis"></div>
+            <div id="contPinceis"></div>
         </div>
         <div class="column">
             <div class="col-header">2. ANCIÃOS</div>
             <div id="gridAnciaos" style="display:grid; grid-template-columns:1fr 1fr; gap:4px"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. LOGINS E SENHAS (13 CARGOS)</div>
-            <div class="login-scroll">
+            <div class="col-header">3. LOGINS (13 CARGOS)</div>
+            <div style="max-height: 250px; overflow-y:auto; border:1px solid #334155; border-radius:8px">
                 <table class="login-table">
                     <thead><tr><th>CARGO</th><th>USER</th><th>SENHA</th></tr></thead>
                     <tbody id="corpoLogins"></tbody>
@@ -124,7 +130,7 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v510');
+    const dbRef = firebase.database().ref('iasd_estrela_v520');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{}, eventos:{} };
     let logado = false;
@@ -135,42 +141,37 @@
 
     dbRef.on('value', snap => { 
         db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{}, eventos:{} }; 
-        if(!db.logins || db.logins.length < 13) {
-            db.logins = cargos.map(c => ({c, u: c.toLowerCase().replace(" ",""), s:"123"}));
-        }
+        if(!db.logins || db.logins.length < 13) db.logins = cargos.map(c => ({c, u: c.toLowerCase().substring(0,4), s:"123"}));
         renderTodo(); 
     });
 
-    function abrirLogin() {
-        let u = prompt("Usuário:"), s = prompt("Senha:");
-        const f = db.logins.find(l => l.u === u && l.s === s);
-        if(f) { localStorage.setItem('iasd_logado', 'true'); ativarModoAdmin(); renderTodo(); } else alert("Erro!");
-    }
-
-    function ativarModoAdmin() {
-        logado = true;
-        document.getElementById('painelAdmin').style.display = 'block';
-        document.getElementById('btnEntrar').style.display = 'none';
-        document.getElementById('btnSair').style.display = 'block';
-    }
-
+    function ativarModoAdmin() { logado = true; document.getElementById('painelAdmin').style.display = 'block'; document.getElementById('btnEntrar').style.display = 'none'; document.getElementById('btnSair').style.display = 'block'; }
     function fazerLogout() { localStorage.removeItem('iasd_logado'); location.reload(); }
-    function abrirEventos() { document.getElementById('modalEventos').style.display = 'flex'; renderEventos(); }
+    function abrirLogin() { let u = prompt("User:"), s = prompt("Pass:"); const f = db.logins.find(l => l.u === u && l.s === s); if(f){ localStorage.setItem('iasd_logado', 'true'); ativarModoAdmin(); renderTodo(); } }
+
+    function abrirEventos() { document.getElementById('modalEventos').style.display = 'flex'; renderListaEventos(); }
     function fecharEventos() { document.getElementById('modalEventos').style.display = 'none'; }
 
     function salvarEvento() {
-        const id = Date.now();
-        const ev = { nome: document.getElementById('evNome').value.toUpperCase(), ini: document.getElementById('evIni').value, fim: document.getElementById('evFim').value };
-        if(ev.nome && ev.ini && ev.fim) { dbRef.child('eventos').child(id).set(ev); fecharEventos(); }
+        const nome = document.getElementById('evNome').value.toUpperCase();
+        const ini = document.getElementById('evIni').value;
+        const fim = document.getElementById('evFim').value;
+        if(nome && ini && fim) {
+            const id = Date.now();
+            dbRef.child('eventos').child(id).set({nome, ini, fim});
+            document.getElementById('evNome').value = "";
+            renderListaEventos();
+        } else { alert("Preencha todos os campos!"); }
     }
 
-    function excluirEvento(id) { if(confirm("Excluir evento?")) dbRef.child('eventos').child(id).remove(); }
+    function deletarEvento(id) { dbRef.child('eventos').child(id).remove(); renderListaEventos(); }
 
-    function renderEventos() {
-        const lista = document.getElementById('listaEventos'); lista.innerHTML = "";
+    function renderListaEventos() {
+        const lista = document.getElementById('listaEventos');
+        lista.innerHTML = "";
         for(let id in db.eventos) {
-            const e = db.eventos[id];
-            lista.innerHTML += `<div class="ev-item"><span>${e.nome} (${e.ini})</span><b style="color:red; cursor:pointer" onclick="excluirEvento('${id}')">X</b></div>`;
+            const ev = db.eventos[id];
+            lista.innerHTML += `<div class="ev-item"><span><b>${ev.nome}</b><br>${ev.ini} até ${ev.fim}</span><button onclick="deletarEvento('${id}')" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer">X</button></div>`;
         }
     }
 
@@ -180,44 +181,44 @@
         document.getElementById('txtAnciao').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "---"}`;
 
         document.getElementById('gridAnciaos').innerHTML = meses.map((n, i) => `<div><label style="font-size:7px">${n}</label><input style="background:#000; color:#fff; border:1px solid #334155; width:100%; font-size:0.7rem" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>`).join('');
-        
-        document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `<tr><td><input class="input-login" value="${l.c}" onchange="atuLog(${idx},'c',this.value)" ${!logado?'disabled':''}></td><td><input class="input-login" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td><td><input class="input-login" value="${l.s}" onchange="atuLog(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>`).join('');
+        document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `<tr><td><input class="cell-input" style="color:#fbbf24; text-align:left; padding-left:5px" value="${l.c}" onchange="atuLog(${idx},'c',this.value)" ${!logado?'disabled':''}></td><td><input class="cell-input" style="color:#fbbf24" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td><td><input class="cell-input" style="color:#fbbf24" value="${l.s}" onchange="atuLog(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>`).join('');
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
             let dt = new Date(2026, m, d);
             if([0,3,6].includes(dt.getDay())) {
-                let dStr = `${d}_${m+1}_2026`;
-                let compDate = `2026-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                let eventoDia = "";
+                const dStr = `${d}_${m+1}_2026`;
+                // Lógica de busca de evento
+                let tag = "";
+                const dataAtual = new Date(2026, m, d).getTime();
                 for(let id in db.eventos) {
-                    let ev = db.eventos[id];
-                    if(compDate >= ev.ini && compDate <= ev.fim) eventoDia = `<div class="tag-evento">${ev.nome}</div>`;
+                    const ev = db.eventos[id];
+                    const dIni = new Date(ev.ini + "T00:00:00").getTime();
+                    const dFim = new Date(ev.fim + "T23:59:59").getTime();
+                    if(dataAtual >= dIni && dataAtual <= dFim) tag = `<span class="tag-evento">${ev.nome}</span>`;
                 }
-                
+
                 let c = db.cores?.[dStr] || {id:'', nome:''};
                 let tr = document.createElement('tr'); if(c.id) tr.className = c.id;
-                tr.innerHTML = `<td onclick="${logado?`pintar('${dStr}')`:''}" style="cursor:pointer">${eventoDia}<div>${["DOM","","","QUA","","","SAB"][dt.getDay()]}</div><div style="font-size:8px">${c.nome||''}</div></td><td>${d}/${m+1}</td>` + 
+                tr.innerHTML = `<td onclick="${logado?`pintar('${dStr}')`:''}" style="cursor:pointer">${tag}<div>${["DOM","","","QUA","","","SAB"][dt.getDay()]}</div><div style="font-size:7px">${c.nome||''}</div></td><td>${d}/${m+1}</td>` + 
                 ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input class="cell-input" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)" ${!logado?'disabled':''}></td>`).join('');
                 corpo.appendChild(tr);
             }
         }
-
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `<div class="card-mes"><h4 style="color:var(--neon-blue); margin:0; font-size:0.7rem">${n}</h4><textarea style="width:100%; height:45px; background:transparent; color:#fff; border:none; font-size:0.7rem; resize:none" onchange="atuAnu(${i},this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>`).join('');
     }
 
-    // Pincéis e Funções de Atualização
     const mins = [['pessoal','M. Pessoal'],['mordomia','Mordomia'],['saude','Saúde'],['homens','M. Homens'],['familia','M. Família'],['adolescentes','Adol.'],['mulher','M. Mulher'],['musica','Música']];
-    document.getElementById('pinceis').innerHTML = mins.map(m => `<button class="btn-min" onclick="selPincel('${m[0]}','${m[1]}')">${m[1]}</button>`).join('') + `<button class="btn-min" style="color:red" onclick="selPincel('','')">LIMPAR</button>`;
+    document.getElementById('contPinceis').innerHTML = mins.map(m => `<button class="btn-min" onclick="selPincel('${m[0]}','${m[1]}')">${m[1]}</button>`).join('') + `<button class="btn-min" style="color:red" onclick="selPincel('','')">LIMPAR</button>`;
 
-    function atuAnc(i,v) { if(logado){ db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }}
+    function atuAnc(i,v) { if(logado){ if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }}
     function atuLog(idx, c, v) { if(logado){ db.logins[idx][c]=v; dbRef.child('logins').set(db.logins); }}
     function atu(d,c,v) { if(logado){ if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }}
     function atuAnu(i,v) { if(logado){ if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
     
     let pID = null, pNome = "";
-    function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); }
+    function selPincel(id, nome) { pID = id; pNome = nome; }
     function pintar(dStr) { if(logado && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
     function imprimir(t) { document.getElementById('mainBody').className = 'print-'+t; setTimeout(() => { window.print(); }, 200); }
 
