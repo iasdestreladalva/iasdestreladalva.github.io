@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v490</title>
+    <title>IASD Estrela Dalva - MASTER v500</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -31,27 +31,36 @@
         /* PAINEL GESTÃO RESTAURADO */
         #painelAdmin { display: none; background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
         .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 20px; }
-        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #1e293b; }
+        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon-blue); color: #000; }
         
-        .login-scroll { max-height: 300px; overflow-y: auto; background: #000; border-radius: 8px; border: 1px solid #334155; }
-        .login-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .login-table th { color: var(--accent-orange); text-align: left; padding: 5px; position: sticky; top: 0; background: #000; }
-        .input-login { background: transparent; border: none; color: #fbbf24; width: 95%; padding: 5px; }
+        /* TABELA DE LOGINS */
+        .login-scroll { max-height: 300px; overflow-y: auto; background: #000; border-radius: 8px; border: 1px solid #334155; padding: 5px; }
+        .login-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; color: #fbbf24; }
+        .login-table th { color: var(--accent-orange); text-align: left; padding: 5px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #000; }
+        .input-login { background: transparent; border: none; color: inherit; width: 100%; font-size: 0.75rem; padding: 4px; }
 
-        /* TABELA ESCALA */
+        /* ESCALA E ANUAL */
         #secaoEscala { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 30px; border: 2px solid #000; }
         table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
         table.escala th { background: var(--iasd-blue); color: white; padding: 10px; border: 1px solid #000; }
         table.escala td { border: 1px solid #000; text-align: center; font-weight: bold; height: 38px; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
+        #secaoAnual { margin-top: 40px; }
+        .grid-anual { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .card-mes { background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 8px; }
+        .area-anual { width: 100%; height: 60px; background: transparent; color: #fff; border: none; resize: none; font-size: 0.75rem; outline: none; }
+
+        /* REGRAS DE IMPRESSÃO */
         @media print {
             .toolbar, #painelAdmin, .modal-eventos { display: none !important; }
-            body { padding-top: 0 !important; }
+            body { padding-top: 0 !important; background: white !important; }
             body.print-escala #secaoAnual { display: none !important; }
             body.print-anual #secaoEscala { display: none !important; }
+            .card-mes { background: white !important; border: 1px solid #000 !important; color: black !important; }
+            .area-anual { color: black !important; }
         }
         
         /* CORES MINISTÉRIOS */
@@ -66,7 +75,7 @@
 <div class="toolbar">
     <div style="display: flex; gap: 8px; align-items: center;">
         <span style="font-weight: 900; color: var(--neon-blue); font-size: 0.8rem;">ESTRELA DALVA</span>
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid #444; padding:5px; border-radius:6px;"></select>
+        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid #444; padding:5px; border-radius:6px; font-weight:bold;"></select>
         <button class="btn-tool" onclick="imprimir('escala')">🖨️ ESCALA</button>
         <button class="btn-tool" onclick="imprimir('anual')">🗓️ ANUAL</button>
         <button class="btn-tool btn-eventos" onclick="abrirEventos()">🔥 EVENTOS</button>
@@ -106,11 +115,11 @@
             <button class="btn-min" style="border-color:var(--exit-red); color:var(--exit-red)" onclick="selPincel('','')">LIMPAR</button>
         </div>
         <div class="column">
-            <div class="col-header">2. ANCIÃOS RESPONSÁVEIS</div>
+            <div class="col-header">2. RESPONSÁVEL MENSAL</div>
             <div id="gridAnciaos" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. CONFIGURAÇÃO DE LOGINS</div>
+            <div class="col-header">3. LOGINS E SENHAS</div>
             <div class="login-scroll">
                 <table class="login-table">
                     <thead><tr><th>CARGO</th><th>USER</th><th>SENHA</th></tr></thead>
@@ -133,19 +142,19 @@
 </div>
 
 <div id="secaoAnual">
-    <h3 style="color: var(--accent-orange); margin: 20px 0 10px 0;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-    <div id="gridAnual" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
+    <h3 style="color: var(--accent-orange); margin-bottom: 15px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+    <div id="gridAnual" class="grid-anual"></div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v490');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v500');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let logado = false;
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-    const loginsPadrao = [{c:"Administrador", u:"admin", s:"iasd118"},{c:"Música", u:"musica", s:"mus123"},{c:"Diaconato", u:"diaconato", s:"diac123"}];
+    const loginsPadrao = [{c:"Admin", u:"admin", s:"iasd118"},{c:"Música", u:"musica", s:"mus123"},{c:"Diaconato", u:"diaconato", s:"diac123"},{c:"M. Mulher", u:"mulher", s:"mul123"}];
 
     window.onload = () => { if(localStorage.getItem('iasd_logado') === 'true') { ativarModoAdmin(); } };
 
@@ -159,7 +168,7 @@
         let u = prompt("Usuário:"); let s = prompt("Senha:");
         const f = db.logins.find(l => l.u === u && l.s === s);
         if(f) { localStorage.setItem('iasd_logado', 'true'); ativarModoAdmin(); renderTodo(); } 
-        else { alert("Incorreto!"); }
+        else { alert("Acesso negado."); }
     }
 
     function ativarModoAdmin() {
@@ -167,7 +176,7 @@
         document.getElementById('painelAdmin').style.display = 'block';
         document.getElementById('btnEntrar').style.display = 'none';
         document.getElementById('btnSair').style.display = 'block';
-        document.getElementById('statusUser').innerText = "Modo: Administrador";
+        document.getElementById('statusUser').innerText = "Conectado: Admin";
     }
 
     function fazerLogout() { localStorage.removeItem('iasd_logado'); location.reload(); }
@@ -179,17 +188,20 @@
         document.getElementById('txtMes').innerText = meses[m];
         document.getElementById('txtAnciao').innerText = `ANCIÃO: ${db.anciaos?.[m] || "---"}`;
 
+        // Render Anciãos
         document.getElementById('gridAnciaos').innerHTML = meses.map((n, i) => `
             <div><label style="font-size:8px; color:#94a3b8">${n}</label>
             <input style="background:#000; color:#fff; border:1px solid #334155; width:100%; font-size:0.7rem" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>
         `).join('');
 
+        // Render Logins
         document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
             <tr><td><input class="input-login" value="${l.c}" onchange="atuLog(${idx},'c',this.value)" ${!logado?'disabled':''}></td>
-            <td><input class="input-login" style="color:var(--neon-blue)" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td>
+            <td><input class="input-login" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td>
             <td><input class="input-login" value="${l.s}" onchange="atuLog(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>
         `).join('');
 
+        // Render Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -205,10 +217,12 @@
             }
         }
 
+        // Render Anual
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div style="background:#000; border:1px solid #334155; padding:8px; border-radius:8px;">
-            <h4 style="color:var(--neon-blue); margin:0; font-size:0.7rem">${n}</h4>
-            <textarea style="width:100%; height:40px; background:transparent; color:#fff; border:none; resize:none; font-size:0.7rem" onchange="atuAnu(${i}, this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>
+            <div class="card-mes">
+                <h4 style="color:var(--neon-blue); margin:0 0 5px 0; font-size:0.7rem">${n}</h4>
+                <textarea class="area-anual" onchange="atuAnu(${i}, this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea>
+            </div>
         `).join('');
     }
 
@@ -220,7 +234,11 @@
     let pID = null; let pNome = "";
     function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); if(id!=="") event.currentTarget.classList.add('active'); }
     function pintar(dStr) { if(logado && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
-    function imprimir(t) { document.getElementById('mainBody').className = 'print-'+t; setTimeout(() => { window.print(); }, 200); }
+    
+    function imprimir(t) { 
+        document.body.className = 'print-' + t; 
+        setTimeout(() => { window.print(); }, 300); 
+    }
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
