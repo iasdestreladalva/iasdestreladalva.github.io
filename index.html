@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v440</title>
+    <title>IASD Estrela Dalva - MASTER v450</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -20,6 +20,15 @@
         
         .btn-login { background: var(--neon-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-logout { background: var(--exit-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; }
+
+        /* MODAL DE LOGIN */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-card { background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid var(--neon-blue); width: 320px; text-align: center; }
+        .modal-card h2 { margin-top: 0; color: var(--neon-blue); font-size: 1.2rem; }
+        .input-group { position: relative; margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #94a3b8; }
+        .modal-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 10px; border-radius: 6px; box-sizing: border-box; }
+        .toggle-pass { position: absolute; right: 10px; top: 32px; cursor: pointer; color: var(--neon-blue); font-size: 1.2rem; }
 
         /* PAINEL DE GESTÃO */
         #painelAdmin { display: none; background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
@@ -44,7 +53,7 @@
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
         @media print {
-            .toolbar, #painelAdmin, h3 { display: none !important; }
+            .toolbar, #painelAdmin, .modal-overlay, h3 { display: none !important; }
             body { padding-top: 0 !important; background: white !important; }
         }
 
@@ -66,9 +75,25 @@
     <div style="display: flex; align-items: center; gap: 10px;">
         <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
         <div id="statusUser" style="font-size: 0.7rem; background: #374151; padding: 5px 10px; border-radius: 15px; border: 1px solid var(--neon-blue);">Modo: Visitante</div>
-        
-        <button id="btnEntrar" class="btn-login" onclick="fazerLogin()">ENTRAR PARA EDITAR</button>
+        <button id="btnEntrar" class="btn-login" onclick="abrirModal()">ENTRAR PARA EDITAR</button>
         <button id="btnSair" class="btn-logout" onclick="fazerLogout()">SAIR (LOGOUT)</button>
+    </div>
+</div>
+
+<div id="modalLogin" class="modal-overlay">
+    <div class="modal-card">
+        <h2>Acesso Restrito</h2>
+        <div class="input-group">
+            <label>Usuário</label>
+            <input type="text" id="userLogin" class="modal-input" placeholder="Digite seu usuário">
+        </div>
+        <div class="input-group">
+            <label>Senha</label>
+            <input type="password" id="passLogin" class="modal-input" placeholder="Digite sua senha">
+            <span class="toggle-pass" onclick="toggleSenha()">👁️</span>
+        </div>
+        <button class="btn-login" style="width:100%; margin-top:10px" onclick="fazerLogin()">ENTRAR</button>
+        <button onclick="fecharModal()" style="background:none; border:none; color:#94a3b8; margin-top:15px; cursor:pointer; font-size:0.8rem">Cancelar</button>
     </div>
 </div>
 
@@ -122,7 +147,7 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v440');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v450');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let logado = false;
@@ -133,9 +158,17 @@
         renderTodo(); 
     });
 
+    // CONTROLE DO MODAL
+    function abrirModal() { document.getElementById('modalLogin').style.display = 'flex'; }
+    function fecharModal() { document.getElementById('modalLogin').style.display = 'none'; }
+    function toggleSenha() {
+        const p = document.getElementById('passLogin');
+        p.type = p.type === 'password' ? 'text' : 'password';
+    }
+
     function fazerLogin() {
-        let u = prompt("Usuário:");
-        let s = prompt("Senha:");
+        const u = document.getElementById('userLogin').value;
+        const s = document.getElementById('passLogin').value;
         let f = db.logins.find(l => l.u === u && l.s === s);
         if(f) {
             logado = true;
@@ -143,8 +176,9 @@
             document.getElementById('painelAdmin').style.display = 'block';
             document.getElementById('btnEntrar').style.display = 'none';
             document.getElementById('btnSair').style.display = 'block';
+            fecharModal();
             renderTodo();
-        } else { alert("Dados incorretos!"); }
+        } else { alert("Usuário ou senha incorretos!"); }
     }
 
     function fazerLogout() {
