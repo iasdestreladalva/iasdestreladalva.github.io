@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v450</title>
+    <title>IASD Estrela Dalva - MASTER v460</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -15,46 +15,49 @@
             padding: 0 20px; z-index: 1000; border-bottom: 3px solid var(--neon-blue);
             gap: 15px; justify-content: space-between;
         }
-        .btn-print { background: #22c55e; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; }
+        .btn-print { background: #22c55e; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
         .btn-print.anual { background: #8b5cf6; }
-        
         .btn-login { background: var(--neon-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-logout { background: var(--exit-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; }
 
         /* MODAL DE LOGIN */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-card { background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid var(--neon-blue); width: 320px; text-align: center; }
-        .modal-card h2 { margin-top: 0; color: var(--neon-blue); font-size: 1.2rem; }
-        .input-group { position: relative; margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #94a3b8; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-card { background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid var(--neon-blue); width: 300px; }
+        .modal-card h2 { margin: 0 0 20px 0; color: var(--neon-blue); text-align: center; font-size: 1.2rem; }
+        .input-group { position: relative; margin-bottom: 15px; }
         .modal-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 10px; border-radius: 6px; box-sizing: border-box; }
-        .toggle-pass { position: absolute; right: 10px; top: 32px; cursor: pointer; color: var(--neon-blue); font-size: 1.2rem; }
+        .toggle-pass { position: absolute; right: 10px; top: 10px; cursor: pointer; color: var(--neon-blue); }
 
         /* PAINEL DE GESTÃO */
         #painelAdmin { display: none; background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
-        .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 25px; }
-        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
-        
-        .btn-min { width: 100%; padding: 8px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 20px; }
+        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #1e293b; }
+        .btn-min { width: 100%; padding: 8px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon-blue); color: #000; }
-
-        .login-scroll { max-height: 300px; overflow-y: auto; background: #000; border-radius: 8px; border: 1px solid #1e293b; }
-        .login-table { width: 100%; border-collapse: collapse; }
+        .login-scroll { max-height: 250px; overflow-y: auto; background: #000; border-radius: 6px; }
         .input-login { background: transparent; border: none; color: #fbbf24; width: 90%; padding: 5px; font-size: 0.8rem; }
 
         /* ESCALA */
         #secaoEscala { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 30px; border: 2px solid #000;}
-        .escala-header { color: #000; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+        .escala-header { color: #000; text-align: center; margin-bottom: 15px; }
         .anciao-title { font-size: 1.1rem; font-weight: 900; color: var(--iasd-blue); text-transform: uppercase; }
-        
-        table.escala { width: 100%; border-collapse: collapse !important; color: black; min-width: 1000px; border: 2px solid #000 !important; }
-        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 8px; border: 1px solid #000 !important; font-size: 0.7rem; }
-        table.escala td { border: 1px solid #000 !important; height: 35px; text-align: center; font-weight: bold; font-size: 0.8rem; }
+        table.escala { width: 100%; border-collapse: collapse !important; color: black; border: 2px solid #000 !important; }
+        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 8px; border: 1px solid #000 !important; }
+        table.escala td { border: 1px solid #000 !important; text-align: center; font-weight: bold; height: 35px; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
+        /* REGRAS DE IMPRESSÃO - CORREÇÃO CRÍTICA AQUI */
         @media print {
             .toolbar, #painelAdmin, .modal-overlay, h3 { display: none !important; }
-            body { padding-top: 0 !important; background: white !important; }
+            body { padding: 0 !important; margin: 0 !important; background: white !important; }
+            /* Se for imprimir escala, esconde o anual */
+            body.print-escala #secaoAnual { display: none !important; }
+            /* Se for imprimir anual, esconde a escala */
+            body.print-anual #secaoEscala { display: none !important; }
+            
+            #secaoEscala, #secaoAnual { border: none !important; width: 100% !important; }
+            .card-mes { border: 1px solid #000 !important; page-break-inside: avoid; }
+            textarea { color: black !important; }
         }
 
         /* CORES MINISTÉRIOS */
@@ -64,43 +67,38 @@
         tr.mulher td { background-color: #fce7f3 !important; } tr.musica td { background-color: #ede9fe !important; }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
 <div class="toolbar">
-    <div style="display: flex; gap: 8px;">
-        <button class="btn-print" onclick="imprimir('escala')">🖨️ ESCALA</button>
-        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ ANUAL</button>
+    <div style="display: flex; gap: 10px;">
+        <button class="btn-print" onclick="imprimir('escala')">🖨️ IMPRIMIR ESCALA</button>
+        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ IMPRIMIR ANUAL</button>
     </div>
-    
     <div style="display: flex; align-items: center; gap: 10px;">
         <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
-        <div id="statusUser" style="font-size: 0.7rem; background: #374151; padding: 5px 10px; border-radius: 15px; border: 1px solid var(--neon-blue);">Modo: Visitante</div>
-        <button id="btnEntrar" class="btn-login" onclick="abrirModal()">ENTRAR PARA EDITAR</button>
-        <button id="btnSair" class="btn-logout" onclick="fazerLogout()">SAIR (LOGOUT)</button>
+        <div id="statusUser" style="font-size: 0.7rem; background: #374151; padding: 5px 10px; border-radius: 15px;">Modo: Visitante</div>
+        <button id="btnEntrar" class="btn-login" onclick="abrirModal()">ENTRAR</button>
+        <button id="btnSair" class="btn-logout" onclick="fazerLogout()">SAIR</button>
     </div>
 </div>
 
 <div id="modalLogin" class="modal-overlay">
     <div class="modal-card">
-        <h2>Acesso Restrito</h2>
+        <h2>Acesso</h2>
+        <div class="input-group"><input type="text" id="userLogin" class="modal-input" placeholder="Usuário"></div>
         <div class="input-group">
-            <label>Usuário</label>
-            <input type="text" id="userLogin" class="modal-input" placeholder="Digite seu usuário">
-        </div>
-        <div class="input-group">
-            <label>Senha</label>
-            <input type="password" id="passLogin" class="modal-input" placeholder="Digite sua senha">
+            <input type="password" id="passLogin" class="modal-input" placeholder="Senha">
             <span class="toggle-pass" onclick="toggleSenha()">👁️</span>
         </div>
-        <button class="btn-login" style="width:100%; margin-top:10px" onclick="fazerLogin()">ENTRAR</button>
-        <button onclick="fecharModal()" style="background:none; border:none; color:#94a3b8; margin-top:15px; cursor:pointer; font-size:0.8rem">Cancelar</button>
+        <button class="btn-login" style="width:100%" onclick="fazerLogin()">LOGAR</button>
+        <p onclick="fecharModal()" style="text-align:center; cursor:pointer; font-size:0.8rem; color:#94a3b8; margin-top:15px">Cancelar</p>
     </div>
 </div>
 
 <div id="painelAdmin">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Pincéis</div>
+            <div class="col-header">Pincéis</div>
             <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
             <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
             <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
@@ -109,17 +107,15 @@
             <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
             <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
             <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-min" style="border-color:var(--exit-red); color:var(--exit-red)" onclick="selPincel('','')">LIMPAR COR</button>
+            <button class="btn-min" style="border-color:var(--exit-red); color:var(--exit-red)" onclick="selPincel('','')">LIMPAR</button>
         </div>
         <div class="column">
-            <div class="col-header">2. Anciãos Mensais</div>
+            <div class="col-header">Anciãos</div>
             <div id="gridAnciaos" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. Logins e Senhas</div>
-            <div class="login-scroll">
-                <table class="login-table"><tbody id="corpoLogins"></tbody></table>
-            </div>
+            <div class="col-header">Logins</div>
+            <div class="login-scroll"><table style="width:100%"><tbody id="corpoLogins"></tbody></table></div>
         </div>
     </div>
 </div>
@@ -130,11 +126,7 @@
         <div style="font-weight: bold; color: #000;">ESCALA DE <span id="txtMes">...</span></div>
     </div>
     <table class="escala">
-        <thead>
-            <tr>
-                <th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
-            </tr>
-        </thead>
+        <thead><tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr></thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 </div>
@@ -147,29 +139,29 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v450');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v460');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let logado = false;
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
+    // Logins Padrão de Recuperação
+    const loginsPadrao = [{c:"Admin", u:"admin", s:"iasd118"}];
+
     dbRef.on('value', snap => { 
-        db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} }; 
+        db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao, anual:{} }; 
+        if(!db.logins || db.logins.length === 0) db.logins = loginsPadrao;
         renderTodo(); 
     });
 
-    // CONTROLE DO MODAL
     function abrirModal() { document.getElementById('modalLogin').style.display = 'flex'; }
     function fecharModal() { document.getElementById('modalLogin').style.display = 'none'; }
-    function toggleSenha() {
-        const p = document.getElementById('passLogin');
-        p.type = p.type === 'password' ? 'text' : 'password';
-    }
+    function toggleSenha() { const p = document.getElementById('passLogin'); p.type = p.type === 'password' ? 'text' : 'password'; }
 
     function fazerLogin() {
         const u = document.getElementById('userLogin').value;
         const s = document.getElementById('passLogin').value;
-        let f = db.logins.find(l => l.u === u && l.s === s);
+        const f = db.logins.find(l => l.u === u && l.s === s);
         if(f) {
             logado = true;
             document.getElementById('statusUser').innerText = "Logado: " + f.c;
@@ -178,7 +170,7 @@
             document.getElementById('btnSair').style.display = 'block';
             fecharModal();
             renderTodo();
-        } else { alert("Usuário ou senha incorretos!"); }
+        } else { alert("Login ou senha incorretos!"); }
     }
 
     function fazerLogout() {
@@ -200,7 +192,7 @@
             <input style="background:#000; color:#fff; border:1px solid #334155; width:100%; font-size:0.7rem" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>
         `).join('');
 
-        document.getElementById('corpoLogins').innerHTML = (db.logins || []).map((l, idx) => `
+        document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
             <tr><td><input class="input-login" value="${l.c}" onchange="atuLog(${idx},'c',this.value)" ${!logado?'disabled':''}></td>
             <td><input class="input-login" style="color:var(--neon-blue)" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td>
             <td><input class="input-login" value="${l.s}" onchange="atuLog(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>
@@ -222,7 +214,7 @@
         }
 
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div style="background:#000; border:1px solid #334155; padding:8px; border-radius:8px;">
+            <div class="card-mes" style="background:#000; border:1px solid #334155; padding:8px; border-radius:8px;">
             <h4 style="color:var(--neon-blue); margin:0; font-size:0.6rem">${n}</h4>
             <textarea style="width:100%; height:40px; background:transparent; color:#fff; border:none; resize:none; font-size:0.7rem" onchange="atuAnu(${i}, this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>
         `).join('');
@@ -234,9 +226,19 @@
     function atuAnu(i,v) { if(logado){ if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
     
     let pID = null; let pNome = "";
-    function selPincel(id, nome) { pID = id; pNome = nome; }
+    function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); if(id!=="") event.currentTarget.classList.add('active'); }
     function pintar(dStr) { if(logado && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
-    function imprimir(t) { document.body.classList.add('print-'+t); window.print(); document.body.classList.remove('print-'+t); }
+    
+    // CORREÇÃO DOS BOTÕES DE IMPRESSÃO
+    function imprimir(tipo) {
+        const corpo = document.getElementById('mainBody');
+        corpo.classList.remove('print-escala', 'print-anual'); // Limpa seleções anteriores
+        corpo.classList.add('print-' + tipo); // Adiciona a seleção atual
+        
+        setTimeout(() => { 
+            window.print(); 
+        }, 300);
+    }
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
