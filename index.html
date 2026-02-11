@@ -1,51 +1,51 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v430</title>
+    <title>IASD Estrela Dalva - MASTER v440</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --neon-blue: #38bdf8; --accent-orange: #f97316; }
+        :root { --iasd-blue: #002b5c; --bg-dark: #0f172a; --neon-blue: #38bdf8; --accent-orange: #f97316; --exit-red: #ef4444; }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; padding-top: 80px; }
         
         /* BARRA FIXA */
         .toolbar { 
-            position: fixed; top: 0; left: 0; right: 0; height: 65px; 
+            position: fixed; top: 0; left: 0; right: 0; height: 70px; 
             background: #111827; display: flex; align-items: center; 
             padding: 0 20px; z-index: 1000; border-bottom: 3px solid var(--neon-blue);
             gap: 15px; justify-content: space-between;
         }
-        .btn-print { background: #22c55e; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+        .btn-print { background: #22c55e; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; }
         .btn-print.anual { background: #8b5cf6; }
-        .btn-exit { background: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        
+        .btn-login { background: var(--neon-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-logout { background: var(--exit-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; }
 
         /* PAINEL DE GESTÃO */
-        #painelAdmin { display: none; } /* Escondido por padrão até logar */
-        .admin-main-box { background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
+        #painelAdmin { display: none; background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
         .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 25px; }
         .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         
-        .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
-        .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
+        .btn-min { width: 100%; padding: 8px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .btn-min.active { background: var(--neon-blue); color: #000; }
 
-        .login-scroll { max-height: 350px; overflow-y: auto; background: #000; border-radius: 8px; }
+        .login-scroll { max-height: 300px; overflow-y: auto; background: #000; border-radius: 8px; border: 1px solid #1e293b; }
         .login-table { width: 100%; border-collapse: collapse; }
-        .login-table td { padding: 5px; border-bottom: 1px solid #111827; }
-        .input-login { background: transparent; border: none; color: #fbbf24; width: 90%; font-size: 0.8rem; }
+        .input-login { background: transparent; border: none; color: #fbbf24; width: 90%; padding: 5px; font-size: 0.8rem; }
 
         /* ESCALA */
         #secaoEscala { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 30px; border: 2px solid #000;}
         .escala-header { color: #000; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
-        .anciao-title { font-size: 1.2rem; font-weight: 900; color: var(--iasd-blue); text-transform: uppercase; margin: 5px 0; }
+        .anciao-title { font-size: 1.1rem; font-weight: 900; color: var(--iasd-blue); text-transform: uppercase; }
         
         table.escala { width: 100%; border-collapse: collapse !important; color: black; min-width: 1000px; border: 2px solid #000 !important; }
-        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 10px; border: 1px solid #000 !important; }
-        table.escala td { border: 1px solid #000 !important; height: 40px; text-align: center; font-weight: bold; }
+        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 8px; border: 1px solid #000 !important; font-size: 0.7rem; }
+        table.escala td { border: 1px solid #000 !important; height: 35px; text-align: center; font-weight: bold; font-size: 0.8rem; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
         @media print {
-            .toolbar, .admin-main-box, #btnLogar { display: none !important; }
-            body { padding-top: 0; }
+            .toolbar, #painelAdmin, h3 { display: none !important; }
+            body { padding-top: 0 !important; background: white !important; }
         }
 
         /* CORES MINISTÉRIOS */
@@ -58,40 +58,40 @@
 <body>
 
 <div class="toolbar">
-    <div style="display: flex; gap: 10px;">
-        <button class="btn-print" onclick="imprimir('escala')">🖨️ IMPRIMIR ESCALA</button>
-        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ IMPRIMIR ANUAL</button>
+    <div style="display: flex; gap: 8px;">
+        <button class="btn-print" onclick="imprimir('escala')">🖨️ ESCALA</button>
+        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ ANUAL</button>
     </div>
-    <div style="display: flex; align-items: center; gap: 15px;">
+    
+    <div style="display: flex; align-items: center; gap: 10px;">
         <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
-        <div id="statusUser" style="font-size: 0.8rem; background: #374151; padding: 5px 12px; border-radius: 15px; border: 1px solid var(--neon-blue);">Visitante</div>
-        <button id="btnLogar" class="btn-print" style="background:var(--neon-blue); color:#000" onclick="login()">ENTRAR</button>
-        <button id="btnSair" class="btn-exit" style="display:none" onclick="logout()">SAIR</button>
+        <div id="statusUser" style="font-size: 0.7rem; background: #374151; padding: 5px 10px; border-radius: 15px; border: 1px solid var(--neon-blue);">Modo: Visitante</div>
+        
+        <button id="btnEntrar" class="btn-login" onclick="fazerLogin()">ENTRAR PARA EDITAR</button>
+        <button id="btnSair" class="btn-logout" onclick="fazerLogout()">SAIR (LOGOUT)</button>
     </div>
 </div>
 
-<div id="painelAdmin" class="admin-main-box">
+<div id="painelAdmin">
     <div class="admin-grid">
         <div class="column">
             <div class="col-header">1. Pincéis</div>
-            <div id="botoesPinceis">
-                <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
-                <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
-                <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
-                <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
-                <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
-                <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
-                <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
-                <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-                <button class="btn-min" style="border-color:#ef4444; color:#ef4444" onclick="selPincel('','')">LIMPAR</button>
-            </div>
+            <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
+            <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
+            <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
+            <button class="btn-min" onclick="selPincel('homens','M. Homens')">M. Homens</button>
+            <button class="btn-min" onclick="selPincel('familia','M. Família')">M. Família</button>
+            <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
+            <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
+            <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
+            <button class="btn-min" style="border-color:var(--exit-red); color:var(--exit-red)" onclick="selPincel('','')">LIMPAR COR</button>
         </div>
         <div class="column">
-            <div class="col-header">2. Responsáveis</div>
-            <div id="gridResponsaveis" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"></div>
+            <div class="col-header">2. Anciãos Mensais</div>
+            <div id="gridAnciaos" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. Logins (Editáveis)</div>
+            <div class="col-header">3. Logins e Senhas</div>
             <div class="login-scroll">
                 <table class="login-table"><tbody id="corpoLogins"></tbody></table>
             </div>
@@ -101,14 +101,13 @@
 
 <div id="secaoEscala">
     <div class="escala-header">
-        <div id="anciaoDestaque" class="anciao-title">ANCIÃO RESPONSÁVEL: ...</div>
-        <div style="font-weight: bold; font-size: 1.1rem; color: #000;">ESCALA DO MÊS DE <span id="mesDestaque">...</span></div>
+        <div id="txtAnciao" class="anciao-title">ANCIÃO RESPONSÁVEL: ...</div>
+        <div style="font-weight: bold; color: #000;">ESCALA DE <span id="txtMes">...</span></div>
     </div>
     <table class="escala">
         <thead>
             <tr>
-                <th style="width: 140px;">DIA</th><th style="width: 80px;">DATA</th>
-                <th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+                <th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th>
             </tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
@@ -116,14 +115,14 @@
 </div>
 
 <div id="secaoAnual">
-    <h3 style="color: var(--accent-orange);">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-    <div id="gridAnual" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;"></div>
+    <h3 style="color: var(--accent-orange); font-size: 0.9rem;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+    <div id="gridAnual" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v430');
+    const dbRef = firebase.database().ref('iasd_estrela_final_v440');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let logado = false;
@@ -134,49 +133,45 @@
         renderTodo(); 
     });
 
-    function login() {
-        let user = prompt("Usuário:");
-        let pass = prompt("Senha:");
-        // Busca na lista de logins do banco
-        let found = db.logins.find(l => l.u === user && l.s === pass);
-        if(found) {
+    function fazerLogin() {
+        let u = prompt("Usuário:");
+        let s = prompt("Senha:");
+        let f = db.logins.find(l => l.u === u && l.s === s);
+        if(f) {
             logado = true;
-            document.getElementById('statusUser').innerText = found.c;
+            document.getElementById('statusUser').innerText = "Logado: " + f.c;
             document.getElementById('painelAdmin').style.display = 'block';
-            document.getElementById('btnLogar').style.display = 'none';
+            document.getElementById('btnEntrar').style.display = 'none';
             document.getElementById('btnSair').style.display = 'block';
             renderTodo();
-        } else { alert("Login incorreto!"); }
+        } else { alert("Dados incorretos!"); }
     }
 
-    function logout() {
+    function fazerLogout() {
         logado = false;
-        document.getElementById('statusUser').innerText = "Visitante";
+        document.getElementById('statusUser').innerText = "Modo: Visitante";
         document.getElementById('painelAdmin').style.display = 'none';
-        document.getElementById('btnLogar').style.display = 'block';
+        document.getElementById('btnEntrar').style.display = 'block';
         document.getElementById('btnSair').style.display = 'none';
         renderTodo();
     }
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        document.getElementById('mesDestaque').innerText = meses[m];
-        document.getElementById('anciaoDestaque').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "(NÃO DEFINIDO)"}`;
+        document.getElementById('txtMes').innerText = meses[m];
+        document.getElementById('txtAnciao').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "---"}`;
 
-        // Responsáveis
-        document.getElementById('gridResponsaveis').innerHTML = meses.map((n, i) => `
-            <div><label style="font-size:9px; color:#94a3b8">${n}</label>
-            <input class="input-dark" style="background:#000; color:#fff; width:100%" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>
+        document.getElementById('gridAnciaos').innerHTML = meses.map((n, i) => `
+            <div><label style="font-size:8px; color:#94a3b8">${n}</label>
+            <input style="background:#000; color:#fff; border:1px solid #334155; width:100%; font-size:0.7rem" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>
         `).join('');
 
-        // Logins
         document.getElementById('corpoLogins').innerHTML = (db.logins || []).map((l, idx) => `
-            <tr><td><input class="input-login" value="${l.c}" onchange="atuLogin(${idx},'c',this.value)" ${!logado?'disabled':''}></td>
-            <td><input class="input-login" style="color:var(--neon-blue)" value="${l.u}" onchange="atuLogin(${idx},'u',this.value)" ${!logado?'disabled':''}></td>
-            <td><input class="input-login" value="${l.s}" onchange="atuLogin(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>
+            <tr><td><input class="input-login" value="${l.c}" onchange="atuLog(${idx},'c',this.value)" ${!logado?'disabled':''}></td>
+            <td><input class="input-login" style="color:var(--neon-blue)" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td>
+            <td><input class="input-login" value="${l.s}" onchange="atuLog(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>
         `).join('');
 
-        // Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasMes = new Date(2026, m+1, 0).getDate();
         for(let d=1; d<=diasMes; d++) {
@@ -184,33 +179,30 @@
             if([0,3,6].includes(dt.getDay())) {
                 let dStr = `${d}_${m+1}_2026`;
                 let c = db.cores?.[dStr] || {id:'', nome:''};
-                let tr = document.createElement('tr');
-                if(c.id) tr.className = c.id;
-                tr.innerHTML = `<td onclick="${logado?`pintar('${dStr}')`:''}"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:9px">${c.nome||''}</div></td>
+                let tr = document.createElement('tr'); if(c.id) tr.className = c.id;
+                tr.innerHTML = `<td onclick="${logado?`pintar('${dStr}')`:''}" style="cursor:pointer"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:8px">${c.nome||''}</div></td>
                 <td>${d}/${m+1}</td>` + 
                 ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input class="cell-input" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)" ${!logado?'disabled':''}></td>`).join('');
                 corpo.appendChild(tr);
             }
         }
 
-        // Anual
         document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div style="background:#000; border:1px solid #334155; padding:10px; border-radius:8px;">
-            <h4 style="color:var(--neon-blue); margin:0 0 5px 0; font-size:0.7rem">${n}</h4>
-            <textarea style="width:100%; height:50px; background:transparent; color:#fff; border:none; resize:none" onchange="atuAnual(${i}, this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>
+            <div style="background:#000; border:1px solid #334155; padding:8px; border-radius:8px;">
+            <h4 style="color:var(--neon-blue); margin:0; font-size:0.6rem">${n}</h4>
+            <textarea style="width:100%; height:40px; background:transparent; color:#fff; border:none; resize:none; font-size:0.7rem" onchange="atuAnu(${i}, this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>
         `).join('');
     }
 
-    // Funções de Banco de Dados
-    function atuAnc(i,v) { if(logado) { if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }}
-    function atuLogin(idx, campo, valor) { if(logado) { db.logins[idx][campo] = valor; dbRef.child('logins').set(db.logins); }}
-    function atu(d,c,v) { if(logado) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }}
-    function atuAnual(i,v) { if(logado) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
+    function atuAnc(i,v) { if(logado){ if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }}
+    function atuLog(idx, c, v) { if(logado){ db.logins[idx][c]=v; dbRef.child('logins').set(db.logins); }}
+    function atu(d,c,v) { if(logado){ if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }}
+    function atuAnu(i,v) { if(logado){ if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
     
     let pID = null; let pNome = "";
     function selPincel(id, nome) { pID = id; pNome = nome; }
     function pintar(dStr) { if(logado && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
-    function imprimir(tipo) { document.body.classList.add('print-' + tipo); window.print(); document.body.classList.remove('print-' + tipo); }
+    function imprimir(t) { document.body.classList.add('print-'+t); window.print(); document.body.classList.remove('print-'+t); }
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
