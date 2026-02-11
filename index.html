@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - MASTER v470</title>
+    <title>IASD Estrela Dalva - FINAL</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -13,56 +13,41 @@
             position: fixed; top: 0; left: 0; right: 0; height: 70px; 
             background: #111827; display: flex; align-items: center; 
             padding: 0 20px; z-index: 1000; border-bottom: 3px solid var(--neon-blue);
-            gap: 15px; justify-content: space-between;
+            gap: 10px; justify-content: space-between;
         }
-        .btn-print { background: #22c55e; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
-        .btn-print.anual { background: #8b5cf6; }
+        .btn-tool { background: transparent; color: white; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
+        .btn-eventos { border-color: var(--accent-orange); color: #fff; background: rgba(249, 115, 22, 0.1); }
         .btn-login { background: var(--neon-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-logout { background: var(--exit-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; }
+        .btn-logout { background: var(--exit-red); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; }
 
-        /* MODAL DE LOGIN */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-card { background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid var(--neon-blue); width: 300px; }
-        .modal-card h2 { margin: 0 0 20px 0; color: var(--neon-blue); text-align: center; font-size: 1.2rem; }
-        .input-group { position: relative; margin-bottom: 15px; }
-        .modal-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 10px; border-radius: 6px; box-sizing: border-box; }
-        .toggle-pass { position: absolute; right: 10px; top: 10px; cursor: pointer; color: var(--neon-blue); }
+        /* MODAL EVENTOS (CONFORME IMAGEM) */
+        .modal-eventos { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
+        .card-eventos { background: #1e293b; padding: 30px; border-radius: 15px; border: 2px solid var(--accent-orange); width: 600px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .card-eventos h2 { color: #f87171; text-align: center; margin-top: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; }
+        .ev-label { display: block; color: var(--neon-blue); font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; margin-top: 15px; }
+        .ev-input { width: 100%; background: #000; border: 1px solid #334155; color: #fff; padding: 12px; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
+        .ev-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-criar-ev { width: 100%; background: #f87171; color: white; border: none; padding: 15px; border-radius: 8px; margin-top: 25px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-concluir { width: 100%; background: #ff3b00; color: white; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem; }
 
-        /* PAINEL DE GESTÃO RESTAURADO */
+        /* PAINEL GESTÃO */
         #painelAdmin { display: none; background: #0f172a; border: 2px solid var(--accent-orange); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
         .admin-grid { display: grid; grid-template-columns: 220px 300px 1fr; gap: 25px; }
-        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
-        
+        .col-header { color: var(--neon-blue); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
         .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; border: 1.5px solid var(--neon-blue); color: var(--neon-blue); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
-        .btn-min.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
+        .btn-min.active { background: var(--neon-blue); color: #000; }
+        .login-scroll { max-height: 350px; overflow-y: auto; background: #000; border-radius: 8px; padding: 5px; border: 1px solid #334155; }
+        .login-table { width: 100%; border-collapse: collapse; color: #fbbf24; font-size: 0.8rem; }
+        .login-table th { color: var(--accent-orange); text-align: left; padding: 5px; font-size: 0.7rem; }
 
-        .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .input-dark { background: #000; border: 1px solid #334155; color: #fff; padding: 6px; border-radius: 4px; width: 100%; font-size: 0.8rem; }
-
-        .login-scroll { max-height: 350px; overflow-y: auto; background: #000; border-radius: 8px; border: 1px solid #1e293b; padding: 5px; }
-        .login-table { width: 100%; border-collapse: collapse; }
-        .login-table th { text-align: left; font-size: 0.7rem; color: var(--accent-orange); padding-bottom: 8px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #000; }
-        .input-login { background: transparent; border: 1px solid transparent; color: #fbbf24; width: 95%; padding: 5px; border-radius: 4px; font-size: 0.8rem; }
-        .input-login.user { color: var(--neon-blue); font-weight: bold; }
-
-        /* ESCALA */
-        #secaoEscala { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 30px; border: 2px solid #000;}
-        .escala-header { color: #000; text-align: center; margin-bottom: 15px; }
-        .anciao-title { font-size: 1.1rem; font-weight: 900; color: var(--iasd-blue); text-transform: uppercase; }
-        table.escala { width: 100%; border-collapse: collapse !important; color: black; border: 2px solid #000 !important; min-width: 1000px; }
-        table.escala th { background: var(--iasd-blue) !important; color: white !important; padding: 10px; border: 1px solid #000 !important; font-size: 0.75rem; }
-        table.escala td { border: 1px solid #000 !important; text-align: center; font-weight: bold; height: 40px; }
+        /* TABELA ESCALA */
+        #secaoEscala { background: white; border-radius: 8px; padding: 15px; overflow-x: auto; margin-bottom: 30px; border: 2px solid #000; }
+        table.escala { width: 100%; border-collapse: collapse; color: black; min-width: 1000px; }
+        table.escala th { background: var(--iasd-blue); color: white; padding: 10px; border: 1px solid #000; font-size: 0.75rem; }
+        table.escala td { border: 1px solid #000; text-align: center; font-weight: bold; height: 40px; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: transparent; text-transform: uppercase; }
 
-        /* REGRAS DE IMPRESSÃO */
-        @media print {
-            .toolbar, #painelAdmin, .modal-overlay, h3 { display: none !important; }
-            body { padding: 0 !important; margin: 0 !important; background: white !important; }
-            body.print-escala #secaoAnual { display: none !important; }
-            body.print-anual #secaoEscala { display: none !important; }
-            .card-mes { border: 1px solid #000 !important; background: white !important; color: black !important; }
-            textarea { color: black !important; border: 1px solid #ccc !important; }
-        }
+        @media print { .toolbar, #painelAdmin, .modal-eventos, .modal-overlay { display: none !important; } body { padding-top: 0; } }
 
         /* CORES MINISTÉRIOS */
         tr.pessoal td { background-color: #e0f2fe !important; } tr.mordomia td { background-color: #fef3c7 !important; }
@@ -71,38 +56,53 @@
         tr.mulher td { background-color: #fce7f3 !important; } tr.musica td { background-color: #ede9fe !important; }
     </style>
 </head>
-<body id="mainBody">
+<body>
 
 <div class="toolbar">
-    <div style="display: flex; gap: 10px;">
-        <button class="btn-print" onclick="imprimir('escala')">🖨️ IMPRIMIR ESCALA</button>
-        <button class="btn-print anual" onclick="imprimir('anual')">🗓️ IMPRIMIR ANUAL</button>
+    <div style="display: flex; gap: 8px; align-items: center;">
+        <span style="font-weight: bold; color: var(--neon-blue); margin-right: 10px; font-size: 0.9rem;">IASD ESTRELA DALVA</span>
+        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid #444; padding:8px; border-radius:6px; font-weight:bold;"></select>
+        <button class="btn-tool" onclick="imprimir('anual')">🗓️ ANUAL</button>
+        <button class="btn-tool btn-eventos" onclick="abrirEventos()">🔥 EVENTOS</button>
+        <button class="btn-tool">⚙️ TESOURARIA</button>
+        <button class="btn-tool">📊 MISSIONÁRIO</button>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <select id="selMes" onchange="renderTodo()" style="background:#000; color:#fff; border:1px solid var(--neon-blue); padding:8px; border-radius:6px; font-weight:bold;"></select>
-        <div id="statusUser" style="font-size: 0.7rem; background: #374151; padding: 5px 10px; border-radius: 15px; border: 1px solid var(--neon-blue);">Modo: Visitante</div>
-        <button id="btnEntrar" class="btn-login" onclick="abrirModal()">ENTRAR</button>
-        <button id="btnSair" class="btn-logout" onclick="fazerLogout()">SAIR</button>
+    <div style="display: flex; gap: 10px;">
+        <button id="btnEntrar" class="btn-login" onclick="abrirLogin()">ENTRAR</button>
+        <button id="btnSair" class="btn-logout" onclick="fazerLogout()">🚪 SAIR</button>
     </div>
 </div>
 
-<div id="modalLogin" class="modal-overlay">
-    <div class="modal-card">
-        <h2>Acesso Administrativo</h2>
-        <div class="input-group"><input type="text" id="userLogin" class="modal-input" placeholder="Usuário"></div>
-        <div class="input-group">
-            <input type="password" id="passLogin" class="modal-input" placeholder="Senha">
-            <span class="toggle-pass" onclick="toggleSenha()">👁️</span>
+<div id="modalEventos" class="modal-eventos">
+    <div class="card-eventos">
+        <h2>Criar Semana de Oração / Evento</h2>
+        
+        <label class="ev-label">NOME DO EVENTO (EX: SEMANA DE ORAÇÃO)</label>
+        <input type="text" class="ev-input" placeholder="Opcional">
+
+        <div class="ev-row">
+            <div>
+                <label class="ev-label">DATA INÍCIO</label>
+                <input type="text" class="ev-input" placeholder="dd/mm/aaaa">
+            </div>
+            <div>
+                <label class="ev-label">DATA FIM</label>
+                <input type="text" class="ev-input" placeholder="dd/mm/aaaa">
+            </div>
         </div>
-        <button class="btn-login" style="width:100%" onclick="fazerLogin()">ACESSAR</button>
-        <p onclick="fecharModal()" style="text-align:center; cursor:pointer; font-size:0.8rem; color:#94a3b8; margin-top:15px">Cancelar</p>
+
+        <label class="ev-label">HORÁRIO (OPCIONAL)</label>
+        <input type="text" class="ev-input" placeholder="--:--">
+
+        <button class="btn-criar-ev">Criar Evento no Período</button>
+        <button class="btn-concluir" onclick="fecharEventos()">CONCLUÍDO</button>
     </div>
 </div>
 
 <div id="painelAdmin">
     <div class="admin-grid">
         <div class="column">
-            <div class="col-header">1. Pincéis Ministérios</div>
+            <div class="col-header">1. MINISTÉRIO DO DIA</div>
             <button class="btn-min" onclick="selPincel('pessoal','M. Pessoal')">M. Pessoal</button>
             <button class="btn-min" onclick="selPincel('mordomia','Mordomia')">Mordomia</button>
             <button class="btn-min" onclick="selPincel('saude','Saúde')">Saúde</button>
@@ -111,17 +111,17 @@
             <button class="btn-min" onclick="selPincel('adolescentes','Adolescentes')">Adolescentes</button>
             <button class="btn-min" onclick="selPincel('mulher','M. Mulher')">M. Mulher</button>
             <button class="btn-min" onclick="selPincel('musica','Música')">Música</button>
-            <button class="btn-min" style="border-color:var(--exit-red); color:var(--exit-red)" onclick="selPincel('','')">LIMPAR SELEÇÃO</button>
+            <button class="btn-min" style="border-color:var(--exit-red); color:var(--exit-red)" onclick="selPincel('','')">LIMPAR</button>
         </div>
         <div class="column">
-            <div class="col-header">2. Anciãos Responsáveis</div>
-            <div id="gridAnciaos" class="resp-grid"></div>
+            <div class="col-header">2. RESPONSÁVEL MENSAL</div>
+            <div id="gridAnciaos" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"></div>
         </div>
         <div class="column">
-            <div class="col-header">3. Logins e Senhas (Editáveis)</div>
+            <div class="col-header">3. CONTROLE DE LOGINS E SENHAS</div>
             <div class="login-scroll">
                 <table class="login-table">
-                    <thead><tr><th>CARGO</th><th>USER</th><th>SENHA</th></tr></thead>
+                    <thead><tr><th>MINISTÉRIO</th><th>USUÁRIO</th><th>SENHA</th></tr></thead>
                     <tbody id="corpoLogins"></tbody>
                 </table>
             </div>
@@ -130,9 +130,9 @@
 </div>
 
 <div id="secaoEscala">
-    <div class="escala-header">
-        <div id="txtAnciao" class="anciao-title">ANCIÃO RESPONSÁVEL: ...</div>
-        <div style="font-weight: bold; color: #000; font-size: 1.1rem;">ESCALA DE <span id="txtMes">...</span></div>
+    <div style="text-align:center; color:#000; margin-bottom:15px">
+        <div id="txtAnciao" style="font-size:1.2rem; font-weight:900; color:var(--iasd-blue)">ANCIÃO: ---</div>
+        <div style="font-weight:bold">ESCALA DE <span id="txtMes">---</span></div>
     </div>
     <table class="escala">
         <thead><tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr></thead>
@@ -140,78 +140,46 @@
     </table>
 </div>
 
-<div id="secaoAnual">
-    <h3 style="color: var(--accent-orange); font-size: 0.9rem; margin-top: 30px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-    <div id="gridAnual" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;"></div>
-</div>
-
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_final_v470');
+    const dbRef = firebase.database().ref('iasd_estrela_dalva_final');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} };
     let logado = false;
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
-    const loginsPadrao = [
-        {c:"Administrador", u:"admin", s:"iasd118"}, {c:"Gerência", u:"ger", s:"ger123"},
-        {c:"Diaconato", u:"diaconato", s:"diac123"}, {c:"Música", u:"musica", s:"mus123"},
-        {c:"Sonoplastia", u:"sonoplastia", s:"sono123"}, {c:"M. Mulher", u:"mulher", s:"mulher123"},
-        {c:"Escola Sabatina", u:"sabatina", s:"sab123"}, {c:"M. Pessoal", u:"pessoal", s:"mp123"},
-        {c:"Mordomia", u:"mordomia", s:"mord123"}, {c:"Saúde", u:"saude", s:"saude123"},
-        {c:"M. Homens", u:"homens", s:"homem123"}, {c:"M. Família", u:"familia", s:"fam123"},
-        {c:"Adolescentes", u:"adolescentes", s:"adol123"}
-    ];
+    dbRef.on('value', snap => { db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:[], anual:{} }; renderTodo(); });
 
-    dbRef.on('value', snap => { 
-        db = snap.val() || { escalas:{}, cores:{}, anciaos:{}, logins:loginsPadrao, anual:{} }; 
-        if(!db.logins || db.logins.length < 13) db.logins = loginsPadrao;
-        renderTodo(); 
-    });
+    function abrirEventos() { document.getElementById('modalEventos').style.display = 'flex'; }
+    function fecharEventos() { document.getElementById('modalEventos').style.display = 'none'; }
 
-    function abrirModal() { document.getElementById('modalLogin').style.display = 'flex'; }
-    function fecharModal() { document.getElementById('modalLogin').style.display = 'none'; }
-    function toggleSenha() { const p = document.getElementById('passLogin'); p.type = p.type === 'password' ? 'text' : 'password'; }
-
-    function fazerLogin() {
-        const u = document.getElementById('userLogin').value;
-        const s = document.getElementById('passLogin').value;
-        const f = db.logins.find(l => l.u === u && l.s === s);
-        if(f) {
+    function abrirLogin() {
+        let u = prompt("Usuário:"); let s = prompt("Senha:");
+        if(u === "admin" && s === "iasd118") {
             logado = true;
-            document.getElementById('statusUser').innerText = "Logado: " + f.c;
             document.getElementById('painelAdmin').style.display = 'block';
             document.getElementById('btnEntrar').style.display = 'none';
             document.getElementById('btnSair').style.display = 'block';
-            fecharModal();
             renderTodo();
-        } else { alert("Dados incorretos!"); }
+        } else { alert("Acesso Negado"); }
     }
 
-    function fazerLogout() {
-        logado = false;
-        document.getElementById('statusUser').innerText = "Modo: Visitante";
-        document.getElementById('painelAdmin').style.display = 'none';
-        document.getElementById('btnEntrar').style.display = 'block';
-        document.getElementById('btnSair').style.display = 'none';
-        renderTodo();
-    }
+    function fazerLogout() { location.reload(); }
 
     function renderTodo() {
         const m = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('txtMes').innerText = meses[m];
-        document.getElementById('txtAnciao').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "---"}`;
+        document.getElementById('txtAnciao').innerText = `ANCIÃO: ${db.anciaos?.[m] || "---"}`;
 
         document.getElementById('gridAnciaos').innerHTML = meses.map((n, i) => `
             <div><label style="font-size:9px; color:#94a3b8">${n}</label>
-            <input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>
+            <input style="background:#000; color:#fff; border:1px solid #334155; width:100%; padding:5px" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>
         `).join('');
 
-        document.getElementById('corpoLogins').innerHTML = db.logins.map((l, idx) => `
-            <tr><td><input class="input-login" value="${l.c}" onchange="atuLog(${idx},'c',this.value)" ${!logado?'disabled':''}></td>
-            <td><input class="input-login user" value="${l.u}" onchange="atuLog(${idx},'u',this.value)" ${!logado?'disabled':''}></td>
-            <td><input class="input-login" value="${l.s}" onchange="atuLog(${idx},'s',this.value)" ${!logado?'disabled':''}></td></tr>
+        const loginsExemplo = ["Administrador","Gerência","Diaconato","Música","Sonoplastia","M. Mulher","Escola Sabatina","M. Pessoal","Mordomia","Saúde","M. Homens","M. Família","Adolescentes"];
+        document.getElementById('corpoLogins').innerHTML = loginsExemplo.map(cargo => `
+            <tr><td style="padding:5px">${cargo}</td><td>---</td><td><input style="background:transparent; border:none; color:#fbbf24; width:100%" value="******" disabled></td></tr>
         `).join('');
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
@@ -222,29 +190,21 @@
                 let dStr = `${d}_${m+1}_2026`;
                 let c = db.cores?.[dStr] || {id:'', nome:''};
                 let tr = document.createElement('tr'); if(c.id) tr.className = c.id;
-                tr.innerHTML = `<td onclick="${logado?`pintar('${dStr}')`:''}" style="cursor:pointer"><div>${["DOMINGO","","","QUARTA","","","SÁBADO"][dt.getDay()]}</div><div style="font-size:9px; color:#555">${c.nome||''}</div></td>
+                tr.innerHTML = `<td onclick="${logado?`pintar('${dStr}')`:''}" style="cursor:pointer"><div>${["DOM","","","QUA","","","SAB"][dt.getDay()]}</div><div style="font-size:8px">${c.nome||''}</div></td>
                 <td>${d}/${m+1}</td>` + 
                 ["sa","pr","mu","lo","so","re","di"].map(col => `<td><input class="cell-input" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atu('${dStr}','${col}',this.value)" ${!logado?'disabled':''}></td>`).join('');
                 corpo.appendChild(tr);
             }
         }
-
-        document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `
-            <div class="card-mes" style="background:#000; border:1px solid #334155; padding:10px; border-radius:10px;">
-            <h4 style="color:var(--neon-blue); margin:0 0 5px 0; font-size:0.75rem">${n}</h4>
-            <textarea style="width:100%; height:60px; background:transparent; color:#fff; border:none; resize:none; font-size:0.8rem; outline:none" onchange="atuAnu(${i}, this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>
-        `).join('');
     }
 
     function atuAnc(i,v) { if(logado){ if(!db.anciaos) db.anciaos={}; db.anciaos[i]=v.toUpperCase(); dbRef.child('anciaos').set(db.anciaos); }}
-    function atuLog(idx, c, v) { if(logado){ db.logins[idx][c]=v; dbRef.child('logins').set(db.logins); }}
     function atu(d,c,v) { if(logado){ if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }}
-    function atuAnu(i,v) { if(logado){ if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
     
     let pID = null; let pNome = "";
     function selPincel(id, nome) { pID = id; pNome = nome; document.querySelectorAll('.btn-min').forEach(b => b.classList.remove('active')); if(id!=="") event.currentTarget.classList.add('active'); }
     function pintar(dStr) { if(logado && pID!==null){ if(!db.cores) db.cores={}; if(pID==="") delete db.cores[dStr]; else db.cores[dStr]={id:pID, nome:pNome}; dbRef.child('cores').set(db.cores); }}
-    function imprimir(t) { document.getElementById('mainBody').classList.remove('print-escala','print-anual'); document.getElementById('mainBody').classList.add('print-'+t); setTimeout(() => { window.print(); }, 300); }
+    function imprimir(t) { window.print(); }
 
     const sM = document.getElementById('selMes');
     if(!sM.options.length) meses.forEach((m,i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
