@@ -1,7 +1,7 @@
 <!DOCTYPE html> <html lang="pt-br"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v690 ESTÁVEL</title>
+    <title>IASD Estrela Dalva - v700 GESTÃO PRO</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
@@ -37,30 +37,28 @@
         #secaoEscala { background: white; border-radius: 10px; padding: 20px; overflow-x: auto; margin-bottom: 30px; border: 3px solid #000; color: #000; }
         table.escala { width: 100%; border-collapse: collapse; min-width: 1000px; }
         table.escala th { background: var(--iasd-blue); color: white; padding: 10px; border: 1px solid #000; font-size: 0.7rem; }
-        table.escala td { border: 1px solid #000; text-align: center; font-weight: 900; height: 55px; }
+        table.escala td { border: 1px solid #000; text-align: center; font-weight: 900; height: 55px; position: relative; }
         .cell-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: 900; background: transparent; text-transform: uppercase; }
 
         .min-label { display: block; font-size: 0.55rem; color: #555; margin-top: 2px; }
-        .ev-label { background: #ef4444; color: white; font-size: 0.6rem; padding: 2px; border-radius: 2px; display: block; }
+        .ev-label { background: #ef4444; color: white; font-size: 0.6rem; padding: 2px; border-radius: 2px; display: block; position: relative; }
+        .btn-del-mini { background: red; color: white; border: none; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; cursor: pointer; position: absolute; top: -5px; right: -5px; }
 
-        /* CLASSES DE CORES */
-        .pessoal td { background-color: #e0f2fe !important; } 
-        .mordomia td { background-color: #fef3c7 !important; }
-        .saude td { background-color: #dcfce7 !important; }
-        .mulher td { background-color: #fce7f3 !important; }
-        .jovens td { background-color: #fef9c3 !important; }
+        /* CORES */
+        .pessoal td { background-color: #e0f2fe !important; } .mordomia td { background-color: #fef3c7 !important; }
+        .saude td { background-color: #dcfce7 !important; } .mulher td { background-color: #fce7f3 !important; }
         .musica td { background-color: #ede9fe !important; }
 
-        .grid-tes { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .thumb-tes { width: 120px; height: 120px; border: 2px solid #22c55e; border-radius: 8px; cursor: pointer; object-fit: cover; }
+        .grid-tes { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .thumb-cont { position: relative; width: 120px; height: 120px; }
+        .thumb-tes { width: 100%; height: 100%; border: 2px solid #22c55e; border-radius: 8px; cursor: pointer; object-fit: cover; }
+        
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; }
-        #overlay img { max-width: 90%; max-height: 90%; }
 
         @media print { 
-            .navbar, #painelAdmin, #overlay, #containerTesouraria { display: none !important; } 
+            .navbar, #painelAdmin, #overlay, #containerTesouraria, .btn-del-mini { display: none !important; } 
             .print-escala #secaoAnual { display: none !important; }
             .print-anual #secaoEscala { display: none !important; }
-            body { padding: 0; }
         }
     </style>
 </head>
@@ -126,29 +124,39 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v690');
+    const dbRef = firebase.database().ref('iasd_estrela_v700');
 
     let db = { escalas:{}, cores:{}, anciaos:{}, anual:{}, eventos:{}, tesouraria:{}, logins:{} };
     let logado = false; let pAtivo = ""; let pNome = "";
     const meses = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
+    const loginsIniciais = [
+        {c:'Música',u:'musica',s:'mus123'},{c:'Sonoplastia',u:'sono',s:'sono123'},
+        {c:'M. Mulher',u:'mulher',s:'mul123'},{c:'M. Pessoal',u:'pessoal',s:'mp123'},
+        {c:'Mordomia',u:'mordomia',s:'mord123'},{c:'Recepcão',u:'recepcao',s:'rec123'},
+        {c:'Diaconato',u:'diaconato',s:'dia123'},{c:'Escola Sabatina',u:'sabatina',s:'sab123'}
+    ];
+
     function fazerLogin() {
         let u = prompt("Usuário:"), s = prompt("Senha:");
-        let auth = false; if(u==='admin' && s==='123') auth = true;
-        if(db.logins) { for(let k in db.logins) { if(db.logins[k].u === u && db.logins[k].s === s) auth = true; } }
-        
+        let auth = (u==='admin' && s==='123');
+        if(db.logins) { Object.values(db.logins).forEach(l => { if(l.u===u && l.s===s) auth=true; }); }
         if(auth) {
             logado = true;
-            document.getElementById('btnEntrar').style.display = 'none';
-            document.getElementById('btnSair').style.display = 'block';
-            document.getElementById('painelAdmin').style.display = 'block';
-            document.getElementById('btnEventos').style.display = 'block';
-            if(u === 'admin' || u === 'gerente') document.getElementById('btnTesouraria').style.display = 'block';
+            document.getElementById('btnEntrar').style.display='none';
+            document.getElementById('btnSair').style.display='block';
+            document.getElementById('painelAdmin').style.display='block';
+            document.getElementById('btnEventos').style.display='block';
+            if(u==='admin' || u==='gerente') document.getElementById('btnTesouraria').style.display='block';
             renderTodo();
-        } else { alert("Acesso negado"); }
+        } else { alert("Login Inválido"); }
     }
 
-    dbRef.on('value', snap => { db = snap.val() || db; renderTodo(); });
+    dbRef.on('value', snap => { 
+        db = snap.val() || db; 
+        if(!db.logins) { dbRef.child('logins').set(loginsIniciais); }
+        renderTodo(); 
+    });
 
     function renderTodo() {
         try {
@@ -156,12 +164,12 @@
             document.getElementById('txtMes').innerText = meses[m];
             document.getElementById('txtAnciao').innerText = `ANCIÃO RESPONSÁVEL: ${db.anciaos?.[m] || "---"}`;
 
-            const mins = [['pessoal','M. Pessoal'],['mordomia','Mordomia'],['saude','Saúde'],['mulher','M. Mulher'],['jovens','Jovens'],['musica','Música'],['diaconato','Diaconato'],['recepcao','Recepção'],['aventur','Aventur.'],['desbrav','Desbrav.']];
-            document.getElementById('contPinceis').innerHTML = mins.map(x => `<button class="btn-min ${pAtivo==x[0]?'active':''}" onclick="selP('${x[0]}','${x[1]}')">${x[1]}</button>`).join('') + `<button class="btn-min btn-limpar" onclick="selP('','')">LIMPAR</button>`;
+            const mins = [['pessoal','M. Pessoal'],['mordomia','Mordomia'],['saude','Saúde'],['mulher','M. Mulher'],['jovens','Jovens'],['musica','Música']];
+            document.getElementById('contPinceis').innerHTML = mins.map(x => `<button class="btn-min ${pAtivo===x[0]?'active':''}" onclick="selP('${x[0]}','${x[1]}')">${x[1]}</button>`).join('') + `<button class="btn-min btn-limpar" onclick="selP('','')">LIMPAR</button>`;
 
             const corpoLog = document.getElementById('corpoLogins'); corpoLog.innerHTML = "";
-            for(let i=0; i<15; i++) {
-                const l = db.logins?.[i] || {c:'', u:'', s:''};
+            for(let i=0; i<12; i++) {
+                const l = (db.logins && db.logins[i]) ? db.logins[i] : {c:'', u:'', s:''};
                 corpoLog.innerHTML += `<tr><td><input value="${l.c}" onchange="atuLog(${i},'c',this.value)" ${!logado?'disabled':''}></td><td><input value="${l.u}" onchange="atuLog(${i},'u',this.value)" ${!logado?'disabled':''}></td><td><input value="${l.s}" onchange="atuLog(${i},'s',this.value)" ${!logado?'disabled':''}></td></tr>`;
             }
 
@@ -171,22 +179,34 @@
                 const dt = new Date(2026, m, d);
                 const dStr = `${d}_${m+1}_2026`;
                 const dISO = `2026-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                let ev = null; if(db.eventos) { for(let id in db.eventos) { if(dISO >= db.eventos[id].i && dISO <= db.eventos[id].f) ev = db.eventos[id]; } }
                 
-                if([0,3,6].includes(dt.getDay()) || ev) {
+                let evId = null; let evData = null;
+                if(db.eventos) { Object.keys(db.eventos).forEach(id => { if(dISO >= db.eventos[id].i && dISO <= db.eventos[id].f) { evId = id; evData = db.eventos[id]; }}); }
+
+                if([0,3,6].includes(dt.getDay()) || evId) {
                     const tr = document.createElement('tr');
                     const cInfo = db.cores?.[dStr];
                     if(cInfo) tr.className = (typeof cInfo === 'string') ? cInfo : cInfo.id;
-                    tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer">${ev?`<span class="ev-label">${ev.n}</span>`:''} ${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][dt.getDay()]} ${cInfo?.n?`<span class="min-label">${cInfo.n}</span>`:''}</td><td>${d}/${m+1}</td>` + 
+                    tr.innerHTML = `<td onclick="pintar('${dStr}')" style="cursor:pointer">
+                        ${evId ? `<span class="ev-label">${evData.n} ${logado?`<button class="btn-del-mini" onclick="delEv('${evId}')">X</button>`:''}</span>` : ''}
+                        ${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][dt.getDay()]} 
+                        ${cInfo?.n ? `<span class="min-label">${cInfo.n}</span>` : ''}
+                    </td><td>${d}/${m+1}</td>` + 
                     ["sa","pr","mu","lo","so","re","di"].map(c => `<td><input class="cell-input" value="${db.escalas?.[dStr]?.[c]||''}" onchange="atuE('${dStr}','${c}',this.value)" ${!logado?'disabled':''}></td>`).join('');
                     corpo.appendChild(tr);
                 }
             }
             document.getElementById('gridAnciaos').innerHTML = meses.map((n,i) => `<div><label style="font-size:0.5rem">${n}</label><br><input class="resp-input" value="${db.anciaos?.[i]||''}" onchange="atuAnc(${i},this.value)" ${!logado?'disabled':''}></div>`).join('');
             document.getElementById('gridAnual').innerHTML = meses.map((n, i) => `<div style="background:#111827;padding:8px;border-radius:6px;border-left:3px solid var(--accent-orange)"><h6>${n}</h6><textarea style="width:100%;height:40px;background:transparent;color:white;border:none;font-size:0.7rem" onchange="atuAnu(${i},this.value)" ${!logado?'disabled':''}>${db.anual?.[i]||''}</textarea></div>`).join('');
+            
             const gTes = document.getElementById('gridTes'); gTes.innerHTML = "";
-            const tri = Math.floor(m/3)+1; if(db.tesouraria?.[tri]) { db.tesouraria[tri].forEach(a => { gTes.innerHTML += `<img src="${a.url}" class="thumb-tes" onclick="verFull('${a.url}')">`; }); }
-        } catch(e) { console.log("Aguardando DB..."); }
+            const tri = Math.floor(m/3)+1;
+            if(db.tesouraria?.[tri]) {
+                db.tesouraria[tri].forEach((a, idx) => {
+                    gTes.innerHTML += `<div class="thumb-cont"><img src="${a.url}" class="thumb-tes" onclick="verFull('${a.url}')">${logado?`<button class="btn-del-mini" onclick="delTes(${tri},${idx})">X</button>`:''}</div>`;
+                });
+            }
+        } catch(e) { console.error(e); }
     }
 
     function selP(id, n) { pAtivo = id; pNome = n; renderTodo(); }
@@ -194,7 +214,9 @@
     function atuLog(i,c,v) { if(logado) { if(!db.logins) db.logins={}; if(!db.logins[i]) db.logins[i]={c:'',u:'',s:''}; db.logins[i][c]=v; dbRef.child('logins').child(i).set(db.logins[i]); }}
     function atuAnc(i,v) { if(logado) dbRef.child('anciaos').child(i).set(v.toUpperCase()); }
     function atuE(d,c,v) { if(logado) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.child('escalas').set(db.escalas); }}
-    function atuAnu(i,v) { if(logado) { if(!db.anual) db.anual={}; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
+    function atuAnu(i,v) { if(logado) { if(!db.anual) db.anual={}; if(!db.anual[i]) db.anual[i]=''; db.anual[i]=v; dbRef.child('anual').set(db.anual); }}
+    function delEv(id) { if(confirm("Apagar evento?")) dbRef.child('eventos').child(id).remove(); }
+    function delTes(tri, idx) { if(confirm("Apagar arquivo?")) { db.tesouraria[tri].splice(idx,1); dbRef.child('tesouraria').child(tri).set(db.tesouraria[tri]); }}
     function abrirEv() { let n=prompt("Evento:"), i=prompt("Início (AAAA-MM-DD):"), f=prompt("Fim:"); if(n&&i&&f) dbRef.child('eventos').child(Date.now()).set({n:n.toUpperCase(), i:i, f:f}); }
     function abrirTes() { let f=document.createElement('input'); f.type='file'; f.onchange=(e)=>{ const r=new FileReader(); r.onload=(ev)=>{ const tri=Math.floor(parseInt(document.getElementById('selMes').value)/3)+1; if(!db.tesouraria) db.tesouraria={}; const arqs=db.tesouraria[tri]||[]; arqs.push({url:ev.target.result}); dbRef.child('tesouraria').child(tri).set(arqs); }; r.readAsDataURL(e.target.files[0]); }; f.click(); }
     function verFull(u) { const o=document.getElementById('overlay'); o.innerHTML=`<img src="${u}">`; o.style.display='flex'; }
