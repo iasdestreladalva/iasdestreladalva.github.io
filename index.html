@@ -259,4 +259,84 @@
     }
 
     function salvarEventoEspecial() {
-        const ini = document.getElementById('evtInicio').value, fim = document.getElem
+        const ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value, hora = document.getElementById('evtHora').value, nome = document.getElementById('evtNome').value;
+        if(!ini || !fim) return alert("Datas!");
+        if(!db.eventos_especiais) db.eventos_especiais = {};
+        let dAtu = new Date(ini + "T12:00:00"), dFim = new Date(fim + "T12:00:00");
+        while(dAtu <= dFim) { db.eventos_especiais[dAtu.toISOString().split('T')[0]] = { user: curUser, hora: hora, nome: nome.toUpperCase() }; dAtu.setDate(dAtu.getDate() + 1); }
+        save(); abrirPopEventos();
+        document.getElementById('evtNome').value = "";
+    }
+
+    function ampliarArquivo(src) {
+        const ehPDF = src.includes("application/pdf");
+        const img = document.getElementById('imgExpandida'), pdf = document.getElementById('pdfExpandido');
+        if(ehPDF) { img.style.display = 'none'; pdf.src = src; pdf.style.display = 'block'; }
+        else { pdf.style.display = 'none'; img.src = src; img.style.display = 'block'; }
+        document.getElementById('zoomOverlay').style.display = 'flex';
+    }
+    function fecharZoom() { document.getElementById('zoomOverlay').style.display = 'none'; }
+
+    function renderArquivosPublicos() {
+        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos');
+        grid.innerHTML = ""; if(!db.docs?.[m] || db.docs[m].length === 0) { grid.innerHTML = "<p style='color:gray'>Sem comprovantes.</p>"; return; }
+        db.docs[m].forEach(doc => {
+            const ehPDF = doc.data.includes("application/pdf");
+            let htmlDoc = `<div style="text-align:center;">`;
+            if(!ehPDF) htmlDoc += `<img src="${doc.data}" class="thumb-doc" onclick="ampliarArquivo('${doc.data}')">`;
+            else htmlDoc += `<div style="position:relative; width:100%; height:140px; overflow:hidden; border-radius:8px; border:2px solid #334155; cursor:pointer;" onclick="ampliarArquivo('${doc.data}')"><iframe src="${doc.data}#toolbar=0" style="width:200%; height:280px; border:none; transform:scale(0.5); transform-origin:0 0; pointer-events:none;"></iframe></div>`;
+            htmlDoc += `<p style="font-size:0.6rem; margin-top:5px; color:white;">${doc.nome}</p></div>`; grid.innerHTML += htmlDoc;
+        });
+    }
+
+    function abrirPopEventos() {
+        document.getElementById('popEventos').style.display='flex';
+        const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = "";
+        Object.keys(db.eventos_especiais || {}).sort().forEach(dt => {
+            let ev = db.eventos_especiais[dt];
+            if(ev.user === curUser || ['admin','ger'].includes(curUser)) {
+                lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:4px; background:#1e293b; padding:6px; border-radius:4px; font-size:0.75rem;"><span>📅 ${dt.split('-').reverse().slice(0,2).join('/')} - ${ev.nome || 'Evento'}</span><button onclick="delete db.eventos_especiais['${dt}']; save(); abrirPopEventos();" style="background:red; color:white; border:none; padding:1px 8px; border-radius:3px;">X</button></div>`;
+            }
+        });
+    }
+
+    function renderAdmin() {
+        const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
+        ["pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica"].forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
+        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
+        MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i] || ''}" onchange="if(!db.anciaos) db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr style="border-bottom:1px solid #222;"><td style="padding:5px; color:var(--gold);">${MINS[k]}</td><td style="padding:5px; color:var(--neon);">${k}</td><td style="padding:5px;"><input class="input-dark" value="${db.senhas[k]}" onchange="db.senhas['${k}']=this.value; save();"></td></tr>`; });
+    }
+
+    function abrirPop() {
+        const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios');
+        c.innerHTML = ""; if(!db.mis_v3) db.mis_v3 = {}; if(!db.mis_v3[m]) db.mis_v3[m] = ["0","0","0","0","0"];
+        ["Encontros missionários", "Classes Bíblicas", "Pessoas recebendo estudos", "Pessoas ministrando estudos", "Duplas missionárias"].forEach((l, i) => { c.innerHTML += `<div style="margin-bottom:15px; border-left:3px solid var(--orange); padding-left:10px;"><label style="display:block; font-size:0.75rem; color:var(--gold);">${l}</label><input type="number" class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}] = this.value; save();"></div>`; });
+        document.getElementById('popOverlay').style.display='flex';
+    }
+
+    function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
+    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; renderAdminDocs(); }
+
+    function renderAdminDocs() {
+        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos');
+        lista.innerHTML = ""; if(!db.docs?.[m]) return;
+        db.docs[m].forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin:5px 0; background:#1e293b; padding:8px; border-radius:4px;"><small style="color:white;">${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="background:red; color:white; border:none; padding:2px 8px; cursor:pointer;">X</button></div>`; });
+    }
+
+    function uploadArquivo() {
+        const file = document.getElementById('fileInput').files[0]; if(!file) return;
+        const r = new FileReader(); r.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result }); save(); renderAdminDocs(); }; r.readAsDataURL(file);
+    }
+
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minSelecionado; save(); } }
+    function atuCel(d, c, v) { if(!db.escalas) db.escalas = {}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+
+    const sM = document.getElementById('selMes');
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+</script>
+</body>
+</html>
