@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v102.46</title>
+    <title>IASD Estrela Dalva - v102.47</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -33,7 +33,7 @@
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 85vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-        .media-item { background: #1a2635; padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .media-item { background: #1a2635; padding: 12px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--neon); }
     </style>
 </head>
 <body>
@@ -86,10 +86,10 @@
         </div>
     </div>
 </div>
-<div id="popMusica" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon);text-align:center;">🎶 ARQUIVOS DE MÚSICA</h3>
-    <select id="selSemanaMusica" class="input-dark" style="margin-bottom:10px;"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option></select>
-    <input type="file" id="fileMusica" accept="audio/mp3,video/mp4" style="display:none" onchange="uploadMusica()"><button onclick="document.getElementById('fileMusica').click()" class="btn-min">FAZER UPLOAD (MP3/MP4)</button>
-    <div id="listaMusicas" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMusica').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popMusica" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon);text-align:center;">🎶 MÚSICAS DA SEMANA</h3>
+    <p style="font-size: 0.7rem; color: #aaa; text-align: center;">Máximo 8 arquivos. Limpeza automática: Domingo às 21h.</p>
+    <input type="file" id="fileMusica" accept="audio/mp3,video/mp4" style="display:none" onchange="uploadMusica()"><button id="btnSubirMusica" onclick="document.getElementById('fileMusica').click()" class="btn-min">FAZER UPLOAD (MP3/MP4)</button>
+    <div id="listaMusicas" style="margin-top:15px; max-height:400px; overflow-y:auto;"></div><button onclick="document.getElementById('popMusica').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="document.getElementById('popOverlay').style.display='none'" class="btn-fechar">CONCLUÍDO</button></div></div>
@@ -99,13 +99,13 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v102_46');
+    const dbRef = firebase.database().ref('iasd_estrela_v102_47');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
-    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas: {} };
+    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas_semanais: {}, ultima_limpeza: "" };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     window.minAtivo = null;
 
@@ -116,27 +116,39 @@
             db.anciaos = {0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert"};
             dbRef.set(db);
         }
+        checkLimpezaDomingo();
         renderTodo();
     });
 
     function save() { dbRef.set(db); }
 
+    function checkLimpezaDomingo() {
+        if(!['admin','ger'].includes(curUser)) return;
+        const agora = new Date();
+        const dia = agora.getDay(); // 0 é domingo
+        const hora = agora.getHours();
+        const dataHoje = agora.toLocaleDateString();
+
+        if(dia === 0 && hora >= 21 && db.ultima_limpeza !== dataHoje) {
+            db.musicas_semanais = {};
+            db.ultima_limpeza = dataHoje;
+            save();
+        }
+    }
+
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const anc = db.anciaos?.[mIdx] || '---';
-        document.getElementById('headerTitulo').innerText = `ESCALA ${MESES[mIdx]} - RESPONSÁVEL: ${anc}`;
+        document.getElementById('headerTitulo').innerText = `ESCALA ${MESES[mIdx]} - RESPONSÁVEL: ${db.anciaos?.[mIdx] || '---'}`;
         document.getElementById('mesTesouraria').innerText = MESES[mIdx];
 
         const eAdmin = ['admin','ger'].includes(curUser);
         if(eAdmin) { document.getElementById('adminPanel').style.display='block'; document.getElementById('btnTesourariaAdmin').style.display='block'; renderAdmin(); }
         
         if(curUser !== 'visitante') {
-            document.getElementById('tesourariaPublica').style.display = 'block';
-            document.getElementById('btnSair').style.display='block';
-            document.getElementById('btnAcesso').style.display='none';
-            document.getElementById('btnEventos').style.display='block';
+            document.getElementById('btnSair').style.display='block'; document.getElementById('btnAcesso').style.display='none'; document.getElementById('btnEventos').style.display='block';
             if(['musica','sonoplastia','admin','ger'].includes(curUser)) document.getElementById('btnMusica').style.display='block';
             if(['admin','ger','pessoal'].includes(curUser)) document.getElementById('btnDados').style.display='block';
+            if(['admin','ger','diaconato'].includes(curUser)) document.getElementById('tesourariaPublica').style.display = 'block';
         }
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
@@ -154,40 +166,33 @@
             if([0,3,6].includes(sem) || idEv) {
                 let tr = `<tr class="${idEv?'row-especial':'row-'+minID}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</b><br><small>${idEv?.nome || MINS[minID] || ''}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let edit = (curUser !== 'visitante');
-                    tr += `<td><input ${edit?'':'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.7rem;" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
+                    tr += `<td><input ${curUser !== 'visitante'?'':'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.7rem;" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
                 }); corpo.innerHTML += tr + "</tr>";
             }
         }
         renderAnualFixo(); renderArquivosPublicos(); updateChart(mIdx);
     }
 
-    // LÓGICA DE MÚSICA
     function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; renderListaMusica(); }
     function uploadMusica() {
         const file = document.getElementById('fileMusica').files[0];
-        const sem = document.getElementById('selSemanaMusica').value;
-        const mIdx = document.getElementById('selMes').value;
-        const path = `${mIdx}_${sem}`;
-        if(!db.musicas) db.musicas = {}; if(!db.musicas[path]) db.musicas[path] = [];
-        if(db.musicas[path].length >= 8) { alert("Limite de 8 arquivos por semana atingido!"); return; }
+        if(!db.musicas_semanais) db.musicas_semanais = [];
+        if(db.musicas_semanais.length >= 8) { alert("Limite de 8 arquivos atingido!"); return; }
         const r = new FileReader(); r.onload = function(e) {
-            db.musicas[path].push({ nome: file.name, data: e.target.result, tipo: file.type }); save(); renderListaMusica();
+            db.musicas_semanais.push({ nome: file.name, data: e.target.result }); save(); renderListaMusica();
         }; r.readAsDataURL(file);
     }
     function renderListaMusica() {
-        const sem = document.getElementById('selSemanaMusica').value;
-        const mIdx = document.getElementById('selMes').value;
-        const path = `${mIdx}_${sem}`;
         const lista = document.getElementById('listaMusicas'); lista.innerHTML = "";
-        const podeApagar = ['sonoplastia','admin','ger'].includes(curUser);
-        if(db.musicas?.[path]) {
-            db.musicas[path].forEach((m, i) => {
+        const podeApagar = ['admin','ger'].includes(curUser);
+        const podeBaixar = ['sonoplastia','admin','ger'].includes(curUser);
+        if(db.musicas_semanais) {
+            db.musicas_semanais.forEach((m, i) => {
                 lista.innerHTML += `<div class="media-item">
-                    <span style="font-size:0.7rem; color:white;">${m.nome}</span>
-                    <div style="display:flex; gap:5px;">
-                        <a href="${m.data}" download="${m.nome}" style="color:var(--neon); text-decoration:none; font-size:0.75rem;">BAIXAR</a>
-                        ${podeApagar ? `<button onclick="db.musicas['${path}'].splice(${i},1); save(); renderListaMusica();" style="background:red; color:white; border:none; cursor:pointer;">X</button>` : ''}
+                    <span style="font-size:0.75rem;">${m.nome}</span>
+                    <div style="display:flex; gap:10px;">
+                        ${podeBaixar ? `<a href="${m.data}" download="${m.nome}" style="color:var(--neon); font-size:0.7rem; font-weight:bold; text-decoration:none;">BAIXAR</a>` : ''}
+                        ${podeApagar ? `<button onclick="db.musicas_semanais.splice(${i},1); save(); renderListaMusica();" style="background:red; color:white; border:none; padding:2px 8px; border-radius:4px; cursor:pointer;">X</button>` : ''}
                     </div>
                 </div>`;
             });
