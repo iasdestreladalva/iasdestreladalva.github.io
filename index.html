@@ -97,26 +97,38 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v102_48');
+    const dbRef = firebase.database().ref('iasd_estrela_v102_49');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
-    let db = { senhas: { admin: "123", ger: "123", musica: "123", sonoplastia: "123" }, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas_semanais: [] };
+    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas_semanais: [] };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     window.minAtivo = null;
 
     dbRef.on('value', snap => {
-        if(snap.exists()) {
-            let data = snap.val();
-            if(!data.senhas) data.senhas = { admin: "123", ger: "123", musica: "123", sonoplastia: "123" };
-            db = data;
-        }
+        if(snap.exists()) db = snap.val();
         renderTodo();
     });
 
     function save() { dbRef.set(db); }
+
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value; 
+        // Login de Emergência (sempre funciona)
+        if(u === "admin" && p === "admin123") {
+            localStorage.setItem('iasd_curUser', "admin");
+            location.reload();
+            return;
+        }
+        // Login via Banco de Dados
+        if(db.senhas && db.senhas[u] === p) { 
+            localStorage.setItem('iasd_curUser', u); 
+            location.reload(); 
+        } else { alert("Dados incorretos!"); } 
+    }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
@@ -147,13 +159,6 @@
             }
         }
         renderAnualFixo(); renderArquivosPublicos(); updateChart(mIdx); if(document.getElementById('popMusica').style.display==='flex') renderListaMusica();
-    }
-
-    function login() { 
-        const u = document.getElementById('userLogin').value.toLowerCase().trim();
-        const p = document.getElementById('passLogin').value; 
-        if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } 
-        else { alert("Usuário ou Senha incorretos!"); } 
     }
 
     function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; renderListaMusica(); }
