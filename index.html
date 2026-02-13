@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v102.45</title>
+    <title>IASD Estrela Dalva - v102.46</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -31,8 +31,9 @@
         .anual-card h5 { color: var(--gold); margin: 0 0 8px 0; text-transform: uppercase; font-size: 0.75rem; border-bottom: 1px solid #444; padding-bottom: 5px; }
         .tesouraria-display, .chart-container { margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid #334155; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 85vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+        .media-item { background: #1a2635; padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -41,6 +42,7 @@
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
+            <button id="btnMusica" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPopMusica()">🎶 MÚSICAS</button>
             <button id="btnEventos" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--red); color:var(--red); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
             <button id="btnTesourariaAdmin" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); cursor:pointer; font-weight:bold; display:none;" onclick="abrirTesourariaAdmin()">⚙️ TESOURARIA</button>
             <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPop()">📊 MISSIONÁRIO</button>
@@ -64,13 +66,12 @@
     </div>
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">CARREGANDO...</th></tr>
             <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
-    <div id="anualVisivel" class="anual-container">
+    <div class="anual-container">
         <h3 style="margin:0; color:var(--gold);">📅 PLANEJAMENTO ANUAL 2026</h3>
         <div id="gridAnualFixo" class="anual-grid"></div>
     </div>
@@ -85,32 +86,32 @@
         </div>
     </div>
 </div>
+<div id="popMusica" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon);text-align:center;">🎶 ARQUIVOS DE MÚSICA</h3>
+    <select id="selSemanaMusica" class="input-dark" style="margin-bottom:10px;"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option></select>
+    <input type="file" id="fileMusica" accept="audio/mp3,video/mp4" style="display:none" onchange="uploadMusica()"><button onclick="document.getElementById('fileMusica').click()" class="btn-min">FAZER UPLOAD (MP3/MP4)</button>
+    <div id="listaMusicas" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMusica').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="document.getElementById('popOverlay').style.display='none'" class="btn-fechar">CONCLUÍDO</button></div></div>
 <div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">ARQUIVOS</h3><input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">FAZER UPLOAD</button><div id="listaAdminArquivos" style="margin-top:15px; max-height:200px; overflow-y:auto;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS ESPECIAIS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Nome do Evento"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="margin-top:15px; background:var(--red); color:white;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:10px; max-height:150px; overflow-y:auto;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 
 <script>
-    const firebaseConfig = { 
-        apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", 
-        databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", 
-        projectId: "unidades-de-acao" 
-    };
+    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v102_45');
+    const dbRef = firebase.database().ref('iasd_estrela_v102_46');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
-    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {} };
+    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas: {} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     window.minAtivo = null;
 
     dbRef.on('value', snap => {
-        if(snap.exists()) {
-            db = snap.val();
-        } else {
+        if(snap.exists()) db = snap.val();
+        else {
             db.senhas = { admin: "iasd118", ger: "ger123", diaconato: "diac123", musica: "mus123", sonoplastia: "sono123", mulher: "mulher123", sabatina: "sab123", pessoal: "mp123", mordomia: "mord123", saude: "saude123", homens: "homem123", familia: "fam123", adolescentes: "adol123" };
             db.anciaos = {0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert"};
             dbRef.set(db);
@@ -122,22 +123,19 @@
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || '---'}`;
-        document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
+        const anc = db.anciaos?.[mIdx] || '---';
+        document.getElementById('headerTitulo').innerText = `ESCALA ${MESES[mIdx]} - RESPONSÁVEL: ${anc}`;
         document.getElementById('mesTesouraria').innerText = MESES[mIdx];
 
         const eAdmin = ['admin','ger'].includes(curUser);
-        if(eAdmin) { 
-            document.getElementById('adminPanel').style.display='block'; 
-            document.getElementById('btnTesourariaAdmin').style.display='block'; 
-            renderAdmin(); 
-        }
+        if(eAdmin) { document.getElementById('adminPanel').style.display='block'; document.getElementById('btnTesourariaAdmin').style.display='block'; renderAdmin(); }
         
         if(curUser !== 'visitante') {
             document.getElementById('tesourariaPublica').style.display = 'block';
             document.getElementById('btnSair').style.display='block';
             document.getElementById('btnAcesso').style.display='none';
             document.getElementById('btnEventos').style.display='block';
+            if(['musica','sonoplastia','admin','ger'].includes(curUser)) document.getElementById('btnMusica').style.display='block';
             if(['admin','ger','pessoal'].includes(curUser)) document.getElementById('btnDados').style.display='block';
         }
 
@@ -164,13 +162,39 @@
         renderAnualFixo(); renderArquivosPublicos(); updateChart(mIdx);
     }
 
-    function login() { 
-        const u = document.getElementById('userLogin').value.toLowerCase().trim();
-        const p = document.getElementById('passLogin').value;
-        if(db.senhas[u] && db.senhas[u] === p) { 
-            localStorage.setItem('iasd_curUser', u); location.reload(); 
-        } else alert("Usuário ou Senha incorretos!"); 
+    // LÓGICA DE MÚSICA
+    function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; renderListaMusica(); }
+    function uploadMusica() {
+        const file = document.getElementById('fileMusica').files[0];
+        const sem = document.getElementById('selSemanaMusica').value;
+        const mIdx = document.getElementById('selMes').value;
+        const path = `${mIdx}_${sem}`;
+        if(!db.musicas) db.musicas = {}; if(!db.musicas[path]) db.musicas[path] = [];
+        if(db.musicas[path].length >= 8) { alert("Limite de 8 arquivos por semana atingido!"); return; }
+        const r = new FileReader(); r.onload = function(e) {
+            db.musicas[path].push({ nome: file.name, data: e.target.result, tipo: file.type }); save(); renderListaMusica();
+        }; r.readAsDataURL(file);
     }
+    function renderListaMusica() {
+        const sem = document.getElementById('selSemanaMusica').value;
+        const mIdx = document.getElementById('selMes').value;
+        const path = `${mIdx}_${sem}`;
+        const lista = document.getElementById('listaMusicas'); lista.innerHTML = "";
+        const podeApagar = ['sonoplastia','admin','ger'].includes(curUser);
+        if(db.musicas?.[path]) {
+            db.musicas[path].forEach((m, i) => {
+                lista.innerHTML += `<div class="media-item">
+                    <span style="font-size:0.7rem; color:white;">${m.nome}</span>
+                    <div style="display:flex; gap:5px;">
+                        <a href="${m.data}" download="${m.nome}" style="color:var(--neon); text-decoration:none; font-size:0.75rem;">BAIXAR</a>
+                        ${podeApagar ? `<button onclick="db.musicas['${path}'].splice(${i},1); save(); renderListaMusica();" style="background:red; color:white; border:none; cursor:pointer;">X</button>` : ''}
+                    </div>
+                </div>`;
+            });
+        }
+    }
+
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minAtivo; save(); } }
     function renderAdmin() {
