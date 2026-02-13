@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v102.48</title>
+    <title>IASD Estrela Dalva - v102.49</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -97,7 +97,7 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v102_48');
+    const dbRef = firebase.database().ref('iasd_estrela_v102_49');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
@@ -110,6 +110,7 @@
         if(snap.exists()) db = snap.val();
         checkLimpezaDomingo();
         renderTodo();
+        if(document.getElementById('popMusica').style.display === 'flex') renderListaMusica();
     });
 
     function save() { dbRef.set(db); }
@@ -161,19 +162,26 @@
     function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; renderListaMusica(); }
     function uploadMusica() {
         const file = document.getElementById('fileMusica').files[0];
+        if(!file) return;
         if(!db.musicas_semanais) db.musicas_semanais = [];
         if(db.musicas_semanais.length >= 8) { alert("Máximo de 8 arquivos!"); return; }
         const r = new FileReader(); r.onload = function(e) {
-            db.musicas_semanais.push({ nome: file.name, data: e.target.result }); save(); renderListaMusica();
+            db.musicas_semanais.push({ nome: file.name, data: e.target.result }); save(); 
         }; r.readAsDataURL(file);
     }
     function renderListaMusica() {
         const lista = document.getElementById('listaMusicas'); lista.innerHTML = "";
+        const podeVerEBaixar = ['musica','sonoplastia','admin','ger'].includes(curUser);
         const podeApagar = ['admin','ger'].includes(curUser);
-        const podeVer = ['musica','sonoplastia','admin','ger'].includes(curUser);
-        if(db.musicas_semanais && podeVer) {
+        if(podeVerEBaixar && db.musicas_semanais) {
             db.musicas_semanais.forEach((m, i) => {
-                lista.innerHTML += `<div class="media-item"><span>${m.nome}</span><div style="display:flex; gap:10px;"><a href="${m.data}" download="${m.nome}" style="color:var(--neon); font-size:0.7rem; font-weight:bold; text-decoration:none; border:1px solid var(--neon); padding:4px 8px; border-radius:4px;">BAIXAR / OUVIR</a>${podeApagar ? `<button onclick="db.musicas_semanais.splice(${i},1); save(); renderListaMusica();" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">X</button>` : ''}</div></div>`;
+                lista.innerHTML += `<div class="media-item">
+                    <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px;">${m.nome}</span>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <a href="${m.data}" download="${m.nome}" style="color:var(--neon); font-size:0.7rem; font-weight:bold; text-decoration:none; border:1px solid var(--neon); padding:4px 8px; border-radius:4px; display:inline-block;">ABRIR / BAIXAR</a>
+                        ${podeApagar ? `<button onclick="db.musicas_semanais.splice(${i},1); save();" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-weight:bold;">X</button>` : ''}
+                    </div>
+                </div>`;
             });
         }
     }
