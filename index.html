@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v102.49</title>
+    <title>IASD Estrela Dalva - Oficial</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -97,33 +97,22 @@
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", databaseURL: "https://unidades-de-acao-default-rtdb.firebaseio.com", projectId: "unidades-de-acao" };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v102_49');
+    const dbRef = firebase.database().ref('iasd_estrela_v102_48');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
     
-    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas_semanais: [], ultima_limpeza: "" };
+    let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {}, musicas_semanais: [] };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    window.minAtivo = null;
 
     dbRef.on('value', snap => {
         if(snap.exists()) db = snap.val();
-        checkLimpezaDomingo();
         renderTodo();
-        if(document.getElementById('popMusica').style.display === 'flex') renderListaMusica();
     });
 
     function save() { dbRef.set(db); }
-
-    function checkLimpezaDomingo() {
-        if(!['admin','ger'].includes(curUser)) return;
-        const agora = new Date();
-        if(agora.getDay() === 0 && agora.getHours() >= 21 && db.ultima_limpeza !== agora.toLocaleDateString()) {
-            db.musicas_semanais = [];
-            db.ultima_limpeza = agora.toLocaleDateString();
-            save();
-        }
-    }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
@@ -140,55 +129,47 @@
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
-            let dtF = dt.toISOString().split('T')[0], minAuto = "";
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], minAuto = "";
             Object.keys(REGRAS).forEach(k => {
                 let r = REGRAS[k], n = parseInt(r[0]), sDay = r[1]==="S"?6:(r[1]==="D"?0:3);
                 if(r==="UQ" && sem===3 && d>(diasNoMes-7)) minAuto=k;
                 else if(sem===sDay && d>(n-1)*7 && d<=n*7) minAuto=k;
             });
-            let idEv = db.eventos_especiais?.[dtF];
-            let minID = idEv ? idEv.user : (db.regras_manuais?.[dStr] || minAuto);
+            let idEv = db.eventos_especiais?.[dtF], minID = idEv ? idEv.user : (db.regras_manuais?.[dStr] || minAuto);
             if([0,3,6].includes(sem) || idEv) {
                 let tr = `<tr class="${idEv?'row-especial':'row-'+minID}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</b><br><small>${idEv?.nome || MINS[minID] || ''}</small></td><td>${d}/${mIdx+1}</td>`;
-                ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    tr += `<td><input ${curUser !== 'visitante'?'':'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.7rem;" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
-                }); corpo.innerHTML += tr + "</tr>";
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => { tr += `<td><input ${curUser!=='visitante'?'':'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.7rem;" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`; });
+                corpo.innerHTML += tr + "</tr>";
             }
         }
-        renderAnualFixo(); renderArquivosPublicos(); updateChart(mIdx);
+        renderAnualFixo(); renderArquivosPublicos(); updateChart(mIdx); if(document.getElementById('popMusica').style.display==='flex') renderListaMusica();
     }
 
     function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; renderListaMusica(); }
     function uploadMusica() {
-        const file = document.getElementById('fileMusica').files[0];
-        if(!file) return;
+        const file = document.getElementById('fileMusica').files[0]; if(!file) return;
         if(!db.musicas_semanais) db.musicas_semanais = [];
-        if(db.musicas_semanais.length >= 8) { alert("Máximo de 8 arquivos!"); return; }
-        const r = new FileReader(); r.onload = function(e) {
-            db.musicas_semanais.push({ nome: file.name, data: e.target.result }); save(); 
-        }; r.readAsDataURL(file);
+        if(db.musicas_semanais.length >= 8) { alert("Limite de 8 arquivos!"); return; }
+        const r = new FileReader(); r.onload = function(e) { db.musicas_semanais.push({ nome: file.name, data: e.target.result }); save(); }; r.readAsDataURL(file);
     }
     function renderListaMusica() {
         const lista = document.getElementById('listaMusicas'); lista.innerHTML = "";
-        const podeVerEBaixar = ['musica','sonoplastia','admin','ger'].includes(curUser);
-        const podeApagar = ['admin','ger'].includes(curUser);
-        if(podeVerEBaixar && db.musicas_semanais) {
+        const podeVer = ['musica','sonoplastia','admin','ger'].includes(curUser);
+        if(podeVer && db.musicas_semanais) {
             db.musicas_semanais.forEach((m, i) => {
-                lista.innerHTML += `<div class="media-item">
-                    <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px;">${m.nome}</span>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="${m.data}" download="${m.nome}" style="color:var(--neon); font-size:0.7rem; font-weight:bold; text-decoration:none; border:1px solid var(--neon); padding:4px 8px; border-radius:4px; display:inline-block;">ABRIR / BAIXAR</a>
-                        ${podeApagar ? `<button onclick="db.musicas_semanais.splice(${i},1); save();" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-weight:bold;">X</button>` : ''}
-                    </div>
-                </div>`;
+                lista.innerHTML += `<div class="media-item"><span>${m.nome}</span><div style="display:flex; gap:10px;"><a href="${m.data}" download="${m.nome}" style="color:var(--neon); font-size:0.7rem; text-decoration:none; border:1px solid var(--neon); padding:4px 8px; border-radius:4px;">BAIXAR</a>${['admin','ger'].includes(curUser)?`<button onclick="db.musicas_semanais.splice(${i},1); save();" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px;">X</button>`:''}</div></div>`;
             });
         }
     }
-
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minAtivo; save(); } }
+    function uploadArquivo() {
+        const file = document.getElementById('fileInput').files[0], m = document.getElementById('selMes').value; if(!file) return;
+        const r = new FileReader(); r.onload = function(e) { if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result }); save(); }; r.readAsDataURL(file);
+    }
+    function updateChart(mIdx) {
+        const ctx = document.getElementById('missionaryChart'); const vals = db.mis_v3?.[mIdx] || [0,0,0,0,0];
+        if(window.mChart) window.mChart.destroy();
+        window.mChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.", "Class.", "Estud.", "Minist.", "Duplas"], datasets: [{ data: vals, backgroundColor: ['#00d2ff', '#ffd700', '#ff7f50', '#2ecc71', '#ff4757'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+    }
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
         ["pessoal","mordomia","saude","homens","familia","adolescentes","mulher"].forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minAtivo===m?'active':''}" onclick="window.minAtivo='${m}'; renderAdmin();">${MINS[m]}</button>`; });
@@ -197,19 +178,12 @@
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
         Object.keys(db.senhas).forEach(k => { tC.innerHTML += `<tr><td style="color:var(--gold); padding:2px;">${k}</td><td><input class="input-dark" value="${db.senhas[k]}" onchange="db.senhas['${k}']=this.value; save();"></td></tr>`; });
     }
-    function renderAnualFixo() {
-        const grid = document.getElementById('gridAnualFixo'); grid.innerHTML = "";
-        MESES.forEach((m, i) => { grid.innerHTML += `<div class="anual-card"><h5>${m}</h5><textarea class="input-dark" style="height:70px; border:none; background:transparent!important; resize:none;" ${(['admin','ger'].includes(curUser))?'':'readonly'} onchange="if(!db.eventos_anuais) db.eventos_anuais={}; db.eventos_anuais[${i}]=this.value; save();">${db.eventos_anuais?.[i] || ''}</textarea></div>`; });
-    }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minAtivo; save(); } }
+    function renderAnualFixo() { const grid = document.getElementById('gridAnualFixo'); grid.innerHTML = ""; MESES.forEach((m, i) => { grid.innerHTML += `<div class="anual-card"><h5>${m}</h5><textarea class="input-dark" style="height:70px; border:none; background:transparent!important; resize:none;" ${(['admin','ger'].includes(curUser))?'':'readonly'} onchange="if(!db.eventos_anuais) db.eventos_anuais={}; db.eventos_anuais[${i}]=this.value; save();">${db.eventos_anuais?.[i] || ''}</textarea></div>`; }); }
     function atuCel(d, c, v) { if(!db.escalas) db.escalas = {}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function updateChart(mIdx) {
-        const ctx = document.getElementById('missionaryChart');
-        const vals = db.mis_v3?.[mIdx] || [0,0,0,0,0];
-        if(window.missionChart) window.missionChart.destroy();
-        window.missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.", "Class.", "Estud.", "Minist.", "Duplas"], datasets: [{ data: vals, backgroundColor: ['#00d2ff', '#ffd700', '#ff7f50', '#2ecc71', '#ff4757'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
-    }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; if(!db.docs?.[m]) return; db.docs[m].forEach(doc => { grid.innerHTML += `<img src="${doc.data}" style="width:100%; height:80px; object-fit:cover; border-radius:5px; border:1px solid #444;">`; }); }
-    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const r = new FileReader(); r.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result }); save(); }; r.readAsDataURL(file); }
     function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; if(!db.mis_v3) db.mis_v3 = {}; if(!db.mis_v3[m]) db.mis_v3[m] = [0,0,0,0,0]; ["Encontros", "Classes", "Estudos", "Ministrantes", "Duplas"].forEach((l, i) => { c.innerHTML += `<div style="margin-bottom:8px;"><label style="font-size:0.7rem;">${l}</label><input type="number" class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}] = this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
     function salvarEventoEspecial() { const ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value, nome = document.getElementById('evtNome').value; if(!ini || !fim) return; if(!db.eventos_especiais) db.eventos_especiais = {}; let dAtu = new Date(ini + "T12:00:00"), dFim = new Date(fim + "T12:00:00"); while(dAtu <= dFim) { db.eventos_especiais[dAtu.toISOString().split('T')[0]] = { user: curUser, nome: nome.toUpperCase() }; dAtu.setDate(dAtu.getDate() + 1); } save(); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).forEach(dt => { lista.innerHTML += `<div style="font-size:0.7rem; background:#222; margin:2px; padding:5px; display:flex; justify-content:space-between;"><span>${dt} - ${db.eventos_especiais[dt].nome}</span><button onclick="delete db.eventos_especiais['${dt}']; save(); abrirPopEventos();">X</button></div>`; }); }
