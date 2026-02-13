@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v102.44</title>
+    <title>IASD Estrela Dalva - v102.45</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -70,7 +70,7 @@
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
-    <div class="anual-container">
+    <div id="anualVisivel" class="anual-container">
         <h3 style="margin:0; color:var(--gold);">📅 PLANEJAMENTO ANUAL 2026</h3>
         <div id="gridAnualFixo" class="anual-grid"></div>
     </div>
@@ -79,7 +79,7 @@
             <h3 style="margin:0 0 10px 0; color:var(--orange);">📊 DESEMPENHO MISSIONÁRIO</h3>
             <div style="height: 250px;"><canvas id="missionaryChart"></canvas></div>
         </div>
-        <div class="tesouraria-display">
+        <div id="tesourariaPublica" class="tesouraria-display" style="display:none;">
             <h3 style="margin:0 0 10px 0; color:var(--green);">💰 COMPROVANTES - <span id="mesTesouraria"></span></h3>
             <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:10px;"></div>
         </div>
@@ -97,32 +97,50 @@
         projectId: "unidades-de-acao" 
     };
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('iasd_estrela_v102_44');
+    const dbRef = firebase.database().ref('iasd_estrela_v102_45');
+
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
     const REGRAS = { pessoal: "1S", mordomia: "2S", saude: "1D", homens: "2Q", familia: "3D", adolescentes: "3Q", mulher: "UQ" };
+    
     let db = { senhas: {}, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {}, eventos_anuais: {}, eventos_especiais: {} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     window.minAtivo = null;
 
     dbRef.on('value', snap => {
-        if(snap.exists()) db = snap.val();
-        else {
+        if(snap.exists()) {
+            db = snap.val();
+        } else {
             db.senhas = { admin: "iasd118", ger: "ger123", diaconato: "diac123", musica: "mus123", sonoplastia: "sono123", mulher: "mulher123", sabatina: "sab123", pessoal: "mp123", mordomia: "mord123", saude: "saude123", homens: "homem123", familia: "fam123", adolescentes: "adol123" };
+            db.anciaos = {0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert"};
             dbRef.set(db);
         }
         renderTodo();
     });
+
     function save() { dbRef.set(db); }
+
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || '---'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         document.getElementById('mesTesouraria').innerText = MESES[mIdx];
+
         const eAdmin = ['admin','ger'].includes(curUser);
-        if(eAdmin) { document.getElementById('adminPanel').style.display='block'; document.getElementById('btnTesourariaAdmin').style.display='block'; renderAdmin(); }
-        if(['admin','ger','pessoal'].includes(curUser)) document.getElementById('btnDados').style.display='block';
-        if(curUser !== 'visitante') { document.getElementById('btnEventos').style.display='block'; document.getElementById('btnSair').style.display='block'; document.getElementById('btnAcesso').style.display='none'; }
+        if(eAdmin) { 
+            document.getElementById('adminPanel').style.display='block'; 
+            document.getElementById('btnTesourariaAdmin').style.display='block'; 
+            renderAdmin(); 
+        }
+        
+        if(curUser !== 'visitante') {
+            document.getElementById('tesourariaPublica').style.display = 'block';
+            document.getElementById('btnSair').style.display='block';
+            document.getElementById('btnAcesso').style.display='none';
+            document.getElementById('btnEventos').style.display='block';
+            if(['admin','ger','pessoal'].includes(curUser)) document.getElementById('btnDados').style.display='block';
+        }
+
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
@@ -138,13 +156,22 @@
             if([0,3,6].includes(sem) || idEv) {
                 let tr = `<tr class="${idEv?'row-especial':'row-'+minID}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</b><br><small>${idEv?.nome || MINS[minID] || ''}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let edit = (eAdmin) || (curUser !== 'visitante');
+                    let edit = (curUser !== 'visitante');
                     tr += `<td><input ${edit?'':'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.7rem;" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
                 }); corpo.innerHTML += tr + "</tr>";
             }
         }
         renderAnualFixo(); renderArquivosPublicos(); updateChart(mIdx);
     }
+
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value;
+        if(db.senhas[u] && db.senhas[u] === p) { 
+            localStorage.setItem('iasd_curUser', u); location.reload(); 
+        } else alert("Usuário ou Senha incorretos!"); 
+    }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minAtivo; save(); } }
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
@@ -156,20 +183,17 @@
     }
     function renderAnualFixo() {
         const grid = document.getElementById('gridAnualFixo'); grid.innerHTML = "";
-        const eAdmin = ['admin','ger'].includes(curUser);
-        MESES.forEach((m, i) => { grid.innerHTML += `<div class="anual-card"><h5>${m}</h5><textarea class="input-dark" style="height:70px; border:none; background:transparent!important; resize:none;" ${eAdmin?'':'readonly'} onchange="if(!db.eventos_anuais) db.eventos_anuais={}; db.eventos_anuais[${i}]=this.value; save();">${db.eventos_anuais?.[i] || ''}</textarea></div>`; });
+        MESES.forEach((m, i) => { grid.innerHTML += `<div class="anual-card"><h5>${m}</h5><textarea class="input-dark" style="height:70px; border:none; background:transparent!important; resize:none;" ${(['admin','ger'].includes(curUser))?'':'readonly'} onchange="if(!db.eventos_anuais) db.eventos_anuais={}; db.eventos_anuais[${i}]=this.value; save();">${db.eventos_anuais?.[i] || ''}</textarea></div>`; });
     }
     function atuCel(d, c, v) { if(!db.escalas) db.escalas = {}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function updateChart(mIdx) {
         const ctx = document.getElementById('missionaryChart');
         const vals = db.mis_v3?.[mIdx] || [0,0,0,0,0];
         if(window.missionChart) window.missionChart.destroy();
         window.missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.", "Class.", "Estud.", "Minist.", "Duplas"], datasets: [{ data: vals, backgroundColor: ['#00d2ff', '#ffd700', '#ff7f50', '#2ecc71', '#ff4757'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
     }
-    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const r = new FileReader(); r.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result }); save(); }; r.readAsDataURL(file); }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; if(!db.docs?.[m]) return; db.docs[m].forEach(doc => { grid.innerHTML += `<img src="${doc.data}" style="width:100%; height:80px; object-fit:cover; border-radius:5px; border:1px solid #444;">`; }); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const r = new FileReader(); r.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs) db.docs = {}; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result }); save(); }; r.readAsDataURL(file); }
     function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; if(!db.mis_v3) db.mis_v3 = {}; if(!db.mis_v3[m]) db.mis_v3[m] = [0,0,0,0,0]; ["Encontros", "Classes", "Estudos", "Ministrantes", "Duplas"].forEach((l, i) => { c.innerHTML += `<div style="margin-bottom:8px;"><label style="font-size:0.7rem;">${l}</label><input type="number" class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}] = this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
     function salvarEventoEspecial() { const ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value, nome = document.getElementById('evtNome').value; if(!ini || !fim) return; if(!db.eventos_especiais) db.eventos_especiais = {}; let dAtu = new Date(ini + "T12:00:00"), dFim = new Date(fim + "T12:00:00"); while(dAtu <= dFim) { db.eventos_especiais[dAtu.toISOString().split('T')[0]] = { user: curUser, nome: nome.toUpperCase() }; dAtu.setDate(dAtu.getDate() + 1); } save(); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).forEach(dt => { lista.innerHTML += `<div style="font-size:0.7rem; background:#222; margin:2px; padding:5px; display:flex; justify-content:space-between;"><span>${dt} - ${db.eventos_especiais[dt].nome}</span><button onclick="delete db.eventos_especiais['${dt}']; save(); abrirPopEventos();">X</button></div>`; }); }
