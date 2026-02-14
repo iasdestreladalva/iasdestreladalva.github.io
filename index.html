@@ -12,90 +12,81 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --green: #2ecc71; --pink: #fd79a8; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
-        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: 220px 1fr 2.5fr; gap: 20px; }
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 4px; margin-bottom: 5px; }
+        
+        /* Menu e Botões */
+        .input-dark { background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 4px; margin-bottom: 5px; }
         .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; text-decoration: none; }
-        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
-        /* Cores das Linhas por Ministério */
-        .row-pessoal { background-color: #e0f2fe !important; color: #000 !important; } 
-        .row-mordomia { background-color: #fef3c7 !important; color: #000 !important; }
-        .row-saude { background-color: #f0fdf4 !important; color: #000 !important; } 
-        .row-homens { background-color: #ecfeff !important; color: #000 !important; }
-        .row-familia { background-color: #faf5ff !important; color: #000 !important; } 
-        .row-mulher { background-color: #fdf2f8 !important; color: #000 !important; }
+        /* Cores da Escala */
         .row-musica { background-color: #fff1f2 !important; color: #000 !important; }
-
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; border-radius: 8px; overflow: hidden; }
-        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
+        .row-pessoal { background-color: #e0f2fe !important; color: #000 !important; }
         
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; border-radius: 8px; overflow: hidden; margin-top: 10px; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 45px; }
+        
+        /* Grid de Músicas */
         .grid-arquivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
         .thumb-card { background: #000; height: 110px; border: 1px solid #334155; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; border-radius: 8px; overflow: hidden; }
-        .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
         .thumb-card .label { position: absolute; bottom: 0; background: rgba(0,0,0,0.8); width: 100%; font-size: 0.6rem; text-align: center; padding: 4px; }
 
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:20px; border-radius:15px; width:90%; max-width:500px; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:20px; border-radius:15px; width:90%; max-width:400px; }
         #zoomOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; flex-direction: column; align-items: center; justify-content: center; }
-        
-        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
-  <div class="container">
-    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
-        <h2 style="color:var(--neon);">ESTRELA DALVA CLOUD</h2>
+
+<div class="container">
+    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:8px;">
-            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:120px;"></select>
+            <select id="selMes" onchange="renderTodo();" class="input-dark"></select>
             <button id="btnMusicaAdmin" class="input-dark" style="color:var(--pink); border-color:var(--pink); display:none;" onclick="document.getElementById('popMusica').style.display='flex'">🎵 UP MÚSICA</button>
             <button id="btnAcesso" class="input-dark" style="color:var(--neon); border-color:var(--neon);" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button id="btnSair" class="input-dark" style="color:red; border-color:red; display:none;" onclick="sair()">🚪 SAIR</button>
         </div>
     </div>
 
-    <div id="area-escala">
-        <table id="tabela-main">
-            <thead>
-                <tr style="background:var(--blue); color:white;"><th colspan="9" id="headerTitulo" style="padding:15px; font-size:1.2rem;">ESCALA</th></tr>
-                <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
-            </thead>
-            <tbody id="corpoEscala"></tbody>
-        </table>
-    </div>
+    <table id="tabela-main">
+        <thead>
+            <tr style="background:var(--blue); color:white;"><th colspan="9" id="headerTitulo">ESCALA</th></tr>
+            <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+        </thead>
+        <tbody id="corpoEscala"></tbody>
+    </table>
 
-    <div id="displayMusica" style="margin-top:20px; border-top:1px solid var(--pink); padding-top:10px; display:none;">
-        <h3 style="color:var(--pink);">🎵 ARQUIVOS DE MÚSICA/VÍDEO</h3>
+    <div id="displayMusica" style="margin-top:30px; border-top:1px solid var(--pink); display:none;">
+        <h3 style="color:var(--pink);">🎵 MÚSICAS E VÍDEOS DO MÊS</h3>
         <div id="gridMusicas" class="grid-arquivos"></div>
     </div>
 </div>
 
 <div id="popMusica" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--pink);">UPLOAD PARA CLOUD</h3>
-        <input type="file" id="inMus" class="input-dark" accept="audio/*,video/*">
-        <button class="btn-min" style="background:var(--pink); color:white;" onclick="upload('musicas', 'inMus')">ENVIAR AGORA</button>
+        <h3 style="color:var(--pink);">ENVIAR MÚSICA (CLOUD)</h3>
+        <input type="file" id="inMus" class="input-dark" style="width:100%" accept="audio/*,video/*">
+        <button class="btn-min" style="background:var(--pink); color:white; border:none; margin-top:10px;" onclick="upload('musicas', 'inMus')">FAZER UPLOAD</button>
     </div>
 </div>
 
 <div id="zoomOverlay">
     <div id="viewerContent" style="width:90%; height:70%; display:flex; justify-content:center; align-items:center;"></div>
-    <div id="viewerActions" style="margin-top:20px;">
-        <button class="btn-min" style="width:150px; color:white; border-color:white;" onclick="document.getElementById('zoomOverlay').style.display='none'">FECHAR</button>
+    <div id="viewerActions" style="margin-top:20px; display:flex; gap:10px;">
+        <button class="btn-min" style="width:120px; color:white; border-color:white;" onclick="document.getElementById('zoomOverlay').style.display='none'">FECHAR</button>
     </div>
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" style="background:white; width:250px;" onclick="event.stopPropagation()">
-        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important;">
-        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important;">
-        <button class="btn-min" style="background:var(--blue); color:white;" onclick="login()">ENTRAR</button>
+        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; width:90%">
+        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; width:90%">
+        <button class="btn-min" style="background:var(--blue); color:white; border:none; width:100%" onclick="login()">ENTRAR</button>
     </div>
 </div>
 
 <script>
-    // CREDENCIAIS DO SEU PRINT
+    // SUAS CREDENCIAIS REAIS
     const firebaseConfig = {
       apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik",
       authDomain: "unidades-de-acao.firebaseapp.com",
@@ -111,13 +102,15 @@
     const storage = firebase.storage();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let dbLocal = JSON.parse(localStorage.getItem('iasd_local')) || { escalas:{}, regras:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
 
     function renderTodo() {
         const m = document.getElementById('selMes').value;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[m]} 2026`;
-        document.getElementById('btnMusicaAdmin').style.display = (curUser === 'admin' || curUser === 'musica') ? 'block' : 'none';
+        
+        // Controle de Acesso
+        const isMus = (curUser === 'admin' || curUser === 'musica');
+        document.getElementById('btnMusicaAdmin').style.display = isMus ? 'block' : 'none';
         document.getElementById('displayMusica').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
@@ -133,38 +126,40 @@
         const ref = storage.ref(`arquivos/${m}/${file.name}`);
         
         try {
-            alert("Enviando para o Google Cloud... aguarde.");
+            alert("Enviando... por favor aguarde.");
             const snap = await ref.put(file);
             const url = await snap.ref.getDownloadURL();
             await dbFirestore.collection(pasta).add({ nome: file.name, url: url, tipo: file.type, mes: m });
-            alert("Concluído!");
+            alert("Sucesso!");
             renderTodo();
-        } catch (e) { alert("Erro! Verifique as 'Rules' no site do Firebase."); }
+        } catch (e) { alert("Erro de permissão! Verifique as 'Rules' no Firebase."); }
     }
 
     async function renderGrid(m, pasta, gridId) {
-        const grid = document.getElementById(gridId); grid.innerHTML = "";
-        const docs = await dbFirestore.collection(pasta).where("mes", "==", m).get();
-        docs.forEach(doc => {
-            const d = doc.data();
-            const card = document.createElement('div'); card.className = 'thumb-card';
-            let icon = d.tipo.includes('image') ? `<img src="${d.url}">` : `<div style="font-size:2rem">${d.tipo.includes('video')?'🎬':'🎵'}</div>`;
-            card.innerHTML = `${icon}<div class="label">${d.nome}</div>`;
-            card.onclick = () => abrirViewer(d);
-            grid.appendChild(card);
-        });
+        const grid = document.getElementById(gridId); grid.innerHTML = "Carregando...";
+        try {
+            const docs = await dbFirestore.collection(pasta).where("mes", "==", m).get();
+            grid.innerHTML = "";
+            docs.forEach(doc => {
+                const d = doc.data();
+                const card = document.createElement('div'); card.className = 'thumb-card';
+                let icon = d.tipo.includes('video') ? '🎬' : '🎵';
+                card.innerHTML = `<div style="font-size:2rem; color:white;">${icon}</div><div class="label">${d.nome}</div>`;
+                card.onclick = () => abrirViewer(d);
+                grid.appendChild(card);
+            });
+        } catch(e) { grid.innerHTML = ""; }
     }
 
     function abrirViewer(arq) {
         const c = document.getElementById('viewerContent'); c.innerHTML = "";
-        if(arq.tipo.includes('video')) c.innerHTML = `<video controls autoplay style="max-width:100%;"><source src="${arq.url}"></video>`;
-        else if(arq.tipo.includes('audio')) c.innerHTML = `<audio controls autoplay><source src="${arq.url}"></audio>`;
-        else if(arq.tipo.includes('image')) c.innerHTML = `<img src="${arq.url}" style="max-height:100%;">`;
+        if(arq.tipo.includes('video')) c.innerHTML = `<video controls autoplay style="max-width:100%; max-height:100%;"><source src="${arq.url}"></video>`;
+        else c.innerHTML = `<audio controls autoplay><source src="${arq.url}"></audio>`;
         
         const act = document.getElementById('viewerActions');
         const old = document.getElementById('btnDl'); if(old) old.remove();
         const b = document.createElement('a'); b.id = 'btnDl'; b.href = arq.url; b.target = "_blank"; b.className = "btn-min";
-        b.style = "background:var(--green); color:white; border:none;"; b.innerText = "⬇️ BAIXAR ARQUIVO";
+        b.style = "background:var(--green); color:white; border:none; width:150px"; b.innerText = "BAIXAR";
         act.appendChild(b);
         document.getElementById('zoomOverlay').style.display = 'flex';
     }
@@ -173,20 +168,21 @@
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const dias = new Date(2026, parseInt(m)+1, 0).getDate();
         for(let d=1; d<=dias; d++){
-            let dt = new Date(2026, m, d), sem = dt.getDay(), dStr = `${d}/${parseInt(m)+1}`;
+            let dt = new Date(2026, m, d), sem = dt.getDay();
             if([0,3,6].includes(sem)){
-                let r = dbLocal.regras[dStr] || "";
-                corpo.innerHTML += `<tr class="row-${r}"><td>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</td><td>${dStr}</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
+                corpo.innerHTML += `<tr><td>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</td><td>${d}/${parseInt(m)+1}</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
             }
         }
     }
 
     function login() {
-        const u = document.getElementById('userLogin').value;
+        const u = document.getElementById('userLogin').value.toLowerCase();
         if(u === 'admin' || u === 'musica') { localStorage.setItem('iasd_user', u); location.reload(); }
+        else { alert("Usuário inválido"); }
     }
     function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
 
+    // Início
     const sM = document.getElementById('selMes'); 
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
     window.onload = renderTodo;
