@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - Cloud Sync v2026</title>
+    <title>IASD Estrela Dalva - SISTEMA OFICIAL</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -10,162 +10,158 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; --pink: #fd79a8; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
+        
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 220px 1fr 2.5fr; gap: 20px; }
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; }
         .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
+        
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
-        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; }
+        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; font-size: 0.7rem; transition: 0.2s; }
+        .btn-min:hover { background: rgba(0, 210, 255, 0.1); }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        /* Cores dos Ministérios */
-        .row-pessoal { background-color: #e0f2fe !important; color: #000 !important; } 
+
+        /* Cores dos Ministérios - Restauradas */
+        .row-pessoal { background-color: #e0f2fe !important; color: #000 !important; }
         .row-mordomia { background-color: #fef3c7 !important; color: #000 !important; }
-        .row-saude { background-color: #f0fdf4 !important; color: #000 !important; } 
+        .row-saude { background-color: #f0fdf4 !important; color: #000 !important; }
         .row-homens { background-color: #ecfeff !important; color: #000 !important; }
-        .row-familia { background-color: #faf5ff !important; color: #000 !important; } 
+        .row-familia { background-color: #faf5ff !important; color: #000 !important; }
         .row-mulher { background-color: #fdf2f8 !important; color: #000 !important; }
         .row-musica { background-color: #fff1f2 !important; color: #000 !important; }
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+        .row-adolescentes { background-color: #f1f5f9 !important; color: #000 !important; }
+
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
-        .planejamento-anual { margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); }
-        .chart-container { margin-top: 20px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--orange); }
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
+        
+        input[type="text"] { width: 100%; border: none; background: transparent; text-align: center; font-family: inherit; font-weight: inherit; text-transform: uppercase; font-size: 0.85rem; }
+        
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:500px; max-height: 80vh; overflow-y: auto; }
-        @media print { body { background: white !important; color: black !important; padding: 0; } .no-print { display: none !important; } .print-area { display: block !important; width: 100% !important; margin: 0 !important; } }
+        
+        @media print { .no-print { display: none !important; } body { background: white; padding: 0; } .container { max-width: 100%; } table { color: black !important; } }
     </style>
 </head>
 <body>
 <div class="container">
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
-        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
+        <h2 style="color:var(--neon); margin:0; letter-spacing: 2px;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px; flex-wrap: wrap;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; padding:0 10px; border-color:white; color:white; cursor:pointer;" onclick="document.getElementById('popPrint').style.display='flex'">🖨️ IMPRIMIR</button>
-            <button id="btnDados" class="input-dark" style="width:auto; padding:0 10px; border-color:var(--orange); color:var(--orange); display:none; cursor:pointer;" onclick="abrirPopMissionario()">📊 MISSIONÁRIO</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; border-color:white; color:white; cursor:pointer;" onclick="document.getElementById('popPrint').style.display='flex'">🖨️ IMPRIMIR</button>
+            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none; cursor:pointer;" onclick="abrirPopMissionario()">📊 MISSIONÁRIO</button>
             <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; border-color:red; color:red;">🚪 SAIR</button>
         </div>
     </div>
-
-    <div id="adminPanel" class="admin-box no-print">
+        <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
             <div class="admin-section">
-                <h4>1. DEFINIR MINISTÉRIO DO DIA</h4>
+                <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
             </div>
-            <div class="admin-section"><h4>2. ANCIÃO DO MÊS</h4><div id="gridMeses" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div></div>
-            <div class="admin-section"><h4>3. LOGINS</h4><div style="max-height:300px; overflow-y:auto;"><table style="width:100%;"><tbody id="corpoCreds"></tbody></table></div></div>
+            <div class="admin-section">
+                <h4>2. ANCIÃO DO MÊS</h4>
+                <div id="gridMeses" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
+            </div>
+            <div class="admin-section">
+                <h4>3. SENHAS DE ACESSO</h4>
+                <div style="max-height:250px; overflow-y:auto;">
+                    <table style="width:100%; font-size:0.7rem;">
+                        <tbody id="corpoCreds"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="print-escala" class="print-area">
+    <div id="print-escala">
         <table id="tabela-main">
             <thead>
-                <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;">ESCALA</th></tr>
-                <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;">Ancião: ---</th></tr>
+                <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.4rem; padding:15px; text-align:left;">ESCALA</th></tr>
+                <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 15px 15px 15px; text-align:left;">Ancião: ---</th></tr>
                 <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
     </div>
-
-    <div id="print-planejamento" class="planejamento-anual print-area">
-        <h3 style="margin:0 0 15px 0; color:var(--gold);">📅 PLANEJAMENTO ANUAL 2026</h3>
-        <div id="gridPlanejamento" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:15px;"></div>
-    </div>
-
-    <div id="print-grafico" class="chart-container print-area">
-        <h3 style="margin:0 0 15px 0; color:var(--orange);">📊 DESEMPENHO MISSIONÁRIO</h3>
-        <div style="height: 300px;"><canvas id="missionaryChart"></canvas></div>
-    </div>
 </div>
 
-<div id="popPrint" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>IMPRIMIR</h3><button class="btn-min" onclick="imprimirSo('print-escala')">ESCALA</button><button class="btn-min" onclick="imprimirSo('print-planejamento')">PLANEJAMENTO</button></div></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:#000!important;"><button class="btn-min" style="background:var(--blue); color:white; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popMissionario" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div></div></div>
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px;"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:#000!important;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="margin-top:5px; color:#000!important;"><button class="btn-min" style="background:var(--blue); color:white; margin-top:10px;" onclick="login()">ENTRAR</button></div></div>
+<div id="popPrint" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>OPÇÕES DE IMPRESSÃO</h3><button class="btn-min" onclick="window.print()">IMPRIMIR TELA CHEIA</button></div></div>
 
 <script>
+    // Configuração do SEU Firebase
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
+
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
+    const MINS = { admin: "Administrador", musica: "Música", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", mulher: "M. Mulher" };
     
-    let missionChart, db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, eventos_anuais: {} };
+    let db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     window.minSelecionado = null;
 
-    function save() { dbCloud.collection('dados').doc('v100').set(db); }
+    // Escuta o banco em tempo real
+    dbCloud.collection('dados').doc('sistema_estrela').onSnapshot(doc => {
+        if(doc.exists) { db = doc.data(); renderTodo(); }
+    });
+
+    function save() { dbCloud.collection('dados').doc('sistema_estrela').set(db); }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isAdm = ['admin', 'ger'].includes(curUser);
+        const isAdm = ['admin', 'gerencia'].includes(curUser);
         
         document.getElementById('adminPanel').style.display = isAdm ? 'block' : 'none';
         document.getElementById('btnSair').style.display = (curUser === 'visitante') ? 'none' : 'block';
         document.getElementById('btnAcesso').style.display = (curUser === 'visitante') ? 'block' : 'none';
-        document.getElementById('btnDados').style.display = (['admin','ger','pessoal'].includes(curUser)) ? 'block' : 'none';
+        document.getElementById('btnDados').style.display = (['admin', 'pessoal'].includes(curUser)) ? 'block' : 'none';
         
         document.getElementById('headerAnciao').innerText = `Ancião: ${db.anciaos?.[mIdx] || '---'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
 
-        renderEscala(mIdx); renderAdmin(); renderPlanejamento(); updateChart(mIdx);
+        renderEscala(mIdx); renderAdmin();
     }
 
     function renderEscala(mIdx) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
-            let minID = db.regras_manuais?.[dStr] || "";
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}`, sem = dt.getDay();
             if([0,3,6].includes(sem)) {
-                let tr = `<tr class="row-${minID}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer; border-left: 5px solid var(--neon);"><b>${["DOMINGO","SEG","TER","QUARTA","QUI","SEX","SÁBADO"][sem]}</b><br><small>${MINS[minID]||'---'}</small></td><td>${d}/${mIdx+1}</td>`;
+                let minID = db.regras_manuais?.[dStr] || "";
+                let tr = `<tr class="row-${minID}">
+                    <td onclick="cliqueDia('${dStr}')" style="cursor:pointer"><b>${["DOMINGO","SEG","TER","QUARTA","QUI","SEX","SÁBADO"][sem]}</b></td>
+                    <td>${dStr}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let pode = (['admin','ger'].includes(curUser)) || (curUser === minID && col === 'pr');
-                    tr += `<td><input ${pode?'':'disabled'} style="width:100%; border:none; background:transparent; text-align:center; text-transform:uppercase;" value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
+                    let pode = (curUser === 'admin') || (curUser === minID && col === 'pr');
+                    tr += `<td><input ${pode?'':'disabled'} value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
     }
 
-    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[dStr]; save(); } }
+    function cliqueDia(dStr) { if(curUser === 'admin') { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[dStr] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[dStr]; save(); } }
     
     function renderAdmin() { 
         const list = document.getElementById('listaMinisterios'); list.innerHTML = "";
-        ["pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica"].forEach(m => { list.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; }); 
+        Object.keys(MINS).filter(k=>k!=='admin').forEach(m => { list.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; }); 
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value;save();"></div>`; });
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr style="border-bottom:1px solid #222;"><td style="color:var(--gold); padding:4px; font-size:0.7rem;">${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
-    }
-
-    function renderPlanejamento() { 
-        const grid = document.getElementById('gridPlanejamento'); grid.innerHTML = ""; 
-        const isAdm = ['admin', 'ger'].includes(curUser);
-        MESES.forEach((m, i) => { grid.innerHTML += `<div class="admin-section"><h4 style="color:var(--neon);">${m}</h4><textarea ${isAdm?'':'disabled'} class="input-dark" style="height:80px; resize:none;" onchange="if(!db.eventos_anuais)db.eventos_anuais={}; db.eventos_anuais[${i}]=this.value; save();">${db.eventos_anuais?.[i] || ""}</textarea></div>`; });
-    }
-
-    function updateChart(m) { 
-        const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy();
-        missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc", "Cla", "Est", "Min", "Dup"], datasets: [{ data: db.mis_v3?.[m] || [0,0,0,0,0], backgroundColor: ['#00d2ff', '#ffd700', '#ff7f50', '#2ecc71', '#ff4757'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-    }
-
-    function abrirPopMissionario() { 
-        const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = "";
-        if(!db.mis_v3) db.mis_v3 = {}; if(!db.mis_v3[m]) db.mis_v3[m] = [0,0,0,0,0]; 
-        ["Encontros", "Classes", "Estudos", "Ministrantes", "Duplas"].forEach((l, i) => { c.innerHTML += `<div style="margin-bottom:8px;"><label>${l}</label><input type="number" class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}]=this.value; save(); updateChart(${m});"></div>`; });
-        document.getElementById('popMissionario').style.display='flex'; 
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
     }
 
     function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas?.[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function imprimirSo(id) { document.getElementById('popPrint').style.display = 'none'; setTimeout(() => { document.querySelectorAll('.print-area').forEach(el => el.classList.add('no-print')); document.getElementById(id).classList.remove('no-print'); window.print(); document.querySelectorAll('.print-area').forEach(el => el.classList.remove('no-print')); }, 350); }
 
-    dbCloud.collection('dados').doc('v100').onSnapshot(doc => { if(doc.exists) { db = doc.data(); renderTodo(); } });
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
