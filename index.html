@@ -2,22 +2,20 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - v102.49</title>
+    <title>IASD Estrela Dalva - v102.50</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
         
-        /* Painel Admin */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 220px 1fr 2.5fr; gap: 20px; }
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; }
         .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
 
-        /* Botões e Inputs */
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
-        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; text-decoration: none; }
+        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
 
         /* Cores da Escala */
@@ -26,24 +24,22 @@
         .row-familia { background-color: #faf5ff !important; } .row-adolescentes { background-color: #f8fafc !important; }
         .row-mulher { background-color: #fdf2f8 !important; } .row-musica { background-color: #fff1f2 !important; }
 
-        /* Tabelas */
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
         
-        /* Seções Inferiores */
         .planejamento-anual { margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); }
         .tesouraria-display { display: none; margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--green); }
         .chart-container { margin-top: 20px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--orange); }
 
-        /* Modais e Overlays */
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:500px; max-height: 80vh; overflow-y: auto; }
         
-        /* Visualizador de Arquivos */
+        /* Visualizador de Arquivos Corrigido */
         #zoomOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-        #viewerContent img { max-width: 90%; max-height: 85vh; border: 4px solid white; }
-        #viewerContent embed { width: 85vw; height: 85vh; border: 4px solid white; }
+        #viewerContent { width: 90%; height: 90%; display: flex; justify-content: center; align-items: center; }
+        #viewerContent img { max-width: 100%; max-height: 100%; border: 3px solid white; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #viewerContent embed { width: 100%; height: 100%; border: 3px solid white; }
 
         @media print { 
             body { background: white !important; color: black !important; padding: 0; }
@@ -105,7 +101,7 @@
     </div>
 </div>
 
-<div id="zoomOverlay" onclick="this.style.display='none'"><div id="viewerContent"></div><p style="color:white; text-align:center;">Clique para fechar</p></div>
+<div id="zoomOverlay" onclick="this.style.display='none'"><div id="viewerContent"></div><p style="color:white; margin-top:10px;">Clique em qualquer lugar para fechar</p></div>
 <div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">FINANCEIRO</h3><input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none" onchange="processarUpload()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">SUBIR ARQUIVO</button><div id="listaAdminArquivos" style="margin-top:10px;"></div></div></div>
 <div id="popPrint" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon);text-align:center;">IMPRIMIR</h3><button class="btn-min" onclick="imprimirSo('print-escala')">ESCALA</button><button class="btn-min" onclick="imprimirSo('print-planejamento')">PLANEJAMENTO</button><button class="btn-min" onclick="imprimirSo('print-grafico')">GRÁFICO</button></div></div>
 <div id="popMissionario" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS</h3><div id="camposMissionarios"></div></div></div>
@@ -156,8 +152,25 @@
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { db.regras_manuais[dStr] = window.minSelecionado; save(); renderTodo(); } }
     function processarUpload() { const file = document.getElementById('fileInput').files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result, tipo: file.type }); save(); renderAdminDocs(); renderArquivosPublicos(m); }; reader.readAsDataURL(file); }
     function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; if(!db.docs[m]) return; db.docs[m].forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; background:#1e293b; padding:5px;"><span>${doc.nome}</span><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs(); renderArquivosPublicos(${m});">X</button></div>`; }); }
-    function renderArquivosPublicos(m) { const grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; if(!db.docs[m]) return; db.docs[m].forEach(doc => { grid.innerHTML += `<div onclick="abrirViewer('${doc.data}', '${doc.tipo}')" style="background:#000; height:100px; border:1px solid #334155; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden;">${doc.tipo.includes('pdf')?'📄':'<img src="'+doc.data+'" style="width:100%; height:100%; object-fit:cover;">'}<div style="position:absolute; bottom:0; background:rgba(0,0,0,0.7); width:100%; font-size:0.5rem; text-align:center;">${doc.nome}</div></div>`; }); }
-    function abrirViewer(data, tipo) { const overlay = document.getElementById('zoomOverlay'), content = document.getElementById('viewerContent'); content.innerHTML = tipo.includes('pdf') ? `<embed src="${data}" type="application/pdf" width="100%" height="100%">` : `<img src="${data}">`; overlay.style.display = 'flex'; }
+    
+    function renderArquivosPublicos(m) { 
+        const grid = document.getElementById('gridArquivosPublicos'); 
+        grid.innerHTML = ""; if(!db.docs[m]) return; 
+        db.docs[m].forEach(doc => { 
+            const div = document.createElement('div');
+            div.style = "background:#000; height:100px; border:1px solid #334155; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden;";
+            div.innerHTML = `${doc.tipo.includes('pdf')?'📄':'<img src="'+doc.data+'" style="width:100%; height:100%; object-fit:cover;">'}<div style="position:absolute; bottom:0; background:rgba(0,0,0,0.7); width:100%; font-size:0.5rem; text-align:center;">${doc.nome}</div>`;
+            div.onclick = (e) => { e.preventDefault(); abrirViewer(doc.data, doc.tipo); };
+            grid.appendChild(div);
+        }); 
+    }
+
+    function abrirViewer(data, tipo) { 
+        const overlay = document.getElementById('zoomOverlay'), content = document.getElementById('viewerContent'); 
+        content.innerHTML = tipo.includes('pdf') ? `<embed src="${data}" type="application/pdf">` : `<img src="${data}">`; 
+        overlay.style.display = 'flex'; 
+    }
+
     function renderAdmin() { const list = document.getElementById('listaMinisterios'); list.innerHTML = ""; ["pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica"].forEach(m => { list.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; }); const gM = document.getElementById('gridMeses'); gM.innerHTML = ""; MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i]||''}" onchange="db.anciaos[${i}]=this.value;save();"></div>`; }); const tC = document.getElementById('corpoCreds'); tC.innerHTML = ""; Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr style="border-bottom:1px solid #222;"><td style="color:var(--gold); padding:4px; font-size:0.7rem;">${MINS[k]}</td><td><input class="input-dark" value="${db.senhas[k]}" onchange="db.senhas['${k}']=this.value;save();"></td></tr>`; }); }
     function renderPlanejamento() { const grid = document.getElementById('gridPlanejamento'); grid.innerHTML = ""; const isAdm = ['admin', 'ger'].includes(curUser); MESES.forEach((m, i) => { grid.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; border:1px solid #334155;"><h4 style="margin:0 0 5px 0; color:var(--neon);">${m}</h4><textarea ${isAdm?'':'disabled'} class="input-dark" style="height:80px; resize:none;" onchange="db.eventos_anuais[${i}]=this.value; save();">${db.eventos_anuais[i] || ""}</textarea></div>`; }); }
     function imprimirSo(id) { document.getElementById('popPrint').style.display = 'none'; setTimeout(() => { document.querySelectorAll('.print-area').forEach(el => el.classList.add('no-print')); document.getElementById(id).classList.remove('no-print'); window.print(); document.querySelectorAll('.print-area').forEach(el => el.classList.remove('no-print')); }, 350); }
