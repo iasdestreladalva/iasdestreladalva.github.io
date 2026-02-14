@@ -2,39 +2,32 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - Management System</title>
+    <title>IASD Estrela Dalva - Gestão 2026</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --pink: #fd79a8; }
+        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar Estilizada */
-        .sidebar { width: 260px; background: #0f172a; border-right: 1px solid #1e293b; display: flex; flex-direction: column; padding: 20px; }
-        .sidebar h2 { color: var(--neon); font-size: 1.2rem; text-align: center; margin-bottom: 30px; }
+        .sidebar { width: 260px; background: #0f172a; border-right: 1px solid #1e293b; display: flex; flex-direction: column; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar h2 { color: var(--neon); font-size: 1.2rem; text-align: center; margin-bottom: 30px; letter-spacing: 1px; }
         
-        /* Painel Central */
-        .main-content { flex: 1; overflow-y: auto; padding: 25px; position: relative; }
+        .main-content { flex: 1; overflow-y: auto; padding: 25px; }
         
-        /* Admin Box Restaurado */
-        .admin-panel { display: none; background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid var(--orange); margin-bottom: 25px; }
+        .btn-nav { width: 100%; padding: 12px; background: none; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; cursor: pointer; text-align: left; margin-bottom: 10px; transition: 0.3s; font-weight: 500; }
+        .btn-nav:hover, .btn-nav.active { background: var(--blue); color: var(--neon); border-color: var(--neon); box-shadow: 0 0 10px rgba(0,210,255,0.2); }
+        
+        .admin-panel { display: none; background: rgba(30, 41, 59, 0.7); border-radius: 12px; padding: 20px; border: 1px solid var(--orange); margin-bottom: 25px; backdrop-filter: blur(10px); }
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 
-        /* Botões e Inputs */
-        .btn-nav { width: 100%; padding: 12px; background: none; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; cursor: pointer; text-align: left; margin-bottom: 10px; transition: 0.3s; }
-        .btn-nav:hover, .btn-nav.active { background: var(--blue); color: var(--neon); border-color: var(--neon); }
-        .btn-action { background: var(--neon); color: var(--blue); border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        
-        /* Tabelas */
-        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
+        .table-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         table { width: 100%; border-collapse: collapse; color: #1e293b; }
-        th { background: #f1f5f9; padding: 12px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid #e2e8f0; }
-        td { border: 1px solid #e2e8f0; padding: 5px; text-align: center; font-weight: 600; }
-        input[type="text"] { width: 100%; border: none; background: transparent; text-align: center; font-family: inherit; font-weight: inherit; text-transform: uppercase; }
-
-        /* Cores dos Ministérios */
+        th { background: #f1f5f9; padding: 12px; font-size: 0.7rem; text-transform: uppercase; border: 1px solid #e2e8f0; color: var(--blue); }
+        td { border: 1px solid #e2e8f0; padding: 4px; text-align: center; font-weight: 600; font-size: 0.85rem; }
+        
+        input[type="text"], input[type="number"] { width: 100%; border: none; background: transparent; text-align: center; font-family: inherit; font-weight: inherit; text-transform: uppercase; padding: 8px 0; }
+        
         .row-pessoal { background-color: #e0f2fe !important; }
         .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; }
@@ -43,261 +36,208 @@
         .row-mulher { background-color: #fdf2f8 !important; }
         .row-musica { background-color: #fff1f2 !important; }
 
-        /* Upload e Cards */
-        .grid-files { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .file-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .file-card:hover { border-color: var(--neon); transform: translateY(-3px); }
-        
-        .progress-bar { width: 100%; height: 8px; background: #334155; border-radius: 4px; margin-top: 10px; display: none; }
-        .progress-fill { height: 100%; background: var(--green); width: 0%; border-radius: 4px; transition: width 0.3s; }
-
-        #zoomOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:1000; flex-direction:column; align-items:center; justify-content:center; }
+        .chart-box { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #334155; height: 300px; }
+        @media print { .no-print { display: none !important; } body { background: white; color: black; } .table-card { box-shadow: none; } }
     </style>
 </head>
 <body>
 
 <div class="sidebar no-print">
     <h2>ESTRELA DALVA</h2>
-    <select id="selMes" onchange="init();" class="btn-nav" style="background:#000; color:var(--neon);"></select>
+    <select id="selMes" onchange="inicializar()" class="btn-nav" style="background:#000; color:var(--neon); border-color:var(--neon);"></select>
     
-    <button class="btn-nav active" onclick="showTab('escala')">📅 Escala Mensal</button>
-    <button class="btn-nav" id="navMusica" onclick="showTab('musica')">🎵 Louvor & Vídeos</button>
-    <button class="btn-nav" id="navFinanceiro" onclick="showTab('financeiro')">💰 Tesouraria</button>
+    <button class="btn-nav active" onclick="showTab('escala')">📅 Escala de Cultos</button>
     <button class="btn-nav" onclick="showTab('missao')">📊 Missionário</button>
     <button class="btn-nav" onclick="showTab('planejamento')">📝 Planejamento</button>
     
-    <div style="margin-top:auto;">
-        <button class="btn-nav" id="btnAcesso" onclick="abrirLogin()" style="border-color:var(--neon);">🔓 Acessar</button>
-        <button class="btn-nav" id="btnSair" onclick="sair()" style="display:none; border-color:var(--orange);">🚪 Sair</button>
+    <div style="margin-top:auto; padding-top:20px; border-top:1px solid #334155;">
+        <button class="btn-nav" id="btnAcesso" onclick="fazerLogin()">🔓 Painel Admin</button>
+        <button class="btn-nav" id="btnSair" onclick="fazerSair()" style="display:none; color:var(--orange);">🚪 Sair do Sistema</button>
     </div>
 </div>
 
 <div class="main-content">
     <div id="adminPanel" class="admin-panel no-print">
-        <h3 style="color:var(--orange); margin-top:0;">Painel de Controle Admin</h3>
+        <h3 style="color:var(--orange); margin:0 0 15px 0; font-size:1rem;">CONFIGURAÇÕES ADMINISTRATIVAS</h3>
         <div class="admin-grid">
             <div>
-                <label>Cor do Ministério:</label>
-                <div id="gridCores" style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:10px;"></div>
+                <small>1. SELECIONE O MINISTÉRIO (COR):</small>
+                <select id="corAtiva" class="btn-nav" style="background:#000; margin-top:5px;">
+                    <option value="">Nenhum (Branco)</option>
+                    <option value="pessoal">M. Pessoal (Azul)</option>
+                    <option value="mordomia">Mordomia (Amarelo)</option>
+                    <option value="saude">Saúde (Verde)</option>
+                    <option value="musica">Música (Rosa)</option>
+                </select>
             </div>
             <div>
-                <label>Ancião do Mês:</label>
-                <input type="text" id="inAnciao" class="btn-nav" style="background:#000;" onchange="salvarAnciao(this.value)">
+                <small>2. ANCIÃO DO MÊS:</small>
+                <input type="text" id="inAnciao" class="btn-nav" style="background:#000; margin-top:5px; text-align:left;" placeholder="Nome..." onchange="salvarAnciao(this.value)">
             </div>
             <div>
-                <label>Gestão de Senhas:</label>
-                <div id="gridSenhas"></div>
+                <small>3. AÇÕES:</small>
+                <button class="btn-nav" style="background:var(--green); color:#000; border:none;" onclick="window.print()">🖨️ IMPRIMIR ESCALA</button>
             </div>
         </div>
     </div>
 
     <div id="tab-escala" class="tab-content">
-        <div class="table-container">
+        <div class="table-card">
             <table>
                 <thead>
-                    <tr><th colspan="9" id="headTit" style="font-size:1.4rem; background:var(--blue); color:white;">ESCALA</th></tr>
-                    <tr><th colspan="9" id="headAnc" style="background:#1e293b; color:var(--gold);">ANCIÃO: ---</th></tr>
-                    <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+                    <tr><th colspan="9" id="txtMes" style="background:var(--blue); color:white; font-size:1.5rem; padding:15px;">MÊS</th></tr>
+                    <tr><th colspan="9" id="txtAnciao" style="background:#1e293b; color:var(--gold); font-size:1rem;">ANCIÃO: ---</th></tr>
+                    <tr>
+                        <th style="width:50px;">DIA</th><th style="width:70px;">DATA</th><th>SABATINA</th><th>PREGADOR</th>
+                        <th>MÚSICA (NOME/LINK)</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th>
+                    </tr>
                 </thead>
                 <tbody id="corpoEscala"></tbody>
             </table>
         </div>
     </div>
-
-    <div id="tab-musica" class="tab-content" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3>Músicas e Vídeos para o Culto</h3>
-            <div id="uploadZoneMusica" style="display:none;">
-                <input type="file" id="fMus" hidden onchange="fastUpload('musica', 'fMus')">
-                <button class="btn-action" onclick="document.getElementById('fMus').click()">+ Enviar Arquivo</button>
-            </div>
-        </div>
-        <div class="progress-bar" id="pb-musica"><div class="progress-fill" id="pf-musica"></div></div>
-        <div id="gridMusica" class="grid-files" style="margin-top:20px;"></div>
-    </div>
-
-    <div id="tab-financeiro" class="tab-content" style="display:none;">
-        <h3>Comprovantes de Tesouraria</h3>
-        <input type="file" id="fFin" hidden onchange="fastUpload('financeiro', 'fFin')">
-        <button class="btn-action" style="background:var(--green);" onclick="document.getElementById('fFin').click()">+ Enviar Comprovante</button>
-        <div class="progress-bar" id="pb-financeiro"><div class="progress-fill" id="pf-financeiro"></div></div>
-        <div id="gridFinanceiro" class="grid-files" style="margin-top:20px;"></div>
-    </div>
-
-    <div id="tab-missao" class="tab-content" style="display:none;">
-        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:30px;">
-            <div id="formMissao"></div>
-            <div style="height:400px; background:rgba(255,255,255,0.05); padding:20px; border-radius:15px;">
-                <canvas id="chartMissao"></canvas>
-            </div>
+        <div id="tab-missao" class="tab-content" style="display:none;">
+        <h3 style="color:var(--neon);">Relatório Missionário</h3>
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:25px;">
+            <div id="missaoForm" class="admin-panel" style="display:block;"></div>
+            <div class="chart-box"><canvas id="graficoMissao"></canvas></div>
         </div>
     </div>
-</div>
 
-<div id="zoomOverlay">
-    <div id="zoomView" style="width:90%; height:75%; display:flex; justify-content:center; align-items:center;"></div>
-    <div style="margin-top:20px; display:flex; gap:15px;">
-        <button class="btn-action" id="btnDownload" style="background:var(--green);">⬇ Baixar</button>
-        <button class="btn-action" onclick="document.getElementById('zoomOverlay').style.display='none'" style="background:#555;">Fechar</button>
+    <div id="tab-planejamento" class="tab-content" style="display:none;">
+        <h3 style="color:var(--gold);">Planejamento Anual 2026</h3>
+        <div id="gridPlano" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;"></div>
     </div>
 </div>
 
 <script>
-    // CREDENCIAIS REAIS DO SEU FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik",
       authDomain: "unidades-de-acao.firebaseapp.com",
       projectId: "unidades-de-acao",
-      storageBucket: "unidades-de-acao.firebasestorage.app",
-      messagingSenderId: "1088355029870",
       appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
     };
 
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(), storage = firebase.storage();
+    const db = firebase.firestore();
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { pessoal:"M. Pessoal", mordomia:"Mordomia", saude:"Saúde", homens:"Homens", familia:"Família", mulher:"Mulher", musica:"Música" };
-
-    let dbL = JSON.parse(localStorage.getItem('iasd_final_v1')) || { escalas:{}, cores:{}, anciaos:{}, missao:{}, plano:{}, senhas:{admin:"iasd118", musica:"mus123", pessoal:"mis123"} };
+    
+    let dbLocal = { escalas:{}, cores:{}, anciaos:{}, missao:{}, plano:{} };
     let curUser = localStorage.getItem('iasd_user') || 'visitante';
-    let myChart;
+    let chartObj;
 
-    function save() { localStorage.setItem('iasd_final_v1', JSON.stringify(dbL)); }
+    function sincronizarCloud() {
+        db.collection('dados').doc('sistema').onSnapshot(doc => {
+            if(doc.exists) { dbLocal = doc.data(); renderizarInterface(); }
+        });
+    }
 
-    function init() {
+    function salvarCloud() {
+        db.collection('dados').doc('sistema').set(dbLocal);
+    }
+
+    function inicializar() {
+        const s = document.getElementById('selMes');
+        if(s.innerHTML === "") {
+            MESES.forEach((m, i) => s.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+        }
+        sincronizarCloud();
+        renderizarInterface();
+    }
+
+    function renderizarInterface() {
         const m = document.getElementById('selMes').value;
         const isAdm = (curUser === 'admin');
-        
         document.getElementById('adminPanel').style.display = isAdm ? 'block' : 'none';
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
-        document.getElementById('uploadZoneMusica').style.display = (isAdm || curUser === 'musica') ? 'block' : 'none';
-
-        document.getElementById('headTit').innerText = `ESCALA - ${MESES[m]} 2026`;
-        document.getElementById('headAnc').innerText = `ANCIÃO RESPONSÁVEL: ${dbL.anciaos[m] || 'NÃO DEFINIDO'}`;
-        
-        renderEscala(m);
-        renderAdmin();
-        loadFiles(m);
-        updateMissaoChart(m);
+        document.getElementById('txtMes').innerText = `ESCALA - ${MESES[m]} 2026`;
+        document.getElementById('txtAnciao').innerText = `ANCIÃO RESPONSÁVEL: ${dbLocal.anciaos?.[m] || '---'}`;
+        document.getElementById('inAnciao').value = dbLocal.anciaos?.[m] || "";
+        renderEscala(m); renderPlanejamento();
+        if(document.getElementById('tab-missao').style.display !== 'none') updateMissaoChart(m);
     }
 
     function renderEscala(m) {
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
-        const dias = new Date(2026, parseInt(m)+1, 0).getDate();
-        for(let d=1; d<=dias; d++) {
-            let dt = new Date(2026, m, d), sem = dt.getDay(), dStr = `${d}/${parseInt(m)+1}`;
-            if([0,3,6].includes(sem)) {
-                let cor = dbL.cores[dStr] || "";
-                let tr = `<tr class="row-${cor}"><td onclick="aplicarCor('${dStr}')" style="cursor:pointer"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</b></td><td>${dStr}</td>`;
-                ['sa','pr','mu','lo','so','re','di'].forEach(c => {
-                    let canEdit = (curUser === 'admin' || (curUser === cor && c === 'pr'));
-                    tr += `<td><input ${canEdit?'':'disabled'} value="${dbL.escalas[dStr]?.[c]||''}" onchange="updateEscala('${dStr}','${c}',this.value)"></td>`;
+        const diasNoMes = new Date(2026, parseInt(m)+1, 0).getDate();
+        for(let d=1; d<=diasNoMes; d++) {
+            let data = new Date(2026, m, d), sem = data.getDay(), dStr = `${d}/${parseInt(m)+1}`;
+            if([0, 3, 6].includes(sem)) {
+                let cor = dbLocal.cores?.[dStr] || "";
+                let tr = `<tr class="row-${cor}"><td onclick="pintarLinha('${dStr}')" style="cursor:pointer"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</b></td><td>${dStr}</td>`;
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => {
+                    let val = dbLocal.escalas?.[dStr]?.[col] || "";
+                    let canEdit = (curUser === 'admin' || (curUser === cor && col === 'pr'));
+                    tr += `<td><input ${canEdit?'':'disabled'} value="${val}" onchange="atuEscala('${dStr}','${col}',this.value)"></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
     }
 
-    async function fastUpload(pasta, inputId) {
-        const file = document.getElementById(inputId).files[0];
-        if(!file) return;
-        const m = document.getElementById('selMes').value;
-        const pb = document.getElementById(`pb-${pasta}`), pf = document.getElementById(`pf-${pasta}`);
-        
-        pb.style.display = 'block';
-        const task = storage.ref(`iasd_v2/${pasta}/${m}/${file.name}`).put(file);
-
-        task.on('state_changed', 
-            s => pf.style.width = (s.bytesTransferred / s.totalBytes * 100) + '%',
-            e => alert("Erro no upload"),
-            async () => {
-                const url = await task.snapshot.ref.getDownloadURL();
-                await db.collection(pasta).add({ nome: file.name, url, tipo: file.type, mes: m, ts: Date.now() });
-                pb.style.display = 'none'; pf.style.width = '0%';
-                loadFiles(m);
-            }
-        );
+    function atuEscala(d, c, v) {
+        if(!dbLocal.escalas) dbLocal.escalas = {}; if(!dbLocal.escalas[d]) dbLocal.escalas[d] = {};
+        dbLocal.escalas[d][c] = v.toUpperCase(); salvarCloud();
     }
 
-    async function loadFiles(m) {
-        ['musica', 'financeiro'].forEach(async pasta => {
-            const grid = document.getElementById(`grid${pasta.charAt(0).toUpperCase() + pasta.slice(1)}`);
-            grid.innerHTML = "Carregando...";
-            const snap = await db.collection(pasta).where("mes", "==", m).get();
-            grid.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data();
-                const card = document.createElement('div'); card.className = 'file-card';
-                let icon = d.tipo.includes('video') ? '🎬' : (d.tipo.includes('image') ? '🖼️' : '🎵');
-                card.innerHTML = `<div style="font-size:2rem; margin-bottom:10px;">${icon}</div><small>${d.nome}</small>`;
-                card.onclick = () => abrirZoom(d);
-                grid.appendChild(card);
-            });
+    function pintarLinha(d) {
+        if(curUser === 'admin') {
+            if(!dbLocal.cores) dbLocal.cores = {};
+            const cor = document.getElementById('corAtiva').value;
+            if(cor) dbLocal.cores[d] = cor; else delete dbLocal.cores[d];
+            salvarCloud(); renderizarInterface();
+        }
+    }
+
+    function salvarAnciao(v) {
+        if(!dbLocal.anciaos) dbLocal.anciaos = {};
+        dbLocal.anciaos[document.getElementById('selMes').value] = v.toUpperCase();
+        salvarCloud(); renderizarInterface();
+    }
+
+    function renderPlanejamento() {
+        const g = document.getElementById('gridPlano'); g.innerHTML = "";
+        MESES.forEach((m, i) => {
+            g.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; border:1px solid #334155;">
+                <h4 style="margin:0; color:var(--neon);">${m}</h4>
+                <textarea onchange="atuPlano(${i}, this.value)" style="width:100%; height:80px; background:transparent; color:white; border:none; margin-top:10px; font-family:inherit;">${dbLocal.plano?.[i]||''}</textarea>
+            </div>`;
         });
     }
 
-    function abrirZoom(arq) {
-        const v = document.getElementById('zoomView'); v.innerHTML = "";
-        if(arq.tipo.includes('video')) v.innerHTML = `<video controls autoplay style="max-width:100%; max-height:100%;"><source src="${arq.url}"></video>`;
-        else if(arq.tipo.includes('image')) v.innerHTML = `<img src="${arq.url}" style="max-height:100%;">`;
-        else v.innerHTML = `<div style="text-align:center;"><h2>🎵 ${arq.nome}</h2><audio controls autoplay><source src="${arq.url}"></audio></div>`;
-        
-        document.getElementById('btnDownload').onclick = () => window.open(arq.url);
-        document.getElementById('zoomOverlay').style.display = 'flex';
+    function atuPlano(m, v) { if(!dbLocal.plano) dbLocal.plano = {}; dbLocal.plano[m] = v; salvarCloud(); }
+
+    function updateMissaoChart(m) {
+        const ctx = document.getElementById('graficoMissao').getContext('2d');
+        if(chartObj) chartObj.destroy();
+        const dados = dbLocal.missao?.[m] || [0,0,0,0,0];
+        chartObj = new Chart(ctx, { type: 'bar', data: { labels: ['Encontros', 'Classes', 'Estudos', 'Ministrantes', 'Duplas'], datasets: [{ data: dados, backgroundColor: ['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757'] }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        const f = document.getElementById('missaoForm'); f.innerHTML = "<h4>Dados Missionários</h4>";
+        ['Encontros', 'Classes', 'Estudos', 'Ministrantes', 'Duplas'].forEach((label, i) => {
+            f.innerHTML += `<div style="margin-bottom:10px;"><label><small>${label}</small></label><input type="number" class="btn-nav" style="background:#000; margin:0;" value="${dados[i]}" onchange="atuMissao(${m},${i},this.value)"></div>`;
+        });
     }
 
-    // Funções Administrativas
-    function renderAdmin() {
-        const gC = document.getElementById('gridCores'); gC.innerHTML = "";
-        Object.keys(MINS).forEach(k => gC.innerHTML += `<button class="btn-nav" style="padding:5px; font-size:0.7rem; ${window.corSel===k?'border-color:white;':''}" onclick="window.corSel='${k}'; renderAdmin();">${MINS[k]}</button>`);
-        
-        const gS = document.getElementById('gridSenhas'); gS.innerHTML = "";
-        ['admin','musica','pessoal'].forEach(u => gS.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:5px;"><small>${u}:</small><input class="btn-nav" style="padding:2px; height:20px; font-size:0.7rem;" value="${dbL.senhas[u]}" onchange="dbL.senhas['${u}']=this.value; save();"></div>`);
-        
-        document.getElementById('inAnciao').value = dbL.anciaos[document.getElementById('selMes').value] || "";
+    function atuMissao(m, i, v) {
+        if(!dbLocal.missao) dbLocal.missao = {}; if(!dbLocal.missao[m]) dbLocal.missao[m] = [0,0,0,0,0];
+        dbLocal.missao[m][i] = parseInt(v); salvarCloud(); updateMissaoChart(m);
     }
-
-    function aplicarCor(d) { if(curUser==='admin') { dbL.cores[d] = window.corSel; save(); renderTodo(); } }
-    function updateEscala(d, c, v) { if(!dbL.escalas[d]) dbL.escalas[d]={}; dbL.escalas[d][c]=v.toUpperCase(); save(); }
-    function salvarAnciao(v) { dbL.anciaos[document.getElementById('selMes').value] = v; save(); renderTodo(); }
 
     function showTab(t) {
         document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.btn-nav').forEach(el => el.classList.remove('active'));
         document.getElementById('tab-'+t).style.display = 'block';
         event.currentTarget.classList.add('active');
-        if(t==='missao') updateMissaoChart(document.getElementById('selMes').value);
+        if(t === 'missao') updateMissaoChart(document.getElementById('selMes').value);
     }
 
-    function abrirLogin() {
-        let u = prompt("Usuário:"), p = prompt("Senha:");
-        if(dbL.senhas[u?.toLowerCase()] === p) { localStorage.setItem('iasd_user', u.toLowerCase()); location.reload(); }
-        else alert("Acesso negado");
+    function fazerLogin() {
+        if(prompt("Senha:") === "iasd118") { curUser = 'admin'; localStorage.setItem('iasd_user', 'admin'); renderizarInterface(); }
     }
 
-    function sair() { localStorage.removeItem('iasd_user'); location.reload(); }
-
-    // Gráfico Missionário Otimizado
-    function updateMissaoChart(m) {
-        const ctx = document.getElementById('chartMissao').getContext('2d');
-        if(myChart) myChart.destroy();
-        const data = dbL.missao[m] || [0,0,0,0,0];
-        myChart = new Chart(ctx, {
-            type: 'bar',
-            data: { labels: ['Encontros', 'Classes', 'Estudos', 'Ministrantes', 'Duplas'], datasets: [{ data: data, backgroundColor: ['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757'] }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
-        
-        const fM = document.getElementById('formMissao'); fM.innerHTML = "<h4>Dados do Mês</h4>";
-        ['Encontros', 'Classes', 'Estudos', 'Ministrantes', 'Duplas'].forEach((l, i) => {
-            fM.innerHTML += `<div style="margin-bottom:10px;"><label>${l}</label><input type="number" class="btn-nav" value="${data[i]}" onchange="if(!dbL.missao[${m}])dbL.missao[${m}]=[0,0,0,0,0]; dbL.missao[${m}][${i}]=this.value; save(); updateMissaoChart(${m});"></div>`;
-        });
-    }
-
-    const sM = document.getElementById('selMes');
-    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    window.onload = init;
+    function fazerSair() { localStorage.removeItem('iasd_user'); location.reload(); }
+    window.onload = inicializar;
 </script>
 </body>
 </html>
