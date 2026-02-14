@@ -11,30 +11,47 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
+        
+        /* Painéis */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 220px 1fr 1fr; gap: 20px; }
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; }
         .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
+        
+        /* Inputs e Botões */
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
-        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; }
-        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; text-decoration: none; }
+        
+        /* Tabela Escala */
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
+
+        /* Estilo das Miniaturas */
+        .grid-midia { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 10px; }
+        .thumb-box { background: #000; border: 2px solid #334155; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; height: 100px; }
+        .thumb-box:hover { border-color: var(--neon); transform: scale(1.05); }
+        .thumb-box img, .thumb-box video { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-label { position: absolute; bottom: 0; background: rgba(0,0,0,0.7); width: 100%; font-size: 0.6rem; padding: 3px; text-align: center; white-space: nowrap; overflow: hidden; }
+
+        /* Visualizador Tela Cheia */
+        #viewer { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; flex-direction:column; align-items:center; justify-content:center; }
+        #viewer img, #viewer video { max-width: 90%; max-height: 80vh; border: 2px solid white; }
+        .viewer-controls { margin-top: 20px; display: flex; gap: 20px; }
+
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; }
-        .media-item { background: rgba(255,255,255,0.05); padding: 12px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--neon); }
-        .btn-download { color: var(--neon); text-decoration: none; border: 1px solid var(--neon); padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-        .btn-download:hover { background: var(--neon); color: var(--blue); }
     </style>
 </head>
 <body>
+
 <div class="container">
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button id="btnMusica" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none; cursor:pointer;" onclick="abrirPopMusica()">🎶 UPLOAD MÚSICA</button>
+            <button id="btnUploadMusica" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirPopMusica()">🎶 SUBIR ÁUDIO</button>
+            <button id="btnUploadTesouraria" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); display:none;" onclick="abrirPopTesouraria()">💰 SUBIR COMPROVANTE</button>
             <button id="btnAcesso" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon);" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button id="btnSair" class="input-dark" style="width:auto; padding:0 15px; border-color:red; color:red; display:none;" onclick="sair()">🚪 SAIR</button>
         </div>
@@ -47,35 +64,54 @@
                 <div id="listaMinisterios"></div>
             </div>
             <div class="admin-section">
-                <h4>2. RESPONSÁVEL</h4>
-                <div id="gridMeses"></div>
+                <h4>2. RESPONSÁVEL MENSAL</h4>
+                <div id="gridMeses" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
             <div class="admin-section">
                 <h4>3. LOGINS E SENHAS</h4>
-                <div style="max-height: 200px; overflow-y: auto;"><table style="width:100%"><tbody id="corpoCreds"></tbody></table></div>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <table style="width:100%"><tbody id="corpoCreds"></tbody></table>
+                </div>
             </div>
         </div>
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">CARREGANDO...</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
             <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 
-    <div id="areaMusicas" style="margin-top:20px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--neon); display:none;">
-        <h3 style="color:var(--neon); margin-top:0;">🎵 MÚSICAS E PLAYBACKS DA SEMANA</h3>
-        <div id="listaMusicasPublica"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+        <div id="boxMusicas" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--neon); display:none;">
+            <h4 style="margin:0; color:var(--neon);">🎵 MÚSICAS DA SEMANA</h4>
+            <div id="listaMusicasGrid" class="grid-midia"></div>
+        </div>
+        <div id="boxTesouraria" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--green); display:none;">
+            <h4 style="margin:0; color:var(--green);">💰 COMPROVANTES DIACONATO</h4>
+            <div id="listaTesourariaGrid" class="grid-midia"></div>
+        </div>
+    </div>
+</div>
+
+<div id="viewer" onclick="this.style.display='none'">
+    <div id="viewerContent" onclick="event.stopPropagation()"></div>
+    <div class="viewer-controls">
+        <a id="downloadLink" href="#" download class="btn-min" style="border-color:white; color:white; padding: 10px 30px;">BAIXAR ARQUIVO</a>
+        <button class="btn-min" style="border-color:red; color:red;" onclick="document.getElementById('viewer').style.display='none'">FECHAR</button>
     </div>
 </div>
 
 <div id="popMusica" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
-    <h3 style="color:var(--neon);">ENVIAR NOVO ARQUIVO</h3>
-    <input type="file" id="fileMusica" accept="audio/*,video/*" class="input-dark" onchange="uploadMusica()">
-    <p style="font-size:0.7rem; color:#aaa;">O arquivo será visível para todos os membros logados.</p>
-    <button onclick="document.getElementById('popMusica').style.display='none'" class="btn-min" style="border-color:red; color:red;">FECHAR</button>
+    <h3 style="color:var(--neon);">UPLOAD MÚSICA</h3>
+    <input type="file" id="fMus" accept="audio/*,video/*" class="input-dark" onchange="uploadMidia('musicas')">
+</div></div>
+
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()">
+    <h3 style="color:var(--green);">UPLOAD COMPROVANTE</h3>
+    <input type="file" id="fTes" accept="image/*,application/pdf" class="input-dark" onchange="uploadMidia('tesouraria')">
 </div></div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
@@ -86,9 +122,9 @@
     const dbRef = firebase.database().ref('iasd_estrela_v102_49');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
+    const MINS = { admin: "Admin", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
     
-    let db = { senhas: { admin: "admin123" }, anciaos: {}, escalas: {}, musicas_semanais: [] };
+    let db = { senhas: { admin: "admin123" }, anciaos: {}, escalas: {}, musicas: [], tesouraria: {} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
     dbRef.on('value', snap => {
@@ -112,16 +148,19 @@
         if(curUser !== 'visitante') {
             document.getElementById('btnSair').style.display='block';
             document.getElementById('btnAcesso').style.display='none';
-            document.getElementById('areaMusicas').style.display='block'; // Mostra área de músicas
-            if(['admin','ger','musica','sonoplastia'].includes(curUser)) document.getElementById('btnMusica').style.display='block';
+            document.getElementById('boxMusicas').style.display='block';
+            if(['admin','ger','diaconato'].includes(curUser)) {
+                document.getElementById('boxTesouraria').style.display='block';
+                document.getElementById('btnUploadTesouraria').style.display='block';
+            }
+            if(['admin','ger','musica','sonoplastia'].includes(curUser)) document.getElementById('btnUploadMusica').style.display='block';
             if(['admin','ger'].includes(curUser)) {
                 document.getElementById('adminPanel').style.display='block';
                 renderAdmin();
             }
         }
 
-        const corpo = document.getElementById('corpoEscala');
-        corpo.innerHTML = "";
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
@@ -133,49 +172,69 @@
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        renderListaMusica(); // Atualiza a lista de músicas na tela
+        renderMidiaGrid('musicas', 'listaMusicasGrid');
+        renderMidiaGrid('tesouraria', 'listaTesourariaGrid', mIdx);
     }
 
-    function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; }
-
-    function uploadMusica() {
-        const file = document.getElementById('fileMusica').files[0];
-        if(!file) return;
+    function uploadMidia(tipo) {
+        const input = tipo === 'musicas' ? document.getElementById('fMus') : document.getElementById('fTes');
+        const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
-            if(!db.musicas_semanais) db.musicas_semanais = [];
-            db.musicas_semanais.push({ nome: file.name, data: e.target.result });
+            const mIdx = document.getElementById('selMes').value;
+            if(tipo === 'musicas') {
+                if(!db.musicas) db.musicas = [];
+                db.musicas.push({ nome: file.name, data: e.target.result, tipo: file.type });
+            } else {
+                if(!db.tesouraria) db.tesouraria = {};
+                if(!db.tesouraria[mIdx]) db.tesouraria[mIdx] = [];
+                db.tesouraria[mIdx].push({ nome: file.name, data: e.target.result, tipo: file.type });
+            }
             dbRef.set(db);
-            alert("Música enviada com sucesso!");
-            document.getElementById('popMusica').style.display='none';
+            alert("Enviado!");
+            document.querySelectorAll('.overlay').forEach(o => o.style.display='none');
         };
         reader.readAsDataURL(file);
     }
 
-    function renderListaMusica() {
-        const lista = document.getElementById('listaMusicasPublica');
-        lista.innerHTML = "";
-        if(db.musicas_semanais && db.musicas_semanais.length > 0) {
-            db.musicas_semanais.forEach((m, i) => {
-                lista.innerHTML += `
-                    <div class="media-item">
-                        <span>${m.nome}</span>
-                        <div style="display:flex; gap:10px;">
-                            <a href="${m.data}" download="${m.nome}" class="btn-download">BAIXAR / ABRIR</a>
-                            ${['admin','ger','musica'].includes(curUser) ? `<button onclick="removerMusica(${i})" style="background:red; color:white; border:none; border-radius:4px; cursor:pointer;">X</button>` : ''}
-                        </div>
-                    </div>`;
-            });
-        } else {
-            lista.innerHTML = "<p style='color:#666;'>Nenhuma música enviada para esta semana.</p>";
-        }
+    function renderMidiaGrid(tipo, gridId, mIdx = null) {
+        const grid = document.getElementById(gridId); grid.innerHTML = "";
+        const lista = (tipo === 'musicas') ? db.musicas : db.tesouraria?.[mIdx];
+        if(!lista) return;
+        lista.forEach((item, i) => {
+            let preview = `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--neon); font-size:2rem;">📄</div>`;
+            if(item.tipo.includes('image')) preview = `<img src="${item.data}">`;
+            if(item.tipo.includes('video')) preview = `<video src="${item.data}"></video>`;
+            if(item.tipo.includes('audio')) preview = `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--neon); font-size:2rem;">🎵</div>`;
+
+            grid.innerHTML += `
+                <div class="thumb-box" onclick="abrirViewer('${item.data}', '${item.tipo}', '${item.nome}')">
+                    ${preview}
+                    <div class="thumb-label">${item.nome}</div>
+                    ${['admin','ger'].includes(curUser) ? `<button onclick="event.stopPropagation(); removerItem('${tipo}', ${i}, ${mIdx})" style="position:absolute; top:0; right:0; background:red; border:none; color:white; font-size:0.6rem;">X</button>` : ''}
+                </div>`;
+        });
     }
 
-    function removerMusica(i) {
-        if(confirm("Remover esta música?")) {
-            db.musicas_semanais.splice(i, 1);
-            dbRef.set(db);
-        }
+    function abrirViewer(data, tipo, nome) {
+        const v = document.getElementById('viewer');
+        const content = document.getElementById('viewerContent');
+        const dLink = document.getElementById('downloadLink');
+        content.innerHTML = "";
+        if(tipo.includes('image')) content.innerHTML = `<img src="${data}" onclick="document.getElementById('viewer').style.display='none'">`;
+        else if(tipo.includes('video')) content.innerHTML = `<video src="${data}" controls autoplay></video>`;
+        else if(tipo.includes('audio')) content.innerHTML = `<audio src="${data}" controls autoplay style="width:300px;"></audio>`;
+        else content.innerHTML = `<div style="color:white;">Arquivo: ${nome}</div>`;
+        
+        dLink.href = data;
+        dLink.download = nome;
+        v.style.display = 'flex';
+    }
+
+    function removerItem(tipo, i, mIdx) {
+        if(tipo === 'musicas') db.musicas.splice(i,1);
+        else db.tesouraria[mIdx].splice(i,1);
+        dbRef.set(db);
     }
 
     function renderAdmin() {
@@ -185,10 +244,16 @@
         });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => {
-            gM.innerHTML += `<div style="margin-bottom:5px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i] || ''}" onchange="if(!db.anciaos) db.anciaos={}; db.anciaos[${i}]=this.value; dbRef.set(db);"></div>`;
+            gM.innerHTML += `<div style="margin-bottom:5px;"><small style="color:var(--neon)">${m}</small><input class="input-dark" value="${db.anciaos?.[i] || ''}" onchange="if(!db.anciaos) db.anciaos={}; db.anciaos[${i}]=this.value; dbRef.set(db);"></div>`;
+        });
+        const lMin = document.getElementById('listaMinisterios'); lMin.innerHTML = "";
+        ["pessoal","mordomia","saude","homens","familia","adolescentes","mulher"].forEach(m => {
+            lMin.innerHTML += `<button class="btn-min" onclick="window.minAtivo='${m}'; alert('Selecionado: '+MINS[m])">${MINS[m]}</button>`;
         });
     }
 
+    function abrirPopMusica() { document.getElementById('popMusica').style.display='flex'; }
+    function abrirPopTesouraria() { document.getElementById('popTesouraria').style.display='flex'; }
     function atuCel(d, c, v) { if(!db.escalas) db.escalas = {}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbRef.set(db); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
