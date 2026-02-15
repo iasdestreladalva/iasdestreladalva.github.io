@@ -10,15 +10,16 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1450px; margin: auto; }
+        
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 220px 1fr 2.5fr; gap: 20px; }
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; }
         .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
+        
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        
-        /* Cores das Linhas por Ministério */
+
         .row-pessoal { background-color: #e0f2fe !important; color: #000 !important; }
         .row-mordomia { background-color: #fef3c7 !important; color: #000 !important; }
         .row-saude { background-color: #f0fdf4 !important; color: #000 !important; }
@@ -33,8 +34,10 @@
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
         
         input[type="text"] { width: 100%; border: none; background: transparent; text-align: center; font-family: inherit; font-weight: inherit; text-transform: uppercase; }
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
+        
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:500px; max-height: 80vh; overflow-y: auto; }
+        
         @media print { .no-print { display: none !important; } body { background: white; padding: 0; } table { color: black !important; } }
     </style>
 </head>
@@ -44,12 +47,13 @@
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; padding:0 15px; color:white; cursor:pointer;" onclick="window.print()">🖨️ IMPRIMIR</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; cursor:pointer;" onclick="window.print()">🖨️ IMPRIMIR</button>
             <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; border-color:red; color:red;">🚪 SAIR</button>
         </div>
     </div>
-        <div id="adminPanel" class="admin-box no-print">
+
+    <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
@@ -62,7 +66,7 @@
             </div>
             <div class="admin-section">
                 <h4>3. SENHAS</h4>
-                <div style="max-height:250px; overflow-y:auto;"><table style="width:100%;"><tbody id="corpoCreds"></tbody></table></div>
+                <div style="max-height:250px; overflow-y:auto;"><table style="width:100%; font-size:0.75rem;"><tbody id="corpoCreds"></tbody></table></div>
             </div>
         </div>
     </div>
@@ -133,7 +137,6 @@
     }
 
     function cliqueDia(dStr) { if(curUser === 'admin') { if(!db.regras_manuais) db.regras_manuais={}; db.regras_manuais[dStr] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[dStr]; save(); } }
-    
     function renderAdmin() { 
         const list = document.getElementById('listaMinisterios'); list.innerHTML = "";
         Object.keys(MINS).filter(k=>k!=='admin').forEach(m => { list.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; }); 
@@ -142,13 +145,10 @@
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
         Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
     }
-
     function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    
-    const sM = document.getElementById('selMes'); 
-    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
