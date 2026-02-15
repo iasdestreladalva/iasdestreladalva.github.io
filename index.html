@@ -17,6 +17,8 @@
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; text-align: center; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        
+        /* Cores das Linhas por Ministério */
         .row-pessoal { background-color: #e0f2fe !important; color: #000 !important; }
         .row-mordomia { background-color: #fef3c7 !important; color: #000 !important; }
         .row-saude { background-color: #f0fdf4 !important; color: #000 !important; }
@@ -25,37 +27,43 @@
         .row-mulher { background-color: #fdf2f8 !important; color: #000 !important; }
         .row-musica { background-color: #fff1f2 !important; color: #000 !important; }
         .row-adolescentes { background-color: #f1f5f9 !important; color: #000 !important; }
+
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
-        input[type="text"] { width: 100%; border: none; background: transparent; text-align: center; font-family: inherit; font-weight: inherit; text-transform: uppercase; font-size: 0.85rem; }
+        
+        input[type="text"] { width: 100%; border: none; background: transparent; text-align: center; font-family: inherit; font-weight: inherit; text-transform: uppercase; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:500px; max-height: 80vh; overflow-y: auto; }
-        @media print { .no-print { display: none !important; } body { background: white; padding: 0; } .container { max-width: 100%; } table { color: black !important; } }
+        @media print { .no-print { display: none !important; } body { background: white; padding: 0; } table { color: black !important; } }
     </style>
 </head>
 <body>
 <div class="container">
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+        <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
             <button class="input-dark" style="width:auto; padding:0 15px; color:white; cursor:pointer;" onclick="window.print()">🖨️ IMPRIMIR</button>
-            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopMissionario()">📊 MISSIONÁRIO</button>
             <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; border-color:red; color:red;">🚪 SAIR</button>
         </div>
     </div>
-
-    <div id="adminPanel" class="admin-box no-print">
+        <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
                 <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
             </div>
-            <div class="admin-section"><h4>2. ANCIÃO DO MÊS</h4><div id="gridMeses" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div></div>
-            <div class="admin-section"><h4>3. SENHAS</h4><div style="max-height:250px; overflow-y:auto;"><table style="width:100%;"><tbody id="corpoCreds"></tbody></table></div></div>
+            <div class="admin-section">
+                <h4>2. ANCIÃO DO MÊS</h4>
+                <div id="gridMeses" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
+            </div>
+            <div class="admin-section">
+                <h4>3. SENHAS</h4>
+                <div style="max-height:250px; overflow-y:auto;"><table style="width:100%;"><tbody id="corpoCreds"></tbody></table></div>
+            </div>
         </div>
     </div>
 
@@ -84,17 +92,13 @@
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", musica: "Música", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", mulher: "M. Mulher" };
     
-    // Inicia com os dados padrão caso o Firebase esteja vazio
     let db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, regras_manuais: {} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    window.minSelecionado = null;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { 
-            db = doc.data(); 
-        } else {
-            save(); // Cria o documento inicial se não existir
-        }
-        renderTodo();
+        if(doc.exists) { db = doc.data(); renderTodo(); }
+        else { save(); }
     });
 
     function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
@@ -129,6 +133,7 @@
     }
 
     function cliqueDia(dStr) { if(curUser === 'admin') { if(!db.regras_manuais) db.regras_manuais={}; db.regras_manuais[dStr] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[dStr]; save(); } }
+    
     function renderAdmin() { 
         const list = document.getElementById('listaMinisterios'); list.innerHTML = "";
         Object.keys(MINS).filter(k=>k!=='admin').forEach(m => { list.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; }); 
@@ -137,10 +142,13 @@
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
         Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
     }
+
     function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    const sM = document.getElementById('selMes'); 
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
