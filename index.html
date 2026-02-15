@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IASD Estrela Dalva - v104</title>
+    <title>IASD Estrela Dalva - v105</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,24 +19,24 @@
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid #334155; }
 
-        /* Tabela */
-        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 4px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; color: black; }
+        /* Tabela Visível */
+        .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 4px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; color: black; table-layout: fixed; }
         th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.75rem; }
-        td { border: 1px solid #cbd5e1; padding: 0; text-align: center; font-weight: bold; height: 45px; }
+        td { border: 1px solid #cbd5e1; padding: 0; text-align: center; font-weight: bold; height: 50px; background: white; }
         
-        input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-weight: bold; text-transform: uppercase; }
+        input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; color: black; }
+        input:disabled { color: #555; cursor: not-allowed; }
         .input-dark { background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 10px; border-radius: 5px; box-sizing: border-box; }
 
-        /* Cores de Fundo da Escala */
+        /* Cores de Fundo */
         .row-pessoal { background-color: #e0f2fe !important; }
         .row-mordomia { background-color: #fef3c7 !important; }
         .row-saude { background-color: #f0fdf4 !important; }
         .row-musica { background-color: #fff1f2 !important; }
         .row-especial { background-color: #fee2e2 !important; border-left: 10px solid var(--red) !important; }
 
-        /* Gráfico na Tela Principal */
-        .chart-container { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--blue); margin-top: 20px; height: 350px; }
+        .chart-container { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--blue); margin: 20px 0; height: 350px; }
 
         .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 5px; font-weight: bold; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
@@ -51,8 +51,8 @@
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px; flex-wrap: wrap;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; border-color:var(--green); color:var(--green); font-weight:bold; display:none;" id="btnTesouraria" onclick="abrirTesouraria()">💰 TESOURARIA</button>
-            <button class="input-dark" style="width:auto; border-color:var(--orange); color:var(--orange); font-weight:bold; display:none;" id="btnMissionario" onclick="abrirMissionario()">📊 DADOS MISSIONÁRIOS</button>
+            <button class="input-dark" style="width:auto; border-color:var(--green); color:var(--green); display:none;" id="btnTesouraria" onclick="abrirTesouraria()">💰 TESOURARIA</button>
+            <button class="input-dark" style="width:auto; border-color:var(--orange); color:var(--orange); display:none;" id="btnMissionario" onclick="abrirMissionario()">📊 INSERIR MISSIONÁRIO</button>
             <button class="input-dark" style="width:auto; border-color:var(--neon); color:var(--neon);" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
             <button class="input-dark" style="width:auto; border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
@@ -61,33 +61,34 @@
     <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
             <div class="admin-section"><h4>1. MINISTÉRIO DO DIA</h4><div id="listaMinisterios"></div></div>
-            <div class="admin-section"><h4>2. ANCIÃOS</h4><div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; height: 300px; overflow-y:auto;"></div></div>
+            <div class="admin-section"><h4>2. ANCIÃOS</h4><div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; height:300px; overflow-y:auto;"></div></div>
             <div class="admin-section"><h4>3. SENHAS</h4><div style="height:300px; overflow-y:auto;"><table style="width:100%; color:white;"><tbody id="corpoSenhas"></tbody></table></div></div>
         </div>
     </div>
 
     <div class="table-wrapper">
-        <table>
+        <table id="tabelaEscalaPrincipal">
             <thead>
                 <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.5rem; text-align:left; padding:15px;">ESCALA</th></tr>
                 <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); text-align:left; padding:0 15px 15px 15px;">Ancião: ---</th></tr>
-                <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+                <tr><th width="80">DIA</th><th width="70">DATA</th><th width="150">SABATINA</th><th width="150">PREGADOR</th><th width="120">MÚSICA</th><th width="120">LOUVOR</th><th width="100">SONO</th><th width="120">RECEPÇÃO</th><th width="120">DIACONATO</th></tr>
             </thead>
-            <tbody id="corpoEscala"></tbody>
+            <tbody id="corpoEscala">
+                </tbody>
         </table>
     </div>
 
     <div class="chart-container">
-        <h3 style="color:var(--neon); margin:0 0 10px 0; text-align:center;">RESUMO MISSIONÁRIO DO MÊS</h3>
+        <h3 style="color:var(--neon); margin:0 0 10px 0; text-align:center; text-transform:uppercase; font-size:1rem;">Desempenho Missionário</h3>
         <canvas id="missionaryChartMain"></canvas>
     </div>
 </div>
 
 <div id="popMissionario" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--orange); margin-top:0;">INSERIR DADOS</h3>
+        <h3 style="color:var(--orange); margin-top:0;">ATUALIZAR DADOS MISSIONÁRIOS</h3>
         <div id="camposMissionarios" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
-        <button class="btn-min" style="margin-top:20px; border-color:var(--neon); color:var(--neon);" onclick="document.getElementById('popMissionario').style.display='none'">SALVAR E FECHAR</button>
+        <button class="btn-min" style="margin-top:20px; border-color:var(--neon); color:var(--neon);" onclick="document.getElementById('popMissionario').style.display='none'">SALVAR E VOLTAR</button>
     </div>
 </div>
 
@@ -121,7 +122,13 @@
     let mainChart = null;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); } else { save(); }
+        if(doc.exists) { 
+            db = doc.data(); 
+            if(!db.escalas) db.escalas = {};
+            if(!db.anciaos) db.anciaos = {};
+            if(!db.mis_v3) db.mis_v3 = {};
+            renderTodo(); 
+        } else { save(); }
     });
 
     function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
@@ -129,11 +136,13 @@
     function renderTodo() {
         const m = document.getElementById('selMes').value || new Date().getMonth();
         const isAdm = (curUser === 'admin');
+        
         document.getElementById('btnTesouraria').style.display = isAdm ? 'inline-block' : 'none';
         document.getElementById('btnMissionario').style.display = (isAdm || curUser === 'pessoal') ? 'inline-block' : 'none';
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'inline-block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'inline-block' : 'none';
         document.getElementById('adminPanel').style.display = isAdm ? 'block' : 'none';
+        
         document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[m] || 'A Definir'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[m]} 2026`;
         
@@ -143,42 +152,58 @@
     }
 
     function renderEscala(m) {
-        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
-        const dias = new Date(2026, parseInt(m) + 1, 0).getDate();
-        for(let d=1; d<=dias; d++) {
-            let dStr = `${d}/${parseInt(m)+1}`, dt = new Date(2026, m, d), sem = dt.getDay();
-            if([0,3,6].includes(sem)) {
+        const corpo = document.getElementById('corpoEscala');
+        corpo.innerHTML = "";
+        const diasNoMes = new Date(2026, parseInt(m) + 1, 0).getDate();
+
+        for(let d=1; d<=diasNoMes; d++) {
+            let dStr = `${d}/${parseInt(m)+1}`;
+            let dataObj = new Date(2026, m, d);
+            let diaSemana = dataObj.getDay();
+
+            // Quarta (3), Domingo (0) e Sábado (6)
+            if([0,3,6].includes(diaSemana)) {
                 let minID = db.regras_manuais?.[dStr] || "";
-                let tr = `<tr class="row-${minID}">
-                    <td onclick="cliqueDia('${dStr}')" style="cursor:pointer; font-size:0.75rem;">${["DOMINGO","SEG","TER","QUA","QUI","SEX","SÁBADO"][sem]}</td>
-                    <td>${dStr}</td>`;
+                let tr = document.createElement('tr');
+                tr.className = `row-${minID}`;
+
+                let html = `
+                    <td onclick="cliqueDia('${dStr}')" style="cursor:pointer; color:black;">${["DOMINGO","SEG","TER","QUA","QUI","SEX","SÁBADO"][diaSemana]}</td>
+                    <td style="color:black;">${dStr}</td>`;
+                
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let pode = (curUser==='admin' || (curUser===minID && col==='pr'));
-                    tr += `<td><input ${pode?'':'disabled'} value="${db.escalas?.[dStr]?.[col] || ''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
+                    let valor = db.escalas?.[dStr]?.[col] || "";
+                    let podeEditar = (curUser === 'admin' || (curUser === minID && col === 'pr'));
+                    html += `<td><input ${podeEditar ? '' : 'disabled'} value="${valor}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
                 });
-                corpo.innerHTML += tr + "</tr>";
+
+                tr.innerHTML = html;
+                corpo.appendChild(tr);
             }
         }
     }
 
     function updateMainChart(m) {
-        const ctx = document.getElementById('missionaryChartMain').getContext('2d');
+        const canvas = document.getElementById('missionaryChartMain');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
         if(mainChart) mainChart.destroy();
-        if(!db.mis_v3) db.mis_v3 = {};
+        
         const dados = db.mis_v3[m] || [0,0,0,0,0];
         mainChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Encontros', 'Classes', 'Estudos', 'Ministrantes', 'Duplas'],
-                datasets: [{ label: 'Qtd', data: dados, backgroundColor: ['#00d2ff', '#ffd700', '#ff7f50', '#2ecc71', '#ff4757'], borderRadius: 8 }]
+                datasets: [{ label: 'Total', data: dados, backgroundColor: ['#00d2ff', '#ffd700', '#ff7f50', '#2ecc71', '#ff4757'], borderRadius: 5 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } } }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } } }
         });
     }
 
     function abrirMissionario() {
         const m = document.getElementById('selMes').value;
-        const cont = document.getElementById('camposMissionarios'); cont.innerHTML = "";
+        const cont = document.getElementById('camposMissionarios');
+        cont.innerHTML = "";
         if(!db.mis_v3[m]) db.mis_v3[m] = [0,0,0,0,0];
         ["Encontros", "Classes", "Estudos", "Ministrantes", "Duplas"].forEach((l, i) => {
             cont.innerHTML += `<div><label style="font-size:0.7rem; color:var(--neon)">${l}</label>
@@ -204,7 +229,7 @@
         });
     }
 
-    function cliqueDia(d) { if(curUser==='admin') { db.regras_manuais[d] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[d]; save(); } }
+    function cliqueDia(d) { if(curUser==='admin') { if(!db.regras_manuais) db.regras_manuais = {}; db.regras_manuais[d] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[d]; save(); } }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function abrirTesouraria() { document.getElementById('popTesouraria').style.display='flex'; renderDocs(); }
     function renderDocs() {
