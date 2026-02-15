@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IASD Estrela Dalva - v102.75 CLOUD</title>
+    <title>IASD Estrela Dalva - v102.80 CLOUD</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,36 +11,29 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 5px; }
         .container { width: 100%; max-width: 1600px; margin: auto; box-sizing: border-box; }
+        .header-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; padding: 10px; }
         
-        /* Ajuste Celular e Desktop */
-        .header-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; }
-        
+        /* Painel de Controle Completo */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .admin-section { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; border: 1px solid #334155; }
+        .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px; text-transform: uppercase; }
         
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 10px; border-radius: 6px; box-sizing: border-box; }
-        .btn-min { width: 100%; padding: 12px; margin-bottom: 5px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.8rem; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 4px; box-sizing: border-box; font-size: 0.8rem; }
+        .btn-min { width: 100%; padding: 10px; margin-bottom: 5px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.75rem; transition: 0.2s; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
 
-        /* Estilo da Tabela Responsiva */
         .table-wrapper { width: 100%; overflow-x: auto; background: white; border-radius: 8px; }
-        table#tabela-main { width: 100%; border-collapse: collapse; min-width: 900px; color: black; }
-        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.75rem; text-transform: uppercase; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; color: black; }
+        th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.75rem; }
+        td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
         
-        /* Cores Ministérios */
+        /* Cores de Linha */
         .row-pessoal { background-color: #e0f2fe !important; } .row-mordomia { background-color: #fef3c7 !important; }
-        .row-saude { background-color: #f0fdf4 !important; } .row-musica { background-color: #fff1f2 !important; }
-        .row-especial { background-color: #fee2e2 !important; border-left: 5px solid red !important; }
+        .row-saude { background-color: #f0fdf4 !important; } .row-especial { background-color: #fee2e2 !important; border-left: 5px solid red !important; }
 
-        /* Modais */
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; padding: 10px; }
-        .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:500px; max-height: 90vh; overflow-y: auto; }
-        
-        @media (max-width: 600px) {
-            h2 { font-size: 1.2rem; }
-            .btn-min { padding: 8px; font-size: 0.7rem; }
-        }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; padding: 15px; }
+        .pop-content { background:var(--bg); border:2px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:600px; max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -49,8 +42,8 @@
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:8px; flex-wrap: wrap;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:130px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; border-color:var(--green); color:var(--green); font-weight:bold; display:none;" id="btnTesourariaAdmin" onclick="abrirTesouraria()">💰 TESOURARIA</button>
-            <button class="input-dark" style="width:auto; border-color:var(--orange); color:var(--orange); font-weight:bold; display:none;" id="btnDados" onclick="abrirMissionario()">📊 MISSIONÁRIO</button>
+            <button class="input-dark" style="width:auto; border-color:var(--green); color:var(--green); font-weight:bold; display:none;" id="btnTesouraria" onclick="abrirTesouraria()">💰 TESOURARIA</button>
+            <button class="input-dark" style="width:auto; border-color:var(--orange); color:var(--orange); font-weight:bold; display:none;" id="btnMissionario" onclick="abrirMissionario()">📊 MISSIONÁRIO</button>
             <button class="input-dark" style="width:auto; border-color:var(--neon); color:var(--neon);" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 LOGIN</button>
             <button class="input-dark" style="width:auto; border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
@@ -58,17 +51,31 @@
 
     <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
-            <div class="admin-section"><h4>1. MINISTÉRIO DO DIA</h4><div id="listaMinisterios"></div></div>
-            <div class="admin-section"><h4>2. ANCIÃO DO MÊS</h4><div id="gridMeses"></div></div>
-            <div class="admin-section"><h4>3. SENHAS</h4><div id="listaSenhas" style="font-size:0.7rem"></div></div>
+            <div class="admin-section">
+                <h4>1. MINISTÉRIO DO DIA</h4>
+                <div id="listaMinisterios"></div>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
+            </div>
+            <div class="admin-section">
+                <h4>2. ANCIÃOS DO MÊS</h4>
+                <div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; max-height: 300px; overflow-y: auto;"></div>
+            </div>
+            <div class="admin-section">
+                <h4>3. GESTÃO DE SENHAS</h4>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table style="width:100%; background:transparent; color:white; font-size:0.7rem;">
+                        <tbody id="corpoSenhas"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="table-wrapper">
-        <table id="tabela-main">
+        <table>
             <thead>
-                <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.2rem; text-align:left; padding:15px;">ESCALA</th></tr>
-                <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); text-align:left; padding:0 15px 10px 15px;">Ancião: ---</th></tr>
+                <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.3rem; text-align:left; padding:15px;">ESCALA</th></tr>
+                <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); text-align:left; padding:0 15px 12px 15px;">Ancião: ---</th></tr>
                 <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
@@ -80,8 +87,8 @@
     <div class="pop-content" onclick="event.stopPropagation()">
         <h3 style="color:var(--orange)">DADOS MISSIONÁRIOS</h3>
         <div id="camposMissionarios"></div>
-        <canvas id="missionaryChart" style="margin-top:20px; max-height:200px;"></canvas>
-        <button class="btn-min" style="margin-top:15px; border-color:red; color:red;" onclick="document.getElementById('popMissionario').style.display='none'">FECHAR</button>
+        <div style="height:200px; margin-top:15px;"><canvas id="missionaryChart"></canvas></div>
+        <button class="btn-min" style="margin-top:20px; border-color:red; color:red;" onclick="fecharModal('popMissionario')">FECHAR</button>
     </div>
 </div>
 
@@ -90,15 +97,15 @@
         <h3 style="color:var(--green)">TESOURARIA - COMPROVANTES</h3>
         <input type="file" id="fileInput" class="input-dark" onchange="uploadFoto()">
         <div id="listaArquivos" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
-        <button class="btn-min" style="margin-top:15px; border-color:red; color:red;" onclick="document.getElementById('popTesouraria').style.display='none'">FECHAR</button>
+        <button class="btn-min" style="margin-top:20px; border-color:red; color:red;" onclick="fecharModal('popTesouraria')">FECHAR</button>
     </div>
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'">
     <div style="background:white; padding:25px; border-radius:12px; width:280px;" onclick="event.stopPropagation()">
-        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; margin-bottom:10px;">
-        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important;">
-        <button class="btn-min" style="margin-top:15px; background:var(--blue); color:white;" onclick="login()">ENTRAR</button>
+        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; margin-bottom:10px; background:#f0f0f0!important;">
+        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; background:#f0f0f0!important;">
+        <button class="btn-min" style="margin-top:15px; background:var(--blue); color:white; border:none;" onclick="login()">ENTRAR</button>
     </div>
 </div>
 
@@ -108,44 +115,76 @@
     const dbCloud = firebase.firestore();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin: "Administrador", musica: "Música", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes" };
+    const MINS = { admin: "Administrador", musica: "Música", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", mulher: "M. Mulher" };
     
     let db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, regras_manuais: {}, mis_v3: {}, docs: {} };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-    let myChart;
+    let myChart = null;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); } else { save(); }
+        if(doc.exists) { 
+            db = doc.data(); 
+            // Garante que campos novos existam
+            if(!db.senhas) db.senhas = { admin: "iasd118" };
+            if(!db.anciaos) db.anciaos = {};
+            renderTodo(); 
+        } else { save(); }
     });
 
     function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
 
     function renderTodo() {
         const m = document.getElementById('selMes').value || new Date().getMonth();
-        const isAdm = curUser === 'admin';
+        const isAdm = (curUser === 'admin');
+        
         document.getElementById('adminPanel').style.display = isAdm ? 'block' : 'none';
-        document.getElementById('btnTesourariaAdmin').style.display = isAdm ? 'block' : 'none';
-        document.getElementById('btnDados').style.display = (isAdm || curUser === 'pessoal') ? 'block' : 'none';
+        document.getElementById('btnTesouraria').style.display = isAdm ? 'block' : 'none';
+        document.getElementById('btnMissionario').style.display = (isAdm || curUser === 'pessoal') ? 'block' : 'none';
         document.getElementById('btnSair').style.display = curUser !== 'visitante' ? 'block' : 'none';
         document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
-        document.getElementById('headerAnciao').innerText = `Ancião: ${db.anciaos?.[m] || '---'}`;
+        
+        document.getElementById('headerAnciao').innerText = `Ancião: ${db.anciaos?.[m] || 'Não definido'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[m]} 2026`;
-        renderEscala(m); if(isAdm) renderAdmin();
+        
+        renderEscala(m);
+        if(isAdm) renderAdmin();
     }
 
-    function renderEscala(mIdx) {
-        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
-        const dias = new Date(2026, parseInt(mIdx) + 1, 0).getDate();
+    function renderAdmin() {
+        // 1. Lista de Ministérios
+        const listM = document.getElementById('listaMinisterios'); listM.innerHTML = "";
+        Object.keys(MINS).filter(k => k !== 'admin').forEach(k => {
+            listM.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS[k]}</button>`;
+        });
+
+        // 2. Grid de Anciãos
+        const gridA = document.getElementById('gridMeses'); gridA.innerHTML = "";
+        MESES.forEach((mes, i) => {
+            gridA.innerHTML += `<div style="margin-bottom:5px;"><label style="font-size:0.6rem; color:var(--gold)">${mes}</label>
+            <input class="input-dark" value="${db.anciaos?.[i] || ''}" onchange="db.anciaos[${i}]=this.value.toUpperCase(); save();"></div>`;
+        });
+
+        // 3. Gestão de Senhas
+        const corpoS = document.getElementById('corpoSenhas'); corpoS.innerHTML = "";
+        Object.keys(MINS).forEach(k => {
+            corpoS.innerHTML += `<tr><td style="border:none; color:var(--neon); text-align:left;">${MINS[k]}</td>
+            <td style="border:none;"><input class="input-dark" style="padding:4px;" value="${db.senhas[k] || ''}" onchange="db.senhas['${k}']=this.value; save();"></td></tr>`;
+        });
+    }
+
+    function renderEscala(m) {
+        const corpo = document.querySelector('tbody#corpoEscala'); corpo.innerHTML = "";
+        const dias = new Date(2026, parseInt(m) + 1, 0).getDate();
         for(let d=1; d<=dias; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${parseInt(mIdx)+1}`, sem = dt.getDay();
+            let dStr = `${d}/${parseInt(m)+1}`, dt = new Date(2026, m, d), sem = dt.getDay();
             if([0,3,6].includes(sem)) {
                 let minID = db.regras_manuais?.[dStr] || "";
                 let tr = `<tr class="row-${minID}">
-                    <td onclick="cliqueDia('${dStr}')" style="cursor:pointer"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SÁB"][sem]}</b></td>
+                    <td onclick="cliqueDia('${dStr}')" style="cursor:pointer"><b>${["DOMINGO","SEG","TER","QUA","QUI","SEX","SÁBADO"][sem]}</b></td>
                     <td>${dStr}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let pode = (curUser === 'admin') || (curUser === minID && col === 'pr');
-                    tr += `<td><input ${pode?'':'disabled'} value="${db.escalas?.[dStr]?.[col]||''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
+                    let pode = (curUser==='admin' || (curUser===minID && col==='pr'));
+                    tr += `<td><input ${pode?'':'disabled'} value="${db.escalas?.[dStr]?.[col] || ''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
@@ -154,30 +193,32 @@
 
     function cliqueDia(d) { if(curUser==='admin') { db.regras_manuais[d] = window.minSelecionado; if(!window.minSelecionado) delete db.regras_manuais[d]; save(); } }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-
+    
+    function fecharModal(id) { document.getElementById(id).style.display='none'; }
     function abrirMissionario() {
         const m = document.getElementById('selMes').value;
         const cont = document.getElementById('camposMissionarios'); cont.innerHTML = "";
         if(!db.mis_v3[m]) db.mis_v3[m] = [0,0,0,0,0];
         ["Encontros", "Classes", "Estudos", "Ministrantes", "Duplas"].forEach((l, i) => {
             cont.innerHTML += `<div style="margin-bottom:8px;"><label style="font-size:0.8rem;">${l}</label>
-            <input type="number" class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}]=this.value; save(); updateChart(${m});"></div>`;
+            <input type="number" class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}]=parseInt(this.value); save(); updateChart(${m});"></div>`;
         });
-        document.getElementById('popMissionario').style.display='flex'; updateChart(m);
+        document.getElementById('popMissionario').style.display='flex'; 
+        setTimeout(() => updateChart(m), 100);
     }
 
     function updateChart(m) {
         const ctx = document.getElementById('missionaryChart').getContext('2d');
         if(myChart) myChart.destroy();
-        myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Enc','Cla','Est','Min','Dup'], datasets: [{ data: db.mis_v3[m], backgroundColor: '#00d2ff' }] }, options: { responsive:true, maintainAspectRatio:false } });
+        myChart = new Chart(ctx, { type: 'bar', data: { labels: ['Enc','Cla','Est','Min','Dup'], datasets: [{ label: 'Dados', data: db.mis_v3[m], backgroundColor: '#00d2ff' }] }, options: { responsive:true, maintainAspectRatio:false, scales: { y: { beginAtZero: true, grid: { color: '#333' } } } } });
     }
 
     function abrirTesouraria() {
         const m = document.getElementById('selMes').value;
         const lista = document.getElementById('listaArquivos'); lista.innerHTML = "";
         (db.docs?.[m] || []).forEach((img, i) => {
-            lista.innerHTML += `<div style="position:relative"><img src="${img}" style="width:100%; border-radius:5px;">
-            <button onclick="db.docs[${m}].splice(${i},1); save(); abrirTesouraria();" style="position:absolute; top:0; right:0; background:red; color:white; border:none; cursor:pointer;">X</button></div>`;
+            lista.innerHTML += `<div style="position:relative"><img src="${img}" style="width:100%; border-radius:5px; border:1px solid #444;">
+            <button onclick="db.docs[${m}].splice(${i},1); save(); abrirTesouraria();" style="position:absolute; top:2px; right:2px; background:red; color:white; border:none; cursor:pointer; padding:2px 5px; border-radius:3px;">X</button></div>`;
         });
         document.getElementById('popTesouraria').style.display='flex';
     }
@@ -193,17 +234,16 @@
         reader.readAsDataURL(file);
     }
 
-    function renderAdmin() {
-        const list = document.getElementById('listaMinisterios'); list.innerHTML = "";
-        Object.keys(MINS).filter(k=>k!=='admin').forEach(m => {
-            list.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`;
-        });
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value; 
+        if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } 
+        else alert("Usuário ou senha incorretos!"); 
     }
-
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    
-    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+
+    const sM = document.getElementById('selMes'); 
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
