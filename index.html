@@ -293,7 +293,7 @@
     function abrirPop() {
         const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios');
         c.innerHTML = ""; if(!db.mis_v3[m]) db.mis_v3[m] = ["0","0","0","0","0","0"];
-        ["Encontros", "Classes", "Estudos", "Ministrantes", "Duplas", "Batismos"].forEach((l, i) => { 
+        ["Numero de treinamentos/encontros missionários (duplas missionárias, instrutor biblico, classes biblicas, pequenos grupos, etc)", "Classes", "Estudos", "Ministrantes", "Duplas", "Batismos"].forEach((l, i) => { 
             const isMeta = (l === 'Batismos' && ['jovem','adolescentes'].includes(curUser));
             c.innerHTML += `<div><label>${l}</label><input type="number" ${isMeta ? 'disabled' : ''} class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}] = this.value; save();"></div>`; 
         });
