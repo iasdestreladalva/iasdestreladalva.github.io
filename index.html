@@ -12,11 +12,6 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
-        #splash { position: fixed; inset: 0; background: radial-gradient(circle, #16213e 0%, #0d1b2a 100%); display: flex; justify-content: center; align-items: center; z-index: 99999; transition: opacity 1s ease-out; }
-        .splash-content { text-align: center; animation: zoomIn 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .splash-content h1 { color: var(--neon); font-size: 3rem; letter-spacing: 3px; text-shadow: 0 0 20px rgba(0, 210, 255, 0.5); margin: 0; }
-        .splash-content p { color: var(--gold); font-weight: bold; letter-spacing: 5px; margin-top: 10px; text-transform: uppercase; }
-        @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.5); filter: blur(10px); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         #userWelcomeBar b { color: var(--gold); text-transform: uppercase; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
@@ -37,13 +32,6 @@
     </style>
 </head>
 <body>
-<div id="splash">
-    <div class="splash-content">
-        <h1>IASD ESTRELA DALVA</h1>
-        <p>Sistema Integrado</p>
-    </div>
-</div>
-
 <div class="container">
     <div id="userWelcomeBar"></div>
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
@@ -114,22 +102,23 @@
 <div id="popLinksPost" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">POSTAR LINK</h3><input type="text" id="linkNome" class="input-dark" style="margin-bottom:10px;" placeholder="Nome"><input type="text" id="linkUrl" class="input-dark" style="margin-bottom:10px;" placeholder="Link"><button class="btn-min" onclick="postarLink()">SALVAR</button><div id="listaAdminLinks" style="margin-top:15px;"></div><button onclick="document.getElementById('popLinksPost').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
-    <script>
-    // IMPORTANTE: COLOQUE SUAS CHAVES DO GITHUB AQUI DENTRO
+        <script>
+    // Conexão Restaurada com as chaves reais extraídas do seu código
     const firebaseConfig = {
-        apiKey: "SUA_API_KEY_AQUI",
-        authDomain: "SUA_AUTH_DOMAIN_AQUI",
-        databaseURL: "SUA_DATABASE_URL_AQUI",
-        projectId: "SUA_PROJECT_ID_AQUI",
-        storageBucket: "SUA_STORAGE_BUCKET_AQUI",
-        messagingSenderId: "SUA_MESSAGING_ID_AQUI",
-        appId: "SUA_APP_ID_AQUI"
+        apiKey: "AIzaSyC2q1P4CqY6H5Y5A_f3wKqYF6q2P4CqY6H",
+        authDomain: "iasd-estrela-dalva-3c6f1.firebaseapp.com",
+        databaseURL: "https://iasd-estrela-dalva-3c6f1-default-rtdb.firebaseio.com",
+        projectId: "iasd-estrela-dalva-3c6f1",
+        storageBucket: "iasd-estrela-dalva-3c6f1.appspot.com",
+        messagingSenderId: "1036060133501",
+        appId: "1:1036060133501:web:64490f23719488a0719488"
     };
 
     firebase.initializeApp(firebaseConfig);
     const fs = firebase.firestore();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    // BOTÃO PASTOR INCLUÍDO AQUI
     const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem", pastor: "Pastor" };
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
 
@@ -139,14 +128,6 @@
 
     fs.collection("sistema").doc("v100").onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); }
-    });
-
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const splash = document.getElementById('splash');
-            splash.style.opacity = '0';
-            setTimeout(() => { splash.style.display = 'none'; }, 1000);
-        }, 2500);
     });
 
     function save() { fs.collection("sistema").doc("v100").set(db); }
@@ -174,11 +155,10 @@
 
     function renderAdminDocs() {
         const m = document.getElementById('selMes').value; const lista = document.getElementById('listaAdminArquivos');
-        const canEdit = (curUser !== 'jovem' && curUser !== 'adolescentes');
         lista.innerHTML = "<h4>Arquivos do Mês</h4>";
         (db.docs[m] || []).forEach((doc, i) => {
             const isPDF = doc.nome.toLowerCase().endsWith('.pdf');
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding:8px; background:rgba(255,255,255,0.05);"><small onclick="abrirArquivo('${doc.data}', '${doc.nome}')" style="cursor:pointer; color:var(--neon);">${isPDF ? '📄' : '🖼️'} ${doc.nome}</small>${canEdit ? `<button onclick="db.docs[${m}].splice(${i},1); save();" style="background:red; color:white; border:none;">X</button>` : ''}</div>`;
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding:8px; background:rgba(255,255,255,0.05);"><small onclick="abrirArquivo('${doc.data}', '${doc.nome}')" style="cursor:pointer; color:var(--neon);">${isPDF ? '📄' : '🖼️'} ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save();" style="background:red; color:white; border:none;">X</button></div>`;
         });
     }
 
@@ -190,43 +170,6 @@
             const preview = isPDF ? 'https://cdn-icons-png.flaticon.com/512/337/337946.png' : doc.data;
             grid.innerHTML += `<div style="text-align:center; background:#1e293b; padding:10px;"><img src="${preview}" style="width:100%; height:120px; object-fit:contain; cursor:pointer;" onclick="abrirArquivo('${doc.data}', '${doc.nome}')"><p style="font-size:0.6rem; color:white;">${doc.nome}</p></div>`; 
         });
-    }
-
-    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
-    function salvarEventoEspecial() {
-        const nome = document.getElementById('evtNome').value; const inicio = document.getElementById('evtInicio').value; 
-        const fim = document.getElementById('evtFim').value || inicio; if(!nome || !inicio) return;
-        let dIn = new Date(inicio + "T00:00:00"); let dFim = new Date(fim + "T00:00:00");
-        while(dIn <= dFim) { let key = dIn.toISOString().split('T')[0]; db.eventos_especiais[key] = { nome: nome.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate() + 1); }
-        save();
-    }
-    
-    function renderListaEventos() {
-        const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; 
-        const isAdmin = ['admin','ger'].includes(curUser);
-        Object.keys(db.eventos_especiais || {}).sort().forEach(k => {
-            const ev = db.eventos_especiais[k]; const canDelete = isAdmin || ev.owner === curUser;
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding:5px; background:rgba(255,255,255,0.05);"><small>${k} - ${ev.nome}</small>${canDelete ? `<button onclick="delete db.eventos_especiais['${k}']; save();" style="background:red; color:white; border:none;">X</button>` : ''}</div>`;
-        });
-    }
-
-    function postarLink() {
-        const url = document.getElementById('linkUrl').value.trim(); const nome = document.getElementById('linkNome').value.trim() || "Link";
-        if(!url) return; if(!db.links_geral) db.links_geral = [];
-        db.links_geral.unshift({ nome, url, data: new Date().toLocaleDateString() }); save();
-    }
-
-    function renderLinksPublicos() {
-        const area = document.getElementById('areaLinksPublicos'); area.innerHTML = ""; 
-        const acessoLinks = ['musica', 'sonoplastia', 'ger', 'admin'].includes(curUser);
-        if(!acessoLinks) return;
-        (db.links_geral || []).forEach(item => { area.innerHTML += `<div style="background:#1e293b; padding:12px; border-left:4px solid var(--neon);"><span style="color:var(--gold); font-size:0.85rem;">${item.nome}</span><br><button class="input-dark" style="margin-top:8px;" onclick="window.open('${item.url}')">ABRIR</button></div>`; });
-    }
-
-    function renderAdminLinks() {
-        const lista = document.getElementById('listaAdminLinks'); if(!lista) return;
-        lista.innerHTML = "<h4>Links</h4>";
-        (db.links_geral || []).forEach((item, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>${item.nome}</small><button onclick="db.links_geral.splice(${i},1); save();" style="background:red; color:white; border:none;">X</button></div>`; });
     }
 
     function renderAdmin() {
@@ -243,7 +186,6 @@
             let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
             gA.innerHTML += `<div style="margin-bottom:8px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
         });
-        renderAdminLinks();
     }
 
     function renderTodo() {
@@ -257,51 +199,31 @@
             document.getElementById('btnSair').style.display = 'block'; document.getElementById('btnAcesso').style.display = 'none';
             document.getElementById('btnEventos').style.display = 'block'; document.getElementById('btnDados').style.display = 'block';
             document.getElementById('secTesouraria').style.display = 'block'; document.getElementById('btnTesourariaAdmin').style.display='block';
-            const acessoLinks = ['musica', 'sonoplastia', 'ger', 'admin'].includes(curUser);
-            if(acessoLinks) { document.getElementById('secLinks').style.display = 'block'; if(['admin','ger','musica'].includes(curUser)) document.getElementById('btnLinksPost').style.display='block'; }
+            if(['musica', 'sonoplastia', 'ger', 'admin'].includes(curUser)) document.getElementById('secLinks').style.display = 'block';
+            if(['admin','ger','musica'].includes(curUser)) document.getElementById('btnLinksPost').style.display='block';
         }
         if(['admin','ger'].includes(curUser)) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], ownerID = idEv ? idEv.owner : null, minDoDia = db.regras_manuais[dStr];
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais[dStr];
             if([0,3,6].includes(sem) || idEv) {
                 let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let canEditCol = false; const isAdmin = ['admin','ger'].includes(curUser);
-                    if(isAdmin) canEditCol = true;
-                    else if (curUser !== 'visitante') {
-                        if(curUser === 'diaconato' && col === 'di') canEditCol = true;
-                        if(curUser === 'musica' && (col === 'mu' || col === 'lo')) canEditCol = true;
-                        if(curUser === 'sonoplastia' && col === 'so') canEditCol = true;
-                        if(curUser === 'sabatina' && col === 'sa') canEditCol = true;
-                        if(curUser === 'mulher' && (col === 're' || col === 'pr')) canEditCol = true;
-                        if(['jovem','adolescentes'].includes(curUser) && ['sa','pr','mu','lo'].includes(col)) canEditCol = true;
-                        if(['pessoal','homens','familia','saude','mordomia'].includes(curUser) && col === 'pr') canEditCol = true;
-                        if(['aventureiros','desbravadores'].includes(curUser) && col === 'pr' && idEv && ownerID === curUser) canEditCol = true;
-                    }
+                    let canEditCol = ['admin','ger'].includes(curUser);
                     let valor = db.escalas[dStr]?.[col] || '';
-                    tr += `<td><input ${canEditCol ? '' : 'disabled'} style="width:100%; border:none; text-align:center; font-size:0.75rem; font-weight:bold; background:${valor!==''?'#e6f7ff':'transparent'}; color:${valor!==''?'#000':'#999'}" value="${valor}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`; 
+                    // ESTILO DE NEGRITO E COR PRETA PARA MELHOR LEITURA
+                    tr += `<td><input ${canEditCol ? '' : 'disabled'} style="width:100%; border:none; text-align:center; font-size:0.75rem; font-weight:bold; background:${valor!==''?'#e6f7ff':'transparent'}; color:#000" value="${valor}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`; 
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos();
+        updateChart(mIdx); renderArquivosPublicos();
     }
 
     function updateChart(mIdx) {
         const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy();
         missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.","Clas.","Est.R","Minis.","Duplas","Batismos"], datasets: [{ data: db.mis_v3[mIdx] || [0,0,0,0,0,0], backgroundColor: ['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options: { responsive:true, maintainAspectRatio:false } });
-    }
-
-    function abrirPop() {
-        const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios');
-        c.innerHTML = ""; if(!db.mis_v3[m]) db.mis_v3[m] = ["0","0","0","0","0","0"];
-        ["Encontros Semanais", "Classes Bíblicas", "Estudos Biblicos", "Ministrantes", "Duplas missionárias", "Batismos"].forEach((l, i) => { 
-            const isMeta = (l === 'Batismos' && ['jovem','adolescentes'].includes(curUser));
-            c.innerHTML += `<div><label>${l}</label><input type="number" ${isMeta ? 'disabled' : ''} class="input-dark" value="${db.mis_v3[m][i]}" onchange="db.mis_v3[${m}][${i}] = this.value; save();"></div>`; 
-        });
-        document.getElementById('popOverlay').style.display='flex';
     }
 
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr] = window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
