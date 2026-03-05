@@ -127,7 +127,7 @@
 <div id="popLinksPost" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">LINKS</h3><input type="text" id="linkNome" class="input-dark" placeholder="Nome"><input type="text" id="linkUrl" class="input-dark" style="margin-top:10px;" placeholder="URL"><button class="btn-min" onclick="postarLink()" style="margin-top:10px;">SALVAR</button><div id="listaAdminLinks" style="margin-top:15px;"></div><button onclick="document.getElementById('popLinksPost').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="modalLogin" class="overlay"><div class="pop-content" style="max-width:300px;"><h3 style="text-align:center;">LOGIN</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="margin-top:10px;"><button class="btn-fechar" style="background:var(--neon); color:black;" onclick="login()">ENTRAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">MISSIONÁRIO</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
-                    <script>
+<script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
