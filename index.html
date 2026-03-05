@@ -112,9 +112,14 @@
     </div>
 </div>
 
-<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 100%;"><div id="mediaContainer"></div></div></div>
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'">
+    <div style="text-align:center; width: 100%;">
+        <div id="mediaContainer"></div>
+    </div>
+</div>
+
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">TESOURARIA</h3><input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none" onchange="uploadArquivo()"><button id="btnUploadTesouraria" onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR ARQUIVO (IMG OU PDF)</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">TESOURARIA</h3><input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none" onchange="uploadArquivo()"><button id="btnUploadTesouraria" onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR ARQUIVO</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popLinksPost" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">POSTAR LINK</h3><input type="text" id="linkNome" class="input-dark" style="margin-bottom:10px;" placeholder="Nome"><input type="text" id="linkUrl" class="input-dark" style="margin-bottom:10px;" placeholder="Link"><button class="btn-min" onclick="postarLink()">SALVAR</button><div id="listaAdminLinks" style="margin-top:15px;"></div><button onclick="document.getElementById('popLinksPost').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
@@ -149,10 +154,10 @@
         const container = document.getElementById('mediaContainer');
         container.innerHTML = "";
         
-        if (src.includes("application/pdf")) {
+        if (src.includes("application/pdf") || src.toLowerCase().endsWith(".pdf")) {
             container.innerHTML = `<embed src="${src}" type="application/pdf" style="width: 90vw; height: 80vh; border: 2px solid white; border-radius: 8px;">`;
         } else {
-            container.innerHTML = `<img src="${src}" id="imgFull">`;
+            container.innerHTML = `<img src="${src}" style="max-width: 90vw; max-height: 80vh; border-radius: 8px; border: 2px solid white;">`;
         }
         
         container.innerHTML += `<button class="btn-fechar" style="max-width:200px; margin:20px auto; display:block;" onclick="document.getElementById('popViewImg').style.display='none'">FECHAR</button>`;
@@ -160,7 +165,6 @@
     }
 
     function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; renderAdminDocs(); }
-    
     function uploadArquivo() {
         const file = document.getElementById('fileInput').files[0];
         if(!file) return;
