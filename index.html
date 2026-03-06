@@ -111,7 +111,7 @@
         <thead>
             <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
             <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:120px">DIA</th><th style="width:55px">DATA</th><th>ESCOLA SABATINA</th><th>PREGADOR</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th style="width:120px">DIA</th><th style="width:55px">DATA</th><th>ESCOLA SABATINA</th><th>PREGADOR</th><th>MÚSICA ESPECIAL</th><th>LOUVOR CONG.</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
@@ -277,7 +277,7 @@
     function abrirPop() {
         const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios');
         c.innerHTML = ""; if(!db.mis_v3[m]) db.mis_v3[m] = ["0","0","0","0","0","0"];
-        ["Numero de treinamentos/encontros missionários", "Número de Classes Biblicas", "Pessoas recebendo Estudos Biblicos", "Pessoas recebendo Estudos Biblicos", "Duplas missionárias", "Batismos ja realizados"].forEach((l, i) => { 
+        ["Numero de treinamentos/encontros missionários", "Número de Classes Biblicas", "Pessoas recebendo Estudos Biblicos", "Pessoas dando Estudos Biblicos", "Duplas missionárias dando estudos Biblicos", "Batismos ja realizados"].forEach((l, i) => { 
             const isMeta = (l === 'Batismos ja realizados' && ['jovem','adolescentes'].includes(curUser));
             c.innerHTML += `<div><label>${l}</label><input type="number" ${isMeta ? 'disabled' : ''} class=\"input-dark\" value=\"${db.mis_v3[m][i]}\" onchange=\"db.mis_v3[${m}][${i}] = this.value; save();\"></div>`; 
         });
