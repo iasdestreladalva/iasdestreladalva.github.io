@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva</title>
+    <title>IASD Estrela Dalva - Completo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -12,21 +12,25 @@
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
+        /* IMPRESSÃO: Mantém apenas a escala */
         @media print {
+            .no-print, button, select, #userWelcomeBar, .admin-box, #secPlan, #secLinks, #secTesouraria, canvas { display: none !important; }
             body { background: white; color: black; }
-            .no-print, button, select, #userWelcomeBar, .modal-content, .overlay { display: none !important; }
             table#tabela-main { width: 100% !important; border: 1px solid black !important; }
-            #tabela-main th, #tabela-main td { border: 1px solid black !important; color: black !important; font-size: 10pt; }
+            #tabela-main th, #tabela-main td { border: 1px solid black !important; color: black !important; }
             #tabela-main input { color: black !important; border: none !important; background: transparent !important; }
         }
 
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 10px; border-radius: 4px; box-sizing: border-box; }
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
-        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
+        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
+        #tabela-main th { background: var(--blue); padding: 10px; border: 1px solid #cbd5e1; color: white; font-size: 0.8rem; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
+        
+        .card { background: #16213e; border: 1px solid #2e3a59; padding: 15px; border-radius: 10px; margin-top: 20px; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 320px; color: black; }
     </style>
 </head>
 <body>
@@ -37,90 +41,83 @@
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; padding:0 20px; border-color:var(--neon); color:var(--neon); cursor:pointer;" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button class="input-dark" style="width:auto; padding:0 20px; border-color:red; color:red; display:none; cursor:pointer;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+            <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); cursor:pointer;">🔓 ACESSAR</button>
+            <button class="input-dark" id="btnSair" onclick="sair()" style="display:none; width:auto; padding:0 15px; border-color:red; color:red; cursor:pointer;">🚪 SAIR</button>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="admin-box no-print">
+        <div class="admin-grid">
+            <div><h4>1. MINISTÉRIO</h4><div id="listaMinisterios"></div></div>
+            <div><h4>2. ANCIÃO DO MÊS</h4><div id="gridMeses"></div></div>
+            <div><h4>3. LOGINS</h4><div id="corpoCreds" style="max-height:150px; overflow-y:auto;"></div></div>
+            <div><h4>4. APOIO ANCIÃO</h4><div id="gridApoioAnciao"></div></div>
         </div>
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.4rem; padding:15px;">ESCALA</th></tr>
-            <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold);">Responsável: </th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="font-size:1.5rem;">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerAnciao" style="color:var(--gold);">Responsável: </th></tr>
             <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 
-    <div id="secTesouraria" class="no-print" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;">
-        <h3 style="color:var(--green);">💰 COMPROVANTES</h3>
-        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:15px;"></div>
+    <div class="no-print" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div class="card">
+            <h3 style="color:var(--neon);">📊 ALVO MISSIONÁRIO</h3>
+            <canvas id="missionaryChart" style="max-height: 300px;"></canvas>
+            <div id="adminGráfico" style="display:none; margin-top:10px;">
+                <input type="number" id="inputAlvo" placeholder="Meta" class="input-dark" style="width:45%; margin-right:5%;">
+                <input type="number" id="inputAtual" placeholder="Atual" class="input-dark" style="width:45%;">
+                <button onclick="salvarGrafico()" class="input-dark" style="margin-top:10px; border-color:var(--green); color:var(--green);">SALVAR META</button>
+            </div>
+        </div>
+
+        <div class="card" id="secLinks">
+            <h3 style="color:var(--gold);">🔗 LINKS ÚTEIS</h3>
+            <div id="listaLinks"></div>
+            <div id="adminLinks" style="display:none; margin-top:10px;">
+                <input type="text" id="linkNome" placeholder="Nome" class="input-dark">
+                <input type="text" id="linkUrl" placeholder="URL" class="input-dark" style="margin-top:5px;">
+                <button onclick="addLink()" class="input-dark" style="margin-top:10px; border-color:var(--neon); color:var(--neon);">+ ADICIONAR LINK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="secTesouraria" class="card no-print" style="display:none; border-color:var(--green);">
+        <h3 style="color:var(--green);">💰 TESOURARIA</h3>
+        <div id="adminTesouraria" style="display:none; margin-bottom:15px; border-bottom:1px solid #444; padding-bottom:10px;">
+            <input type="file" id="fileInput" class="input-dark">
+            <button onclick="uploadArquivo()" class="input-dark" style="margin-top:5px; border-color:var(--green); color:var(--green);">UPLOAD COMPROVANTE</button>
+        </div>
+        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px;"></div>
     </div>
 </div>
 
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0; text-align:center;">LOGIN</h3>
-        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; background:#eee!important; margin-bottom:15px;">
-        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; background:#eee!important;">
-        <button onclick="login()" style="width:100%; margin-top:20px; padding:12px; background:var(--blue); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">ENTRAR</button>
-        <p id="loginError" style="color:red; font-size:0.7rem; display:none; margin-top:10px; text-align:center;"></p>
-    </div>
-</div>
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="width:95vw; height:90vh; display:flex; flex-direction:column;" onclick="event.stopPropagation()"><div id="fileContent" style="flex:1; background:white; border-radius:8px; overflow:hidden;"></div><button style="background:red; color:white; padding:15px; border:none; margin-top:10px; border-radius:8px; cursor:pointer;" onclick="document.getElementById('popViewImg').style.display='none'">FECHAR</button></div></div>
 
-<div id="popViewImg" class="overlay" onclick="this.style.display='none'">
-    <div style="width:95vw; height:90vh; display:flex; flex-direction:column;" onclick="event.stopPropagation()">
-        <div id="fileContent" style="flex:1; background:white; border-radius:8px; overflow:hidden;"></div>
-        <button style="background:red; color:white; padding:15px; border:none; margin-top:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('popViewImg').style.display='none'">FECHAR</button>
-    </div>
-</div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:10px; width:280px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0; text-align:center;">LOGIN</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; background:#eee!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; background:#eee!important;"><button onclick="login()" style="width:100%; margin-top:15px; padding:12px; background:var(--blue); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ENTRAR</button></div></div>
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin: "Administrador", ger: "Gerência", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
-    
     let db = {};
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-
-    // FUNÇÃO DE REPARO: Se os dados sumiram, ela cria a estrutura base sem apagar o que restar
-    function repararDados() {
-        let atualizou = false;
-        if (!db.senhas) { db.senhas = { admin: "iasd118", ger: "ger123" }; atualizou = true; }
-        if (!db.anciaos) { db.anciaos = {}; atualizou = true; }
-        if (!db.escalas) { db.escalas = {}; atualizou = true; }
-        if (!db.docs) { db.docs = {}; atualizou = true; }
-        if (atualizou) { dbCloud.collection('dados').doc('estrela_v115').set(db); }
-    }
+    let myChart;
 
     dbCloud.collection('dados').doc('estrela_v115').onSnapshot(doc => {
         if(doc.exists) { 
             db = doc.data();
-            repararDados();
-            renderTodo(); 
-        } else {
-            // Se o documento estrela_v115 não existe mesmo, ele cria do zero
-            db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, docs: {} };
-            dbCloud.collection('dados').doc('estrela_v115').set(db);
+            renderTodo();
+            renderGrafico();
         }
-    }, error => {
-        console.error("Erro ao conectar ao Firebase:", error);
     });
 
-    function login() { 
-        const u = document.getElementById('userLogin').value.toLowerCase().trim();
-        const p = document.getElementById('passLogin').value;
-        const err = document.getElementById('loginError');
-
-        if (db.senhas && db.senhas[u] === p) {
-            localStorage.setItem('iasd_curUser', u);
-            location.reload();
-        } else {
-            err.innerText = "Usuário/Senha incorretos. Tente admin / iasd118";
-            err.style.display = "block";
-        }
-    }
+    function save() { dbCloud.collection('dados').doc('estrela_v115').set(db); }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
@@ -129,12 +126,19 @@
         
         if (curUser !== 'visitante') {
             document.getElementById('userWelcomeBar').style.display = 'block';
-            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser] || curUser}</b>`;
+            document.getElementById('userWelcomeBar').innerHTML = `Logado: <b>${curUser.toUpperCase()}</b>`;
             document.getElementById('btnSair').style.display = 'block';
             document.getElementById('btnAcesso').style.display = 'none';
             document.getElementById('secTesouraria').style.display = 'block';
+            if(['admin','ger'].includes(curUser)) {
+                document.getElementById('adminPanel').style.display='block';
+                document.getElementById('adminGráfico').style.display='block';
+                document.getElementById('adminLinks').style.display='block';
+                document.getElementById('adminTesouraria').style.display='block';
+            }
         }
-
+        
+        // Renderizar Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
@@ -142,18 +146,42 @@
             if([0,3,6].includes(sem)) {
                 let tr = `<tr><td>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let val = db.escalas?.[dStr]?.[col] || '';
-                    tr += `<td><input ${curUser==='visitante'?'disabled':''} value="${val}" onchange="atuCel('${dStr}','${col}',this.value)" style="width:100%; border:none; text-align:center;"></td>`; 
+                    tr += `<td><input ${curUser==='visitante'?'disabled':''} value="${db.escalas?.[dStr]?.[col] || ''}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`; 
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        renderArquivosPublicos();
+        renderLinks();
+        renderArquivos();
+    }
+
+    function renderGrafico() {
+        const ctx = document.getElementById('missionaryChart').getContext('2d');
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['Meta'], datasets: [{ label: 'Atual', data: [db.alvoAtual||0], backgroundColor: '#00d2ff' }] },
+            options: { indexAxis: 'y', scales: { x: { max: db.alvoMeta || 100 } } }
+        });
+    }
+
+    function renderLinks() {
+        const list = document.getElementById('listaLinks'); list.innerHTML = "";
+        (db.links || []).forEach((l, i) => {
+            list.innerHTML += `<div style="margin-bottom:5px;"><a href="${l.url}" target="_blank" style="color:var(--neon); text-decoration:none;">● ${l.nome}</a></div>`;
+        });
+    }
+
+    function renderArquivos() {
+        const grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
+        const m = document.getElementById('selMes').value;
+        (db.docs?.[m] || []).forEach(doc => {
+            grid.innerHTML += `<div style="background:#1e293b; padding:10px; text-align:center;"><button onclick="verArquivo('${doc.data}')" style="background:var(--neon); border:none; padding:5px; cursor:pointer;">VER DOC</button></div>`;
+        });
     }
 
     function verArquivo(src) { 
         const content = document.getElementById('fileContent');
-        content.innerHTML = "";
         if (src.includes("pdf") || src.startsWith("data:application/pdf")) {
             content.innerHTML = `<embed src="${src}" type="application/pdf" width="100%" height="100%">`;
         } else {
@@ -162,17 +190,9 @@
         document.getElementById('popViewImg').style.display = 'flex';
     }
 
-    function renderArquivosPublicos() {
-        const m = document.getElementById('selMes').value;
-        const grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
-        (db.docs?.[m] || []).forEach(doc => { 
-            grid.innerHTML += `<div style="background:#1e293b; padding:10px; text-align:center; border-radius:8px;">
-                <button onclick="verArquivo('${doc.data}')" style="background:var(--neon); border:none; padding:8px; cursor:pointer; width:100%; font-weight:bold; border-radius:4px;">VER COMPROVANTE</button>
-            </div>`; 
-        });
-    }
-
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbCloud.collection('dados').doc('estrela_v115').set(db); }
+    function atuCel(d, c, v) { if(!db.escalas) db.escalas={}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function salvarGrafico() { db.alvoMeta = parseInt(document.getElementById('inputAlvo').value); db.alvoAtual = parseInt(document.getElementById('inputAtual').value); save(); }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
     const sM = document.getElementById('selMes');
