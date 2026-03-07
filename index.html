@@ -14,9 +14,9 @@
         
         @media print {
             body { background: white; color: black; }
-            .no-print, button, select, #userWelcomeBar { display: none !important; }
-            table#tabela-main { width: 100% !important; border: 1px solid black !important; color: black !important; }
-            #tabela-main th, #tabela-main td { border: 1px solid black !important; color: black !important; }
+            .no-print, button, select, #userWelcomeBar, .modal-content, .overlay { display: none !important; }
+            table#tabela-main { width: 100% !important; border: 1px solid black !important; }
+            #tabela-main th, #tabela-main td { border: 1px solid black !important; color: black !important; font-size: 10pt; }
             #tabela-main input { color: black !important; border: none !important; background: transparent !important; }
         }
 
@@ -24,15 +24,14 @@
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
-        #tabela-main input { width: 100%; height: 100%; border: none; text-align: center; font-family: inherit; font-size: 0.8rem; }
         
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 300px; color: black; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 320px; color: black; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div id="userWelcomeBar" style="display:none; text-align:center; padding:10px; color:var(--gold); border: 1px solid var(--neon); margin-bottom: 10px; border-radius: 8px;"></div>
+    <div id="userWelcomeBar" class="no-print" style="display:none; text-align:center; padding:10px; color:var(--gold); border: 1px solid var(--neon); margin-bottom: 10px; border-radius: 8px;"></div>
     
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
@@ -47,25 +46,24 @@
         <thead>
             <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.4rem; padding:15px;">ESCALA</th></tr>
             <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold);">Responsável: </th></tr>
-            <tr><th style="width:100px;">DIA</th><th style="width:80px;">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 
     <div id="secTesouraria" class="no-print" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;">
-        <h3 style="color:var(--green);">💰 COMPROVANTES DA TESOURARIA</h3>
+        <h3 style="color:var(--green);">💰 COMPROVANTES</h3>
         <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:15px;"></div>
     </div>
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0; text-align:center;">LOGIN DO SISTEMA</h3>
-        <label style="font-size:0.8rem;">Usuário:</label>
-        <input type="text" id="userLogin" class="input-dark" style="color:black!important; background:#eee!important; margin-bottom:15px;">
-        <label style="font-size:0.8rem;">Senha:</label>
-        <input type="password" id="passLogin" class="input-dark" style="color:black!important; background:#eee!important;">
+        <h3 style="margin-top:0; text-align:center;">LOGIN</h3>
+        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; background:#eee!important; margin-bottom:15px;">
+        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; background:#eee!important;">
         <button onclick="login()" style="width:100%; margin-top:20px; padding:12px; background:var(--blue); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">ENTRAR</button>
+        <p id="loginError" style="color:red; font-size:0.7rem; display:none; margin-top:10px; text-align:center;"></p>
     </div>
 </div>
 
@@ -86,42 +84,41 @@
     let db = {};
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    // FUNÇÃO QUE GARANTE QUE O LOGIN FUNCIONE
-    function verificarIntegridade() {
-        let mudou = false;
-        if (!db.senhas || Object.keys(db.senhas).length === 0) {
-            db.senhas = { admin: "iasd118", ger: "ger123" }; 
-            mudou = true;
-        }
-        if (!db.anciaos) { db.anciaos = {}; mudou = true; }
-        if (!db.escalas) { db.escalas = {}; mudou = true; }
-        if (!db.docs) { db.docs = {}; mudou = true; }
-        if (mudou) save();
+    // FUNÇÃO DE REPARO: Se os dados sumiram, ela cria a estrutura base sem apagar o que restar
+    function repararDados() {
+        let atualizou = false;
+        if (!db.senhas) { db.senhas = { admin: "iasd118", ger: "ger123" }; atualizou = true; }
+        if (!db.anciaos) { db.anciaos = {}; atualizou = true; }
+        if (!db.escalas) { db.escalas = {}; atualizou = true; }
+        if (!db.docs) { db.docs = {}; atualizou = true; }
+        if (atualizou) { dbCloud.collection('dados').doc('estrela_v115').set(db); }
     }
 
     dbCloud.collection('dados').doc('estrela_v115').onSnapshot(doc => {
         if(doc.exists) { 
             db = doc.data();
-            verificarIntegridade();
+            repararDados();
             renderTodo(); 
         } else {
-            // Se o documento não existe, ele cria um novo com a senha admin para você entrar
+            // Se o documento estrela_v115 não existe mesmo, ele cria do zero
             db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, docs: {} };
-            save();
+            dbCloud.collection('dados').doc('estrela_v115').set(db);
         }
+    }, error => {
+        console.error("Erro ao conectar ao Firebase:", error);
     });
-
-    function save() { dbCloud.collection('dados').doc('estrela_v115').set(db); }
 
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        
+        const err = document.getElementById('loginError');
+
         if (db.senhas && db.senhas[u] === p) {
             localStorage.setItem('iasd_curUser', u);
             location.reload();
         } else {
-            alert("Acesso negado! Se o banco foi resetado, tente usuário 'admin' e senha 'iasd118'.");
+            err.innerText = "Usuário/Senha incorretos. Tente admin / iasd118";
+            err.style.display = "block";
         }
     }
 
@@ -132,7 +129,7 @@
         
         if (curUser !== 'visitante') {
             document.getElementById('userWelcomeBar').style.display = 'block';
-            document.getElementById('userWelcomeBar').innerHTML = `Bem-vindo, <b>${MINS[curUser] || curUser}</b>`;
+            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser] || curUser}</b>`;
             document.getElementById('btnSair').style.display = 'block';
             document.getElementById('btnAcesso').style.display = 'none';
             document.getElementById('secTesouraria').style.display = 'block';
@@ -140,14 +137,13 @@
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
             if([0,3,6].includes(sem)) {
                 let tr = `<tr><td>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
                     let val = db.escalas?.[dStr]?.[col] || '';
-                    tr += `<td><input ${curUser==='visitante'?'disabled':''} value="${val}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`; 
+                    tr += `<td><input ${curUser==='visitante'?'disabled':''} value="${val}" onchange="atuCel('${dStr}','${col}',this.value)" style="width:100%; border:none; text-align:center;"></td>`; 
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
@@ -171,13 +167,12 @@
         const grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
         (db.docs?.[m] || []).forEach(doc => { 
             grid.innerHTML += `<div style="background:#1e293b; padding:10px; text-align:center; border-radius:8px;">
-                <p style="font-size:0.6rem; color:white; margin-bottom:5px;">${doc.nome}</p>
-                <button onclick="verArquivo('${doc.data}')" style="background:var(--neon); border:none; padding:8px; cursor:pointer; width:100%; font-weight:bold; border-radius:4px;">VER</button>
+                <button onclick="verArquivo('${doc.data}')" style="background:var(--neon); border:none; padding:8px; cursor:pointer; width:100%; font-weight:bold; border-radius:4px;">VER COMPROVANTE</button>
             </div>`; 
         });
     }
 
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); dbCloud.collection('dados').doc('estrela_v115').set(db); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
     const sM = document.getElementById('selMes');
