@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>IASD Estrela Dalva</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
@@ -15,26 +14,20 @@
         
         @media print {
             body { background: white; color: black; }
-            .admin-box, #userWelcomeBar, .input-dark, button, #missionaryChart, #secPlan, #secLinks, #secTesouraria, select, .no-print { display: none !important; }
-            table#tabela-main { width: 100% !important; border: 1px solid black !important; background: white !important; }
+            .no-print, button, select, #userWelcomeBar { display: none !important; }
+            table#tabela-main { width: 100% !important; border: 1px solid black !important; color: black !important; }
             #tabela-main th, #tabela-main td { border: 1px solid black !important; color: black !important; }
-            #tabela-main input { color: black !important; background: transparent !important; }
+            #tabela-main input { color: black !important; border: none !important; background: transparent !important; }
         }
 
-        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: 180px 1.2fr 2fr 1.2fr; gap: 15px; } 
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 4px; }
-        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
-        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 10px; border-radius: 4px; box-sizing: border-box; }
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 55px; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; height: 50px; }
+        #tabela-main input { width: 100%; height: 100%; border: none; text-align: center; font-family: inherit; font-size: 0.8rem; }
         
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        #fileViewer { width: 95vw; height: 90vh; display: flex; flex-direction: column; }
-        #fileContent { flex: 1; background: #fff; border-radius: 8px; overflow: hidden; }
-        #fileContent embed, #fileContent img { width: 100%; height: 100%; object-fit: contain; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 300px; color: black; }
     </style>
 </head>
 <body>
@@ -45,39 +38,41 @@
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); cursor:pointer;" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button class="input-dark" style="width:auto; padding:0 15px; border-color:red; color:red; display:none; cursor:pointer;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+            <button class="input-dark" style="width:auto; padding:0 20px; border-color:var(--neon); color:var(--neon); cursor:pointer;" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+            <button class="input-dark" style="width:auto; padding:0 20px; border-color:red; color:red; display:none; cursor:pointer;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
-    </div>
-
-    <div id="adminPanel" class="admin-box no-print">
-        <div class="admin-grid" id="adminGrid">
-            </div>
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.5rem;">ESCALA</th></tr>
-            <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold);">Ancião: </th></tr>
-            <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.4rem; padding:15px;">ESCALA</th></tr>
+            <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold);">Responsável: </th></tr>
+            <tr><th style="width:100px;">DIA</th><th style="width:80px;">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 
     <div id="secTesouraria" class="no-print" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;">
-        <h3 style="color:var(--green);">💰 COMPROVANTES</h3>
+        <h3 style="color:var(--green);">💰 COMPROVANTES DA TESOURARIA</h3>
         <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:15px;"></div>
     </div>
 </div>
 
-<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div id="fileViewer" onclick="event.stopPropagation()"><div id="fileContent"></div><button class="btn-min" style="background:red; color:white; margin-top:10px;" onclick="document.getElementById('popViewImg').style.display='none'">FECHAR</button></div></div>
-
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'">
-    <div style="background:white; padding:30px; border-radius:10px; width:280px;" onclick="event.stopPropagation()">
-        <h3 style="color:black; margin-top:0; text-align:center;">LOGIN</h3>
-        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:#000!important; background:#f0f0f0!important; margin-bottom:10px;">
-        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:#000!important; background:#f0f0f0!important;">
-        <button onclick="login()" style="width:100%; margin-top:15px; padding:12px; background:var(--blue); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ENTRAR</button>
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; text-align:center;">LOGIN DO SISTEMA</h3>
+        <label style="font-size:0.8rem;">Usuário:</label>
+        <input type="text" id="userLogin" class="input-dark" style="color:black!important; background:#eee!important; margin-bottom:15px;">
+        <label style="font-size:0.8rem;">Senha:</label>
+        <input type="password" id="passLogin" class="input-dark" style="color:black!important; background:#eee!important;">
+        <button onclick="login()" style="width:100%; margin-top:20px; padding:12px; background:var(--blue); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">ENTRAR</button>
+    </div>
+</div>
+
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'">
+    <div style="width:95vw; height:90vh; display:flex; flex-direction:column;" onclick="event.stopPropagation()">
+        <div id="fileContent" style="flex:1; background:white; border-radius:8px; overflow:hidden;"></div>
+        <button style="background:red; color:white; padding:15px; border:none; margin-top:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('popViewImg').style.display='none'">FECHAR</button>
     </div>
 </div>
 <script>
@@ -91,20 +86,26 @@
     let db = {};
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
+    // FUNÇÃO QUE GARANTE QUE O LOGIN FUNCIONE
+    function verificarIntegridade() {
+        let mudou = false;
+        if (!db.senhas || Object.keys(db.senhas).length === 0) {
+            db.senhas = { admin: "iasd118", ger: "ger123" }; 
+            mudou = true;
+        }
+        if (!db.anciaos) { db.anciaos = {}; mudou = true; }
+        if (!db.escalas) { db.escalas = {}; mudou = true; }
+        if (!db.docs) { db.docs = {}; mudou = true; }
+        if (mudou) save();
+    }
+
     dbCloud.collection('dados').doc('estrela_v115').onSnapshot(doc => {
         if(doc.exists) { 
             db = doc.data();
-            // AUTORREPARO SILENCIOSO: Se as senhas sumiram, ele repõe as padrão sem apagar o resto.
-            if (!db.senhas || Object.keys(db.senhas).length === 0) {
-                db.senhas = { admin: "iasd118", ger: "ger123" }; 
-                db.anciaos = db.anciaos || {};
-                db.escalas = db.escalas || {};
-                db.docs = db.docs || {};
-                save(); 
-            }
+            verificarIntegridade();
             renderTodo(); 
         } else {
-            // Se o documento sumiu totalmente, cria um inicial para você não ficar trancado fora
+            // Se o documento não existe, ele cria um novo com a senha admin para você entrar
             db = { senhas: { admin: "iasd118" }, anciaos: {}, escalas: {}, docs: {} };
             save();
         }
@@ -115,45 +116,35 @@
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
-        if(db.senhas && db.senhas[u] === p) { 
-            localStorage.setItem('iasd_curUser', u); 
-            location.reload(); 
+        
+        if (db.senhas && db.senhas[u] === p) {
+            localStorage.setItem('iasd_curUser', u);
+            location.reload();
         } else {
-            alert("Usuário ou Senha incorretos. Tente 'admin' com sua senha padrão."); 
+            alert("Acesso negado! Se o banco foi resetado, tente usuário 'admin' e senha 'iasd118'.");
         }
-    }
-
-    function verArquivo(src) { 
-        const content = document.getElementById('fileContent');
-        content.innerHTML = "";
-        if (src.includes("pdf") || src.startsWith("data:application/pdf")) {
-            content.innerHTML = `<embed src="${src}" type="application/pdf">`;
-        } else {
-            content.innerHTML = `<img src="${src}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
-        }
-        document.getElementById('popViewImg').style.display = 'flex';
     }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[mIdx] || 'Não definido'}`;
+        document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || 'A definir'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         
         if (curUser !== 'visitante') {
             document.getElementById('userWelcomeBar').style.display = 'block';
-            document.getElementById('userWelcomeBar').innerHTML = `Logado: <b>${MINS[curUser] || curUser}</b>`;
+            document.getElementById('userWelcomeBar').innerHTML = `Bem-vindo, <b>${MINS[curUser] || curUser}</b>`;
             document.getElementById('btnSair').style.display = 'block';
             document.getElementById('btnAcesso').style.display = 'none';
             document.getElementById('secTesouraria').style.display = 'block';
-            if(['admin','ger'].includes(curUser)) document.getElementById('adminPanel').style.display='block';
         }
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+        
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
             if([0,3,6].includes(sem)) {
-                let tr = `<tr><td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td><td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr><td>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
                     let val = db.escalas?.[dStr]?.[col] || '';
                     tr += `<td><input ${curUser==='visitante'?'disabled':''} value="${val}" onchange="atuCel('${dStr}','${col}',this.value)"></td>`; 
@@ -164,17 +155,29 @@
         renderArquivosPublicos();
     }
 
+    function verArquivo(src) { 
+        const content = document.getElementById('fileContent');
+        content.innerHTML = "";
+        if (src.includes("pdf") || src.startsWith("data:application/pdf")) {
+            content.innerHTML = `<embed src="${src}" type="application/pdf" width="100%" height="100%">`;
+        } else {
+            content.innerHTML = `<img src="${src}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
+        }
+        document.getElementById('popViewImg').style.display = 'flex';
+    }
+
     function renderArquivosPublicos() {
         const m = document.getElementById('selMes').value;
         const grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
         (db.docs?.[m] || []).forEach(doc => { 
             grid.innerHTML += `<div style="background:#1e293b; padding:10px; text-align:center; border-radius:8px;">
-                <button onclick="verArquivo('${doc.data}')" style="background:var(--neon); border:none; padding:8px; cursor:pointer; width:100%; font-weight:bold;">VER DOC</button>
+                <p style="font-size:0.6rem; color:white; margin-bottom:5px;">${doc.nome}</p>
+                <button onclick="verArquivo('${doc.data}')" style="background:var(--neon); border:none; padding:8px; cursor:pointer; width:100%; font-weight:bold; border-radius:4px;">VER</button>
             </div>`; 
         });
     }
 
-    function atuCel(d, c, v) { if(!db.escalas) db.escalas = {}; if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
     const sM = document.getElementById('selMes');
