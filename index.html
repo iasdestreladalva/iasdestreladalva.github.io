@@ -1,164 +1,165 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>IASD Estrela Dalva</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    
-    <style>
-        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
-        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
-        .container { max-width: 1580px; margin: auto; }
-        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
-        #userWelcomeBar b { color: var(--gold); text-transform: uppercase; }
-        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: 180px 1.2fr 2fr 1.2fr; gap: 15px; } 
-        .admin-section { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; border: 1px solid #334155; }
-        .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
-        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
-        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
-        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; height: 65px; }
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 85vh; overflow-y: auto; }
-        .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-        .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
-        .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
-        .plan-table td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.95rem; line-height: 1.5; vertical-align: middle; }
-    </style>
+    <meta charset="UTF-8">
+    <title>IASD Estrela Dalva</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
+        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
+        .container { max-width: 1580px; margin: auto; }
+        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
+        #userWelcomeBar b { color: var(--gold); text-transform: uppercase; }
+        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: 180px 1.2fr 2fr 1.2fr; gap: 15px; } 
+        .admin-section { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; border: 1px solid #334155; }
+        .admin-section h4 { color: var(--neon); font-size: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
+        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
+        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; height: 65px; }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 85vh; overflow-y: auto; }
+        .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+        .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
+        .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
+        .plan-table td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.95rem; line-height: 1.5; vertical-align: middle; }
+    </style>
 </head>
 <body>
 <div class="container">
-    <div id="userWelcomeBar"></div>
-    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
-        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-        <div style="display:flex; gap:10px;">
-            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button id="btnLinksPost" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none; cursor:pointer; font-weight:bold;" onclick="document.getElementById('popLinksPost').style.display='flex'">🔗 POSTAR LINK</button>
-            <button id="btnEventos" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--red); color:var(--red); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
-            <button id="btnTesourariaAdmin" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); cursor:pointer; font-weight:bold; display:none;" onclick="abrirTesourariaAdmin()">⚙️ TESOURARIA</button>
-            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPop()">📊 MISSIONÁRIO</button>
-            <button class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); cursor:pointer;" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button class="input-dark" style="width:auto; padding:0 15px; border-color:red; color:red; display:none; cursor:pointer;" id="btnSair" onclick="sair()">🚪 SAIR</button>
-        </div>
+    <div id="userWelcomeBar"></div>
+    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
+        <div style="display:flex; gap:10px;">
+            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
+            <button id="btnLinksPost" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none; cursor:pointer; font-weight:bold;" onclick="document.getElementById('popLinksPost').style.display='flex'">🔗 POSTAR LINK</button>
+            <button id="btnEventos" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--red); color:var(--red); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
+            <button id="btnTesourariaAdmin" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); cursor:pointer; font-weight:bold; display:none;" onclick="abrirTesourariaAdmin()">⚙️ TESOURARIA</button>
+            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none; cursor:pointer; font-weight:bold;" onclick="abrirPop()">📊 MISSIONÁRIO</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); cursor:pointer;" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+            <button class="input-dark" style="width:auto; padding:0 15px; border-color:red; color:red; display:none; cursor:pointer;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+        </div>
     </div>
+    
     <div id="adminPanel" class="admin-box">
-        <div class="admin-grid">
-            <div class="admin-section">
-                <h4>1. MINISTÉRIO DO DIA</h4>
-                <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
-            </div>
-            <div class="admin-section">
-                <h4>2. ANCIÃO DO MÊS</h4>
-                <div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;"></div>
-            </div>
-            <div class="admin-section">
-                <h4>3. LOGINS & SENHAS</h4>
-                <div style="max-height: 250px; overflow-y: auto;">
-                    <table style="width:100%; border-collapse:collapse; font-size:0.7rem;"><tbody id="corpoCreds"></tbody></table>
-                </div>
-            </div>
-            <div class="admin-section">
-                <h4>4. APOIO AOS MINISTÉRIOS</h4>
-                <div id="gridApoioAnciao" style="max-height: 350px; overflow-y: auto;"></div>
-            </div>
-        </div>
-    </div> 
+        <div class="admin-grid">
+            <div class="admin-section">
+                <h4>1. MINISTÉRIO DO DIA</h4>
+                <div id="listaMinisterios"></div>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
+            </div>
+            <div class="admin-section">
+                <h4>2. ANCIÃO DO MÊS</h4>
+                <div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;"></div>
+            </div>
+            <div class="admin-section">
+                <h4>3. LOGINS & SENHAS</h4>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.7rem;"><tbody id="corpoCreds"></tbody></table>
+                </div>
+            </div>
+            <div class="admin-section">
+                <h4>4. APOIO AOS MINISTÉRIOS</h4>
+                <div id="gridApoioAnciao" style="max-height: 350px; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
 
-    <table id="tabela-main">
-        <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>ESCOLA SABATINA</th><th>PREGADOR</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
-        </thead>
-        <tbody id="corpoEscala"></tbody>
-    </table>
-</div> 
+    <table id="tabela-main">
+        <thead>
+            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+            <tr><th style="width:150px">DIA</th><th style="width:60px">DATA</th><th>ESCOLA SABATINA</th><th>PREGADOR</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+        </thead>
+        <tbody id="corpoEscala"></tbody>
+    </table>
+</div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <script>
-    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
-    firebase.initializeApp(firebaseConfig);
-    const dbCloud = firebase.firestore();
-    const docRef = dbCloud.collection('dados').doc('estrela_v115'); 
+    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
+    firebase.initializeApp(firebaseConfig);
+    const dbCloud = firebase.firestore();
+    const docRef = dbCloud.collection('dados').doc('estrela_v115');
 
-    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    
-    // Inclusão do Pastor na lista de nomes amigáveis
-    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
-    
-    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
-    let db = {};
-    let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; 
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    
+    // Inclusão do Pastor na lista de nomes amigáveis
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
+    
+    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
+    let db = {};
+    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    docRef.onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); corrigir(); renderTodo(); renderAdmin(); }
-        else { db = { senhas: {}, anciaos: {}, apoio_anciao: {}, eventos_especiais: {}, docs: {}, links_geral: [], meta_batismo: 15, escalas: {}, mis_v3: {}, regras_manuais: {}, plan_anual: {} }; docRef.set(db); }
-    }); 
+    docRef.onSnapshot(doc => {
+        if(doc.exists) { db = doc.data(); corrigir(); renderTodo(); renderAdmin(); }
+        else { db = { senhas: {}, anciaos: {}, apoio_anciao: {}, eventos_especiais: {}, docs: {}, links_geral: [], meta_batismo: 15, escalas: {}, mis_v3: {}, regras_manuais: {}, plan_anual: {} }; docRef.set(db); }
+    });
 
-    function corrigir() {
-        if (!db.senhas) db.senhas = { admin: "iasd118", ger: "ger123", diaconato: "diac123", musica: "mus123", sonoplastia: "sono123", mulher: "mulher123", sabatina: "sab123", pessoal: "mp123", mordomia: "mord123", saude: "saude123", homens: "homem123", familia: "fam123", adolescentes: "adol123", aventureiros: "avt123", desbravadores: "dbv123", jovem: "jovem123" };
-        if (!db.anciaos) db.anciaos = {0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert"};
-        if (!db.apoio_anciao) db.apoio_anciao = {}; if (!db.eventos_especiais) db.eventos_especiais = {}; if (!db.escalas) db.escalas = {};
-        if (!db.regras_manuais) db.regras_manuais = {};
-    }
+    function corrigir() {
+        if (!db.senhas) db.senhas = { admin: "iasd118", ger: "ger123", diaconato: "diac123", musica: "mus123", sonoplastia: "sono123", mulher: "mulher123", sabatina: "sab123", pessoal: "mp123", mordomia: "mord123", saude: "saude123", homens: "homem123", familia: "fam123", adolescentes: "adol123", aventureiros: "avt123", desbravadores: "dbv123", jovem: "jovem123" };
+        if (!db.anciaos) db.anciaos = {0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert"};
+        if (!db.apoio_anciao) db.apoio_anciao = {}; if (!db.eventos_especiais) db.eventos_especiais = {}; if (!db.escalas) db.escalas = {};
+        if (!db.regras_manuais) db.regras_manuais = {};
+    }
 </script>
 <script>
-    function updateField(fieldPath, value) { docRef.update({ [fieldPath]: value }); } 
+    function updateField(fieldPath, value) { docRef.update({ [fieldPath]: value }); }
 
-    function renderAdmin() {
-        if(curUser !== 'admin' && curUser !== 'ger') return;
-        document.getElementById('adminPanel').style.display = 'block';
-        const lista = document.getElementById('listaMinisterios');
-        lista.innerHTML = "";
-        // Inclusão do 'pastor' no array de botões do painel administrativo
-        ["pastor","pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica","aventureiros","desbravadores","jovem"].forEach(m => { 
-            lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
-        });
-        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i] || ''}" onchange="updateField('anciaos.${i}', this.value)"></div>`; });
-        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td>${k}</td><td><input class="input-dark" value="${db.senhas[k] || ''}" onchange="updateField('senhas.${k}', this.value)"></td></tr>`; });
-    } 
+    function renderAdmin() {
+        if(curUser !== 'admin' && curUser !== 'ger') return;
+        document.getElementById('adminPanel').style.display = 'block';
+        const lista = document.getElementById('listaMinisterios');
+        lista.innerHTML = "";
+        // Inclusão do 'pastor' no array de botões do painel administrativo
+        ["pastor","pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica","aventureiros","desbravadores","jovem"].forEach(m => { 
+            lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
+        });
+        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
+        MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i] || ''}" onchange="updateField('anciaos.${i}', this.value)"></div>`; });
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td>${k}</td><td><input class="input-dark" value="${db.senhas[k] || ''}" onchange="updateField('senhas.${k}', this.value)"></td></tr>`; });
+    }
 
-    function renderTodo() {
-        const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos[mIdx] || ''}`;
-        document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
-        const corpo = document.getElementById('corpoEscala');
-        corpo.innerHTML = "";
-        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate(); 
+    function renderTodo() {
+        const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
+        document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos[mIdx] || ''}`;
+        document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
+        const corpo = document.getElementById('corpoEscala');
+        corpo.innerHTML = "";
+        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
 
-        for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais[dStr] || null;
-            if([0,3,6].includes(sem) || idEv) {
-                let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small style="color:var(--blue); font-weight:bold;">${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
-                ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let canEditCol = ['admin','ger'].includes(curUser);
-                    // Aplicação das fontes maiores e cores mais fortes nos campos da escala
-                    tr += `<td><input ${canEditCol ? '' : 'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.9rem; font-weight:bold; color:var(--blue);" value="${db.escalas[dStr]?.[col]||''}" onchange="updateField('escalas.${dStr}.${col}', this.value.toUpperCase())"></td>`; 
-                });
-                corpo.innerHTML += tr + "</tr>";
-            }
-        }
-    }
-    
-    function cliqueDia(dStr) {
-        if(!['admin','ger'].includes(curUser)) return;
-        if(window.minSelecionado) { updateField(`regras_manuais.${dStr}`, window.minSelecionado); }
-    } 
+        for(let d=1; d<=diasNoMes; d++) {
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais[dStr] || null;
+            if([0,3,6].includes(sem) || idEv) {
+                let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small style="color:var(--blue); font-weight:bold;">${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
+                    let canEditCol = ['admin','ger'].includes(curUser);
+                    // Aplicação das fontes maiores e cores mais fortes nos campos da escala
+                    tr += `<td><input ${canEditCol ? '' : 'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.9rem; font-weight:bold; color:var(--blue);" value="${db.escalas[dStr]?.[col]||''}" onchange="updateField('escalas.${dStr}.${col}', this.value.toUpperCase())"></td>`; 
+                });
+                corpo.innerHTML += tr + "</tr>";
+            }
+        }
+    }
+    
+    function cliqueDia(dStr) {
+        if(!['admin','ger'].includes(curUser)) return;
+        if(window.minSelecionado) { updateField(`regras_manuais.${dStr}`, window.minSelecionado); }
+    }
 
-    const sM = document.getElementById('selMes');
-    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    const sM = document.getElementById('selMes');
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 </script>
 </body>
 </html>
