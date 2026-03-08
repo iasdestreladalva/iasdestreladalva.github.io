@@ -21,18 +21,21 @@
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        
+        /* AJUSTE DE LEGIBILIDADE NA TABELA */
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; height: 65px; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; height: 60px; color: #000; font-size: 0.92rem; }
+        #tabela-main input { width: 100%; border: none; background: transparent; text-align: center; font-size: 0.92rem; font-weight: bold; color: var(--blue); text-transform: uppercase; }
+        
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 85vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
         .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
-        .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
-        .plan-table td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.95rem; line-height: 1.5; vertical-align: middle; }
     </style>
 </head>
 <body>
+
 <div class="container">
     <div id="userWelcomeBar"></div>
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
@@ -47,7 +50,7 @@
             <button class="input-dark" style="width:auto; padding:0 15px; border-color:red; color:red; display:none; cursor:pointer;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
     </div>
-    
+
     <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
@@ -60,7 +63,11 @@
                 <div id="gridMeses" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;"></div>
             </div>
             <div class="admin-section">
-                <h4>3. LOGINS & SENHAS</h4>
+                <h4>3. LOGINS, SENHAS & METAS</h4>
+                <div style="margin-bottom:15px; padding:8px; border:1px solid var(--gold); border-radius:6px; background:rgba(255,215,0,0.05);">
+                    <label style="color:var(--gold); font-size:0.65rem; font-weight:bold;">META ANUAL DE BATISMOS</label>
+                    <input type="number" id="metaBatismoInput" class="input-dark" style="margin-top:4px;" onchange="updateField('meta_batismo', this.value)">
+                </div>
                 <div style="max-height: 250px; overflow-y: auto;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.7rem;"><tbody id="corpoCreds"></tbody></table>
                 </div>
@@ -80,9 +87,21 @@
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
+
+    <div style="margin-top:30px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div style="background:#0f172a; border:1px solid #334155; padding:20px; border-radius:12px;">
+             <h3 style="margin-top:0; color:var(--gold);">Crescimento Missionário</h3>
+             <div style="height:300px;"><canvas id="missionaryChart"></canvas></div>
+        </div>
+        <div style="background:#0f172a; border:1px solid #334155; padding:20px; border-radius:12px;">
+             <h3 style="margin-top:0; color:var(--neon);">Links e Avisos Úteis</h3>
+             <div id="areaLinksPublicos" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+        </div>
+    </div>
 </div>
 
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0;">Acesso</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
@@ -90,12 +109,10 @@
     const docRef = dbCloud.collection('dados').doc('estrela_v115');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    
-    // Inclusão do Pastor na lista de nomes amigáveis
+    // PASTOR ADICIONADO AQUI
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     
-    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
-    let db = {};
+    let db = {}; let missionChart;
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
     docRef.onSnapshot(doc => {
@@ -106,26 +123,31 @@
     function corrigir() {
         if (!db.senhas) db.senhas = { admin: "iasd118", ger: "ger123", diaconato: "diac123", musica: "mus123", sonoplastia: "sono123", mulher: "mulher123", sabatina: "sab123", pessoal: "mp123", mordomia: "mord123", saude: "saude123", homens: "homem123", familia: "fam123", adolescentes: "adol123", aventureiros: "avt123", desbravadores: "dbv123", jovem: "jovem123" };
         if (!db.anciaos) db.anciaos = {0:"Jesuino", 1:"Wesley", 2:"Ester", 3:"Marcilio", 4:"Albert", 5:"Albert", 6:"Jesuino", 7:"Jesuino", 8:"Ester", 9:"Marcilio", 10:"Wesley", 11:"Albert"};
-        if (!db.apoio_anciao) db.apoio_anciao = {}; if (!db.eventos_especiais) db.eventos_especiais = {}; if (!db.escalas) db.escalas = {};
-        if (!db.regras_manuais) db.regras_manuais = {};
+        if (!db.apoio_anciao) db.apoio_anciao = {}; if (!db.eventos_especiais) db.eventos_especiais = {}; if (!db.docs) db.docs = {};
+        if (!db.links_geral) db.links_geral = []; if (!db.meta_batismo) db.meta_batismo = 15; if (!db.escalas) db.escalas = {};
+        if (!db.mis_v3) db.mis_v3 = {}; if (!db.regras_manuais) db.regras_manuais = {}; if (!db.plan_anual) db.plan_anual = {};
     }
-</script>
-<script>
+
     function updateField(fieldPath, value) { docRef.update({ [fieldPath]: value }); }
 
     function renderAdmin() {
-        if(curUser !== 'admin' && curUser !== 'ger') return;
+        if(!['admin','ger'].includes(curUser)) return;
         document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('btnSair').style.display = 'block';
+        document.getElementById('btnAcesso').style.display = 'none';
+        
         const lista = document.getElementById('listaMinisterios');
         lista.innerHTML = "";
-        // Inclusão do 'pastor' no array de botões do painel administrativo
+        // PASTOR ADICIONADO AO ARRAY DE BOTÕES
         ["pastor","pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica","aventureiros","desbravadores","jovem"].forEach(m => { 
             lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
         });
+
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i] || ''}" onchange="updateField('anciaos.${i}', this.value)"></div>`; });
+        
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td>${k}</td><td><input class="input-dark" value="${db.senhas[k] || ''}" onchange="updateField('senhas.${k}', this.value)"></td></tr>`; });
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas[k] || ''}" onchange="updateField('senhas.${k}', this.value)"></td></tr>`; });
     }
 
     function renderTodo() {
@@ -137,29 +159,36 @@
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
 
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais[dStr] || null;
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
             if([0,3,6].includes(sem) || idEv) {
-                let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small style="color:var(--blue); font-weight:bold;">${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small style="font-weight:bold; color:var(--blue);">${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let canEditCol = ['admin','ger'].includes(curUser);
-                    // Aplicação das fontes maiores e cores mais fortes nos campos da escala
-                    tr += `<td><input ${canEditCol ? '' : 'disabled'} style="width:100%; border:none; background:transparent; text-align:center; font-size:0.9rem; font-weight:bold; color:var(--blue);" value="${db.escalas[dStr]?.[col]||''}" onchange="updateField('escalas.${dStr}.${col}', this.value.toUpperCase())"></td>`; 
+                    let canEdit = ['admin','ger'].includes(curUser);
+                    tr += `<td><input ${canEdit ? '' : 'disabled'} value="${db.escalas[dStr]?.[col]||''}" onchange="updateField('escalas.${dStr}.${col}', this.value.toUpperCase())"></td>`; 
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
+        updateChart(mIdx);
+        if(typeof renderLinksPublicos === "function") renderLinksPublicos();
     }
-    
+
+    function updateChart(mIdx) {
+        const ctx = document.getElementById('missionaryChart').getContext('2d');
+        if(missionChart) missionChart.destroy();
+        missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.","Clas.","Est.R","Minis.","Duplas","Batismos"], datasets: [{ data: db.mis_v3?.[mIdx] || [0,0,0,0,0,0], backgroundColor: ['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options: { responsive:true, maintainAspectRatio:false } });
+    }
+
     function cliqueDia(dStr) {
         if(!['admin','ger'].includes(curUser)) return;
         if(window.minSelecionado) { updateField(`regras_manuais.${dStr}`, window.minSelecionado); }
     }
 
-    const sM = document.getElementById('selMes');
-    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    
     function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+
+    const sM = document.getElementById('selMes');
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
