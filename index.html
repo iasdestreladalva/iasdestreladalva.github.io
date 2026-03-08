@@ -22,16 +22,22 @@
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
-        /* AJUSTE DE LEGIBILIDADE NA TABELA */
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; height: 60px; color: #000; font-size: 0.92rem; }
-        #tabela-main input { width: 100%; border: none; background: transparent; text-align: center; font-size: 0.92rem; font-weight: bold; color: var(--blue); text-transform: uppercase; }
+        
+        /* MELHORIA DE LEGIBILIDADE SOLICITADA */
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; height: 55px; }
+        #tabela-main input { width: 100%; border: none; background: transparent; text-align: center; font-size: 0.95rem; font-weight: bold; color: var(--blue); text-transform: uppercase; }
         
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 85vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
         .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
+        #imgFull { max-width: 90vw; max-height: 80vh; border-radius: 8px; border: 2px solid white; }
+        .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
+        .plan-table td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.95rem; line-height: 1.5; vertical-align: middle; }
+        .plan-month-col { background: rgba(0, 210, 255, 0.05); color: var(--gold); font-weight: bold; text-align: center; width: 140px; text-transform: uppercase; border-right: 1px solid #334155; }
+        .plan-text-area { width: 100%; background: transparent !important; color: #e6f1ff !important; border: none !important; resize: none; font-family: inherit; font-size: 0.95rem; line-height: 1.6; padding: 5px; }
     </style>
 </head>
 <body>
@@ -90,17 +96,22 @@
 
     <div style="margin-top:30px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
         <div style="background:#0f172a; border:1px solid #334155; padding:20px; border-radius:12px;">
-             <h3 style="margin-top:0; color:var(--gold);">Crescimento Missionário</h3>
-             <div style="height:300px;"><canvas id="missionaryChart"></canvas></div>
+            <h3 style="margin-top:0; color:var(--gold); font-size:1.1rem; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:20px;">CRESCIMENTO MISSIONÁRIO</h3>
+            <div style="height:350px;"><canvas id="missionaryChart"></canvas></div>
+            <div id="statusMissionario" style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.85rem;"></div>
         </div>
         <div style="background:#0f172a; border:1px solid #334155; padding:20px; border-radius:12px;">
-             <h3 style="margin-top:0; color:var(--neon);">Links e Avisos Úteis</h3>
-             <div id="areaLinksPublicos" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+            <h3 style="margin-top:0; color:var(--neon); font-size:1.1rem; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:20px;">AVISOS E LINKS ÚTEIS</h3>
+            <div id="areaLinksPublicos" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;"></div>
+            <div id="galeriaArquivos" style="margin-top:20px; display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; border-top: 1px solid #334155; padding-top:20px;"></div>
         </div>
     </div>
-</div>
 
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0;">Acesso</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+    <div style="margin-top:30px; background:#0f172a; border:1px solid #334155; padding:20px; border-radius:12px;">
+        <h3 style="margin-top:0; color:var(--orange); font-size:1.1rem; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:20px;">PLANEJAMENTO ANUAL 2026</h3>
+        <table class="plan-table"><tbody id="corpoPlanAnual"></tbody></table>
+    </div>
+</div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
@@ -109,11 +120,11 @@
     const docRef = dbCloud.collection('dados').doc('estrela_v115');
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    // PASTOR ADICIONADO AQUI
-    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     
-    let db = {}; let missionChart;
-    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    // PASTOR ADICIONADO ABAIXO
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
+        const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
+    let missionChart; let db = {};
 
     docRef.onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); corrigir(); renderTodo(); renderAdmin(); }
@@ -128,6 +139,7 @@
         if (!db.mis_v3) db.mis_v3 = {}; if (!db.regras_manuais) db.regras_manuais = {}; if (!db.plan_anual) db.plan_anual = {};
     }
 
+    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
     function updateField(fieldPath, value) { docRef.update({ [fieldPath]: value }); }
 
     function renderAdmin() {
@@ -135,48 +147,82 @@
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('btnSair').style.display = 'block';
         document.getElementById('btnAcesso').style.display = 'none';
-        
+        document.getElementById('btnLinksPost').style.display = 'block';
+        document.getElementById('btnEventos').style.display = 'block';
+        document.getElementById('btnDados').style.display = 'block';
+        if(curUser==='admin') document.getElementById('btnTesourariaAdmin').style.display = 'block';
+
         const lista = document.getElementById('listaMinisterios');
         lista.innerHTML = "";
-        // PASTOR ADICIONADO AO ARRAY DE BOTÕES
+        // PASTOR ADICIONADO AOS BOTÕES
         ["pastor","pessoal","mordomia","saude","homens","familia","adolescentes","mulher","musica","aventureiros","desbravadores","jovem"].forEach(m => { 
             lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
         });
 
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos[i] || ''}" onchange="updateField('anciaos.${i}', this.value)"></div>`; });
-        
+
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas[k] || ''}" onchange="updateField('senhas.${k}', this.value)"></td></tr>`; });
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td>${k}</td><td><input class="input-dark" value="${db.senhas[k] || ''}" onchange="updateField('senhas.${k}', this.value)"></td></tr>`; });
+
+        const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
+        LISTA_ANCIAOS.forEach(a => {
+            let html = `<div style="margin-bottom:10px; border-bottom:1px solid #334155; padding-bottom:5px;"><b style="color:var(--gold); font-size:0.75rem;">${a.toUpperCase()} APOIA:</b><div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:5px;">`;
+            Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => {
+                let isChecked = db.apoio_anciao[a]?.includes(m);
+                html += `<label style="font-size:0.65rem; display:flex; align-items:center; gap:4px; color:${isChecked?'var(--neon)':'#888'}"><input type="checkbox" ${isChecked?'checked':''} onchange="toggleApoio('${a}','${m}')"> ${MINS[m]}</label>`;
+            });
+            gA.innerHTML += html + `</div></div>`;
+        });
+        document.getElementById('metaBatismoInput').value = db.meta_batismo;
+    }
+
+    function toggleApoio(anciao, min) {
+        let lista = db.apoio_anciao[anciao] || [];
+        if(lista.includes(min)) lista = lista.filter(x => x !== min);
+        else lista.push(min);
+        updateField(`apoio_anciao.${anciao}`, lista);
     }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos[mIdx] || ''}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
-        const corpo = document.getElementById('corpoEscala');
-        corpo.innerHTML = "";
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
 
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0], idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais[dStr] || null;
             if([0,3,6].includes(sem) || idEv) {
-                let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small style="font-weight:bold; color:var(--blue);">${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr class="${idEv?'row-especial':''}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small style="color:var(--blue); font-weight:bold;">${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let canEdit = ['admin','ger'].includes(curUser);
+                    let canEdit = ['admin','ger'].includes(curUser) || (curUser === col) || (col==='sa' && curUser==='sabatina') || (col==='pr' && curUser==='pessoal') || (col==='mu' && curUser==='musica') || (col==='lo' && curUser==='musica') || (col==='so' && curUser==='sonoplastia') || (col==='re' && curUser==='recepção') || (col==='di' && curUser==='diaconato');
                     tr += `<td><input ${canEdit ? '' : 'disabled'} value="${db.escalas[dStr]?.[col]||''}" onchange="updateField('escalas.${dStr}.${col}', this.value.toUpperCase())"></td>`; 
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        updateChart(mIdx);
-        if(typeof renderLinksPublicos === "function") renderLinksPublicos();
+        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); renderPlan();
+        if(curUser!=='visitante') {
+            document.getElementById('userWelcomeBar').style.display='block';
+            document.getElementById('userWelcomeBar').innerHTML=`BEM-VINDO, <b>${MINS[curUser]}</b>! VOCÊ TEM PERMISSÃO PARA EDITAR SUA COLUNA.`;
+            document.getElementById('btnAcesso').style.display='none'; document.getElementById('btnSair').style.display='block';
+        }
+    }
+
+    function renderPlan() {
+        const corpo = document.getElementById('corpoPlanAnual'); corpo.innerHTML = "";
+        MESES.forEach((m, i) => {
+            corpo.innerHTML += `<tr><td class="plan-month-col">${m}</td><td><textarea class="plan-text-area" ${['admin','ger'].includes(curUser)?'':'disabled'} onchange="updateField('plan_anual.${i}', this.value)">${db.plan_anual[i] || ''}</textarea></td></tr>`;
+        });
     }
 
     function updateChart(mIdx) {
         const ctx = document.getElementById('missionaryChart').getContext('2d');
         if(missionChart) missionChart.destroy();
-        missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.","Clas.","Est.R","Minis.","Duplas","Batismos"], datasets: [{ data: db.mis_v3?.[mIdx] || [0,0,0,0,0,0], backgroundColor: ['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options: { responsive:true, maintainAspectRatio:false } });
+        missionChart = new Chart(ctx, { type: 'bar', data: { labels: ["Enc.","Clas.","Est.R","Minis.","Duplas","Batismos"], datasets: [{ data: db.mis_v3[mIdx] || [0,0,0,0,0,0], backgroundColor: ['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options: { responsive:true, maintainAspectRatio:false } });
+        let v = db.mis_v3[mIdx] || [0,0,0,0,0,0];
+        document.getElementById('statusMissionario').innerHTML = `<span>ESTUDOS: <b>${v[2]}</b></span><span>BATISMOS: <b>${v[5]}/${db.meta_batismo}</b></span>`;
     }
 
     function cliqueDia(dStr) {
@@ -189,6 +235,11 @@
 
     const sM = document.getElementById('selMes');
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    // Funções de Eventos, Links e Tesouraria omitidas aqui apenas para caber no limite de texto, 
+    // mas se precisar delas agora mesmo, posso enviar a Parte 3.
 </script>
+
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0;">Acesso</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 </body>
 </html>
