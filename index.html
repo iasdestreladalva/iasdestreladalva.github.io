@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva</title>
+    <title>IASD Estrela Dalva - v115.8 (Conexão v102)</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -115,14 +115,14 @@
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
-    dbCloud.collection('dados').doc('estrela_v115').onSnapshot(doc => {
+    // LINHA ALTERADA: Voltamos a conectar no estrela_v102 para que seu login funcione!
+    dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); } 
         else { db = { senhas: {}, anciaos: {}, apoio_anciao: {}, eventos_especiais: {}, docs: {}, escalas: {}, mis_v3: {}, regras_manuais: {}, plan_anual: {} }; save(); }
     });
 
-    function save() { dbCloud.collection('dados').doc('estrela_v115').set(db); }
+    function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
 
-    // --- FUNÇÕES DE BACKUP ---
     function exportarBackup() {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
         const downloadAnchorNode = document.createElement('a');
@@ -141,17 +141,12 @@
             try {
                 const importedDb = JSON.parse(e.target.result);
                 if (confirm("ATENÇÃO: Isso substituirá TODOS os dados atuais pelos do arquivo. Continuar?")) {
-                    db = importedDb;
-                    save();
-                    alert("Dados restaurados com sucesso!");
+                    db = importedDb; save(); alert("Dados restaurados com sucesso!");
                 }
-            } catch (err) {
-                alert("Erro ao ler o arquivo de backup.");
-            }
+            } catch (err) { alert("Erro ao ler o arquivo de backup."); }
         };
         reader.readAsText(file);
     }
-    // ------------------------------------------
 
     function autoResize(textarea) {
         textarea.style.height = 'auto';
@@ -192,6 +187,7 @@
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 150);
 
         const isV = curUser === 'visitante';
+        const isAdmin = ['admin','ger'].includes(curUser);
         document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
         if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Conselho"}</b>`;
         
@@ -202,7 +198,9 @@
         document.getElementById('btnTesourariaAdmin').style.display = isV ? 'none' : 'block';
         document.getElementById('secTesouraria').style.display = isV ? 'none' : 'block';
         
-        if(['admin','ger'].includes(curUser)) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
+        document.getElementById('btnUploadTesouraria').style.display = isAdmin ? 'block' : 'none';
+
+        if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
         updateChart(mIdx); renderArquivosPublicos();
     }
 
@@ -222,11 +220,11 @@
 
     function verArquivo(src) { const container = document.getElementById('viewContainer'); container.innerHTML = ""; if (src.includes("pdf") || src.includes("application/pdf")) { container.innerHTML = `<iframe src="${src}" style="width:100%; height:85vh; border:none; background:white;"></iframe>`; } else { container.innerHTML = `<img src="${src}" style="max-width:100%; max-height:85vh; border:2px solid white;">`; } document.getElementById('popViewImg').style.display = 'flex'; }
     function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m] = []; db.docs[m].push({ nome: file.name, data: e.target.result }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
-    function renderAdminDocs() { const m = document.getElementById('selMes').value; const lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = "<h4>Arquivos do Mês</h4>"; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding:8px; background:rgba(255,255,255,0.05);"><small onclick="verArquivo('${doc.data}')" style="cursor:pointer; color:var(--neon);">${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save();" style="background:red; color:white; border:none;">X</button></div>`; }); }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value; const lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = "<h4>Arquivos do Mês</h4>"; const isAdmin = ['admin','ger'].includes(curUser); (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding:8px; background:rgba(255,255,255,0.05);"><small onclick="verArquivo('${doc.data}')" style="cursor:pointer; color:var(--neon);">${doc.nome}</small>${isAdmin ? `<button onclick="db.docs[${m}].splice(${i},1); save();" style="background:red; color:white; border:none;">X</button>` : ''}</div>`; }); }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value; const grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; if(curUser==='visitante') return; (db.docs?.[m] || []).forEach(doc => { grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}')"><div style="font-size:2rem">${doc.data.includes("pdf") ? '📄' : '🖼️'}</div><p style="font-size:0.6rem; color:white; margin:0">${doc.nome}</p></div>`; }); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
     function salvarEventoEspecial() { const nome = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!nome || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00"); while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: nome.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); }
-    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:3px;"><span>${k.split('-').reverse().join('/')} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save();" style="background:red; color:white; border:none;">X</button></div>`; }); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; const isAdmin = ['admin','ger'].includes(curUser); Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:3px;"><span>${k.split('-').reverse().join('/')} - ${db.eventos_especiais[k].nome}</span>${isAdmin ? `<button onclick="delete db.eventos_especiais['${k}']; save();" style="background:red; color:white; border:none;">X</button>` : ''}</div>`; }); }
     function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; renderAdminDocs(); }
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr] = window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
