@@ -133,7 +133,7 @@
 
 <div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" style="background:var(--neon); color:var(--blue); border:none; margin-top:15px;" onclick="salvarLink()">POSTAR</button><hr style="border:0; border-top:1px solid #444; margin:15px 0;"><div id="listaLinksAtivos"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
 <div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 90%;" id="viewContainer"></div></div>
 
@@ -268,11 +268,60 @@
     function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
 
-    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; renderAdminDocs(); }
-    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({nome:file.name, data:e.target.result}); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
-    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
-    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}')">📄<br><small>${doc.nome}</small></div>`; }); }
-    function verArquivo(src) { const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
+    function abrirTesourariaAdmin() { 
+        document.getElementById('popTesouraria').style.display='flex'; 
+        const sel = document.getElementById('docDestinatario');
+        sel.innerHTML = '<option value="todos">🌍 TODOS OS USUÁRIOS</option>';
+        Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; });
+        renderAdminDocs(); 
+    }
+    function uploadArquivo() { 
+        const file = document.getElementById('fileInput').files[0]; 
+        const dest = document.getElementById('docDestinatario').value;
+        if(!file) return; 
+        const reader = new FileReader(); 
+        reader.onload = function(e) { 
+            const m = document.getElementById('selMes').value; 
+            if(!db.docs[m]) db.docs[m]=[]; 
+            db.docs[m].push({
+                nome: file.name, 
+                data: e.target.result, 
+                para: dest, 
+                ext: file.name.split('.').pop().toLowerCase()
+            }); 
+            save(); 
+            renderAdminDocs(); 
+        }; 
+        reader.readAsDataURL(file); 
+    }
+    function renderAdminDocs() { 
+        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); 
+        lista.innerHTML = ""; 
+        (db.docs?.[m] || []).forEach((doc, i) => { 
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; 
+        }); 
+    }
+    function renderArquivosPublicos() { 
+        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); 
+        grid.innerHTML = ""; 
+        (db.docs?.[m] || []).forEach(doc => { 
+            if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) {
+                let icone = "📄";
+                if(['ppt','pptx'].includes(doc.ext)) icone = "📊";
+                if(['jpg','jpeg','png'].includes(doc.ext)) icone = "🖼️";
+                grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">${icone}<br><small>${doc.nome}</small></div>`; 
+            }
+        }); 
+    }
+    function verArquivo(src, ext, nome) { 
+        if(['ppt','pptx'].includes(ext)) {
+            const a = document.createElement('a'); a.href = src; a.download = nome; a.click();
+            return;
+        }
+        const c = document.getElementById('viewContainer'); 
+        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; 
+        document.getElementById('popViewImg').style.display='flex'; 
+    }
     function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
     function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Número de treinamentos/encontros missionários (duplas missionárias, instrutor bíblico, classes bíblicas, pequenos grupos,etc","Número de Classes Biblicas em funcionamento","Número de pessoas recebendo Estudos Bíblicos. (por todos os métodos missionários).","Número de pessoas ministrando Estudos Bíblicos. (não incluir pessoas que fazem parte de duplas missionárias)","Número de duplas missionárias ministrando Estudos Biblicos.","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
     function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
