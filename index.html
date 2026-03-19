@@ -2,6 +2,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>IASD Estrela Dalva</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -142,14 +146,25 @@
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
+    // GARANTE QUE O FIREBASE NÃO USE CACHE ANTIGO AO INICIAR
+    dbCloud.clearPersistence().catch(() => {});
+
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); } 
-        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
+        if(doc.exists) { 
+            db = doc.data(); 
+            renderTodo(); 
+        } 
+        else { 
+            db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; 
+            save(); 
+        }
+    }, error => {
+        console.error("Erro na sincronização em tempo real:", error);
     });
 
     function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
