@@ -27,16 +27,28 @@
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
         .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
         #status-save { font-size: 0.8rem; color: var(--green); opacity: 0; transition: 0.5s; }
-        #viewContainer { width: 100%; height: 60vh; background: white; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
-        #viewContainer iframe, #viewContainer object, #viewContainer img { width: 100%; height: 100%; border: none; object-fit: contain; }
-        @media print { .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo { display: none !important; } body { background: white; padding: 0; } table#tabela-main { margin-top: 0; width: 100%; border: 1px solid black; } #tabela-main th, #tabela-main td { border: 1px solid #333 !important; font-size: 10pt; } textarea { color: black !important; } }
+        
+        #viewContainer { width: 100%; height: 65vh; background: #fff; border-radius: 8px; margin-bottom: 15px; overflow: auto; }
+        #viewContainer iframe, #viewContainer object, #viewContainer img { width: 100%; height: 100%; border: none; }
+
+        @media print { 
+            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo { display: none !important; }
+            body { background: white; padding: 0; }
+            table#tabela-main { margin-top: 0; width: 100%; border: 1px solid black; }
+            #tabela-main th, #tabela-main td { border: 1px solid #333 !important; font-size: 10pt; }
+            textarea { color: black !important; }
+        }
     </style>
 </head>
-<body>
+    <body>
 <div class="container">
     <div id="userWelcomeBar" class="no-print"></div>
+
     <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
-        <div style="display: flex; flex-direction: column;"><h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2><span id="status-save">● Sincronizado</span></div>
+        <div style="display: flex; flex-direction: column;">
+            <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
+            <span id="status-save">● Sincronizado</span>
+        </div>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
             <button class="input-dark" style="border-color:var(--gold); color:var(--gold); width:auto; padding:0 15px;" onclick="window.print()">🖨️ IMPRIMIR</button>
@@ -67,10 +79,25 @@
         <tbody id="corpoEscala"></tbody>
     </table>
 
-    <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; border: 1px solid #334155;" class="no-print"><h3 style="color:var(--gold);">🗓️ PLANEJAMENTO ANUAL 2026</h3><table style="width: 100%; border-collapse: collapse;"><tbody id="corpoPlan"></tbody></table></div>
-    <div id="secTesouraria" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;" class="no-print"><h3 style="color:var(--green); margin-top:0;">💰 DOCUMENTOS - <span id="mesTesouraria"></span></h3><div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px;"></div></div>
-    <div class="chart-container no-print" style="height: 350px; margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;"><h3 style="color:var(--orange);">📊 DESEMPENHO MISSIONÁRIO</h3><div style="height: 280px;"><canvas id="missionaryChart"></canvas></div></div>
-    <div id="secLinksPublicos" style="margin-top:40px; margin-bottom: 50px;" class="no-print"><h3 style="color:var(--neon);">🔗 LINKS ÚTEIS</h3><div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div></div>
+    <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; border: 1px solid #334155;" class="no-print">
+        <h3 style="color:var(--gold);">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+        <table style="width: 100%; border-collapse: collapse;"><tbody id="corpoPlan"></tbody></table>
+    </div>
+
+    <div id="secTesouraria" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;" class="no-print">
+        <h3 style="color:var(--green); margin-top:0;">💰 DOCUMENTOS - <span id="mesTesouraria"></span></h3>
+        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px;"></div>
+    </div>
+
+    <div class="chart-container no-print" style="height: 350px; margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+        <h3 style="color:var(--orange);">📊 DESEMPENHO MISSIONÁRIO</h3>
+        <div style="height: 280px;"><canvas id="missionaryChart"></canvas></div>
+    </div>
+
+    <div id="secLinksPublicos" style="margin-top:40px; margin-bottom: 50px;" class="no-print">
+        <h3 style="color:var(--neon);">🔗 LINKS ÚTEIS</h3>
+        <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
+    </div>
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
@@ -78,7 +105,8 @@
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><input type="date" id="evtInicio" class="input-dark"><button class="btn-min" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>DOCS</h3><select id="docDestinatario" class="input-dark"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3>DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
-<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()" style="background: #fff; color: #000; width: 90%; max-width: 800px;"><h4 id="nomeArquivoView" style="margin: 0 0 10px 0; color: var(--blue);">Arquivo</h4><div id="viewContainer"></div><div style="display: flex; gap: 10px;"><a id="btnLinkExterno" href="#" target="_blank" class="btn-min" style="background: var(--blue); color: #fff; text-align: center; text-decoration: none; line-height: 2.5;">🔍 TELA CHEIA / BAIXAR</a><button onclick="document.getElementById('popViewImg').style.display='none'" class="btn-fechar" style="margin-top:0; flex: 1;">FECHAR</button></div></div></div>
+
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()" style="background: #fff; color: #000; width: 95%; max-width: 900px;"><h4 id="nomeArquivoView" style="margin: 0 0 10px 0; color: var(--blue);">Arquivo</h4><div id="viewContainer"></div><div style="display: flex; gap: 10px;"><a id="btnLinkExterno" href="#" target="_blank" class="btn-min" style="background: var(--blue); color: #fff; text-align: center; text-decoration: none; line-height: 2.5; flex:1;">🔍 TELA CHEIA / BAIXAR</a><button onclick="document.getElementById('popViewImg').style.display='none'" class="btn-fechar" style="margin-top:0; flex: 1;">FECHAR</button></div></div></div>
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
@@ -89,56 +117,43 @@
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
+    // Escuta em tempo real (Aqui os dados voltam!)
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); verificarViradaAno(); renderTodo(); } 
-        else { db = { ano_atual: 2026, senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
+        if(doc.exists) { 
+            db = doc.data(); 
+            verificarViradaAno(); 
+            renderTodo(); 
+        } else { 
+            // Inicializa apenas se o banco estiver vazio
+            db = { ano_atual: 2026, senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; 
+            save(); 
+        }
     });
 
-    // CORREÇÃO DO LOGIN: Garantindo que a senha seja validada contra o banco real
     function login() { 
-        const userIn = document.getElementById('userLogin').value.toLowerCase().trim();
-        const passIn = document.getElementById('passLogin').value;
-        
-        // Verifica se os dados do Firebase já carregaram
-        if (!db.senhas && userIn !== 'admin') {
-            alert("Aguarde o carregamento do sistema...");
-            return;
-        }
-
-        const senhaCorreta = db.senhas ? db.senhas[userIn] : (userIn === 'admin' ? '123456' : null);
-
-        if (senhaCorreta && senhaCorreta === passIn) {
-            localStorage.setItem('iasd_curUser', userIn);
-            document.getElementById('modalLogin').style.display = 'none';
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value;
+        const senhaDb = (db.senhas && db.senhas[u]) || (u === 'admin' ? '123456' : null);
+        if (senhaDb === p) { 
+            localStorage.setItem('iasd_curUser', u); 
             location.reload(); 
-        } else {
-            alert("Usuário ou Senha incorretos!");
+        } else { 
+            alert("Login ou Senha incorretos!"); 
         }
     }
 
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
-    function verArquivo(src, ext, nome) {
-        const container = document.getElementById('viewContainer');
-        const btnLink = document.getElementById('btnLinkExterno');
-        document.getElementById('nomeArquivoView').innerText = nome;
-        document.getElementById('popViewImg').style.display = 'flex';
-        btnLink.href = src;
-        if (ext === 'pdf') { container.innerHTML = `<object data="${src}" type="application/pdf" width="100%" height="100%"><iframe src="${src}" width="100%" height="100%"></iframe></object>`; } 
-        else if (['jpg', 'jpeg', 'png'].includes(ext)) { container.innerHTML = `<img src="${src}" style="max-width:100%; height:auto;">`; } 
-        else { container.innerHTML = `<div style="padding:20px; text-align:center;">Arquivo .${ext} - Use o botão abaixo para abrir.</div>`; }
-    }
-
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || ''}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
-        const isAdmin = ['admin','ger'].includes(curUser);
-        const isV = curUser === 'visitante';
         
+        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
         document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
+        
         if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
         ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block'; });
 
@@ -157,14 +172,29 @@
             }
         }
         renderArquivosPublicos(); if(isAdmin) renderAdmin(); updateChart(mIdx);
+        setTimeout(() => document.querySelectorAll('textarea').forEach(t => autoResize(t)), 100);
     }
 
-    function save() { dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => { const st = document.getElementById('status-save'); if(st) { st.style.opacity = "1"; setTimeout(() => st.style.opacity = "0", 2000); } }); }
+    function save() { dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => { const st = document.getElementById('status-save'); st.style.opacity = "1"; setTimeout(() => st.style.opacity = "0", 2000); }); }
+    function verArquivo(src, ext, nome) {
+        const container = document.getElementById('viewContainer');
+        const btnLink = document.getElementById('btnLinkExterno');
+        document.getElementById('nomeArquivoView').innerText = nome;
+        document.getElementById('popViewImg').style.display = 'flex';
+        btnLink.href = src;
+        if (ext === 'pdf') { container.innerHTML = `<object data="${src}" type="application/pdf" width="100%" height="100%"><iframe src="${src}" width="100%" height="100%"></iframe></object>`; }
+        else { container.innerHTML = `<img src="${src}" style="max-width:100%;">`; }
+    }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
     function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
     function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
-    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    // Dropdown de Meses
+    const sM = document.getElementById('selMes'); 
+    if(sM.options.length === 0) MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
+
+    
