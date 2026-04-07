@@ -10,6 +10,10 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
+        
+        /* Status de Salvamento */
+        #saveStatus { position: fixed; bottom: 20px; right: 20px; padding: 8px 18px; border-radius: 20px; color: white; font-size: 0.85rem; display: none; z-index: 11000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-weight: bold; }
+        
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
@@ -17,9 +21,12 @@
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        #tabela-main tbody tr:hover { background-color: rgba(0, 210, 255, 0.05); }
+
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
         .auto-expand:focus { background: #f0f9ff !important; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
@@ -32,8 +39,9 @@
         .plan-text-area { width: 100%; background: transparent !important; color: #e6f1ff !important; border: none !important; resize: none; overflow: hidden; display: block; }
         .link-card { background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 15px; border-radius: 8px; text-decoration: none; color: white; text-align: center; transition: 0.3s; }
         .link-card:hover { background: var(--neon); color: var(--blue); font-weight: bold; }
+        
         @media print { 
-            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo { display: none !important; }
+            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveStatus { display: none !important; }
             body { background: white; padding: 0; }
             table#tabela-main { margin-top: 0; width: 100%; border: 1px solid black; }
             #tabela-main th, #tabela-main td { border: 1px solid #333 !important; font-size: 10pt; }
@@ -42,6 +50,8 @@
     </style>
 </head>
 <body>
+
+<div id="saveStatus">✅ Sincronizado</div>
 
 <div class="container">
     <div id="userWelcomeBar" class="no-print"></div>
@@ -152,7 +162,28 @@
         else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
     });
 
-    function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
+    // Função de salvamento com Debounce e Feedback Visual
+    let saveTimeout;
+    function save() {
+        const st = document.getElementById('saveStatus');
+        st.innerText = "⏳ Gravando...";
+        st.style.background = "var(--orange)";
+        st.style.display = "block";
+
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            dbCloud.collection('dados').doc('estrela_v102').set(db)
+            .then(() => {
+                st.innerText = "✅ Sincronizado";
+                st.style.background = "var(--green)";
+                setTimeout(() => { st.style.display = "none"; }, 2000);
+            })
+            .catch(() => {
+                st.innerText = "❌ Erro ao Salvar";
+                st.style.background = "var(--red)";
+            });
+        }, 1000);
+    }
 
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
@@ -249,7 +280,7 @@
     function renderListaLinksAdmin() { 
         const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; 
         (db.links_externos || []).forEach((l, i) => { 
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; 
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="if(confirm('Excluir link?')){db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; 
         }); 
     }
     function renderLinksPublicos() {
@@ -265,7 +296,7 @@
         while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: nome.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } 
         save(); document.getElementById('evtNome').value = ""; renderListaEventos();
     }
-    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="if(confirm('Excluir evento?')){delete db.eventos_especiais['${k}']; save(); renderListaEventos();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
 
     function abrirTesourariaAdmin() { 
@@ -298,7 +329,7 @@
         const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); 
         lista.innerHTML = ""; 
         (db.docs?.[m] || []).forEach((doc, i) => { 
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; 
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; 
         }); 
     }
     function renderArquivosPublicos() { 
