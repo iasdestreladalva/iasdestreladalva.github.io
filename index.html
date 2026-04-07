@@ -10,10 +10,7 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
-        
-        /* Indicador de Salvamento */
         #saveStatus { position: fixed; bottom: 20px; right: 20px; padding: 8px 18px; border-radius: 20px; color: white; font-size: 0.85rem; display: none; z-index: 11000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-weight: bold; }
-        
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
@@ -21,12 +18,9 @@
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
-        #tabela-main tbody tr:hover { background-color: rgba(0, 210, 255, 0.05); }
-
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
         .auto-expand:focus { background: #f0f9ff !important; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
@@ -39,7 +33,6 @@
         .plan-text-area { width: 100%; background: transparent !important; color: #e6f1ff !important; border: none !important; resize: none; overflow: hidden; display: block; }
         .link-card { background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 15px; border-radius: 8px; text-decoration: none; color: white; text-align: center; transition: 0.3s; }
         .link-card:hover { background: var(--neon); color: var(--blue); font-weight: bold; }
-        
         @media print { 
             .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveStatus { display: none !important; }
             body { background: white; padding: 0; }
@@ -96,7 +89,7 @@
                 <div id="gridApoioAnciao"></div>
                 <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
                 <h4 style="color:var(--gold)">5. SISTEMA (NUVEM)</h4>
-                <button class="btn-min" onclick="exportarBackup()" style="border-color:var(--gold); color:var(--gold)">💾 CRIAR BACKUP AGORA</button>
+                <button class="btn-min" onclick="exportarBackup()" style="border-color:var(--gold); color:var(--gold)">💾 GERAR BACKUP NUVEM</button>
                 <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">📤 RESTAURAR (ÚLTIMOS 3)</button>
             </div>
         </div>
@@ -132,19 +125,19 @@
     </div>
 </div>
 
+<div id="popBackup" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--gold); text-align:center;">RESTAURAR BACKUP (ÚLTIMOS 3)</h3>
+        <div id="listaBackupsNuvem" style="margin-top:15px; color:white;">Buscando arquivos...</div>
+        <button onclick="document.getElementById('popBackup').style.display='none'" class="btn-fechar">CANCELAR</button>
+    </div>
+</div>
+
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'">
     <div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()">
         <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;" onkeydown="if(event.key==='Enter')login()">
         <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;" onkeydown="if(event.key==='Enter')login()">
         <button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button>
-    </div>
-</div>
-
-<div id="popBackup" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--gold); text-align:center;">RESTAURAR BACKUP (ÚLTIMOS 3)</h3>
-        <div id="listaBackupsNuvem" style="margin-top:15px;"></div>
-        <button onclick="document.getElementById('popBackup').style.display='none'" class="btn-fechar">FECHAR</button>
     </div>
 </div>
 
@@ -155,7 +148,13 @@
 <div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 90%;" id="viewContainer"></div></div>
 
 <script>
-    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-action.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
+    // Configurações corrigidas com base no seu projeto
+    const firebaseConfig = { 
+        apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", 
+        authDomain: "unidades-de-acao.firebaseapp.com", 
+        projectId: "unidades-de-acao", 
+        appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" 
+    };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
@@ -169,14 +168,12 @@
         else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
     });
 
-    // Salvamento Otimizado (Debounce)
     let saveTimeout;
     function save() {
         const st = document.getElementById('saveStatus');
         st.innerText = "⏳ Gravando...";
         st.style.background = "var(--orange)";
         st.style.display = "block";
-
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
             dbCloud.collection('dados').doc('estrela_v102').set(db)
@@ -188,34 +185,34 @@
         }, 1000);
     }
 
-    // --- FUNÇÕES DE BACKUP (LIMITADO A 3) ---
+    // --- SISTEMA DE BACKUP NA NUVEM ---
     function exportarBackup() {
-        const nome = prompt("Nome do backup:", "Backup " + new Date().toLocaleString());
+        const nome = prompt("Dê um nome para este backup:", "Backup " + new Date().toLocaleString());
         if(!nome) return;
         dbCloud.collection('backups').add({
             nome: nome,
             criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
-            dados: db
-        }).then(() => alert("Backup salvo na nuvem!"));
+            dados: JSON.parse(JSON.stringify(db)) // Garante cópia limpa
+        }).then(() => alert("Backup salvo com sucesso na nuvem!"));
     }
 
     function abrirModalRestaurar() {
         document.getElementById('popBackup').style.display = 'flex';
         const lista = document.getElementById('listaBackupsNuvem');
-        lista.innerHTML = "Buscando...";
+        lista.innerHTML = "<p style='text-align:center;'>Buscando backups...</p>";
 
         dbCloud.collection('backups').orderBy('criadoEm', 'desc').limit(3).get().then(snap => {
             lista.innerHTML = "";
-            if(snap.empty) { lista.innerHTML = "Nenhum backup."; return; }
+            if(snap.empty) { lista.innerHTML = "<p style='text-align:center;'>Nenhum backup encontrado.</p>"; return; }
             snap.forEach(doc => {
                 const b = doc.data();
                 const data = b.criadoEm ? b.criadoEm.toDate().toLocaleString() : '---';
                 lista.innerHTML += `
                     <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
-                        <div style="font-size:0.8rem"><b>${b.nome}</b><br><small>${data}</small></div>
+                        <div style="font-size:0.85rem"><b>${b.nome}</b><br><small style="color:#888">${data}</small></div>
                         <div style="display:flex; gap:8px;">
-                            <button onclick="restaurarBackup('${doc.id}')" style="background:var(--green); border:none; color:white; padding:5px 8px; border-radius:4px; cursor:pointer;">OK</button>
-                            <button onclick="deletarBackup('${doc.id}')" style="background:none; border:none; color:red; cursor:pointer;">🗑️</button>
+                            <button onclick="restaurarBackup('${doc.id}')" style="background:var(--green); border:none; color:white; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold;">OK</button>
+                            <button onclick="deletarBackup('${doc.id}')" style="background:none; border:none; color:red; cursor:pointer; font-size:1.2rem;">🗑️</button>
                         </div>
                     </div>`;
             });
@@ -223,23 +220,26 @@
     }
 
     function restaurarBackup(id) {
-        if(confirm("Substituir tudo por este backup?")) {
+        if(confirm("ATENÇÃO: Deseja restaurar este backup? Isso substituirá todos os dados atuais.")) {
             dbCloud.collection('backups').doc(id).get().then(doc => {
-                db = doc.data().dados;
-                save();
-                alert("Restaurado!");
-                location.reload();
+                if(doc.exists) {
+                    db = doc.data().dados;
+                    dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
+                        alert("Sistema restaurado! Reiniciando...");
+                        location.reload();
+                    });
+                }
             });
         }
     }
 
     function deletarBackup(id) {
-        if(confirm("Excluir backup?")) {
+        if(confirm("Excluir backup permanentemente?")) {
             dbCloud.collection('backups').doc(id).delete().then(() => abrirModalRestaurar());
         }
     }
 
-    // --- RESTANTE DAS FUNÇÕES ORIGINAIS ---
+    // --- FUNÇÕES DE INTERFACE ---
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
         const senhaDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
