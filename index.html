@@ -108,7 +108,7 @@
         else { db = { senhas:{admin:'123456'}, anciaos:{}, escalas:{} }; save(); }
     });
 
-    // Monitora documento de backups
+    // Monitora documento de backups separado
     dbCloud.collection('dados').doc('backups_estrela').onSnapshot(doc => {
         if(doc.exists) { dbBackups = doc.data(); }
         else { dbBackups = { lista: [] }; }
@@ -121,7 +121,7 @@
         .then(() => { st.innerText = "✅ Sincronizado"; setTimeout(() => { st.style.display = "none"; }, 1500); });
     }
 
-    // --- COMANDOS DE BACKUP ---
+    // --- COMANDOS DE BACKUP EXTERNO E LIXEIRA ---
     function gerarBackupNoNovoDocumento() {
         const nome = prompt("Dê um nome a este backup:");
         if(!nome) return;
@@ -139,7 +139,7 @@
 
         dbCloud.collection('dados').doc('backups_estrela').set(dbBackups)
         .then(() => alert("✅ Backup guardado no documento 'backups_estrela'!"))
-        .catch(e => alert("Erro: " + e));
+        .catch(e => alert("Erro: Verifique as permissões ou se o documento existe no Firebase."));
     }
 
     function abrirModalRestaurar() {
@@ -165,7 +165,7 @@
     }
 
     function excluirBackup(idx) {
-        if(confirm("Apagar este backup permanentemente?")) {
+        if(confirm("Deseja apagar este backup permanentemente da nuvem?")) {
             dbBackups.lista.splice(idx, 1);
             dbCloud.collection('dados').doc('backups_estrela').set(dbBackups).then(() => abrirModalRestaurar());
         }
