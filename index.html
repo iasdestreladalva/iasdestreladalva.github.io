@@ -7,23 +7,38 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
+        /* ESTILOS ORIGINAIS DO SISTEMA OFICIAL */
+        :root { 
+            --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; 
+            --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; 
+        }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
+        
         #saveStatus { position: fixed; bottom: 20px; right: 20px; padding: 8px 18px; border-radius: 20px; color: white; font-size: 0.85rem; display: none; z-index: 11000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-weight: bold; }
+        
+        /* PAINEL ADMINISTRATIVO REESTRUTURADO */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; min-height: 520px; }
+        
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
-        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
+        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
-        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
+        
+        /* TABELA OFICIAL */
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; text-transform: uppercase; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
+        
+        /* MODAIS E OVERLAYS */
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
-        .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+        .btn-fechar { width:100%; padding:12px; background:var(--red); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+
+        @media print { .no-print { display: none !important; } body { background: white; color: black; } table#tabela-main { border: 1px solid #000; } }
     </style>
 </head>
 <body>
@@ -32,7 +47,7 @@
 
 <div class="container">
     <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
-        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
+        <h2 style="color:var(--neon); margin:0; letter-spacing: 2px;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:10px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
             <button id="btnAcesso" class="input-dark" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
@@ -45,30 +60,44 @@
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
+                <button class="btn-min" style="border-color:var(--red); color:var(--red); margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
             </div>
             <div class="admin-section">
                 <h4>2. ANCIÃO DO MÊS</h4>
                 <div id="gridMeses"></div>
             </div>
             <div class="admin-section">
-                <h4>3. SENHAS</h4>
+                <h4>3. SENHAS DE ACESSO</h4>
                 <table style="width:100%; font-size:0.75rem; color:white;"><tbody id="corpoCreds"></tbody></table>
             </div>
             <div class="admin-section">
-                <h4 style="color:var(--gold)">💾 BACKUP NA NUVEM</h4>
-                <button class="btn-min" onclick="gerarBackupNoNovoDocumento()" style="border-color:var(--gold); color:var(--gold)">CRIAR PONTO DE SEGURANÇA</button>
-                <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">LISTAR BACKUPS / APAGAR</button>
-                <p style="font-size: 0.65rem; color: #888; margin-top:10px;">* Salvo no Firestore em 'backups_estrela'.</p>
+                <h4 style="color:var(--gold)">💾 BACKUP E RESTAURO</h4>
+                <button class="btn-min" onclick="gerarBackupNovo()" style="border-color:var(--gold); color:var(--gold); border-width: 2px;">CRIAR PONTO DE SEGURANÇA</button>
+                <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">GERENCIAR COPIAS (NUVEM)</button>
+                <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
+                <p style="font-size: 0.65rem; color: #888; line-height: 1.4;">
+                    * Os backups são salvos em um documento independente para sua segurança.<br>
+                    * Limite de 10 versões recentes.
+                </p>
             </div>
         </div>
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 15px 15px 15px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+            <tr>
+                <th style="width:110px">DIA</th>
+                <th style="width:60px">DATA</th>
+                <th>SABATINA</th>
+                <th>PREGADOR(A)</th>
+                <th>MÚSICA ESPECIAL</th>
+                <th>LOUVOR</th>
+                <th>SONO</th>
+                <th>RECEPÇÃO</th>
+                <th>DIACONATO</th>
+            </tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
@@ -76,22 +105,23 @@
 
 <div id="popBackup" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--gold); text-align:center;">GERENCIAR BACKUPS</h3>
-        <div id="listaBackupsInternos" style="margin-top:15px; color:white;">A carregar...</div>
-        <button onclick="fecharPop()" class="btn-fechar">FECHAR</button>
+        <h3 style="color:var(--gold); text-align:center; margin-top:0;">RESTAURAR SISTEMA</h3>
+        <div id="listaBackupsInternos" style="margin-top:15px; color:white;">Buscando versões...</div>
+        <button onclick="fecharPop()" class="btn-fechar">VOLTAR AO SISTEMA</button>
     </div>
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'">
     <div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()">
+        <h3 style="color:var(--blue); margin-top:0; text-align:center;">LOGIN</h3>
         <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
         <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;">
-        <button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button>
+        <button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px; font-weight:bold;" onclick="login()">ENTRAR</button>
     </div>
 </div>
 
 <script>
-    // CONFIGURAÇÃO FIREBASE
+    // CONFIGURAÇÃO FIREBASE (DO SEU PROJETO)
     const firebaseConfig = { 
         apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", 
         authDomain: "unidades-de-acao.firebaseapp.com", 
@@ -104,39 +134,35 @@
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", sabatina: "Escola Sabatina" };
     
-    let db = {}; 
+    let db = { senhas:{}, anciaos:{}, escalas:{} }; 
     let dbBackups = { lista: [] }; 
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    // MONITOR DE DADOS (ESCALA)
+    // MONITOR 1: ESCALA OFICIAL
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); }
         else { db = { senhas:{admin:'123456'}, anciaos:{}, escalas:{} }; save(); }
-    }, err => console.error("Erro ao ler Escala:", err));
+    });
 
-    // MONITOR DE BACKUPS (SEPARADO)
+    // MONITOR 2: DOCUMENTO DE BACKUPS
     dbCloud.collection('dados').doc('backups_estrela').onSnapshot(doc => {
-        if(doc.exists) { 
-            dbBackups = doc.data(); 
-        } else {
-            dbBackups = { lista: [] };
-        }
-    }, err => console.error("Erro ao ler Backups:", err));
+        if(doc.exists) dbBackups = doc.data();
+    });
 
     function save() {
         const st = document.getElementById('saveStatus');
-        st.innerText = "⏳ Gravando..."; st.style.display = "block";
+        st.innerText = "⏳ Sincronizando..."; st.style.display = "block";
         dbCloud.collection('dados').doc('estrela_v102').set(db)
         .then(() => { st.innerText = "✅ Sincronizado"; setTimeout(() => { st.style.display = "none"; }, 1500); })
-        .catch(e => alert("Erro ao salvar dados principais: " + e.message));
+        .catch(e => alert("Falha na sincronização: " + e.message));
     }
 
-    // --- FUNÇÕES DE BACKUP ---
-    function gerarBackupNoNovoDocumento() {
-        const nome = prompt("Nome para este ponto de restauração:");
+    // --- LOGICA DE BACKUP ---
+    function gerarBackupNovo() {
+        const nome = prompt("Dê um nome para este backup (ex: Versão Estável):");
         if(!nome) return;
 
-        const novoBkp = {
+        const bkp = {
             id: Date.now(),
             nome: nome.toUpperCase(),
             data: new Date().toLocaleString('pt-BR'),
@@ -144,101 +170,138 @@
         };
 
         if(!dbBackups.lista) dbBackups.lista = [];
-        dbBackups.lista.unshift(novoBkp);
+        dbBackups.lista.unshift(bkp);
         if(dbBackups.lista.length > 10) dbBackups.lista.pop();
 
         dbCloud.collection('dados').doc('backups_estrela').set(dbBackups)
-        .then(() => alert("✅ Backup guardado com sucesso!"))
-        .catch(e => {
-            console.error("Erro detalhado:", e);
-            alert("ERRO DE PERMISSÃO: Vá ao Firebase -> Rules e altere para permitir escrita na coleção 'dados'.");
-        });
+        .then(() => alert("✅ Ponto de segurança criado na nuvem!"));
     }
 
     function abrirModalRestaurar() {
         document.getElementById('popBackup').style.display = 'flex';
-        const lista = document.getElementById('listaBackupsInternos');
-        lista.innerHTML = "";
+        const container = document.getElementById('listaBackupsInternos');
+        container.innerHTML = "";
         
         if(!dbBackups.lista || dbBackups.lista.length === 0) {
-            lista.innerHTML = "<p style='text-align:center;'>Nenhum backup disponível.</p>";
+            container.innerHTML = "<p style='text-align:center;'>Nenhum backup encontrado.</p>";
             return;
         }
 
         dbBackups.lista.forEach((b, idx) => {
-            lista.innerHTML += `
-                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
-                    <div><b>${b.nome}</b><br><small>${b.data}</small></div>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="confirmarRestauracao(${idx})" style="background:var(--green); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold;">USAR</button>
-                        <button onclick="excluirBackup(${idx})" style="background:var(--red); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">🗑️</button>
+            container.innerHTML += `
+                <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
+                    <div><b style="color:var(--neon)">${b.nome}</b><br><small style="color:#888">${b.data}</small></div>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="restaurarAgora(${idx})" style="background:var(--green); color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; font-weight:bold;">RESTAURAR</button>
+                        <button onclick="apagarBkp(${idx})" style="background:none; color:var(--red); border:1px solid var(--red); padding:8px; border-radius:5px; cursor:pointer;">🗑️</button>
                     </div>
                 </div>`;
         });
     }
 
-    function excluirBackup(idx) {
-        if(confirm("Eliminar este backup da nuvem definitivamente?")) {
+    function apagarBkp(idx) {
+        if(confirm("Excluir esta versão permanentemente?")) {
             dbBackups.lista.splice(idx, 1);
             dbCloud.collection('dados').doc('backups_estrela').set(dbBackups).then(() => abrirModalRestaurar());
         }
     }
 
-    function confirmarRestauracao(idx) {
-        if(confirm("Substituir os dados atuais por este backup?")) {
-            const bkp = JSON.parse(JSON.stringify(dbBackups.lista[idx].conteudo));
-            dbCloud.collection('dados').doc('estrela_v102').set(bkp).then(() => {
-                alert("RESTAURADO!");
+    function restaurarAgora(idx) {
+        if(confirm("ATENÇÃO: Isso substituirá toda a escala atual pela versão escolhida. Continuar?")) {
+            const dadosRecuperados = JSON.parse(JSON.stringify(dbBackups.lista[idx].conteudo));
+            dbCloud.collection('dados').doc('estrela_v102').set(dadosRecuperados).then(() => {
+                alert("SISTEMA RESTAURADO COM SUCESSO!");
                 location.reload();
             });
         }
     }
 
-    // --- RENDERIZAÇÃO ---
+    // --- FUNÇÕES DE RENDERIZAÇÃO ---
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
-        document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[mIdx] || ''}`;
+        document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || 'Não definido'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+        
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
             if([0,3,6].includes(sem)) {
-                let tr = `<tr><td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td><td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr style="background:${sem===6?'#f8fafc':''}">
+                    <td style="color:${sem===6?'#1e40af':'#475569'}"><b>${["DOMINGO","SEG","TER","QUARTA","QUI","SEX","SÁBADO"][sem]}</b></td>
+                    <td>${d}/${mIdx+1}</td>`;
+                
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
+                    let valor = db.escalas?.[dStr]?.[col] || '';
                     let canEdit = !isV;
-                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)">${db.escalas?.[dStr]?.[col]||''}</textarea></td>`;
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)">${valor}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
-        setTimeout(() => { document.querySelectorAll('textarea').forEach(el => { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }); }, 200);
+        ajustarTextareas();
     }
 
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
-        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min" onclick="window.minSelecionado='${m}'">${MINS[m]}</button>`; });
+        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { 
+            const active = window.minSelecionado === m ? 'active' : '';
+            lista.innerHTML += `<button class="btn-min ${active}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
+        });
+
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        MESES.forEach((m, i) => { 
+            gM.innerHTML += `<div style="margin-bottom:5px;"><small style="color:var(--neon)">${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value.toUpperCase(); save();"></div>`; 
+        });
+
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
+        Object.keys(MINS).forEach(k => { 
+            tC.innerHTML += `<tr><td style="padding:4px">${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; 
+        });
     }
 
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
-        if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Dados incorretos!");
+        if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Usuário ou senha inválidos!");
     }
+    
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    
+    function atuCel(d, c, v) { 
+        if(!db.escalas) db.escalas = {};
+        if(!db.escalas[d]) db.escalas[d]={}; 
+        db.escalas[d][c] = v.toUpperCase(); 
+        save(); 
+    }
+
+    function ajustarTextareas() {
+        setTimeout(() => { 
+            document.querySelectorAll('textarea').forEach(el => { 
+                el.style.height='auto'; 
+                el.style.height = (el.scrollHeight) + 'px'; 
+            }); 
+        }, 100);
+    }
+
     function fecharPop() { document.querySelectorAll('.overlay').forEach(o => o.style.display='none'); }
 
+    // INICIALIZAÇÃO DO SELETOR DE MESES
     const sM = document.getElementById('selMes'); 
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    
+    // Auto-ajuste de altura ao digitar
+    document.addEventListener('input', function (e) {
+        if (e.target.tagName.toLowerCase() === 'textarea') {
+            e.target.style.height = 'auto';
+            e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+    });
 </script>
 </body>
 </html>
