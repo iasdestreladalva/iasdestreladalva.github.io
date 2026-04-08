@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - OFICIAL CLOUD</title>
+    <title>IASD Estrela Dalva - SISTEMA OFICIAL</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -10,25 +10,35 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
-        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
+        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
         
+        /* Cabeçalho de Botões */
+        .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-header { background: none; border: 1px solid #444; color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; }
+
         /* Painel Administrativo */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; min-height: 520px; }
+        .admin-section h4 { border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 0; }
         
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
 
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
-        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
+        /* Tabela Escala */
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
+        .auto-expand:focus { background: #e6f1ff !important; }
         
+        /* Modais */
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+
+        @media print { .no-print { display: none !important; } body { background: white; } }
     </style>
 </head>
 <body>
@@ -38,15 +48,15 @@
 
     <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-        <div style="display:flex; gap:10px;">
-            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="input-dark" style="border-color:var(--gold); color:var(--gold); width:auto; padding:0 15px;" onclick="window.print()">🖨️ IMPRIMIR</button>
-            <button id="btnLinks" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
-            <button id="btnEventos" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
-            <button id="btnDocs" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
-            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopTermometro()">📊 DADOS</button>
-            <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button class="input-dark" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+        <div class="header-btns">
+            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:130px; border-color:var(--neon);"></select>
+            <button class="btn-header" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
+            <button id="btnLinks" class="btn-header" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
+            <button id="btnEventos" class="btn-header" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
+            <button id="btnDocs" class="btn-header" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
+            <button id="btnDados" class="btn-header" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPopTermometro()">📊 DADOS</button>
+            <button class="btn-header" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+            <button class="btn-header" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
     </div>
 
@@ -55,7 +65,7 @@
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
             </div>
             <div class="admin-section">
                 <h4>2. ANCIÃO DO MÊS</h4>
@@ -63,14 +73,21 @@
             </div>
             <div class="admin-section">
                 <h4>3. LOGINS & SENHAS</h4>
-                <table style="width:100%; font-size:0.75rem; color:white;"><tbody id="corpoCreds"></tbody></table>
+                <div style="border:1px solid var(--gold); padding:10px; border-radius:8px; margin-bottom:15px; text-align:center;">
+                    <small style="color:var(--gold); font-weight:bold;">META ANUAL DE BATISMOS</small>
+                    <input type="number" id="metaBatismos" class="input-dark" style="text-align:center; font-size:1.2rem; margin-top:5px;">
+                </div>
+                <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
+                    <tbody id="corpoCreds"></tbody>
+                </table>
             </div>
             <div class="admin-section">
-                <h4>4. APOIO ANCIÃO / NUVEM</h4>
+                <h4>4. APOIO / NUVEM</h4>
                 <div id="gridApoioAnciao"></div>
-                <hr style="border-color:#334155;">
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 GERAR BACKUP NUVEM</button>
-                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">📂 VER VERSÕES</button>
+                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+                <h4 style="color:var(--gold)">☁️ BACKUP NA NUVEM</h4>
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 CRIAR PONTO DE SEGURANÇA</button>
+                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">📂 GERENCIAR CÓPIAS</button>
             </div>
         </div>
     </div>
@@ -79,14 +96,14 @@
         <thead>
             <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
             <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:130px">DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 </div>
 
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" id="popConteudo" onclick="event.stopPropagation()"></div></div>
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="btn-min" style="background:var(--blue); color:white; width:100%; margin-top:15px; border:none;" onclick="login()">ENTRAR</button></div></div>
 <div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--gold); text-align:center;">RESTAURAR VERSÃO NUVEM</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 
 <script>
@@ -110,35 +127,32 @@
         if(doc.exists) bkpData = doc.data();
     });
 
-    function save() {
-        if(curUser === 'visitante') return;
-        dbCloud.collection('dados').doc('estrela_v102').set(db);
-    }
+    function save() { if(curUser !== 'visitante') dbCloud.collection('dados').doc('estrela_v102').set(db); }
 
-    // --- FUNÇÕES DOS BOTÕES (RESTAURADAS) ---
+    // --- FUNÇÕES DE INTERFACE ---
     function abrirPopLinks() {
         const c = document.getElementById('popConteudo');
         c.innerHTML = `<h3 style="color:var(--neon)">🔗 LINKS RÁPIDOS</h3>
-        <input type="text" id="newLnkTit" class="input-dark" placeholder="Título">
-        <input type="text" id="newLnkUrl" class="input-dark" placeholder="URL" style="margin-top:5px">
-        <button class="btn-min" style="margin-top:10px" onclick="addLink()">ADICIONAR LINK</button>
-        <div id="listaL" style="margin-top:15px">${(db.links||[]).map((l,i)=>`<div style="display:flex; justify-content:space-between; margin-bottom:5px"><a href="${l.u}" target="_blank" style="color:white">${l.t}</a> <button onclick="db.links.splice(${i},1);save();abrirPopLinks()">X</button></div>`).join('')}</div>
+        <input type="text" id="nlT" class="input-dark" placeholder="Nome">
+        <input type="text" id="nlU" class="input-dark" placeholder="URL" style="margin-top:5px">
+        <button class="btn-min" style="margin-top:10px" onclick="addL()">ADICIONAR</button>
+        <div id="lstL" style="margin-top:15px">${(db.links||[]).map((l,i)=>`<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #333"><a href="${l.u}" target="_blank" style="color:white">${l.t}</a> <button onclick="db.links.splice(${i},1);save();abrirPopLinks()">X</button></div>`).join('')}</div>
         <button class="btn-fechar" onclick="fecharPop()">FECHAR</button>`;
         document.getElementById('popOverlay').style.display='flex';
     }
-    function addLink(){ if(!db.links) db.links=[]; db.links.push({t:document.getElementById('newLnkTit').value, u:document.getElementById('newLnkUrl').value}); save(); abrirPopLinks(); }
+    function addL(){ if(!db.links) db.links=[]; db.links.push({t:document.getElementById('nlT').value, u:document.getElementById('nlU').value}); save(); abrirPopLinks(); }
 
     function abrirPopEventos() {
         const c = document.getElementById('popConteudo');
         c.innerHTML = `<h3 style="color:var(--red)">🔥 EVENTOS ESPECIAIS</h3>
-        <input type="text" id="evtN" class="input-dark" placeholder="Nome do Evento">
-        <input type="date" id="evtD" class="input-dark" style="margin-top:5px">
-        <button class="btn-min" style="margin-top:10px" onclick="addEvt()">CRIAR EVENTO</button>
-        <div id="listaE" style="margin-top:15px">${Object.keys(db.eventos_especiais||{}).map(k=>`<div style="display:flex; justify-content:space-between">${k}: ${db.eventos_especiais[k].nome} <button onclick="delete db.eventos_especiais['${k}'];save();abrirPopEventos()">X</button></div>`).join('')}</div>
+        <input type="text" id="evN" class="input-dark" placeholder="Evento">
+        <input type="date" id="evD" class="input-dark" style="margin-top:5px">
+        <button class="btn-min" style="margin-top:10px" onclick="addE()">CRIAR</button>
+        <div id="lstE" style="margin-top:15px">${Object.keys(db.eventos_especiais||{}).map(k=>`<div style="display:flex; justify-content:space-between; padding:5px">${k}: ${db.eventos_especiais[k].nome} <button onclick="delete db.eventos_especiais['${k}'];save();abrirPopEventos()">X</button></div>`).join('')}</div>
         <button class="btn-fechar" onclick="fecharPop()">FECHAR</button>`;
         document.getElementById('popOverlay').style.display='flex';
     }
-    function addEvt(){ if(!db.eventos_especiais) db.eventos_especiais={}; db.eventos_especiais[document.getElementById('evtD').value] = {nome: document.getElementById('evtN').value.toUpperCase()}; save(); abrirPopEventos(); }
+    function addE(){ if(!db.eventos_especiais) db.eventos_especiais={}; db.eventos_especiais[document.getElementById('evD').value] = {nome: document.getElementById('evN').value.toUpperCase()}; save(); abrirPopEventos(); }
 
     function abrirPopTermometro() {
         const m = document.getElementById('selMes').value;
@@ -151,24 +165,14 @@
 
     function fecharPop(){ document.getElementById('popOverlay').style.display='none'; }
 
-    // --- SISTEMA DE BACKUP NUVEM ---
-    function gerarBackupNuvem() {
-        const nome = prompt("Nome do Backup:"); if(!nome) return;
-        const b = { id: Date.now(), nome: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)) };
-        if(!bkpData.lista) bkpData.lista = []; bkpData.lista.unshift(b);
-        if(bkpData.lista.length > 10) bkpData.lista.pop();
-        dbCloud.collection('dados').doc('backups_nuvem').set(bkpData).then(()=>alert("Backup Salvo!"));
+    // --- ESCALA COM CONFIRMAÇÃO (ENTER / CLICK FORA) ---
+    function atuCel(d, c, v) { 
+        if(!db.escalas[d]) db.escalas[d]={}; 
+        db.escalas[d][c] = v.toUpperCase(); 
+        save(); 
     }
-    function abrirModalBackups(){
-        document.getElementById('popBackups').style.display='flex';
-        document.getElementById('listaBackupsNuvem').innerHTML = (bkpData.lista||[]).map((b,i)=>`
-            <div style="padding:10px; border:1px solid #444; margin-bottom:5px; display:flex; justify-content:space-between">
-                <span>${b.nome} (${b.data})</span>
-                <button onclick="restaurar(${i})" style="background:var(--green); color:white; border:none; padding:5px; cursor:pointer">USAR</button>
-            </div>`).join('');
-    }
-    function restaurar(i){ if(confirm("Restaurar?")) { db = bkpData.lista[i].conteudo; save(); location.reload(); } }
 
+    // --- RENDERIZAÇÃO ---
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
@@ -181,8 +185,8 @@
         
         if(!isV) {
             document.getElementById('userWelcomeBar').style.display = 'block';
-            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser]}</b>`;
-            ['btnLinks','btnEventos','btnDados','btnDocs'].forEach(id => document.getElementById(id).style.display = 'block');
+            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser]}</b> | Apoio: <b>${db.apoio_anciao?.[curUser] || 'Pastor'}</b>`;
+            ['btnLinks','btnEventos','btnDados','btnDocs'].forEach(id => document.getElementById(id).style.display = 'inline-block');
         }
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
@@ -194,7 +198,7 @@
             if([0,3,6].includes(sem) || ev) {
                 let tr = `<tr><td onclick="cliqueDia('${dStr}')" style="cursor:pointer; background:${minDia?'#0f172a':''}; color:${minDia?'var(--neon)':''}"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${ev?ev.nome:(MINS[minDia]||'')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(c => {
-                    tr += `<td><textarea ${!isV?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${c}',this.value)" oninput="autoResize(this)">${db.escalas?.[dStr]?.[c]||''}</textarea></td>`;
+                    tr += `<td><textarea ${!isV?'':'disabled'} class="auto-expand" onblur="atuCel('${dStr}','${c}',this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault(); this.blur();}" oninput="autoResize(this)">${db.escalas?.[dStr]?.[c]||''}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
@@ -210,6 +214,10 @@
         });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        
+        document.getElementById('metaBatismos').value = db.meta_anual || 0;
+        document.getElementById('metaBatismos').onchange = function(){ db.meta_anual = this.value; save(); };
+
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
         Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td style="color:var(--neon)">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
@@ -219,10 +227,27 @@
         });
     }
 
+    // --- SISTEMA DE BACKUP NUVEM ---
+    function gerarBackupNuvem() {
+        const nome = prompt("Nome do Backup:"); if(!nome) return;
+        const b = { id: Date.now(), nome: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)) };
+        if(!bkpData.lista) bkpData.lista = []; bkpData.lista.unshift(b);
+        if(bkpData.lista.length > 10) bkpData.lista.pop();
+        dbCloud.collection('dados').doc('backups_nuvem').set(bkpData).then(()=>alert("✅ Ponto de segurança criado!"));
+    }
+    function abrirModalBackups(){
+        document.getElementById('popBackups').style.display='flex';
+        document.getElementById('listaBackupsNuvem').innerHTML = (bkpData.lista||[]).map((b,i)=>`
+            <div style="padding:10px; border:1px solid #444; margin-bottom:5px; display:flex; justify-content:space-between">
+                <span><b>${b.nome}</b> (${b.data})</span>
+                <button onclick="restaurar(${i})" style="background:var(--green); color:white; border:none; padding:8px; cursor:pointer; border-radius:4px;">USAR</button>
+            </div>`).join('');
+    }
+    function restaurar(i){ if(confirm("Restaurar esta versão?")) { db = bkpData.lista[i].conteudo; save(); location.reload(); } }
+
     function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function cliqueDia(d) { if(['admin','ger'].includes(curUser)) { if(!db.regras_manuais) db.regras_manuais={}; window.minSelecionado ? db.regras_manuais[d]=window.minSelecionado : delete db.regras_manuais[d]; save(); } }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
