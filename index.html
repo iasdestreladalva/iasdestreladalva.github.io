@@ -10,33 +10,25 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
-        
-        /* Status de Salvamento */
         #saveStatus { position: fixed; bottom: 20px; right: 20px; padding: 8px 18px; border-radius: 20px; color: white; font-size: 0.85rem; display: none; z-index: 11000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-weight: bold; }
-        
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; min-height: 520px; }
-        
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
-        
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
-        
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-        
         .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
         .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.02); }
         .plan-table td { padding: 15px; border-bottom: 1px solid #334155; }
         .plan-month-col { background: rgba(0, 210, 255, 0.05); color: var(--gold); font-weight: bold; text-align: center; width: 140px; text-transform: uppercase; }
-        
         @media print { .no-print, #adminPanel, #userWelcomeBar, #saveStatus, button, .overlay, .chart-container, #secPlan, #secLinksPublicos, #secTesouraria { display: none !important; } body { background: white; } table#tabela-main { color: black; border: 1px solid black; } }
     </style>
 </head>
@@ -84,9 +76,9 @@
                 <h4>4. APOIO ANCIÃO / SISTEMA</h4>
                 <div id="gridApoioAnciao" style="margin-bottom:20px;"></div>
                 <hr style="border:0; border-top:1px solid #444;">
-                <h4 style="color:var(--gold)">💾 BACKUP EM BANCO</h4>
+                <h4 style="color:var(--gold)">💾 BACKUP NUVEM</h4>
                 <button class="btn-min" onclick="exportarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">GERAR BACKUP AGORA</button>
-                <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">RESTAURAR (NUVEM)</button>
+                <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">RESTAURAR ÚLTIMOS</button>
             </div>
         </div>
     </div>
@@ -133,7 +125,7 @@
     <div class="pop-content" onclick="event.stopPropagation()">
         <h3 style="color:var(--gold); text-align:center;">RESTAURAR BACKUP (NUVEM)</h3>
         <div id="listaBackupsNuvem" style="margin-top:15px; color:white; max-height:300px; overflow-y:auto;">Buscando...</div>
-        <button onclick="document.getElementById('popBackup').style.display='none'" class="btn-fechar">FECHAR</button>
+        <button onclick="fecharPop()" class="btn-fechar">FECHAR</button>
     </div>
 </div>
 
@@ -152,13 +144,11 @@
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     
-    let db = {}; 
-    let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; 
-    let missionChart;
+    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); } 
-        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15, backups_lista:[] }; save(); }
     });
 
     let saveTimeout;
@@ -168,72 +158,69 @@
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
             dbCloud.collection('dados').doc('estrela_v102').set(db)
-            .then(() => {
-                if(st) { st.innerText = "✅ Sincronizado"; st.style.background = "var(--green)"; setTimeout(() => { st.style.display = "none"; }, 2000); }
-            }).catch(e => { console.error("Erro ao salvar:", e); alert("Erro na conexão!"); });
+            .then(() => { if(st) { st.innerText = "✅ Sincronizado"; st.style.background = "var(--green)"; setTimeout(() => { st.style.display = "none"; }, 2000); } })
+            .catch(e => { alert("Erro de conexão!"); });
         }, 1000);
     }
 
-    // --- SISTEMA DE BACKUP NUVEM ---
+    // --- SISTEMA DE BACKUP (SALVANDO DENTRO DA COLEÇÃO DADOS PARA NÃO DAR ERRO DE PERMISSÃO) ---
     function exportarBackupNuvem() {
-        const nomeBkp = prompt("Nome do backup:", "Backup " + new Date().toLocaleString('pt-BR'));
-        if(!nomeBkp) return;
-        const dadosLimpos = JSON.parse(JSON.stringify(db)); // Evita erro de objeto complexo do Firebase
-        dbCloud.collection('backups').add({
-            nome: nomeBkp,
-            data_criacao: firebase.firestore.FieldValue.serverTimestamp(),
-            conteudo: dadosLimpos
-        }).then(() => alert("✅ Backup salvo na nuvem!")).catch(e => alert("❌ Erro no backup!"));
+        const nome = prompt("Nome do backup:", "Backup " + new Date().toLocaleString('pt-BR'));
+        if(!nome) return;
+        
+        const bkpData = {
+            id: Date.now(),
+            nome: nome,
+            data: new Date().toLocaleString('pt-BR'),
+            conteudo: JSON.parse(JSON.stringify(db))
+        };
+
+        if(!db.backups_lista) db.backups_lista = [];
+        db.backups_lista.unshift(bkpData); 
+        if(db.backups_lista.length > 5) db.backups_lista.pop(); // Mantém apenas os 5 últimos
+
+        save();
+        alert("✅ Backup gerado com sucesso!");
     }
 
     function abrirModalRestaurar() {
         document.getElementById('popBackup').style.display = 'flex';
         const lista = document.getElementById('listaBackupsNuvem');
-        lista.innerHTML = "Buscando...";
-        dbCloud.collection('backups').orderBy('data_criacao', 'desc').limit(5).get()
-        .then(snap => {
-            lista.innerHTML = "";
-            if(snap.empty) { lista.innerHTML = "Nenhum backup encontrado."; return; }
-            snap.forEach(doc => {
-                const b = doc.data();
-                const data = b.data_criacao ? b.data_criacao.toDate().toLocaleString() : '---';
-                lista.innerHTML += `
-                    <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                        <div><b>${b.nome}</b><br><small>${data}</small></div>
-                        <button onclick="restaurarAgora('${doc.id}')" style="background:var(--green); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">USAR</button>
-                    </div>`;
-            });
+        lista.innerHTML = "";
+        if(!db.backups_lista || db.backups_lista.length === 0) { lista.innerHTML = "Nenhum backup encontrado."; return; }
+        
+        db.backups_lista.forEach((b, idx) => {
+            lista.innerHTML += `
+                <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><b>${b.nome}</b><br><small>${b.data}</small></div>
+                    <button onclick="restaurarAgora(${idx})" style="background:var(--green); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">USAR</button>
+                </div>`;
         });
     }
 
-    function restaurarAgora(id) {
-        if(confirm("Substituir todos os dados atuais por este backup?")) {
-            dbCloud.collection('backups').doc(id).get().then(doc => {
-                if(doc.exists) {
-                    db = doc.data().conteudo;
-                    dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => location.reload());
-                }
-            });
+    function restaurarAgora(idx) {
+        if(confirm("Substituir todos os dados por este backup?")) {
+            const bkpParaRestaurar = db.backups_lista[idx].conteudo;
+            const listaAtual = db.backups_lista; // Preserva a lista de backups
+            db = bkpParaRestaurar;
+            db.backups_lista = listaAtual;
+            save();
+            setTimeout(() => location.reload(), 1000);
         }
     }
 
-    // --- RENDERIZAÇÃO ---
+    // --- RENDERIZAÇÃO E BOTÕES (IGUAIS AO OFICIAL) ---
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[mIdx] || ''}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         document.getElementById('mesTesouraria').innerText = MESES[mIdx];
-        
         const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
         document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
         if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
-        
-        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => {
-            const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block';
-        });
-
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block'; });
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
@@ -248,12 +235,8 @@
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
-        MESES.forEach((m, i) => { 
-            corpoPlan.innerHTML += `<tr><td class="plan-month-col">${m}</td><td><textarea ${!isAdmin?'disabled':''} style="width:100%; background:transparent; color:white; border:none;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
-        });
-
+        MESES.forEach((m, i) => { corpoPlan.innerHTML += `<tr><td class="plan-month-col">${m}</td><td><textarea ${!isAdmin?'disabled':''} style="width:100%; background:transparent; color:white; border:none;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; });
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
         updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos();
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
@@ -265,9 +248,7 @@
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { 
-            tC.innerHTML += `<tr><td>${MINS[k]}</td><td style="color:var(--neon)">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; 
-        });
+        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td style="color:var(--neon)">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
         Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
             let opts = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
@@ -275,113 +256,27 @@
         });
     }
 
-    // --- FUNÇÕES DOS BOTÕES (LINKS, EVENTOS, DOCS) ---
     function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
-    function salvarLink() { 
-        const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; 
-        if(!t || !u) return; 
-        if(!db.links_externos) db.links_externos = []; 
-        db.links_externos.push({titulo:t.toUpperCase(), url:u}); 
-        save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); 
-    }
-    function renderListaLinksAdmin() { 
-        const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; 
-        (db.links_externos || []).forEach((l, i) => { 
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();" style="color:red; background:none; border:none;">X</button></div>`; 
-        }); 
-    }
-    function renderLinksPublicos() {
-        const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = "";
-        (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0,210,255,0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; });
-    }
-
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return; if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
+    function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();" style="color:red; background:none; border:none;">X</button></div>`; }); }
+    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0,210,255,0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
-    function salvarEventoEspecial() { 
-        const nome = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value;
-        if(!nome || !ini) return; 
-        if(!db.eventos_especiais) db.eventos_especiais = {};
-        db.eventos_especiais[ini] = { nome: nome.toUpperCase(), owner: curUser };
-        save(); document.getElementById('evtNome').value = ""; renderListaEventos();
-    }
-    function renderListaEventos() { 
-        const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; 
-        Object.keys(db.eventos_especiais || {}).forEach(k => { 
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();" style="color:red; background:none; border:none;">X</button></div>`; 
-        }); 
-    }
-
-    function abrirTesourariaAdmin() { 
-        document.getElementById('popTesouraria').style.display='flex'; 
-        const sel = document.getElementById('docDestinatario');
-        sel.innerHTML = '<option value="todos">🌍 TODOS</option>';
-        Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; });
-        renderAdminDocs(); 
-    }
-    function uploadArquivo() { 
-        const file = document.getElementById('fileInput').files[0]; 
-        const dest = document.getElementById('docDestinatario').value;
-        if(!file) return; 
-        const reader = new FileReader(); 
-        reader.onload = function(e) { 
-            const m = document.getElementById('selMes').value; 
-            if(!db.docs[m]) db.docs[m]=[]; 
-            db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); 
-            save(); renderAdminDocs(); 
-        }; 
-        reader.readAsDataURL(file); 
-    }
-    function renderAdminDocs() { 
-        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); 
-        lista.innerHTML = ""; 
-        (db.docs?.[m] || []).forEach((doc, i) => { 
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none;">X</button></div>`; 
-        }); 
-    }
-    function renderArquivosPublicos() { 
-        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); 
-        grid.innerHTML = ""; 
-        (db.docs?.[m] || []).forEach(doc => { 
-            if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) {
-                grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; 
-            }
-        }); 
-    }
-    function verArquivo(src, ext, nome) { 
-        if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; }
-        const c = document.getElementById('viewContainer'); 
-        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; 
-        document.getElementById('popViewImg').style.display='flex'; 
-    }
-
-    function updateChart(mIdx) { 
-        const ctx = document.getElementById('missionaryChart').getContext('2d'); 
-        if(missionChart) missionChart.destroy(); 
-        missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); 
-    }
-
-    function abrirPop() { 
-        const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); 
-        c.innerHTML = ""; 
-        ["Encontros","Classes","Estudos","Ministros","Duplas","Batismos"].forEach((l, i) => { 
-            c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; 
-        }); 
-        document.getElementById('popOverlay').style.display='flex'; 
-    }
-
-    // --- UTILITÁRIOS ---
-    function login() { 
-        const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
-        const senhaDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
-        if(senhaDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Senha incorreta!");
-    }
+    function salvarEventoEspecial() { const nome = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value; if(!nome || !ini) return; if(!db.eventos_especiais) db.eventos_especiais = {}; db.eventos_especiais[ini] = { nome: nome.toUpperCase(), owner: curUser }; save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();" style="color:red; background:none; border:none;">X</button></div>`; }); }
+    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none;">X</button></div>`; }); }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) { grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; } }); }
+    function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
+    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministros","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; const senhaDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); if(senhaDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Senha incorreta!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
     function fecharPop() { document.querySelectorAll('.overlay').forEach(o => o.style.display='none'); }
-
-    const sM = document.getElementById('selMes'); 
-    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
