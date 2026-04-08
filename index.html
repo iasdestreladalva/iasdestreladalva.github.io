@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - SISTEMA OFICIAL</title>
+    <title>IASD Estrela Dalva - OFICIAL CLOUD</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -10,45 +10,36 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
-        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
         
-        /* Cabeçalho de Botões */
-        .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        /* Estilo dos Botões e Interface (Preservando seu Visual) */
         .btn-header { background: none; border: 1px solid #444; color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; transition: 0.3s; }
-
-        /* Painel Administrativo */
+        .btn-header:hover { background: rgba(255,255,255,0.1); }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; min-height: 520px; }
-        .admin-section h4 { border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 0; }
         
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
 
-        /* Tabela Escala */
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 8px; overflow: hidden; }
-        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
-        .auto-expand:focus { background: #e6f1ff !important; }
         
-        /* Modais */
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-
-        @media print { .no-print { display: none !important; } body { background: white; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="userWelcomeBar" class="no-print"></div>
+    <div id="userWelcomeBar" style="display:none; text-align:center; padding:10px; color:var(--neon)"></div>
 
-    <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
+    <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-        <div class="header-btns">
+        <div style="display:flex; gap:8px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:130px; border-color:var(--neon);"></select>
             <button class="btn-header" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
             <button id="btnLinks" class="btn-header" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
@@ -60,12 +51,12 @@
         </div>
     </div>
 
-    <div id="adminPanel" class="admin-box no-print">
+    <div id="adminPanel" class="admin-box">
         <div class="admin-grid">
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
+                <button class="btn-min" style="border-color:red; color:red;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
             </div>
             <div class="admin-section">
                 <h4>2. ANCIÃO DO MÊS</h4>
@@ -73,21 +64,18 @@
             </div>
             <div class="admin-section">
                 <h4>3. LOGINS & SENHAS</h4>
-                <div style="border:1px solid var(--gold); padding:10px; border-radius:8px; margin-bottom:15px; text-align:center;">
-                    <small style="color:var(--gold); font-weight:bold;">META ANUAL DE BATISMOS</small>
-                    <input type="number" id="metaBatismos" class="input-dark" style="text-align:center; font-size:1.2rem; margin-top:5px;">
+                <div style="text-align:center; border:1px solid var(--gold); padding:8px; margin-bottom:10px; border-radius:5px;">
+                    <small style="color:var(--gold)">META DE BATISMOS ANUAL</small>
+                    <input type="number" id="metaBat" class="input-dark" style="text-align:center" onchange="db.meta_anual=this.value; save()">
                 </div>
-                <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
-                    <tbody id="corpoCreds"></tbody>
-                </table>
+                <table style="width:100%; font-size:0.75rem; color:white;"><tbody id="corpoCreds"></tbody></table>
             </div>
             <div class="admin-section">
-                <h4>4. APOIO / NUVEM</h4>
+                <h4>4. APOIO / BACKUP NUVEM</h4>
                 <div id="gridApoioAnciao"></div>
-                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
-                <h4 style="color:var(--gold)">☁️ BACKUP NA NUVEM</h4>
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 CRIAR PONTO DE SEGURANÇA</button>
-                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">📂 GERENCIAR CÓPIAS</button>
+                <hr style="border-color:#334155;">
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 GERAR BACKUP NUVEM</button>
+                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">📂 GERENCIAR VERSÕES</button>
             </div>
         </div>
     </div>
@@ -95,8 +83,8 @@
     <table id="tabela-main">
         <thead>
             <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Ancião Responsável: </th></tr>
+            <tr><th style="width:120px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SONO</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
@@ -104,7 +92,7 @@
 
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" id="popConteudo" onclick="event.stopPropagation()"></div></div>
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="btn-min" style="background:var(--blue); color:white; width:100%; margin-top:15px; border:none;" onclick="login()">ENTRAR</button></div></div>
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--gold); text-align:center;">RESTAURAR VERSÃO NUVEM</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--gold); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
@@ -118,37 +106,47 @@
     let db = {}; let bkpData = { lista: [] };
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    // Sincronização em Tempo Real
+    // Sincronização em Tempo Real (Escala e Dados)
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); }
     });
 
+    // Sincronização em Tempo Real (Backups)
     dbCloud.collection('dados').doc('backups_nuvem').onSnapshot(doc => {
         if(doc.exists) bkpData = doc.data();
     });
 
-    function save() { if(curUser !== 'visitante') dbCloud.collection('dados').doc('estrela_v102').set(db); }
+    function save() { 
+        if(curUser !== 'visitante') dbCloud.collection('dados').doc('estrela_v102').set(db); 
+    }
 
-    // --- FUNÇÕES DE INTERFACE ---
+    // --- FUNÇÕES DA ESCALA (SALVAR AO CLICAR FORA OU DAR ENTER) ---
+    function atuCel(d, c, v) { 
+        if(!db.escalas[d]) db.escalas[d]={}; 
+        db.escalas[d][c] = v.toUpperCase(); 
+        save(); 
+    }
+
+    // --- BOTÕES E MODAIS (RELIGADOS) ---
     function abrirPopLinks() {
         const c = document.getElementById('popConteudo');
         c.innerHTML = `<h3 style="color:var(--neon)">🔗 LINKS RÁPIDOS</h3>
-        <input type="text" id="nlT" class="input-dark" placeholder="Nome">
-        <input type="text" id="nlU" class="input-dark" placeholder="URL" style="margin-top:5px">
+        <input type="text" id="lnkT" class="input-dark" placeholder="Título">
+        <input type="text" id="lnkU" class="input-dark" placeholder="URL" style="margin-top:5px">
         <button class="btn-min" style="margin-top:10px" onclick="addL()">ADICIONAR</button>
-        <div id="lstL" style="margin-top:15px">${(db.links||[]).map((l,i)=>`<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #333"><a href="${l.u}" target="_blank" style="color:white">${l.t}</a> <button onclick="db.links.splice(${i},1);save();abrirPopLinks()">X</button></div>`).join('')}</div>
+        <div style="margin-top:15px">${(db.links||[]).map((l,i)=>`<div style="display:flex; justify-content:space-between; margin-bottom:5px"><span>${l.t}</span> <button onclick="db.links.splice(${i},1);save();abrirPopLinks()">X</button></div>`).join('')}</div>
         <button class="btn-fechar" onclick="fecharPop()">FECHAR</button>`;
         document.getElementById('popOverlay').style.display='flex';
     }
-    function addL(){ if(!db.links) db.links=[]; db.links.push({t:document.getElementById('nlT').value, u:document.getElementById('nlU').value}); save(); abrirPopLinks(); }
+    function addL(){ if(!db.links) db.links=[]; db.links.push({t:document.getElementById('lnkT').value, u:document.getElementById('lnkU').value}); save(); abrirPopLinks(); }
 
     function abrirPopEventos() {
         const c = document.getElementById('popConteudo');
-        c.innerHTML = `<h3 style="color:var(--red)">🔥 EVENTOS ESPECIAIS</h3>
+        c.innerHTML = `<h3 style="color:var(--red)">🔥 EVENTOS</h3>
         <input type="text" id="evN" class="input-dark" placeholder="Evento">
         <input type="date" id="evD" class="input-dark" style="margin-top:5px">
         <button class="btn-min" style="margin-top:10px" onclick="addE()">CRIAR</button>
-        <div id="lstE" style="margin-top:15px">${Object.keys(db.eventos_especiais||{}).map(k=>`<div style="display:flex; justify-content:space-between; padding:5px">${k}: ${db.eventos_especiais[k].nome} <button onclick="delete db.eventos_especiais['${k}'];save();abrirPopEventos()">X</button></div>`).join('')}</div>
+        <div style="margin-top:15px">${Object.keys(db.eventos_especiais||{}).map(k=>`<div style="display:flex; justify-content:space-between">${k}: ${db.eventos_especiais[k].nome} <button onclick="delete db.eventos_especiais['${k}'];save();abrirPopEventos()">X</button></div>`).join('')}</div>
         <button class="btn-fechar" onclick="fecharPop()">FECHAR</button>`;
         document.getElementById('popOverlay').style.display='flex';
     }
@@ -162,15 +160,25 @@
         <button class="btn-fechar" onclick="fecharPop()">FECHAR</button>`;
         document.getElementById('popOverlay').style.display='flex';
     }
-
     function fecharPop(){ document.getElementById('popOverlay').style.display='none'; }
 
-    // --- ESCALA COM CONFIRMAÇÃO (ENTER / CLICK FORA) ---
-    function atuCel(d, c, v) { 
-        if(!db.escalas[d]) db.escalas[d]={}; 
-        db.escalas[d][c] = v.toUpperCase(); 
-        save(); 
+    // --- SISTEMA DE BACKUP NUVEM ---
+    function gerarBackupNuvem() {
+        const nome = prompt("Dê um nome ao backup:"); if(!nome) return;
+        const b = { id: Date.now(), nome: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)) };
+        if(!bkpData.lista) bkpData.lista = []; bkpData.lista.unshift(b);
+        if(bkpData.lista.length > 10) bkpData.lista.pop();
+        dbCloud.collection('dados').doc('backups_nuvem').set(bkpData).then(()=>alert("Backup salvo na nuvem!"));
     }
+    function abrirModalBackups(){
+        document.getElementById('popBackups').style.display='flex';
+        document.getElementById('listaBackupsNuvem').innerHTML = (bkpData.lista||[]).map((b,i)=>`
+            <div style="padding:10px; border:1px solid #444; margin-bottom:5px; display:flex; justify-content:space-between">
+                <span><b>${b.nome}</b> (${b.data})</span>
+                <button onclick="restaurar(${i})" style="background:var(--green); color:white; border:none; padding:5px; cursor:pointer">USAR</button>
+            </div>`).join('');
+    }
+    function restaurar(i){ if(confirm("Restaurar esta versão?")) { db = bkpData.lista[i].conteudo; save(); location.reload(); } }
 
     // --- RENDERIZAÇÃO ---
     function renderTodo() {
@@ -180,13 +188,11 @@
         document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[mIdx] || ''}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         
-        document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
-        document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
-        
         if(!isV) {
             document.getElementById('userWelcomeBar').style.display = 'block';
             document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser]}</b> | Apoio: <b>${db.apoio_anciao?.[curUser] || 'Pastor'}</b>`;
-            ['btnLinks','btnEventos','btnDados','btnDocs'].forEach(id => document.getElementById(id).style.display = 'inline-block');
+            ['btnLinks','btnEventos','btnDados','btnDocs','btnSair'].forEach(id => document.getElementById(id).style.display = 'inline-block');
+            document.getElementById('btnAcesso').style.display = 'none';
         }
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
@@ -213,37 +219,18 @@
             l.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`;
         });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
         
-        document.getElementById('metaBatismos').value = db.meta_anual || 0;
-        document.getElementById('metaBatismos').onchange = function(){ db.meta_anual = this.value; save(); };
-
+        document.getElementById('metaBat').value = db.meta_anual || 0;
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td style="color:var(--neon)">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td>${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
+        
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
         Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(m => {
             let opts = LISTA_ANCIAOS.map(a => `<option value="${a}" ${db.apoio_anciao?.[m]===a?'selected':''}>${a}</option>`).join('');
             gA.innerHTML += `<div style="margin-bottom:5px;"><small>${MINS[m]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${m}']=this.value; save();"><option value="">--</option>${opts}</select></div>`;
         });
     }
-
-    // --- SISTEMA DE BACKUP NUVEM ---
-    function gerarBackupNuvem() {
-        const nome = prompt("Nome do Backup:"); if(!nome) return;
-        const b = { id: Date.now(), nome: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)) };
-        if(!bkpData.lista) bkpData.lista = []; bkpData.lista.unshift(b);
-        if(bkpData.lista.length > 10) bkpData.lista.pop();
-        dbCloud.collection('dados').doc('backups_nuvem').set(bkpData).then(()=>alert("✅ Ponto de segurança criado!"));
-    }
-    function abrirModalBackups(){
-        document.getElementById('popBackups').style.display='flex';
-        document.getElementById('listaBackupsNuvem').innerHTML = (bkpData.lista||[]).map((b,i)=>`
-            <div style="padding:10px; border:1px solid #444; margin-bottom:5px; display:flex; justify-content:space-between">
-                <span><b>${b.nome}</b> (${b.data})</span>
-                <button onclick="restaurar(${i})" style="background:var(--green); color:white; border:none; padding:8px; cursor:pointer; border-radius:4px;">USAR</button>
-            </div>`).join('');
-    }
-    function restaurar(i){ if(confirm("Restaurar esta versão?")) { db = bkpData.lista[i].conteudo; save(); location.reload(); } }
 
     function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
