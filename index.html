@@ -59,7 +59,7 @@
                 <h4 style="color:var(--gold)">💾 BACKUP EXTERNO</h4>
                 <button class="btn-min" onclick="gerarBackupNoNovoDocumento()" style="border-color:var(--gold); color:var(--gold)">CRIAR PONTO DE SEGURANÇA</button>
                 <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">GERENCIAR BACKUPS</button>
-                <p style="font-size: 0.65rem; color: #888; margin-top:10px;">* Salvo no documento 'backups_estrela' (mais seguro).</p>
+                <p style="font-size: 0.65rem; color: #888; margin-top:10px;">* Salvo separadamente em 'backups_estrela'.</p>
             </div>
         </div>
     </div>
@@ -76,8 +76,8 @@
 
 <div id="popBackup" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--gold); text-align:center;">GERENCIAR BACKUPS EXTERNOS</h3>
-        <div id="listaBackupsInternos" style="margin-top:15px; color:white;">Buscando dados no Firebase...</div>
+        <h3 style="color:var(--gold); text-align:center;">PONTOS DE SEGURANÇA (EXTERNO)</h3>
+        <div id="listaBackupsInternos" style="margin-top:15px; color:white;">Buscando dados...</div>
         <button onclick="fecharPop()" class="btn-fechar">FECHAR</button>
     </div>
 </div>
@@ -99,18 +99,19 @@
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", sabatina: "Escola Sabatina" };
     
     let db = {}; 
-    let dbBackups = { lista: [] }; // Armazenará os backups separadamente
+    let dbBackups = { lista: [] }; 
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    // 1. Monitora dados principais
+    // Monitora documento principal
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); }
         else { db = { senhas:{admin:'123456'}, anciaos:{}, escalas:{} }; save(); }
     });
 
-    // 2. Monitora documento de backups externo
+    // Monitora documento de backups
     dbCloud.collection('dados').doc('backups_estrela').onSnapshot(doc => {
         if(doc.exists) { dbBackups = doc.data(); }
+        else { dbBackups = { lista: [] }; }
     });
 
     function save() {
@@ -120,7 +121,7 @@
         .then(() => { st.innerText = "✅ Sincronizado"; setTimeout(() => { st.style.display = "none"; }, 1500); });
     }
 
-    // --- NOVA LÓGICA DE BACKUP EXTERNO ---
+    // --- COMANDOS DE BACKUP ---
     function gerarBackupNoNovoDocumento() {
         const nome = prompt("Dê um nome a este backup:");
         if(!nome) return;
@@ -129,16 +130,16 @@
             id: Date.now(),
             nome: nome.toUpperCase(),
             data: new Date().toLocaleString('pt-BR'),
-            conteudo: JSON.parse(JSON.stringify(db)) // Cópia dos dados atuais
+            conteudo: JSON.parse(JSON.stringify(db))
         };
 
         if(!dbBackups.lista) dbBackups.lista = [];
         dbBackups.lista.unshift(novoBkp);
-        if(dbBackups.lista.length > 10) dbBackups.lista.pop(); // Mantém os 10 últimos
+        if(dbBackups.lista.length > 10) dbBackups.lista.pop();
 
         dbCloud.collection('dados').doc('backups_estrela').set(dbBackups)
-        .then(() => alert("✅ Backup salvo com sucesso no documento externo!"))
-        .catch(e => alert("Erro ao criar documento de backup: " + e));
+        .then(() => alert("✅ Backup guardado no documento 'backups_estrela'!"))
+        .catch(e => alert("Erro: " + e));
     }
 
     function abrirModalRestaurar() {
@@ -147,7 +148,7 @@
         lista.innerHTML = "";
         
         if(!dbBackups.lista || dbBackups.lista.length === 0) {
-            lista.innerHTML = "Nenhum backup encontrado no servidor.";
+            lista.innerHTML = "<p style='text-align:center;'>Nenhum backup encontrado.</p>";
             return;
         }
 
@@ -164,14 +165,14 @@
     }
 
     function excluirBackup(idx) {
-        if(confirm("Apagar este backup do servidor?")) {
+        if(confirm("Apagar este backup permanentemente?")) {
             dbBackups.lista.splice(idx, 1);
             dbCloud.collection('dados').doc('backups_estrela').set(dbBackups).then(() => abrirModalRestaurar());
         }
     }
 
     function confirmarRestauracao(idx) {
-        if(confirm("Isso apagará a escala atual e colocará os dados deste backup. Confirmar?")) {
+        if(confirm("Restaurar estes dados? A escala atual será substituída!")) {
             db = JSON.parse(JSON.stringify(dbBackups.lista[idx].conteudo));
             dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
                 alert("SISTEMA RESTAURADO!");
@@ -180,7 +181,7 @@
         }
     }
 
-    // --- RENDERIZAÇÃO E LOGIN ---
+    // --- FUNÇÕES DE INTERFACE ---
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
