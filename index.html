@@ -10,32 +10,38 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
-        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; text-align: center; }
+        
+        /* Painel Administrativo */
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
+        .admin-grid { display: grid; grid-template-columns: 220px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; min-height: 520px; }
+        
+        /* Botões e Inputs */
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 4px; box-sizing: border-box; }
-        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
+        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        
+        /* Tabela Principal */
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        
+        /* Célula de Data Destacada (O que você gostou) */
+        .dia-destaque { background: #0f172a !important; color: var(--neon) !important; cursor: pointer; transition: 0.2s; }
+        .dia-destaque:hover { filter: brightness(1.5); }
+        
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 0.85rem; display: block; padding: 5px 0; outline: none; }
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-        .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
-        .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.02); }
-        .plan-table td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.95rem; }
-        .plan-month-col { background: rgba(0, 210, 255, 0.05); color: var(--gold); font-weight: bold; text-align: center; width: 140px; }
-        .plan-text-area { width: 100%; background: transparent !important; color: #e6f1ff !important; border: none !important; resize: none; overflow: hidden; }
-        @media print { .no-print, #adminPanel, .overlay, button, select { display: none !important; } body { background: white; color: black; } table#tabela-main { border: 1px solid #000; } }
+
+        @media print { .no-print { display: none !important; } body { background: white; } table#tabela-main { border: 1px solid black; } textarea { color: black !important; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="userWelcomeBar" class="no-print"></div>
+    <div id="userWelcomeBar" class="no-print" style="display:none; background: rgba(0,210,255,0.1); border: 1px solid var(--neon); padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center;"></div>
 
     <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
         <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
@@ -53,23 +59,24 @@
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
                 <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
-                <p style="font-size: 0.6rem; color: #888;">*Selecione um ministério e clique na data na tabela para marcar.</p>
             </div>
             <div class="admin-section">
                 <h4>2. ANCIÃO DO MÊS</h4>
                 <div id="gridMeses"></div>
             </div>
             <div class="admin-section">
-                <h4>3. LOGINS & SENHAS</h4>
-                <table style="width:100%; font-size:0.75rem; color:white;"><tbody id="corpoCreds"></tbody></table>
+                <h4>3. SENHAS DE ACESSO</h4>
+                <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
+                    <tbody id="corpoCreds"></tbody>
+                </table>
             </div>
             <div class="admin-section">
-                <h4>4. APOIO ANCIÃO</h4>
-                <div id="gridApoioAnciao"></div>
-                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
-                <h4 style="color:var(--gold)">5. BACKUP NA NUVEM</h4>
+                <h4>4. BACKUP NA NUVEM</h4>
+                <p style="font-size: 0.7rem; color: #aaa;">* Salve até 10 versões diferentes diretamente no Firebase.</p>
                 <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold); border-width: 2px;">💾 CRIAR PONTO DE SEGURANÇA</button>
-                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">☁️ GERENCIAR VERSÕES</button>
+                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">☁️ GERENCIAR CÓPIAS</button>
+                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+                <button class="btn-min" onclick="abrirPopEventos()" style="border-color:var(--red); color:var(--red)">🔥 EVENTOS ESPECIAIS</button>
             </div>
         </div>
     </div>
@@ -78,35 +85,15 @@
         <thead>
             <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
             <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr>
-                <th style="width:130px">DIA</th>
-                <th style="width:50px">DATA</th>
-                <th>SABATINA</th>
-                <th>PREGADOR(A)</th>
-                <th>MÚSICA</th>
-                <th>LOUVOR</th>
-                <th>SONO</th>
-                <th>RECEPÇÃO</th>
-                <th>DIACONATO</th>
-            </tr>
+            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
-
-    <div id="secPlan" style="margin-top:40px;" class="no-print">
-        <h3 style="color:var(--gold)">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-        <table class="plan-table"><tbody id="corpoPlan"></tbody></table>
-    </div>
-
-    <div class="chart-container no-print" style="height: 350px; margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
-        <h3 style="color:var(--orange)">📊 DESEMPENHO MISSIONÁRIO</h3>
-        <canvas id="missionaryChart"></canvas>
-    </div>
 </div>
 
 <div id="popBackups" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--gold); text-align:center;">RESTAURAR VERSÃO ANTERIOR</h3>
+        <h3 style="color:var(--gold); text-align:center;">RESTAURAR VERSÃO (NUVEM)</h3>
         <div id="listaBackupsNuvem" style="margin-top:15px; color:white;"></div>
         <button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button>
     </div>
@@ -120,6 +107,8 @@
     </div>
 </div>
 
+<div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS ESPECIAIS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Nome do Evento"><input type="date" id="evtData" class="input-dark" style="margin-top:10px;"><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEvento()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
@@ -127,119 +116,151 @@
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", sabatina: "Escola Sabatina" };
-    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     
-    let db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, escalas:{}, regras_manuais:{}, plan_anual:{} }; 
+    let db = {}; 
     let dbBackups = { lista: [] }; 
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-    let missionChart;
 
-    // Monitor do Sistema Principal
+    // Sincronização Principal
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); } else { save(); }
+        if(doc.exists) { db = doc.data(); renderTodo(); } 
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, escalas:{}, regras_manuais:{}, eventos:{} }; save(); }
     });
 
-    // Monitor do Documento de Backups
+    // Sincronização de Backups
     dbCloud.collection('dados').doc('backups_estrela').onSnapshot(doc => {
         if(doc.exists) dbBackups = doc.data();
     });
 
     function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
 
-    // --- LOGICA DE BACKUP ---
+    // --- SISTEMA DE BACKUP NA NUVEM (Múltiplos) ---
     function gerarBackupNuvem() {
-        const nome = prompt("Nome para este backup:");
+        const nome = prompt("Dê um nome para este ponto de restauração (ex: Antes da alteração de Abril):");
         if(!nome) return;
 
         const novoBkp = {
             id: Date.now(),
             nome: nome.toUpperCase(),
             data: new Date().toLocaleString('pt-BR'),
-            conteudo: JSON.parse(JSON.stringify(db)) // Cópia profunda dos dados atuais
+            conteudo: JSON.parse(JSON.stringify(db))
         };
 
         if(!dbBackups.lista) dbBackups.lista = [];
-        dbBackups.lista.unshift(novoBkp); // Adiciona no início da lista
-        if(dbBackups.lista.length > 10) dbBackups.lista.pop(); // Mantém os 10 últimos
+        dbBackups.lista.unshift(novoBkp);
+        if(dbBackups.lista.length > 10) dbBackups.lista.pop(); // Limite de 10
 
         dbCloud.collection('dados').doc('backups_estrela').set(dbBackups)
-        .then(() => alert("✅ Backup salvo na nuvem!"));
+        .then(() => alert("✅ Backup salvo com sucesso na nuvem!"));
     }
 
     function abrirModalBackups() {
         document.getElementById('popBackups').style.display = 'flex';
-        const container = document.getElementById('listaBackupsNuvem');
-        container.innerHTML = "";
+        const lista = document.getElementById('listaBackupsNuvem');
+        lista.innerHTML = "";
         
         if(!dbBackups.lista || dbBackups.lista.length === 0) {
-            container.innerHTML = "Nenhum backup encontrado."; return;
+            lista.innerHTML = "Nenhum backup encontrado na nuvem."; return;
         }
 
         dbBackups.lista.forEach((b, idx) => {
-            container.innerHTML += `
-                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
-                    <div><b>${b.nome}</b><br><small>${b.data}</small></div>
+            lista.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #334155;">
+                    <div><b>${b.nome}</b><br><small style="color:#aaa">${b.data}</small></div>
                     <div>
-                        <button onclick="restaurarVersao(${idx})" style="background:var(--green); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">RESTAURAR</button>
-                        <button onclick="apagarBkp(${idx})" style="background:none; color:red; border:none; cursor:pointer; margin-left:10px;">🗑️</button>
+                        <button onclick="restaurarNuvem(${idx})" style="background:var(--green); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">USAR</button>
+                        <button onclick="deletarBkp(${idx})" style="background:none; color:red; border:none; cursor:pointer; margin-left:10px;">🗑️</button>
                     </div>
                 </div>`;
         });
     }
 
-    function restaurarVersao(idx) {
-        if(confirm("Substituir a escala atual por esta versão?")) {
+    function restaurarNuvem(idx) {
+        if(confirm("Deseja restaurar esta versão? Os dados atuais serão substituídos.")) {
             db = JSON.parse(JSON.stringify(dbBackups.lista[idx].conteudo));
             save();
-            alert("SISTEMA RESTAURADO!");
+            alert("Sistema Restaurado!");
             location.reload();
         }
     }
 
-    function apagarBkp(idx) {
+    function deletarBkp(idx) {
         if(confirm("Excluir este backup permanentemente?")) {
             dbBackups.lista.splice(idx, 1);
             dbCloud.collection('dados').doc('backups_estrela').set(dbBackups).then(() => abrirModalBackups());
         }
     }
 
-    // --- FUNÇÕES DE RENDERIZAÇÃO ---
+    // --- RENDERIZAÇÃO E LOGICA ---
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        const isAdmin = ['admin','ger'].includes(curUser);
         
         document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[mIdx] || ''}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
-        document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
-        document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
-        if(!isV) document.getElementById('userWelcomeBar').style.display = 'block';
+        
+        document.getElementById('btnAcesso').style.display = curUser === 'visitante' ? 'block' : 'none';
+        document.getElementById('btnSair').style.display = curUser === 'visitante' ? 'none' : 'block';
+        
+        if(curUser !== 'visitante') {
+            const welcome = document.getElementById('userWelcomeBar');
+            welcome.style.display = 'block';
+            welcome.innerHTML = `Logado como: <b>${MINS[curUser]}</b>`;
+        }
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
+            let dtF = dt.toISOString().split('T')[0];
+            let evento = db.eventos?.[dtF] || null;
             let minDoDia = db.regras_manuais?.[dStr] || null;
-            
-            if([0,3,6].includes(sem)) {
-                let tr = `<tr><td onclick="cliqueDia('${dStr}')" style="cursor:pointer; background:${minDoDia?'#0f172a':''}; color:${minDoDia?'var(--neon)':''}"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${MINS[minDoDia] || ''}</small></td><td>${d}/${mIdx+1}</td>`;
+
+            if([0,3,6].includes(sem) || evento) {
+                let tr = `<tr>
+                    <td onclick="cliqueDia('${dStr}')" class="${minDoDia ? 'dia-destaque' : ''}">
+                        <b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br>
+                        <small>${evento ? evento.nome : (MINS[minDoDia] || '')}</small>
+                    </td>
+                    <td>${d}/${mIdx+1}</td>`;
+                
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    tr += `<td><textarea ${!isV?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${db.escalas?.[dStr]?.[col]||''}</textarea></td>`;
+                    let canEdit = !['visitante'].includes(curUser);
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${db.escalas?.[dStr]?.[col]||''}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
 
-        const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
-        MESES.forEach((m, i) => { 
-            corpoPlan.innerHTML += `<tr><td class="plan-month-col">${m}</td><td><textarea ${isAdmin?'':'disabled'} class="plan-text-area" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
-        });
-
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
-        updateChart(mIdx);
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
 
+    function renderAdmin() {
+        const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
+        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { 
+            lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
+        });
+        
+        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
+        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).forEach(k => { 
+            tC.innerHTML += `<tr><td style="padding:4px">${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; 
+        });
+    }
+
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
+        if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Senha Incorreta!");
+    }
+    
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    
     function cliqueDia(dStr) { 
         if(['admin','ger'].includes(curUser)) { 
             if(!db.regras_manuais) db.regras_manuais = {};
@@ -248,36 +269,24 @@
         } 
     }
 
-    function renderAdmin() {
-        const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
-        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { 
-            lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; 
-        });
-        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
-        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
-        const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
-        Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
-            let opts = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
-            gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${opts}</select></div>`;
+    function salvarEvento() {
+        const n = document.getElementById('evtNome').value, d = document.getElementById('evtData').value;
+        if(!n || !d) return;
+        if(!db.eventos) db.eventos = {};
+        db.eventos[d] = { nome: n.toUpperCase() };
+        save(); renderListaEventos();
+    }
+
+    function renderListaEventos() {
+        const l = document.getElementById('listaEventosAtivos'); l.innerHTML = "";
+        Object.keys(db.eventos || {}).forEach(k => {
+            l.innerHTML += `<div style="padding:5px; border-bottom:1px solid #444;">${k} - ${db.eventos[k].nome} <button onclick="delete db.eventos['${k}']; save(); renderListaEventos();">X</button></div>`;
         });
     }
 
-    function login() { 
-        const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
-        if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!");
-    }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
-    function updateChart(mIdx) {
-        const ctx = document.getElementById('missionaryChart').getContext('2d');
-        if(missionChart) missionChart.destroy();
-        missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ maintainAspectRatio:false, plugins:{legend:{display:false}} } });
-    }
-
-    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    // Inicialização do Select de Meses
+    const sM = document.getElementById('selMes');
+    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
