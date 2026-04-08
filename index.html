@@ -56,10 +56,10 @@
                 <table style="width:100%; font-size:0.75rem; color:white;"><tbody id="corpoCreds"></tbody></table>
             </div>
             <div class="admin-section">
-                <h4 style="color:var(--gold)">💾 BACKUP NUVEM</h4>
-                <button class="btn-min" onclick="gerarBackupLocalBanco()" style="border-color:var(--gold); color:var(--gold)">GERAR BACKUP AGORA</button>
-                <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">RESTAURAR SISTEMA</button>
-                <p style="font-size: 0.7rem; color: #888;">* O backup salva escalas, senhas e configurações atuais.</p>
+                <h4 style="color:var(--gold)">💾 BACKUP EXTERNO</h4>
+                <button class="btn-min" onclick="gerarBackupNoNovoDocumento()" style="border-color:var(--gold); color:var(--gold)">CRIAR PONTO DE SEGURANÇA</button>
+                <button class="btn-min" onclick="abrirModalRestaurar()" style="border-color:var(--green); color:var(--green)">GERENCIAR BACKUPS</button>
+                <p style="font-size: 0.65rem; color: #888; margin-top:10px;">* Salvo no documento 'backups_estrela' (mais seguro).</p>
             </div>
         </div>
     </div>
@@ -76,8 +76,8 @@
 
 <div id="popBackup" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--gold); text-align:center;">PONTOS DE RESTAURAÇÃO</h3>
-        <div id="listaBackupsInternos" style="margin-top:15px; color:white;"></div>
+        <h3 style="color:var(--gold); text-align:center;">GERENCIAR BACKUPS EXTERNOS</h3>
+        <div id="listaBackupsInternos" style="margin-top:15px; color:white;">Buscando dados no Firebase...</div>
         <button onclick="fecharPop()" class="btn-fechar">FECHAR</button>
     </div>
 </div>
@@ -98,86 +98,89 @@
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", sabatina: "Escola Sabatina" };
     
-    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    let db = {}; 
+    let dbBackups = { lista: [] }; // Armazenará os backups separadamente
+    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
+    // 1. Monitora dados principais
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { 
-            db = doc.data(); 
-            if(!db.meus_backups) db.meus_backups = [];
-            renderTodo(); 
-        } else { 
-            db = { senhas:{admin:'123456'}, anciaos:{}, escalas:{}, mis_v3:{}, meus_backups:[] }; 
-            save(); 
-        }
+        if(doc.exists) { db = doc.data(); renderTodo(); }
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, escalas:{} }; save(); }
+    });
+
+    // 2. Monitora documento de backups externo
+    dbCloud.collection('dados').doc('backups_estrela').onSnapshot(doc => {
+        if(doc.exists) { dbBackups = doc.data(); }
     });
 
     function save() {
         const st = document.getElementById('saveStatus');
         st.innerText = "⏳ Gravando..."; st.style.display = "block";
-        // Limpeza profunda para garantir que objetos vazios ou nulos não travem o Firebase
-        const dataToSave = JSON.parse(JSON.stringify(db));
-        dbCloud.collection('dados').doc('estrela_v102').set(dataToSave)
-        .then(() => { 
-            st.innerText = "✅ Sincronizado"; 
-            setTimeout(() => { st.style.display = "none"; }, 1500); 
-        }).catch(e => console.error("Erro Firebase:", e));
+        dbCloud.collection('dados').doc('estrela_v102').set(JSON.parse(JSON.stringify(db)))
+        .then(() => { st.innerText = "✅ Sincronizado"; setTimeout(() => { st.style.display = "none"; }, 1500); });
     }
 
-    // --- FUNÇÕES DE BACKUP CORRIGIDAS ---
-    function gerarBackupLocalBanco() {
-        const nome = prompt("Nome do backup:");
+    // --- NOVA LÓGICA DE BACKUP EXTERNO ---
+    function gerarBackupNoNovoDocumento() {
+        const nome = prompt("Dê um nome a este backup:");
         if(!nome) return;
-        const dadosCopia = JSON.parse(JSON.stringify(db));
-        delete dadosCopia.meus_backups; // Não salva a lista dentro dela mesma para não crescer infinito
-        
-        const bkp = {
+
+        const novoBkp = {
             id: Date.now(),
             nome: nome.toUpperCase(),
             data: new Date().toLocaleString('pt-BR'),
-            conteudo: dadosCopia
+            conteudo: JSON.parse(JSON.stringify(db)) // Cópia dos dados atuais
         };
 
-        if(!db.meus_backups) db.meus_backups = [];
-        db.meus_backups.unshift(bkp);
-        if(db.meus_backups.length > 5) db.meus_backups.pop();
-        save();
-        alert("Backup criado!");
+        if(!dbBackups.lista) dbBackups.lista = [];
+        dbBackups.lista.unshift(novoBkp);
+        if(dbBackups.lista.length > 10) dbBackups.lista.pop(); // Mantém os 10 últimos
+
+        dbCloud.collection('dados').doc('backups_estrela').set(dbBackups)
+        .then(() => alert("✅ Backup salvo com sucesso no documento externo!"))
+        .catch(e => alert("Erro ao criar documento de backup: " + e));
     }
 
     function abrirModalRestaurar() {
         document.getElementById('popBackup').style.display = 'flex';
         const lista = document.getElementById('listaBackupsInternos');
         lista.innerHTML = "";
-        if(!db.meus_backups || db.meus_backups.length === 0) { lista.innerHTML = "Nenhum backup."; return; }
         
-        db.meus_backups.forEach((b, idx) => {
+        if(!dbBackups.lista || dbBackups.lista.length === 0) {
+            lista.innerHTML = "Nenhum backup encontrado no servidor.";
+            return;
+        }
+
+        dbBackups.lista.forEach((b, idx) => {
             lista.innerHTML += `
                 <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                     <div><b>${b.nome}</b><br><small>${b.data}</small></div>
-                    <button onclick="confirmarRestauracao(${idx})" style="background:var(--green); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">RESTAURAR</button>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="confirmarRestauracao(${idx})" style="background:var(--green); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">USAR</button>
+                        <button onclick="excluirBackup(${idx})" style="background:var(--red); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;">🗑️</button>
+                    </div>
                 </div>`;
         });
     }
 
+    function excluirBackup(idx) {
+        if(confirm("Apagar este backup do servidor?")) {
+            dbBackups.lista.splice(idx, 1);
+            dbCloud.collection('dados').doc('backups_estrela').set(dbBackups).then(() => abrirModalRestaurar());
+        }
+    }
+
     function confirmarRestauracao(idx) {
-        if(confirm("Confirmar restauração? Os dados atuais serão apagados!")) {
-            // Pega o conteúdo do backup
-            const bkpData = JSON.parse(JSON.stringify(db.meus_backups[idx].conteudo));
-            const listaPreservada = JSON.parse(JSON.stringify(db.meus_backups));
-
-            // Aplica os dados do backup
-            db = bkpData;
-            db.meus_backups = listaPreservada; // Mantém a lista de backups viva
-
-            // Salva no Firebase e Força Recarregamento
+        if(confirm("Isso apagará a escala atual e colocará os dados deste backup. Confirmar?")) {
+            db = JSON.parse(JSON.stringify(dbBackups.lista[idx].conteudo));
             dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-                alert("SISTEMA RESTAURADO COM SUCESSO!");
+                alert("SISTEMA RESTAURADO!");
                 location.reload();
             });
         }
     }
 
-    // --- RENDERIZAÇÃO ---
+    // --- RENDERIZAÇÃO E LOGIN ---
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
@@ -193,13 +196,14 @@
             if([0,3,6].includes(sem)) {
                 let tr = `<tr><td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let canEdit = isAdmin || (curUser !== 'visitante');
+                    let canEdit = !isV;
                     tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)">${db.escalas?.[dStr]?.[col]||''}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
+        setTimeout(() => { document.querySelectorAll('textarea').forEach(el => { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }); }, 200);
     }
 
     function renderAdmin() {
@@ -207,6 +211,8 @@
         Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min" onclick="window.minSelecionado='${m}'">${MINS[m]}</button>`; });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
     }
 
     function login() { 
