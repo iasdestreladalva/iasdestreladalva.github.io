@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - OFICIAL CLOUD</title>
+    <title>IASD Estrela Dalva - Cloud</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -76,8 +76,8 @@
                 <h4>4. APOIO / NUVEM</h4>
                 <div id="gridApoioAnciao"></div>
                 <hr style="border-color:#334155;">
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 BACKUP NUVEM</button>
-                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">📂 RESTAURAR NUVEM</button>
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 GERAR BACKUP NUVEM</button>
+                <button class="btn-min" onclick="abrirModalBackups()" style="border-color:var(--green); color:var(--green)">📂 RESTAURAR DA NUVEM</button>
             </div>
         </div>
     </div>
@@ -108,10 +108,10 @@
 </div>
 
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--gold); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" id="popLinksContent" onclick="event.stopPropagation()"></div></div>
-<div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" id="popEventosContent" onclick="event.stopPropagation()"></div></div>
-<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" id="popTesourariaContent" onclick="event.stopPropagation()"></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--gold); text-align:center;">BACKUPS NA NUVEM</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" onclick="salvarLink()">SALVAR LINK</button><hr><div id="listaLinksAtivos"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><input type="date" id="evtInicio" class="input-dark" style="margin-top:10px;"><button class="btn-min" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min" style="margin-top:10px;">ENVIAR</button><div id="listaAdminArquivos"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
 
 <script>
@@ -205,31 +205,49 @@
         });
     }
 
-    // NUVEM BACKUP
     function gerarBackupNuvem() {
         const nome = prompt("Nome do backup:"); if(!nome) return;
         const b = { id: Date.now(), data: new Date().toLocaleString(), nome: nome.toUpperCase(), conteudo: JSON.parse(JSON.stringify(db)) };
         if(!bkpData.lista) bkpData.lista = []; bkpData.lista.unshift(b);
         if(bkpData.lista.length > 10) bkpData.lista.pop();
-        dbCloud.collection('dados').doc('backups_nuvem').set(bkpData).then(() => alert("Backup salvo!"));
+        dbCloud.collection('dados').doc('backups_nuvem').set(bkpData).then(() => alert("Backup Cloud Salvo!"));
     }
     function abrirModalBackups() {
         document.getElementById('popBackups').style.display='flex';
-        document.getElementById('listaBackupsNuvem').innerHTML = (bkpData.lista || []).map((b, i) => `
-            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #444; color:white;">
-                <span>${b.nome} (${b.data})</span>
-                <button onclick="restaurar(${i})" style="background:var(--green); border:none; color:white; padding:5px; cursor:pointer;">USAR</button>
-            </div>`).join('');
+        document.getElementById('listaBackupsNuvem').innerHTML = (bkpData.lista || []).map((b, i) => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #444; color:white;"><span>${b.nome} (${b.data})</span><button onclick="restaurar(${i})" style="background:var(--green); border:none; color:white; padding:4px; cursor:pointer;">USAR</button></div>`).join('');
     }
-    function restaurar(i) { if(confirm("Restaurar?")) { db = bkpData.lista[i].conteudo; save(); location.reload(); } }
+    function restaurar(i) { if(confirm("Restaurar esta versão?")) { db = bkpData.lista[i].conteudo; save(); location.reload(); } }
 
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if(db.senhas?.[u] === p || (u==='admin' && p==='123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Dados incorretos!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
     function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
-    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Instrutores","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
-    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.","Inst.","Dup.","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Treinos","Classes","Estudos","Instrutores","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Trein.","Clas.","Estu.","Inst.","Dupl.","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value, g = document.getElementById('gridArquivosPublicos'); g.innerHTML = (db.docs?.[m] || []).filter(d => d.para === 'todos' || d.para === curUser || ['admin','ger'].includes(curUser)).map(d => `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px;">📄<br><small>${d.nome}</small></div>`).join(''); }
+
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return; if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); renderListaLinksAdmin(); }
+    function renderListaLinksAdmin() { document.getElementById('listaLinksAtivos').innerHTML = (db.links_externos || []).map((l,i)=>`<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${l.titulo}</span><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();">X</button></div>`).join(''); }
+    
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
+    function salvarEventoEspecial() { const n=document.getElementById('evtNome').value, i=document.getElementById('evtInicio').value; if(!n || !i) return; if(!db.eventos_especiais) db.eventos_especiais={}; db.eventos_especiais[i]={nome:n.toUpperCase(), owner:curUser}; save(); renderListaEventos(); }
+    function renderListaEventos() { document.getElementById('listaEventosAtivos').innerHTML = Object.keys(db.eventos_especiais || {}).map(k=>`<div>${k}: ${db.eventos_especiais[k].nome} <button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();">X</button></div>`).join(''); }
+
+    function abrirTesourariaAdmin() { 
+        document.getElementById('popTesouraria').style.display='flex'; 
+        const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">TODOS</option>';
+        Object.keys(MINS).forEach(k => sel.innerHTML += `<option value="${k}">${MINS[k]}</option>`);
+        renderAdminDocs(); 
+    }
+    function uploadArquivo() { 
+        const f = document.getElementById('fileInput').files[0], d = document.getElementById('docDestinatario').value; if(!f) return;
+        const r = new FileReader(); r.onload = function(e) {
+            const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[];
+            db.docs[m].push({nome:f.name, data:e.target.result, para:d}); save(); renderAdminDocs();
+        }; r.readAsDataURL(f);
+    }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value; document.getElementById('listaAdminArquivos').innerHTML = (db.docs?.[m] || []).map((d,i)=>`<div>${d.nome} (${d.para}) <button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();">X</button></div>`).join(''); }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
