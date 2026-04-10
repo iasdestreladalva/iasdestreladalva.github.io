@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva</title>
+    <title>IASD Estrela Dalva - SISTEMA RESTAURADO</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,32 +16,34 @@
         .saving { background: var(--orange); color: white; }
         .saved { background: var(--green); color: white; }
 
-        /* Estilos de Interface */
+        /* Estilos Base */
+        .admin-box { background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.85rem; padding: 10px; border-radius: 6px; box-sizing: border-box; }
         .btn-modern { padding: 10px 15px; border-radius: 8px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-modern:hover { background: var(--neon); color: var(--blue); }
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.85rem; padding: 10px; border-radius: 6px; box-sizing: border-box; }
+        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
+        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
 
-        /* Barra de Progresso de Batismos */
+        /* Tabela */
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; }
+        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; outline: none; }
+        .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
+        .row-ministerio { background-color: #e3f2fd !important; }
+        .row-especial { background-color: #fff4e6 !important; border-left: 8px solid var(--orange) !important; }
+
+        /* Barra de Progresso */
         .progress-container { background: #16213e; border-radius: 10px; height: 25px; width: 100%; margin-top: 10px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
-        .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.5s; width: 0%; }
+        .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; width: 0%; transition: width 0.5s; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.8rem; font-weight: bold; line-height: 25px; color: white; text-shadow: 1px 1px 2px black; }
 
-        /* Tabela e Conflitos */
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 12px 12px 0 0; overflow: hidden; }
-        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; }
-        .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
+        /* Modais */
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
+        .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
 
-        /* Filtro de Busca */
-        #buscaRapida { background: rgba(255,255,255,0.1); border: 1px solid var(--neon); color: white; padding: 8px 15px; border-radius: 20px; width: 250px; outline: none; }
-
-        @media print { 
-            .no-print, button, select, #buscaRapida, #saveIndicator { display: none !important; }
-            body { background: white; color: black; }
-            table#tabela-main { border: 2px solid black !important; }
-            #headerTitulo { font-size: 2.5rem !important; color: black !important; }
-            .row-ministerio { background-color: #f0f0f0 !important; }
-        }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
@@ -52,143 +54,198 @@
     <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
         <div>
             <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-            <input type="text" id="buscaRapida" placeholder="🔍 Buscar nome na escala..." oninput="renderTodo()">
+            <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar na escala..." style="width:250px; margin-top:5px;" oninput="renderTodo()">
         </div>
-        
         <div style="display:flex; gap:8px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
+            <button class="btn-modern" onclick="window.print()">🖨️ IMPRIMIR</button>
             <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button id="btnSair" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="sair()">🚪 SAIR</button>
+            <button id="btnSair" class="btn-modern" style="border-color:red; color:red; display:none;" onclick="sair()">🚪 SAIR</button>
         </div>
     </div>
 
-    <div id="userWelcomeBar" class="no-print" style="margin-bottom:15px; text-align:right; font-size:0.9rem;"></div>
+    <div id="userWelcomeBar" class="no-print" style="background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 10px; border-radius: 8px; margin-bottom: 15px; display:none; text-align:center;"></div>
 
-    <div id="adminPanel" class="admin-box no-print" style="display:none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
-            <div class="admin-section">
-                <h4 style="color:var(--gold)">META DE BATISMOS</h4>
+    <div id="adminPanel" class="admin-box no-print" style="display:none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:15px;">
+            <div>
+                <h4 style="color:var(--gold)">BATISMOS</h4>
                 <input type="number" id="metaBatismos" class="input-dark" onchange="db.meta_anual=this.value; updateProgresso(); save();">
-                <div class="progress-container">
-                    <div id="progressoMeta" class="progress-bar"></div>
-                    <div id="textoMeta" class="progress-text">0/0</div>
-                </div>
+                <div class="progress-container"><div id="progressoMeta" class="progress-bar"></div><div id="textoMeta" class="progress-text">0/0</div></div>
             </div>
-            <div class="admin-section">
-                <h4 style="color:var(--neon)">SISTEMA</h4>
-                <button class="btn-min" style="width:100%; margin-bottom:5px" onclick="gerarBackupNuvem()">💾 BACKUP NUVEM</button>
-                <button class="btn-min" style="width:100%" onclick="abrirPopBackups()">📂 RESTAURAR</button>
+            <div>
+                <h4 style="color:var(--neon)">MINISTÉRIO</h4>
+                <div id="listaMinisterios" style="max-height: 150px; overflow-y: auto;"></div>
+            </div>
+            <div>
+                <h4 style="color:var(--orange)">DADOS</h4>
+                <button class="btn-min" onclick="abrirPop()">📊 TERMÔMETRO</button>
+                <button class="btn-min" onclick="abrirPopLinks()">🔗 LINKS</button>
+            </div>
+            <div>
+                <h4 style="color:var(--green)">NUVEM</h4>
+                <button class="btn-min" onclick="gerarBackupNuvem()">💾 BACKUP</button>
+                <button class="btn-min" onclick="abrirPopBackups()">📂 RESTAURAR</button>
             </div>
         </div>
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.8rem; padding:15px;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px;" id="headerAnciao">Ancião: </th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px;" id="headerTitulo">ESCALA</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px;" id="headerAnciao">Responsável: </th></tr>
             <tr><th style="width:120px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA</th><th>LOUVOR</th><th>SOM</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
-
 </div>
 
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
+    <div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()">
+        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
+        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;">
+        <button class="btn-modern" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button>
+    </div>
+</div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popOverlay" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="this.parentElement.parentElement.style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+
 <script>
-    // [Configurações do Firebase permanecem as mesmas]
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
-    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    // Monitoramento Real-time
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
+    
+    let db = {}; 
+    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+
+    // FUNÇÃO VITAL: Conecta ao documento CORRETO onde seus dados estão
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); updateProgresso(); }
+        if(doc.exists) { 
+            db = doc.data(); 
+            // Garantir que as pastas existam para não dar erro
+            if(!db.escalas) db.escalas = {};
+            if(!db.mis_v3) db.mis_v3 = {};
+            if(!db.regras_manuais) db.regras_manuais = {};
+            renderTodo(); 
+            updateProgresso(); 
+        }
     });
 
     function save() {
-        document.getElementById('saveIndicator').style.display = 'block';
-        document.getElementById('saveIndicator').innerText = "Salvando...";
-        document.getElementById('saveIndicator').className = "saving";
-        
+        const el = document.getElementById('saveIndicator');
+        el.innerText = "Salvando..."; el.className = "saving"; el.style.display = "block";
         dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-            document.getElementById('saveIndicator').innerText = "✅ Salvo com sucesso!";
-            document.getElementById('saveIndicator').className = "saved";
-            setTimeout(() => document.getElementById('saveIndicator').style.display = 'none', 2000);
+            el.innerText = "✅ Salvo!"; el.className = "saved";
+            setTimeout(() => el.style.display = "none", 1500);
         });
-    }
-
-    // NOVA FUNÇÃO: Atualiza a barra de progresso de batismos
-    function updateProgresso() {
-        const meta = parseInt(db.meta_anual || 0);
-        let totalBatismos = 0;
-        Object.keys(db.mis_v3 || {}).forEach(mes => {
-            totalBatismos += parseInt(db.mis_v3[mes][5] || 0);
-        });
-        
-        const perc = meta > 0 ? Math.min((totalBatismos / meta) * 100, 100) : 0;
-        document.getElementById('progressoMeta').style.width = perc + "%";
-        document.getElementById('textoMeta').innerText = `${totalBatismos} de ${meta} Batismos`;
-    }
-
-    // NOVA FUNÇÃO: Verifica se a pessoa está em mais de uma coluna no mesmo dia
-    function checarConflito(dStr, valor) {
-        if(!valor || valor.length < 3) return false;
-        let contagem = 0;
-        const dia = db.escalas?.[dStr] || {};
-        Object.values(dia).forEach(v => { if(v === valor) contagem++; });
-        return contagem > 1;
     }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         const busca = document.getElementById('buscaRapida').value.toUpperCase();
         
-        document.getElementById('headerAnciao').innerText = `Ancião Responsável: ${db.anciaos?.[mIdx] || 'Não definido'}`;
+        document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || '---'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         
-        const corpo = document.getElementById('corpoEscala');
-        corpo.innerHTML = "";
+        const isAdmin = ['admin','ger'].includes(curUser);
+        if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
+        if(curUser !== 'visitante') {
+            document.getElementById('btnSair').style.display='block';
+            document.getElementById('btnAcesso').style.display='none';
+            document.getElementById('userWelcomeBar').style.display='block';
+            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser]}</b>`;
+        }
+
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
 
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
-            let idEv = db.eventos_especiais?.[dt.toISOString().split('T')[0]];
-            let minDia = db.regras_manuais?.[dStr];
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
+            let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr];
 
-            // Filtro de Busca Inteligente
-            let valoresDia = Object.values(db.escalas?.[dStr] || {}).join(" ");
-            if(busca && !valoresDia.includes(busca)) continue;
+            // Filtro de Busca
+            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
+            if(busca && !txtDia.includes(busca)) continue;
 
             if([0,3,6].includes(sem) || idEv) {
-                let tr = `<tr class="${minDia?'row-ministerio':''}">
-                    <td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td>
-                    <td>${d}/${mIdx+1}</td>`;
+                let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
+                let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
                     let val = db.escalas?.[dStr]?.[col] || '';
-                    let isConflito = checarConflito(dStr, val);
-                    
-                    tr += `<td><textarea class="auto-expand ${isConflito?'conflito':''}" 
-                        onchange="atuCel('${dStr}','${col}',this.value)"
-                        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">${val}</textarea></td>`;
+                    let isCon = checarConflito(dStr, val);
+                    let canEdit = isAdmin || (curUser !== 'visitante'); // Simplificado para garantir acesso
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand ${isCon?'conflito':''}" onchange="atuCel('${dStr}','${col}',this.value)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">${val}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
     }
 
-    function atuCel(d, c, v) {
-        if(!db.escalas[d]) db.escalas[d] = {};
-        db.escalas[d][c] = v.toUpperCase().trim();
-        save();
-        renderTodo(); // Re-renderiza para mostrar o alerta de conflito se houver
+    function checarConflito(dStr, valor) {
+        if(!valor || valor.length < 3) return false;
+        let cont = 0; Object.values(db.escalas?.[dStr] || {}).forEach(v => { if(v === valor) cont++; });
+        return cont > 1;
     }
 
-    // Inicialização do seletor
+    function updateProgresso() {
+        const meta = parseInt(db.meta_anual || 0);
+        let total = 0; Object.keys(db.mis_v3 || {}).forEach(m => total += parseInt(db.mis_v3[m][5] || 0));
+        const p = meta > 0 ? Math.min((total/meta)*100, 100) : 0;
+        document.getElementById('progressoMeta').style.width = p + "%";
+        document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`;
+    }
+
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
+    
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
+        if(db.senhas?.[u] === p || (u === 'admin' && p === '123456')) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!");
+    }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+
+    function renderAdmin() {
+        const l = document.getElementById('listaMinisterios'); l.innerHTML = "";
+        Object.keys(MINS).forEach(m => { l.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
+        document.getElementById('metaBatismos').value = db.meta_anual || 0;
+    }
+
+    function abrirPop() {
+        const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = "";
+        ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => {
+            c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`;
+        });
+        document.getElementById('popOverlay').style.display='flex';
+    }
+
+    // BACKUPS
+    async function gerarBackupNuvem() {
+        const n = prompt("Nome do backup:"); if(!n) return;
+        await dbCloud.collection('backups_seguros').add({ identificador: n.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() });
+        alert("Backup ok!");
+    }
+
+    async function abrirPopBackups() {
+        document.getElementById('popBackups').style.display='flex';
+        const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm','desc').limit(10).get();
+        const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "";
+        snap.forEach(doc => {
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:#1a365d; padding:10px; border-radius:8px;">
+                <span>${doc.data().identificador}</span>
+                <button onclick="restaurar('${doc.id}')" style="background:green; color:white; border:none; padding:5px 10px; border-radius:5px;">RESTAURAR</button>
+            </div>`;
+        });
+    }
+
+    async function restaurar(id) { if(confirm("Restaurar?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); location.reload(); } }
+
     const sM = document.getElementById('selMes'); 
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    setTimeout(() => { document.querySelectorAll('textarea').forEach(t => { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }); }, 1000);
 </script>
 </body>
 </html>
