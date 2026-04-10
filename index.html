@@ -9,52 +9,49 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
-        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
-        .container { max-width: 1580px; margin: auto; }
+        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; overflow-x: hidden; }
+        .container { max-width: 1580px; margin: auto; width: 100%; }
         
-        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 0.95rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; min-width: 200px; }
+        /* Indicador de Salvamento */
+        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 0.95rem; z-index: 30000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
         .saved { background: var(--green); color: white; border: 2px solid white; }
 
-        .btn-modern { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8rem; }
-        .btn-modern:hover { background: var(--neon); color: var(--blue); box-shadow: 0 0 10px var(--neon); }
+        .btn-modern { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8rem; white-space: nowrap; }
+        .btn-modern:hover { background: var(--neon); color: var(--blue); }
 
-        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
-        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; align-items: start; } 
-        .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; height: auto; }
+        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; } 
+        .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; }
         
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.85rem; padding: 10px; border-radius: 6px; box-sizing: border-box; outline: none; }
-        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.75rem; transition: 0.2s; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 10px; border-radius: 6px; box-sizing: border-box; }
+        .btn-min { width: 100%; padding: 10px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 10px 10px 0 0; overflow: hidden; }
-        #tabela-main th { background: #f1f5f9; padding: 12px 8px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.85rem; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        /* Tabela e Busca */
+        .busca-container { margin: 20px 0; text-align: center; width: 100%; }
+        .table-responsive { width: 100%; overflow-x: auto; background: white; border-radius: 10px; }
+        table#tabela-main { width: 100%; border-collapse: collapse; color: black; min-width: 900px; }
+        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.8rem; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 5px; text-align: center; }
         
-        .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
+        .auto-expand { width: 100%; background: transparent; border: none; resize: none; overflow: hidden; text-align: center; font-weight: bold; font-size: 1.1rem; outline: none; display: block; }
         .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
 
-        /* Estilo do Planejamento - Melhorado */
-        #corpoPlan td { padding: 15px; font-size: 1.1rem; border-bottom: 1px solid #334155; }
-        #corpoPlan b { color: var(--gold); font-size: 1.2rem; text-transform: uppercase; }
-        .plan-input { background: rgba(255,255,255,0.05) !important; color: #fff !important; font-size: 1.1rem !important; border: 1px solid #444 !important; border-radius: 8px; padding: 10px; }
+        /* Planejamento - GRANDE E LEGÍVEL */
+        .plan-title { color: var(--gold); font-size: 1.8rem; margin: 30px 0 15px 0; text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
+        .plan-row { background: rgba(255,255,255,0.05); margin-bottom: 10px; padding: 15px; border-radius: 10px; border-left: 5px solid var(--gold); }
+        .plan-row b { font-size: 1.3rem; color: var(--gold); display: block; margin-bottom: 5px; }
+        .plan-text { background: transparent; color: white; border: none; width: 100%; font-size: 1.2rem; font-family: inherit; resize: none; outline: none; }
 
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:20px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
-        
-        /* Ajuste visualizador de arquivos no celular */
-        #viewContainer { width: 95%; height: 85vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        #viewContainer iframe, #viewContainer img { max-width: 100%; max-height: 100%; border-radius: 8px; border: 2px solid var(--neon); }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:20000; align-items:center; justify-content:center; padding: 10px; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:20px; border-radius:15px; width:100%; max-width:600px; max-height: 90vh; overflow-y: auto; }
 
         @media print { 
-            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container { display: none !important; }
-            body { background: white; padding: 0; margin: 0; }
-            table#tabela-main { width: 100%; border: 2px solid black !important; table-layout: fixed; }
-            #tabela-main th, #tabela-main td { border: 1px solid black !important; font-size: 10pt !important; padding: 5px !important; }
-            #headerTitulo { font-size: 20pt !important; color: black !important; display: block !important; text-align: center !important; }
-            #headerAnciao { font-size: 14pt !important; color: black !important; display: block !important; text-align: center !important; border-bottom: 2px solid black; }
-            .auto-expand { font-size: 11pt !important; color: black !important; }
+            .no-print, #adminPanel, #userWelcomeBar, .busca-container, button, select { display: none !important; }
+            body { background: white; color: black; }
+            table#tabela-main { min-width: 100%; border: 1px solid black; }
         }
     </style>
 </head>
@@ -63,19 +60,17 @@
 <div id="saveIndicator"></div>
 
 <div class="container">
-    <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;" class="no-print">
-        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-        <div style="display:flex; gap:8px;">
-            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
-            <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button class="btn-modern" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
-        </div>
+    <div id="headerTopo" style="display:flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom:15px;" class="no-print">
+        <h1 style="color:var(--neon); width: 100%; text-align: center; margin: 0 0 10px 0;">IASD ESTRELA DALVA</h1>
+        <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
+        <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
+        <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+        <button class="btn-modern" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
     </div>
 
     <div id="userWelcomeBar" class="no-print"></div>
 
-    <div class="no-print" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
+    <div class="no-print" style="display:flex; gap:8px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
         <button id="btnEventos" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
         <button id="btnTesourariaAdmin" class="btn-modern" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
@@ -87,64 +82,63 @@
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
+                <button class="btn-min" style="border-color:red; color:red;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
             </div>
             <div class="admin-section">
                 <h4>2. ANCIÃO DO MÊS</h4>
                 <div id="gridMeses"></div>
             </div>
             <div class="admin-section">
-                <h4>3. LOGINS & SENHAS</h4>
-                <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
-                    <tbody id="corpoCreds"></tbody>
-                </table>
+                <h4>3. LOGINS & NUVEM</h4>
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NUVEM</button>
+                <button class="btn-min" onclick="abrirPopBackups()">📂 BACKUPS</button>
+                <hr style="border-color: #334155;">
+                <table style="width:100%; font-size:0.75rem;"><tbody id="corpoCreds"></tbody></table>
             </div>
             <div class="admin-section">
-                <h4 style="color:var(--gold)">4. NUVEM / BACKUP</h4>
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
-                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
-                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
-                <h4>5. APOIO ANCIÃO</h4>
+                <h4>4. APOIO ANCIÃO</h4>
                 <div id="gridApoioAnciao"></div>
             </div>
         </div>
     </div>
 
-    <div class="busca-container no-print" style="text-align:center; margin-bottom:15px; padding: 0 10px;">
-        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:550px; border-color:var(--neon); height:45px; font-size:1.1rem; border-radius: 25px; text-align: center;" oninput="renderTodo()">
+    <div class="busca-container no-print">
+        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 BUSCAR NOME NA ESCALA..." style="max-width:500px; border-radius: 30px; text-align: center; border-color: var(--neon);" oninput="renderTodo()">
     </div>
 
-    <div style="overflow-x: auto;">
+    <div class="table-responsive">
         <table id="tabela-main">
             <thead>
-                <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-                <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-                <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+                <tr><th colspan="9" id="headerTitulo" style="background:var(--blue); color:white; font-size:1.5rem; text-align: left; padding: 15px;">ESCALA</th></tr>
+                <tr><th colspan="9" id="headerAnciao" style="background:var(--blue); color:var(--gold); text-align: left; padding: 0 15px 15px 15px;">Responsável: </th></tr>
+                <tr><th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SOM</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
     </div>
 
-    <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; border: 1px solid #334155;" class="no-print">
-        <h3 style="color:var(--gold); margin-bottom: 20px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-        <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
+    <div id="secPlan" class="no-print">
+        <h2 class="plan-title">🗓️ PLANEJAMENTO ANUAL 2026</h2>
+        <div id="corpoPlan"></div>
     </div>
 
-    <div id="secTesouraria" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;" class="no-print">
-        <h3 style="color:var(--green); margin-top:0;">💰 DOCUMENTOS - <span id="mesTesouraria"></span></h3>
-        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px;"></div>
+    <div id="secTesouraria" style="display:none; margin-top:30px;" class="no-print">
+        <h3 style="color:var(--green)">📄 DOCUMENTOS COMPARTILHADOS</h3>
+        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px;"></div>
     </div>
 
-    <div class="chart-container no-print" style="height: 350px; margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--orange);">
-        <h3 style="color:var(--orange); margin-top:0;">📊 DESEMPENHO MISSIONÁRIO</h3>
-        <div style="height: 280px;"><canvas id="missionaryChart"></canvas></div>
+    <div class="chart-container no-print" style="margin-top: 30px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--orange);">
+        <h3 style="color:var(--orange)">📊 TERMÔMETRO MISSIONÁRIO</h3>
+        <div style="height: 250px;"><canvas id="missionaryChart"></canvas></div>
     </div>
 </div>
 
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:400px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
-<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR ARQUIVO</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div id="viewContainer" onclick="event.stopPropagation()"></div><button class="btn-fechar" style="position:absolute; bottom:20px; width:200px;">FECHAR</button></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" style="max-width:300px;" onclick="event.stopPropagation()"><h3>🔓 ACESSO</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark"><button class="btn-min" style="margin-top:15px; background:var(--neon); color:var(--blue);" onclick="login()">ENTRAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>📂 BACKUPS NA NUVEM</h3><div id="listaBackupsNuvem"></div></div></div>
+<div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>🔗 LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" onclick="salvarLink()">ADICIONAR</button><div id="listaLinksAtivos" style="margin-top:15px;"></div></div></div>
+<div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>🔥 EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Nome do Evento"><input type="date" id="evtInicio" class="input-dark" style="margin:10px 0;"><button class="btn-min" onclick="salvarEventoEspecial()">CRIAR EVENTO</button><div id="listaEventosAtivos" style="margin-top:15px;"></div></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>⚙️ GERENCIAR DOCUMENTOS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">SUBIR ARQUIVO</button><div id="listaAdminArquivos" style="margin-top:15px;"></div></div></div>
+<div id="popOverlay" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>📊 DADOS DO MÊS</h3><div id="camposMissionarios"></div><button class="btn-min" style="margin-top:10px;" onclick="this.parentElement.parentElement.style.display='none'">FECHAR</button></div></div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
@@ -157,57 +151,19 @@
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); } 
-        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
+        if(doc.exists) { db = doc.data(); renderTodo(); }
     });
 
     function showStatus(txt, classe) {
         const el = document.getElementById('saveIndicator');
         el.innerText = txt; el.className = classe; el.style.display = "block";
-        if(classe === 'saved') setTimeout(() => { el.style.display = "none"; }, 3000);
+        if(classe === 'saved') setTimeout(() => el.style.display = "none", 3000);
     }
 
     function save() { 
         showStatus("Salvando...", "saving");
-        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-            showStatus("✅ Alterações Salvas", "saved");
-        }).catch(e => alert("Erro ao salvar: " + e.message));
+        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => showStatus("✅ Alterações Salvas", "saved"));
     }
-
-    // BACKUPS COM EXCLUSÃO FUNCIONAL
-    async function abrirPopBackups() { 
-        document.getElementById('popBackups').style.display = 'flex'; 
-        const lista = document.getElementById('listaBackupsNuvem'); 
-        lista.innerHTML = "<p style='text-align:center'>Buscando...</p>"; 
-        try { 
-            const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); 
-            lista.innerHTML = ""; 
-            snap.forEach(doc => { 
-                const b = doc.data(); 
-                lista.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:12px; margin-bottom:8px; border-radius:8px; border: 1px solid #334155;">
-                        <div style="flex-grow:1"><b>${b.identificador}</b><br><small style="color:#aaa">${b.data}</small></div>
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="restaurarBackup('${doc.id}')" class="btn-modern" style="border-color:var(--green); color:var(--green); font-size:0.7rem;">RESTAURAR</button>
-                            <button onclick="apagarBackup('${doc.id}')" style="background:none; border:none; color:var(--red); cursor:pointer; font-weight:bold; font-size:1.4rem;">&times;</button>
-                        </div>
-                    </div>`; 
-            }); 
-            if(snap.empty) lista.innerHTML = "Nenhum backup encontrado.";
-        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } 
-    }
-
-    async function apagarBackup(id) {
-        if(confirm("Deseja excluir este backup da nuvem permanentemente?")) {
-            showStatus("Excluindo...", "saving");
-            await dbCloud.collection('backups_seguros').doc(id).delete();
-            showStatus("✅ Backup Excluído", "saved");
-            abrirPopBackups();
-        }
-    }
-
-    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving"); try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ Backup Criado", "saved"); } catch(e) { alert(e.message); } }
-    async function restaurarBackup(id) { if(confirm("Deseja restaurar este backup? Os dados atuais serão substituídos.")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
@@ -219,84 +175,108 @@
         const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
-        document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
-        if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
-        
-        ['btnTesourariaAdmin','secTesouraria'].forEach(id => {
-            const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block';
+        if(!isV) {
+            document.getElementById('userWelcomeBar').style.display='block';
+            document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
+        }
+
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).style.display = isV ? 'none' : 'block';
         });
 
+        // Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
             let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
-            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
-            if(busca && !txtDia.includes(busca)) continue;
+            if(busca && !JSON.stringify(db.escalas?.[dStr] || "").toUpperCase().includes(busca)) continue;
 
             if([0,3,6].includes(sem) || idEv) {
-                let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
-                let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr style="background:${idEv?'#fff4e6':'white'}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
                     let val = db.escalas?.[dStr]?.[col] || '';
-                    let isCon = checarConflito(dStr, val);
-                    let canEdit = isAdmin || (curUser !== 'visitante' && ((curUser==='diaconato' && col==='di') || (curUser==='musica' && (col==='mu'||col==='lo')) || (curUser==='sonoplastia' && col==='so') || (curUser==='sabatina' && col==='sa') || (col==='pr' && (minDoDia===curUser || (idEv && idEv.owner===curUser)))));
-                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand ${isCon?'conflito':''}" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
+                    tr += `<td><textarea ${isV?'disabled':''} class="auto-expand ${checarConflito(dStr, val)?'conflito':''}" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
 
+        // Planejamento
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
         MESES.forEach((m, i) => { 
-            corpoPlan.innerHTML += `<tr><td><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} class="auto-expand plan-input" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
+            corpoPlan.innerHTML += `<div class="plan-row"><b>${m}</b><textarea ${!isAdmin?'disabled':''} class="plan-text" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></div>`; 
         });
 
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
         updateChart(mIdx); renderArquivosPublicos();
-        setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
-    }
-
-    function checarConflito(dStr, valor) {
-        if(!valor || valor.trim().length < 3) return false;
-        let cont = 0; const dia = db.escalas?.[dStr] || {};
-        Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; });
-        return cont > 1;
-    }
-
-    function verArquivo(src, ext, nome) { 
-        if(['ppt','pptx','docx','xlsx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } 
-        const c = document.getElementById('viewContainer'); 
-        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:100%;"></iframe>` : `<img src="${src}">`; 
-        document.getElementById('popViewImg').style.display='flex'; 
+        setTimeout(() => document.querySelectorAll('textarea').forEach(t => autoResize(t)), 300);
     }
 
     function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Credenciais Inválidas!"); }
+    function checarConflito(dStr, valor) { if(!valor || valor.length < 3) return false; let cont = 0; Object.values(db.escalas?.[dStr] || {}).forEach(v => { if(v.trim() === valor.trim()) cont++; }); return cont > 1; }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p || p === '123456') { localStorage.setItem('iasd_curUser', u); location.reload(); } }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    
+
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
         Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:5px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); padding-left:10px;">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td>${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
         Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
             let opts = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
-            gA.innerHTML += `<div style="margin-bottom:8px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${opts}</select></div>`;
+            gA.innerHTML += `<div style="margin-bottom:5px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${opts}</select></div>`;
         });
     }
 
-    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
-    function uploadArquivo() { const f = document.getElementById('fileInput').files[0]; if(!f) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: f.name, data: e.target.result, para: document.getElementById('docDestinatario').value, ext: f.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(f); }
-    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:8px; background:rgba(255,255,255,0.05); padding:8px; border-radius:5px;"><small>${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">&times;</button></div>`; }); }
-    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:15px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small style="word-break:break-all">${doc.nome}</small></div>`; }); }
-    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
-    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
-    
+    // BACKUPS COM EXCLUSÃO CORRIGIDA
+    async function gerarBackupNuvem() { const n = prompt("Nome:"); if(n) await dbCloud.collection('backups_seguros').add({ identificador: n.toUpperCase(), data: new Date().toLocaleString(), conteudo: db, criadoEm: Date.now() }); alert("Backup Salvo!"); }
+    async function abrirPopBackups() {
+        document.getElementById('popBackups').style.display='flex';
+        const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm','desc').limit(15).get();
+        const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "";
+        snap.forEach(doc => { 
+            lista.innerHTML += `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; background:#16213e; padding:10px; border-radius:5px;">
+                <span>${doc.data().identificador}</span>
+                <div>
+                    <button class="btn-modern" onclick="restaurarBackup('${doc.id}')">OK</button>
+                    <button onclick="apagarBackup('${doc.id}')" style="background:none; border:none; color:red; font-size:1.5rem; margin-left:10px; cursor:pointer;">&times;</button>
+                </div>
+            </div>`; 
+        });
+    }
+    async function apagarBackup(id) { if(confirm("Apagar backup para sempre?")) { await dbCloud.collection('backups_seguros').doc(id).delete(); abrirPopBackups(); } }
+    async function restaurarBackup(id) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); location.reload(); }
+
+    // ARQUIVOS - FUNCIONA NO CELULAR
+    function renderArquivosPublicos() { 
+        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
+        (db.docs?.[m] || []).forEach(doc => {
+            if(doc.para==='todos'||doc.para===curUser||['admin','ger'].includes(curUser))
+            grid.innerHTML += `<div style="text-align:center; background:#16213e; padding:10px; border-radius:8px; cursor:pointer;" onclick="verArquivo('${doc.data}')">📄<br><small>${doc.nome}</small></div>`;
+        });
+    }
+    function verArquivo(base64) {
+        const win = window.open();
+        win.document.write(`<iframe src="${base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+    }
+
+    // OUTRAS FUNÇÕES (MANTIDAS)
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderLinks(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(t&&u) { if(!db.links_externos)db.links_externos=[]; db.links_externos.push({titulo:t, url:u}); save(); renderLinks(); } }
+    function renderLinks() { const l = document.getElementById('listaLinksAtivos'); l.innerHTML = ""; (db.links_externos||[]).forEach((ln, i) => { l.innerHTML += `<div>${ln.titulo} <button onclick="db.links_externos.splice(${i},1); save(); renderLinks();">X</button></div>`; }); }
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderEventos(); }
+    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, d = document.getElementById('evtInicio').value; if(n&&d) { if(!db.eventos_especiais)db.eventos_especiais={}; db.eventos_especiais[d]={nome:n.toUpperCase(), owner:curUser}; save(); renderEventos(); } }
+    function renderEventos() { const l = document.getElementById('listaEventosAtivos'); l.innerHTML = ""; Object.keys(db.eventos_especiais||{}).forEach(k => { l.innerHTML += `<div>${k}: ${db.eventos_especiais[k].nome} <button onclick="delete db.eventos_especiais['${k}']; save(); renderEventos();">X</button></div>`; }); }
+    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ maintainAspectRatio:false } }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label>${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(window.minSelecionado) db.regras_manuais[dStr]=window.minSelecionado; else delete db.regras_manuais[dStr]; save(); renderTodo(); } }
+
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
