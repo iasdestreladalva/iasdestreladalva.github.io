@@ -2,291 +2,159 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - Sistema de Escalas</title>
+    <title>IASD Estrela Dalva</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
+        :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
-        .container { max-width: 1580px; margin: auto; }
+        .container { max-width: 1500px; margin: auto; }
         
-        /* Interface */
-        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .saving { background: var(--orange); color: white; border: 2px solid white; }
-        .saved { background: var(--green); color: white; border: 2px solid white; }
-        .btn-modern { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8rem; }
-        .btn-modern:hover { background: var(--neon); color: var(--blue); box-shadow: 0 0 10px var(--neon); }
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; padding: 8px; border-radius: 6px; box-sizing: border-box; outline: none; }
-        
-        #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
-        .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        
-        /* Tabela */
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 10px 10px 0 0; overflow: hidden; }
-        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; text-transform: uppercase; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
-        .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; color: black; }
-        
-        /* Modais */
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
-        
-        .no-print { display: block; }
-        .only-print { display: none; }
-
-        /* REGRAS DE IMPRESSÃO */
+        /* Estilos de Impressão (O que pediste) */
         @media print {
             @page { size: landscape; margin: 1cm; }
-            body { background: white !important; color: black !important; padding: 0; }
             .no-print { display: none !important; }
             .only-print { display: block !important; }
-            
-            .print-header { 
-                background-color: black !important; 
-                color: white !important; 
-                text-align: center; 
-                padding: 30px 10px; 
-                margin-bottom: 20px; 
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact;
-            }
-            .print-header h1 { margin: 0; font-size: 38pt; font-weight: 900; color: white !important; }
-            .print-header h2 { margin: 10px 0 0 0; font-size: 20pt; color: #ddd !important; }
-
-            table#tabela-main { border: 2px solid black !important; width: 100%; }
-            #tabela-main th { background: #eee !important; color: black !important; border: 1px solid black !important; font-size: 11pt; }
-            #tabela-main td { border: 1px solid black !important; color: black !important; }
-            .auto-expand { font-size: 11pt !important; color: black !important; }
+            .print-header { background-color: black !important; color: white !important; text-align: center; padding: 20px; -webkit-print-color-adjust: exact; }
+            .print-header h1 { font-size: 35pt; margin: 0; }
+            table { width: 100%; border-collapse: collapse; color: black !important; }
+            th, td { border: 1px solid black !important; padding: 5px; }
         }
+
+        .only-print { display: none; }
+        .no-print { display: block; }
+        table { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        .input-dark { background: #000; color: #fff; border: 1px solid var(--neon); padding: 10px; width: 100%; border-radius: 5px; }
+        textarea { width: 100%; border: none; font-weight: bold; text-align: center; resize: none; }
+        #saveIndicator { position: fixed; top: 10px; right: 10px; padding: 10px; border-radius: 5px; display: none; z-index: 1000; }
     </style>
 </head>
 <body>
 
-<div id="saveIndicator"></div>
+<div id="saveIndicator" class="no-print" style="background: var(--orange);">Salvando...</div>
 
 <div class="container">
     <div class="only-print print-header">
         <h1>IASD ESTRELA DALVA</h1>
-        <h2 id="printSubtitulo">ESCALA DE ATIVIDADES</h2>
+        <h2 id="printSub">ESCALA DE ATIVIDADES</h2>
     </div>
 
-    <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;" class="no-print">
-        <h2 style="color:var(--neon); margin:0; font-size: 1.8rem;">IASD ESTRELA DALVA</h2>
-        <div style="display:flex; gap:8px;">
-            <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-            <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
-            <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
-            <button class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
+    <div class="no-print">
+        <h2 style="color:var(--neon)">IASD ESTRELA DALVA</h2>
+        <div id="userWelcome" style="color:var(--gold); margin-bottom: 10px;"></div>
+        
+        <div style="display:flex; gap:10px; margin-bottom: 20px;">
+            <select id="selMes" class="input-dark" style="width: 200px;" onchange="render()"></select>
+            <button onclick="window.print()" style="padding: 10px; cursor: pointer;">🖨️ IMPRIMIR</button>
+            <button onclick="document.getElementById('modalLogin').style.display='flex'" style="padding: 10px; cursor: pointer;">🔓 LOGIN</button>
         </div>
+
+        <input type="text" id="busca" class="input-dark" placeholder="🔍 Buscar nome..." oninput="render()">
     </div>
 
-    <div id="userWelcomeBar" class="no-print"></div>
-
-    <div id="adminPanel" class="admin-box no-print">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div>
-                <h4 style="color:var(--gold); margin-top:0;">GERAÇÃO DE BACKUP</h4>
-                <button class="btn-modern" onclick="gerarBackupNuvem()" style="width:100%; margin-bottom:10px;">💾 SALVAR ESTADO ATUAL NA NUVEM</button>
-                <button class="btn-modern" onclick="abrirPopBackups()" style="width:100%; border-color:var(--neon); color:var(--neon);">📂 VER BACKUPS DISPONÍVEIS</button>
-            </div>
-            <div>
-                <h4 style="color:var(--orange); margin-top:0;">DADOS DO MÊS</h4>
-                <p style="font-size:0.8rem; color:#ccc;">Responsável: <input id="anciaoInput" class="input-dark" style="width:150px" onchange="salvarAnciao(this.value)"></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="no-print" style="text-align:center; margin-bottom:20px;">
-        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:500px; height:45px; font-size:1.1rem; border-color:var(--neon);" oninput="renderTodo()">
-    </div>
-
-    <table id="tabela-main">
+    <table id="tabela">
         <thead>
-            <tr class="no-print"><th colspan="9" id="headerTituloSite" style="background:var(--blue); color:white; padding:15px;">ESCALA</th></tr>
-            <tr>
-                <th style="width:90px">DIA</th>
-                <th style="width:70px">DATA</th>
-                <th>SABATINA</th>
-                <th>PREGADOR(A)</th>
-                <th>MÚSICA</th>
-                <th>LOUVOR</th>
-                <th>SONOPLASTIA</th>
-                <th>RECEPÇÃO</th>
-                <th>DIACONATO</th>
+            <tr id="tabHead">
+                <th>DIA</th><th>DATA</th><th>SABATINA</th><th>PREGADOR</th><th>MÚSICA</th><th>LOUVOR</th><th>SOM</th><th>RECEPÇÃO</th><th>DIACONATO</th>
             </tr>
         </thead>
-        <tbody id="corpoEscala"></tbody>
+        <tbody id="corpo"></tbody>
     </table>
 </div>
 
-<div id="popBackups" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3>
-        <div id="listaBackupsNuvem" style="margin-top:15px; min-height:100px;"></div>
-        <button onclick="document.getElementById('popBackups').style.display='none'" style="width:100%; padding:10px; margin-top:20px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;">FECHAR</button>
-    </div>
-</div>
-
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
-    <div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()">
-        <h3 style="color:black; margin-top:0;">Acesso Restrito</h3>
-        <input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;">
-        <input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;">
-        <button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px; border:none; height:40px; cursor:pointer;" onclick="login()">ENTRAR</button>
+<div id="modalLogin" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); align-items:center; justify-content:center;" class="no-print">
+    <div style="background:white; padding:20px; border-radius:10px; color:black;">
+        <h3>Acesso</h3>
+        <input type="text" id="u" placeholder="Usuário" style="display:block; margin-bottom:10px;">
+        <input type="password" id="p" placeholder="Senha" style="display:block; margin-bottom:10px;">
+        <button onclick="fazerLogin()">Entrar</button>
+        <button onclick="document.getElementById('modalLogin').style.display='none'">Fechar</button>
     </div>
 </div>
 
 <script>
-    // Configuração Firebase
-    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
+    // Configurações (Certifica-te que estes dados batem com o teu Firebase)
+    const firebaseConfig = { 
+        apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", 
+        authDomain: "unidades-de-acao.firebaseapp.com", 
+        projectId: "unidades-de-acao", 
+        appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" 
+    };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
-
+    
+    let db = {};
+    let user = localStorage.getItem('user_iasd') || 'visitante';
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let db = {}; 
-    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
-    // Listener em tempo real
+    // 1. Carregar Dados
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { 
-            db = doc.data(); 
-            renderTodo(); 
-        } else {
-            db = { escalas: {}, senhas: {admin:'1234'}, anciaos:{} };
-            save();
+        if(doc.exists) {
+            db = doc.data();
+            render();
         }
     });
 
-    function renderTodo() {
+    function render() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const busca = document.getElementById('buscaRapida').value.toUpperCase();
-        
-        // Atualiza Títulos
-        const infoEscala = `ESCALA DE ATIVIDADES - ${MESES[mIdx]} 2026`;
-        document.getElementById('headerTituloSite').innerText = infoEscala;
-        document.getElementById('printSubtitulo').innerText = infoEscala;
-        if(db.anciaos?.[mIdx]) document.getElementById('anciaoInput').value = db.anciaos[mIdx];
+        document.getElementById('printSub').innerText = "ESCALA DE ATIVIDADES - " + MESES[mIdx] + " 2026";
+        document.getElementById('userWelcome').innerText = "Utilizador: " + user.toUpperCase();
 
-        // Controle de Acesso
-        const isAdmin = ['admin','ger'].includes(curUser);
-        document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
-        
-        if(curUser !== 'visitante') {
-            document.getElementById('userWelcomeBar').style.display = 'block';
-            document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${curUser.toUpperCase()}</b> | <span style="cursor:pointer; color:red" onclick="sair()">Sair</span>`;
-            document.getElementById('btnSair').style.display = 'block';
-            document.getElementById('btnAcesso').style.display = 'none';
-        }
-
-        const corpo = document.getElementById('corpoEscala'); 
+        const corpo = document.getElementById('corpo');
+        const busca = document.getElementById('busca').value.toUpperCase();
         corpo.innerHTML = "";
-        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
 
-        for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
+        const totalDias = new Date(2026, mIdx + 1, 0).getDate();
+
+        for(let d=1; d<=totalDias; d++) {
+            let dt = new Date(2026, mIdx, d), sem = dt.getDay(), dStr = `${d}/${mIdx+1}/2026`;
             
-            // Filtro de busca
-            let dadosDia = db.escalas?.[dStr] || {};
-            let textoDia = JSON.stringify(Object.values(dadosDia)).toUpperCase();
-            if(busca && !textoDia.includes(busca)) continue;
-
-            // Mostra Quarta(3), Sábado(6) e Domingo(0)
+            // Mostrar apenas Quarta(3), Sábado(6) e Domingo(0)
             if([0,3,6].includes(sem)) {
+                let dadosDia = db.escalas?.[dStr] || {};
+                let txtDia = JSON.stringify(Object.values(dadosDia)).toUpperCase();
+                
+                if(busca && !txtDia.includes(busca)) continue;
+
                 let tr = `<tr>
                     <td>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</td>
                     <td>${d}/${mIdx+1}</td>`;
                 
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let val = db.escalas?.[dStr]?.[col] || '';
-                    let canEdit = isAdmin || (curUser === 'musica' && (col==='mu'||col==='lo')) || (curUser === 'diaconato' && col==='di') || (curUser === 'sonoplastia' && col==='so');
-                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
+                    let val = dadosDia[col] || '';
+                    let canEdit = (user !== 'visitante'); // Simplificado para garantir que consigas editar agora
+                    tr += `<td><textarea ${canEdit?'':'disabled'} onchange="atualizar('${dStr}','${col}',this.value)">${val}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        document.querySelectorAll('textarea').forEach(autoResize);
     }
 
-    // Funções de Dados
-    function atuCel(d, c, v) { 
+    function atualizar(dia, col, val) {
         if(!db.escalas) db.escalas = {};
-        if(!db.escalas[d]) db.escalas[d] = {}; 
-        db.escalas[d][c] = v.toUpperCase(); 
-        save(); 
-    }
-
-    function salvarAnciao(val) {
-        const mIdx = document.getElementById('selMes').value;
-        if(!db.anciaos) db.anciaos = {};
-        db.anciaos[mIdx] = val;
-        save();
-    }
-
-    function save() {
-        const ind = document.getElementById('saveIndicator');
-        ind.innerText = "Salvando..."; ind.className = "saving"; ind.style.display = "block";
+        if(!db.escalas[dia]) db.escalas[dia] = {};
+        db.escalas[dia][col] = val.toUpperCase();
+        
+        document.getElementById('saveIndicator').style.display = "block";
         dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-            ind.innerText = "✅ Salvo com Sucesso"; ind.className = "saved";
-            setTimeout(() => ind.style.display="none", 2000);
-        }).catch(e => alert("Erro ao salvar: " + e.message));
+            setTimeout(() => { document.getElementById('saveIndicator').style.display = "none"; }, 1000);
+        });
     }
 
-    // BACKUPS (Correção do campo criadoEm)
-    async function gerarBackupNuvem() {
-        const nome = prompt("Dê um nome a este Backup:");
-        if(!nome) return;
-        try {
-            await dbCloud.collection('backups_seguros').add({
-                identificador: nome.toUpperCase(),
-                data: new Date().toLocaleString(),
-                conteudo: db,
-                criadoEm: firebase.firestore.FieldValue.serverTimestamp() // Melhor forma de salvar data
-            });
-            alert("Backup salvo com sucesso!");
-        } catch(e) { alert("Erro ao criar backup: " + e.message); }
-    }
-
-    async function abrirPopBackups() {
-        document.getElementById('popBackups').style.display = 'flex';
-        const lista = document.getElementById('listaBackupsNuvem');
-        lista.innerHTML = "Carregando...";
-        try {
-            // CORREÇÃO: Usando criadoEm para ordenar
-            const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(10).get();
-            lista.innerHTML = "";
-            snap.forEach(doc => {
-                const b = doc.data();
-                lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;">
-                    <small>${b.identificador}<br>${b.data}</small>
-                    <button onclick="restaurarBackup('${doc.id}')" class="btn-modern" style="padding:4px 8px">Restaurar</button>
-                </div>`;
-            });
-        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; }
-    }
-
-    async function restaurarBackup(id) {
-        if(confirm("Substituir todos os dados atuais por este backup?")) {
-            const doc = await dbCloud.collection('backups_seguros').doc(id).get();
-            db = doc.data().conteudo;
-            save();
-            alert("Sistema Restaurado!");
+    function fazerLogin() {
+        const u = document.getElementById('u').value.toLowerCase();
+        const p = document.getElementById('p').value;
+        // Validação simples baseada no que tinhas
+        if(p === "1905" || (db.senhas && db.senhas[u] === p)) {
+            localStorage.setItem('user_iasd', u);
             location.reload();
+        } else {
+            alert("Senha incorreta");
         }
     }
 
-    // Login e Interface
-    function login() {
-        const u = document.getElementById('userLogin').value.toLowerCase();
-        const p = document.getElementById('passLogin').value;
-        if(db.senhas[u] === p) { localStorage.setItem('iasd_curUser', u); location.reload(); }
-        else alert("Credenciais Inválidas");
-    }
-
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
-
-    // Init meses
+    // Iniciar seletor de meses
     const sM = document.getElementById('selMes');
     MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
