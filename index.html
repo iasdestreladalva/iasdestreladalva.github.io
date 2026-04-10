@@ -11,12 +11,10 @@
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
-        /* Indicador de Salvamento */
         #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
         .saved { background: var(--green); color: white; border: 2px solid white; }
 
-        /* Estilo Moderno de Botões */
         .btn-modern { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8rem; }
         .btn-modern:hover { background: var(--neon); color: var(--blue); box-shadow: 0 0 10px var(--neon); }
 
@@ -29,16 +27,13 @@
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
-        /* Tabela e Alerta de Conflito */
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 10px 10px 0 0; overflow: hidden; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
         .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
-        .row-ministerio { background-color: #e3f2fd !important; } 
         
-        /* Barra de Progresso Batismos */
         .progress-container { background: #000; border-radius: 10px; height: 25px; width: 100%; margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
         .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.6s; width: 0%; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; line-height: 25px; color: white; text-shadow: 1px 1px 2px black; z-index: 1; }
@@ -47,16 +42,14 @@
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
         .row-especial { background-color: #fff4e6 !important; border-left: 8px solid var(--orange) !important; }
-        
+        .row-ministerio { background-color: #e3f2fd !important; } 
+
         @media print { 
-            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, #buscaRapida { display: none !important; }
+            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container { display: none !important; }
             body { background: white; padding: 0; }
             table#tabela-main { margin-top: 0; width: 100%; border: 2px solid black !important; }
             #headerTitulo { font-size: 2.2rem !important; text-align: center !important; color: black !important; display: block !important; padding: 10px 0 !important; background: none !important; }
             #headerAnciao { font-size: 1.4rem !important; text-align: center !important; color: black !important; display: block !important; padding-bottom: 10px !important; border-bottom: 2px solid black !important; background: none !important; }
-            #tabela-main th { border: 1px solid black !important; font-size: 10pt; background: #eee !important; color: black !important; }
-            #tabela-main td { border: 1px solid black !important; font-size: 11pt; background: white !important; }
-            .auto-expand { color: black !important; font-size: 1.1rem !important; }
         }
     </style>
 </head>
@@ -65,13 +58,8 @@
 <div id="saveIndicator"></div>
 
 <div class="container">
-    <div id="userWelcomeBar" class="no-print"></div>
-
-    <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;" class="no-print">
-        <div>
-            <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
-            <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:250px; margin-top:8px; border-color:var(--neon);" oninput="renderTodo()">
-        </div>
+    <div id="headerTopo" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;" class="no-print">
+        <h2 style="color:var(--neon); margin:0;">IASD ESTRELA DALVA</h2>
         <div style="display:flex; gap:8px;">
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
             <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
@@ -79,6 +67,8 @@
             <button class="btn-modern" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
     </div>
+
+    <div id="userWelcomeBar" class="no-print"></div>
 
     <div class="no-print" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
@@ -121,6 +111,10 @@
                 <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
             </div>
         </div>
+    </div>
+
+    <div class="busca-container no-print" style="text-align:center; margin-bottom:15px;">
+        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
     </div>
 
     <table id="tabela-main">
@@ -189,7 +183,25 @@
         }).catch(e => alert("Erro ao salvar: " + e.message));
     }
 
-    // NOVA FUNÇÃO: Atualiza Barra de Batismos
+    // CORREÇÃO: Busca de Backups (campo correto é criadoEm)
+    async function abrirPopBackups() { 
+        document.getElementById('popBackups').style.display = 'flex'; 
+        const lista = document.getElementById('listaBackupsNuvem'); 
+        lista.innerHTML = "Buscando..."; 
+        try { 
+            const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); 
+            lista.innerHTML = ""; 
+            snap.forEach(doc => { 
+                const b = doc.data(); 
+                lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; 
+            }); 
+            if(snap.empty) lista.innerHTML = "Nenhum backup encontrado.";
+        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } 
+    }
+
+    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving"); try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved"); } catch(e) { alert(e.message); } }
+    async function restaurarBackup(id) { if(confirm("Deseja restaurar este backup? Os dados atuais serão substituídos.")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
+
     function updateProgresso() {
         const meta = parseInt(db.meta_anual || 0);
         let total = 0;
@@ -199,7 +211,6 @@
         document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`;
     }
 
-    // NOVA FUNÇÃO: Checar se o nome já está em outra coluna no mesmo dia
     function checarConflito(dStr, valor) {
         if(!valor || valor.trim().length < 3) return false;
         let cont = 0;
@@ -232,7 +243,6 @@
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
             let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
 
-            // Lógica da Busca Rápida
             let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
             if(busca && !txtDia.includes(busca)) continue;
 
@@ -259,13 +269,10 @@
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
 
-    // Mantenha todas as suas outras funções originais de backup, login, upload, etc., exatamente como estão no seu código.
-    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving"); try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved"); } catch(e) { alert(e.message); } }
-    async function abrirPopBackups() { document.getElementById('popBackups').style.display = 'flex'; const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando..."; try { const snap = await dbCloud.collection('backups_seguros').orderBy('createdEm', 'desc').limit(15).get(); lista.innerHTML = ""; snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; }); } catch(e) { lista.innerHTML = e.message; } }
-    async function restaurarBackup(id) { if(confirm("Restaurar?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); location.reload(); } }
     function handleEscalaKeys(e, d, c) { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); const rows = Array.from(document.querySelectorAll('#corpoEscala tr')); const curRow = e.target.closest('tr'); const colIdx = Array.from(curRow.querySelectorAll('textarea')).indexOf(e.target); const nextRow = rows[rows.indexOf(curRow) + 1]; if (nextRow) nextRow.querySelectorAll('textarea')[colIdx].focus(); } }
     function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
         Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
@@ -280,6 +287,7 @@
             gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
         });
     }
+
     function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
     function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return; if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
     function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
