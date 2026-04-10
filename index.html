@@ -8,11 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
-        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 10px; }
+        body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
-        /* Centralização do Título */
-        .main-title { text-align: center; color: var(--neon); margin: 10px 0 20px 0; font-size: 2.5rem; text-shadow: 0 0 15px var(--neon); }
+        /* Centralização do Título Principal */
+        .site-title { text-align: center; color: var(--neon); font-size: 2.5rem; margin: 10px 0 20px 0; text-shadow: 0 0 10px var(--neon); }
 
         #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
@@ -22,66 +22,48 @@
         .btn-modern:hover { background: var(--neon); color: var(--blue); box-shadow: 0 0 10px var(--neon); }
 
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; color: #fff; text-align: center; }
-        
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; } 
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; } 
         
-        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.9rem; padding: 10px; border-radius: 6px; outline: none; }
+        .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 6px; box-sizing: border-box; outline: none; }
+        .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
+        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
-        /* Escala */
-        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 5px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        #tabela-main th { background: #f1f5f9; padding: 12px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; text-transform: uppercase; }
-        #tabela-main td { border: 1px solid #cbd5e1; padding: 6px; text-align: center; font-weight: bold; }
+        table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 5px; border-radius: 10px; overflow: hidden; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; }
+        #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         
-        .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: 800; font-size: 1.1rem; display: block; outline: none; }
+        .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
         
-        /* Planejamento */
-        .plan-box { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; border: 1px solid var(--gold); margin-top: 40px; }
-        .plan-box h3 { color: var(--gold); font-size: 1.5rem; margin-top: 0; }
-        .plan-table td { padding: 12px; font-size: 1.1rem; border-bottom: 1px solid #334155; color: #fff; }
-        .plan-textarea { background: transparent; color: #00d2ff; border: none; width: 100%; font-size: 1.1rem; font-family: 'Segoe UI', sans-serif; font-weight: 600; resize: none; }
+        /* Planejamento Melhorado */
+        .plan-textarea { width: 100%; background: transparent; color: #00d2ff !important; border: none; font-size: 1.2rem !important; font-weight: bold; resize: none; outline: none; }
 
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:700px; max-height: 90vh; overflow-y: auto; }
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         
-        /* Visualizador de PDF/IMG Fullscreen */
-        #viewContainer { width: 95%; height: 90%; display: flex; align-items: center; justify-content: center; position: relative; }
+        /* Visualizador Fullscreen */
+        #viewContainer { width: 95%; height: 90vh; display: flex; align-items: center; justify-content: center; }
         #viewContainer iframe, #viewContainer img { width: 100%; height: 100%; border-radius: 10px; object-fit: contain; }
 
-        /* REGRAS DE IMPRESSÃO */
+        /* REGRAS DE IMPRESSÃO (ESTILO FOTO) */
+        .only-print { display: none; }
         @media print { 
-            @page { size: landscape; margin: 0.5cm; }
             .no-print { display: none !important; }
             .only-print { display: block !important; }
             body { background: white !important; padding: 0; }
-            
-            .print-header { 
-                background: black !important; 
-                color: white !important; 
-                text-align: center; 
-                padding: 35px 10px; 
-                border-bottom: 8px solid #ffd700 !important;
-                -webkit-print-color-adjust: exact;
-                margin-bottom: 10px;
+            .print-header-black { 
+                background: black !important; color: white !important; text-align: center; padding: 30px; 
+                border-bottom: 6px solid var(--gold) !important; -webkit-print-color-adjust: exact; 
             }
-            .print-header h1 { font-size: 48pt !important; margin: 0; font-weight: 900; }
-            .print-header h2 { font-size: 22pt !important; margin: 10px 0; color: #ffd700 !important; }
-            
-            .destaque-anciao { 
-                background: #f0f0f0 !important; 
-                border: 2px solid black !important; 
-                padding: 10px; 
-                font-size: 18pt; 
-                font-weight: bold; 
-                margin: 10px auto; 
-                width: fit-content;
-                -webkit-print-color-adjust: exact;
+            .print-header-black h1 { font-size: 40pt !important; margin: 0; }
+            .print-header-black .anciao-destaque { 
+                background: #eee !important; color: black !important; padding: 10px; border: 2px solid black !important;
+                display: inline-block; margin-top: 15px; font-size: 18pt; font-weight: 900; -webkit-print-color-adjust: exact;
             }
-
             table#tabela-main { width: 100% !important; border: 3px solid black !important; }
-            #tabela-main th { background: #e0e0e0 !important; color: black !important; border: 2px solid black !important; font-size: 12pt; }
-            #tabela-main td { border: 2px solid black !important; height: 50px; font-size: 13pt !important; }
-            .auto-expand { color: black !important; font-size: 13pt !important; font-weight: 900 !important; }
+            #tabela-main th { background: #ddd !important; border: 1px solid black !important; color: black !important; }
+            #tabela-main td { border: 1px solid black !important; font-size: 12pt !important; height: 45px; }
+            .auto-expand { color: black !important; font-weight: 900 !important; }
         }
     </style>
 </head>
@@ -90,18 +72,17 @@
 <div id="saveIndicator"></div>
 
 <div class="container">
-    <h1 class="main-title no-print">IASD ESTRELA DALVA</h1>
+    <h1 class="site-title no-print">IASD ESTRELA DALVA</h1>
 
-    <div class="only-print print-header">
-        <h1>IASD ESTRELA DALVA</h1>
-        <h2 id="printSubtitulo">ESCALA DE ATIVIDADES</h2>
-        <div class="destaque-anciao" id="printAnciao">Responsável: </div>
+    <div class="only-print print-header-black">
+        <h1 id="printTitulo">ESCALA DE ATIVIDADES</h1>
+        <div class="anciao-destaque" id="printAnciao">Responsável: </div>
     </div>
 
-    <div id="headerTopo" style="display:flex; justify-content: center; gap: 15px; align-items:center; margin-bottom:15px;" class="no-print">
-        <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:160px; border-color:var(--neon);"></select>
-        <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR ESCALA</button>
-        <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSO RESTRITO</button>
+    <div id="headerTopo" style="display:flex; justify-content: center; gap:10px; margin-bottom:15px;" class="no-print">
+        <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
+        <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
+        <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
         <button class="btn-modern" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
     </div>
 
@@ -110,100 +91,75 @@
     <div class="no-print" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center;">
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
         <button id="btnEventos" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
-        <button id="btnTesourariaAdmin" class="btn-modern" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCUMENTOS</button>
+        <button id="btnTesourariaAdmin" class="btn-modern" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
         <button id="btnDados" class="btn-modern" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPop()">📊 MISSIONÁRIO</button>
     </div>
 
     <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;">
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155;">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;">
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155;">
                 <h4>2. ANCIÃO DO MÊS</h4>
                 <div id="gridMeses"></div>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;">
-                <h4>3. BACKUP NA NUVEM</h4>
-                <button class="input-dark" onclick="gerarBackupNuvem()" style="background:var(--gold)!important; color:black!important; font-weight:bold; margin-bottom:10px;">💾 SALVAR AGORA</button>
-                <button class="input-dark" onclick="abrirPopBackups()">📂 RESTAURAR VERSÃO</button>
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155;">
+                <h4>3. BACKUP NUVEM</h4>
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
+                <button class="btn-min" onclick="abrirPopBackups()">📂 BUSCAR BACKUPS</button>
             </div>
         </div>
     </div>
 
-    <div class="no-print" style="margin-bottom: 10px; display: flex; justify-content: center;">
-        <div style="width: 100%; max-width: 600px; position: relative;">
-            <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 BUSCAR NOME NA ESCALA..." style="border-color:var(--neon); height: 50px; text-align: center; font-size: 1.2rem; border-radius: 30px;" oninput="renderTodo()">
-        </div>
+    <div class="no-print" style="text-align:center; margin-bottom:10px;">
+        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:500px; border-color:var(--neon); height:45px; font-size:1.1rem; border-radius: 25px; text-align: center;" oninput="renderTodo()">
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr class="no-print"><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:15px;" id="headerTitulo">ESCALA</th></tr>
-            <tr>
-                <th style="width:10%">DIA</th>
-                <th style="width:8%">DATA</th>
-                <th>SABATINA</th>
-                <th>PREGADOR(A)</th>
-                <th>MÚSICA</th>
-                <th>LOUVOR</th>
-                <th>SOM</th>
-                <th>RECEPÇÃO</th>
-                <th>DIACONATO</th>
-            </tr>
+            <tr class="no-print"><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
+            <tr class="no-print"><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA</th><th>LOUVOR</th><th>SOM</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
 
-    <div id="secPlan" class="plan-box no-print">
-        <h3>🗓️ PLANEJAMENTO ANUAL 2026</h3>
-        <table class="plan-table" style="width:100%;">
-            <tbody id="corpoPlan"></tbody>
-        </table>
+    <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border: 1px solid var(--gold);" class="no-print">
+        <h3 style="color:var(--gold); margin-bottom: 20px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+        <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
     </div>
 
     <div id="secTesouraria" style="display:none; margin-top:30px;" class="no-print">
-        <h3 style="color:var(--green)">📄 ARQUIVOS E DOCUMENTOS</h3>
-        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px;"></div>
-    </div>
-
-    <div class="chart-container no-print" style="height: 350px; margin-top: 30px; background:rgba(0,0,0,0.3); padding:20px; border-radius:15px;">
-        <canvas id="missionaryChart"></canvas>
+        <h3 style="color:var(--green)">💰 DOCUMENTOS</h3>
+        <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px;"></div>
     </div>
 </div>
 
-<div id="popViewImg" class="overlay" onclick="this.style.display='none'">
-    <div id="viewContainer" onclick="event.stopPropagation()"></div>
-    <button style="position:fixed; top:20px; right:20px; background:red; color:white; border:none; padding:15px; border-radius:50%; cursor:pointer; font-weight:bold;">X</button>
-</div>
-
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:280px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0">Acesso Restrito</h3><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="color:black!important; background:#eee!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="color:black!important; background:#eee!important;"><button class="input-dark" style="background:var(--blue)!important; color:white!important; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>BACKUPS NA NUVEM</h3><div id="listaBackupsNuvem"></div></div></div>
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div id="viewContainer" onclick="event.stopPropagation()"></div></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>BACKUPS DISPONÍVEIS</h3><div id="listaBackupsNuvem"></div></div></div>
 
 <script>
-    // CONFIGURAÇÃO FIREBASE
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal" };
-    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
+    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { db = doc.data(); renderTodo(); }
-        else { db = { escalas:{}, senhas:{admin:'1905'}, plan_anual:{}, anciaos:{} }; save(); }
     });
 
     function save() {
-        document.getElementById('saveIndicator').innerText = "Salvando...";
-        document.getElementById('saveIndicator').className = "saving";
         document.getElementById('saveIndicator').style.display = "block";
+        document.getElementById('saveIndicator').innerText = "Salvando...";
         dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-            document.getElementById('saveIndicator').innerText = "✅ Salvo com Sucesso";
-            document.getElementById('saveIndicator').className = "saved";
-            setTimeout(() => document.getElementById('saveIndicator').style.display="none", 1500);
+            document.getElementById('saveIndicator').innerText = "✅ Salvo";
+            setTimeout(() => document.getElementById('saveIndicator').style.display="none", 2000);
         });
     }
 
@@ -212,93 +168,66 @@
         const busca = document.getElementById('buscaRapida').value.toUpperCase();
         const responsavel = db.anciaos?.[mIdx] || 'Não definido';
 
-        document.getElementById('printSubtitulo').innerText = `ESCALA DE ATIVIDADES - ${MESES[mIdx]} 2026`;
+        document.getElementById('headerAnciao').innerText = `Responsável: ${responsavel}`;
+        document.getElementById('printAnciao').innerText = `Responsável: ${responsavel.toUpperCase()}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
-        document.getElementById('printAnciao').innerText = `Ancião Responsável: ${responsavel.toUpperCase()}`;
+        document.getElementById('printTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         
-        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        const isAdmin = ['admin','ger'].includes(curUser), isV = curUser === 'visitante';
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
-        document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
-        if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Bem-vindo, <b>${MINS[curUser] || curUser}</b>`;
-        
-        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).style.display = isV ? 'none' : 'block';
-        });
 
-        // Render Escala
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
             let dadosDia = db.escalas?.[dStr] || {};
-            let txtBusca = JSON.stringify(dadosDia).toUpperCase();
-            
-            if(busca && !txtBusca.includes(busca)) continue;
+            if(busca && !JSON.stringify(dadosDia).toUpperCase().includes(busca)) continue;
 
             if([0,3,6].includes(sem)) {
-                let tr = `<tr><td>${["DOMINGO","SEGUNDA","TERÇA","QUARTA","QUINTA","SEXTA","SÁBADO"][sem]}</td><td>${d}/${mIdx+1}</td>`;
+                let tr = `<tr><td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    let val = dadosDia[col] || '';
-                    let canEdit = !isV;
-                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)">${val}</textarea></td>`;
+                    tr += `<td><textarea ${isV?'disabled':''} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${dadosDia[col] || ''}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
 
-        // Render Planejamento
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
-        MESES.forEach((m, i) => {
-            corpoPlan.innerHTML += `<tr><td style="width:150px; font-weight:bold; color:var(--gold)">${m}</td><td><textarea class="plan-textarea" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save()">${db.plan_anual?.[i] || ''}</textarea></td></tr>`;
+        MESES.forEach((m, i) => { 
+            corpoPlan.innerHTML += `<tr><td style="width:150px; color:var(--gold); padding:10px; font-weight:bold;">${m}</td><td><textarea class="plan-textarea" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
         });
 
-        if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
-        renderArquivosPublicos();
+        if(isAdmin) document.getElementById('adminPanel').style.display='block';
+        setTimeout(() => document.querySelectorAll('textarea').forEach(t => autoResize(t)), 200);
     }
 
-    function verArquivo(src, ext) {
+    function verArquivo(src) {
         const c = document.getElementById('viewContainer');
         c.innerHTML = src.includes("pdf") ? `<iframe src="${src}"></iframe>` : `<img src="${src}">`;
         document.getElementById('popViewImg').style.display='flex';
     }
 
-    // Funções de Backup
-    async function gerarBackupNuvem() {
-        const nome = prompt("Nome da Versão:"); if(!nome) return;
-        await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: db, criadoEm: Date.now() });
-        alert("Backup salvo com sucesso!");
-    }
-
     async function abrirPopBackups() {
         document.getElementById('popBackups').style.display = 'flex';
-        const lista = document.getElementById('listaBackupsNuvem');
-        lista.innerHTML = "Buscando...";
         const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(10).get();
-        lista.innerHTML = "";
+        const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "";
         snap.forEach(doc => {
-            lista.innerHTML += `<div style="padding:10px; border-bottom:1px solid #444; display:flex; justify-content:space-between;">
-                <span>${doc.data().identificador} (${doc.data().data})</span>
-                <button onclick="restaurar('${doc.id}')">Restaurar</button>
-            </div>`;
+            lista.innerHTML += `<div style="padding:10px; border-bottom:1px solid #444; display:flex; justify-content:space-between;"><span>${doc.data().identificador}</span><button onclick="restaurar('${doc.id}')">Restaurar</button></div>`;
         });
     }
 
-    async function restaurar(id) {
-        if(confirm("Substituir todos os dados por esta versão?")) {
-            const doc = await dbCloud.collection('backups_seguros').doc(id).get();
-            db = doc.data().conteudo; save(); location.reload();
-        }
+    async function gerarBackupNuvem() {
+        const nome = prompt("Nome do backup:"); if(!nome) return;
+        await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), conteudo: db, criadoEm: Date.now() });
+        alert("Backup salvo!");
     }
 
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p || p === '1905') { localStorage.setItem('iasd_curUser', u); location.reload(); } }
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value; if(p==='123456' || db.senhas?.[u]===p) { localStorage.setItem('iasd_curUser', u); location.reload(); } }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function renderAdmin() { 
-        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();">`; });
-    }
-    function renderArquivosPublicos() { /* lógica para listar ícones de arquivos */ }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
