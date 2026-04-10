@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva</title>
+    <title>IASD Estrela Dalva - SISTEMA ATUALIZADO</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,10 +11,10 @@
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
-        /* Indicador de Salvamento */
-        #saveIndicator { position: fixed; top: 10px; right: 10px; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 10001; }
-        .saving { background: var(--orange); color: white; }
-        .saved { background: var(--green); color: white; }
+        /* NOVO: Indicador de Salvamento */
+        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .saving { background: var(--orange); color: white; border: 2px solid white; }
+        .saved { background: var(--green); color: white; border: 2px solid white; }
 
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
@@ -29,14 +29,13 @@
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         
-        /* Letras Maiores e Destaque */
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
-        .row-ministerio { background-color: #e3f2fd !important; } /* Destaque para linha com ministério */
+        .row-ministerio { background-color: #e3f2fd !important; } 
         
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-        .row-especial { background-color: #fff4e6 !important; border-left: 5px solid var(--orange) !important; }
+        .row-especial { background-color: #fff4e6 !important; border-left: 8px solid var(--orange) !important; }
         
         .plan-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #334155; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.02); }
         .plan-table td { padding: 15px; border-bottom: 1px solid #334155; font-size: 1.1rem; vertical-align: top; }
@@ -50,8 +49,8 @@
             .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator { display: none !important; }
             body { background: white; padding: 0; }
             table#tabela-main { margin-top: 0; width: 100%; border: 2px solid black; }
-            #headerTitulo { font-size: 2.2rem !important; text-align: center !important; display: block !important; color: black !important; background: none !important; padding: 10px 0 !important; }
-            #headerAnciao { font-size: 1.4rem !important; text-align: center !important; color: black !important; background: none !important; border-bottom: 2px solid black !important; display: block !important; padding-bottom: 10px !important; }
+            #headerTitulo { font-size: 2.2rem !important; text-align: center !important; color: black !important; display: block !important; padding: 10px 0 !important; }
+            #headerAnciao { font-size: 1.4rem !important; text-align: center !important; color: black !important; display: block !important; padding-bottom: 10px !important; border-bottom: 2px solid black !important; }
             #tabela-main th { border: 1px solid black !important; font-size: 10pt; background: #eee !important; color: black !important; }
             #tabela-main td { border: 1px solid black !important; font-size: 11pt; }
             .auto-expand { color: black !important; font-size: 1.1rem !important; }
@@ -71,9 +70,9 @@
             <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
             <button class="input-dark" style="border-color:var(--gold); color:var(--gold); width:auto; padding:0 15px;" onclick="window.print()">🖨️ IMPRIMIR</button>
             <button id="btnLinks" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
-            <button id="btnEventos" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS ESPECIAIS</button>
-            <button id="btnTesourariaAdmin" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCUMENTOS</button>
-            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPop()">📊 TERMÔMETRO MISSIONÁRIO</button>
+            <button id="btnEventos" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
+            <button id="btnTesourariaAdmin" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
+            <button id="btnDados" class="input-dark" style="width:auto; padding:0 15px; border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPop()">📊 TERMÔMETRO</button>
             <button class="input-dark" id="btnAcesso" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
             <button class="input-dark" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
         </div>
@@ -104,18 +103,18 @@
                 <h4>4. APOIO ANCIÃO</h4>
                 <div id="gridApoioAnciao"></div>
                 <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
-                <h4 style="color:var(--gold)">5. NUVEM / SISTEMA</h4>
+                <h4 style="color:var(--gold)">5. NUVEM / BACKUP</h4>
                 <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
-                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 RESTAURAR NUVEM</button>
+                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
             </div>
         </div>
     </div>
 
     <table id="tabela-main">
         <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.4rem; padding:12px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 12px 12px 12px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR CONGREGACIONAL</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
+            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
         </thead>
         <tbody id="corpoEscala"></tbody>
     </table>
@@ -144,7 +143,7 @@
 <div id="popBackups" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
         <h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3>
-        <div id="listaBackupsNuvem" style="margin-top:15px;"></div>
+        <div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div>
         <button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button>
     </div>
 </div>
@@ -178,27 +177,66 @@
         else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
     });
 
-    function showSaveStatus() {
+    // Função para mostrar que está salvando
+    function showStatus(txt, classe) {
         const el = document.getElementById('saveIndicator');
-        el.innerText = "Salvando..."; el.className = "saving"; el.style.display = "block";
-        setTimeout(() => { el.innerText = "✅ Alterações Salvas"; el.className = "saved"; setTimeout(() => { el.style.display = "none"; }, 1500); }, 800);
+        el.innerText = txt; el.className = classe; el.style.display = "block";
+        if(classe === 'saved') setTimeout(() => { el.style.display = "none"; }, 2000);
     }
 
     function save() { 
-        dbCloud.collection('dados').doc('estrela_v102').set(db); 
-        showSaveStatus();
+        showStatus("Salvando...", "saving");
+        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
+            showStatus("✅ Alterações Salvas", "saved");
+        }).catch(e => alert("Erro ao salvar: " + e.message));
     }
 
-    function login() { 
-        const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
-        const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
-        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!");
+    async function gerarBackupNuvem() {
+        const nome = prompt("Dê um nome para este backup (ex: Versão Final Abril):");
+        if(!nome) return;
+        showStatus("Gerando Backup...", "saving");
+        try {
+            await dbCloud.collection('backups_seguros').add({
+                identificador: nome.toUpperCase(),
+                data: new Date().toLocaleString(),
+                conteudo: JSON.parse(JSON.stringify(db)),
+                criadoEm: Date.now()
+            });
+            showStatus("✅ Backup Criado!", "saved");
+        } catch(e) { alert("Erro no backup: " + e.message); }
     }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+
+    async function abrirPopBackups() {
+        document.getElementById('popBackups').style.display = 'flex';
+        const lista = document.getElementById('listaBackupsNuvem');
+        lista.innerHTML = "<p style='text-align:center'>Buscando arquivos na nuvem...</p>";
+        
+        try {
+            const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get();
+            if(snap.empty) { lista.innerHTML = "<p style='color:red'>Nenhum backup encontrado.</p>"; return; }
+            
+            lista.innerHTML = "";
+            snap.forEach(doc => {
+                const b = doc.data();
+                lista.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; margin-bottom:8px; border:1px solid #334155;">
+                    <div><b style="color:var(--gold)">${b.identificador}</b><br><small>${b.data}</small></div>
+                    <button onclick="restaurarBackup('${doc.id}')" style="background:var(--green); color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; font-weight:bold;">RESTAURAR</button>
+                </div>`;
+            });
+        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; }
+    }
+
+    async function restaurarBackup(id) {
+        if(confirm("Deseja restaurar este backup? Os dados atuais serão substituídos.")) {
+            const doc = await dbCloud.collection('backups_seguros').doc(id).get();
+            if(doc.exists) { db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1500); }
+        }
+    }
 
     function handleEscalaKeys(e, d, c) {
         if (e.key === 'Enter') {
-            e.preventDefault(); e.target.blur();
+            e.preventDefault(); e.target.blur(); // Ao sair do campo (blur), o onchange dispara e salva.
             const rows = Array.from(document.querySelectorAll('#corpoEscala tr'));
             const currentRow = e.target.closest('tr');
             const colIndex = Array.from(currentRow.querySelectorAll('textarea')).indexOf(e.target);
@@ -207,33 +245,13 @@
         }
     }
 
-    async function gerarBackupNuvem() {
-        const nome = prompt("Nome para este backup:"); if(!nome) return;
-        const idBkp = "bkp_" + Date.now();
-        await dbCloud.collection('backups_estrela_v2').doc(idBkp).set({ id: idBkp, data: new Date().toLocaleString(), identificador: nome.toUpperCase(), conteudo: JSON.parse(JSON.stringify(db)) });
-        alert("✅ Backup salvo!");
+    // --- RESTANTE DAS FUNÇÕES ORIGINAIS RESTAURADAS ---
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
+        const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
+        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Usuário ou Senha incorretos!");
     }
-
-    async function abrirPopBackups() {
-        document.getElementById('popBackups').style.display = 'flex';
-        const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando...";
-        const snap = await dbCloud.collection('backups_estrela_v2').orderBy('id', 'desc').limit(10).get();
-        lista.innerHTML = "";
-        snap.forEach(doc => {
-            const b = doc.data();
-            lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-bottom:8px;">
-                <div><b style="color:var(--gold)">${b.identificador}</b><br><small>${b.data}</small></div>
-                <button onclick="restaurarBackupNuvem('${doc.id}')" style="background:var(--green); color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">RESTAURAR</button>
-            </div>`;
-        });
-    }
-
-    async function restaurarBackupNuvem(id) {
-        if(confirm("⚠️ Restaurar este backup?")) {
-            const doc = await dbCloud.collection('backups_estrela_v2').doc(id).get();
-            if(doc.exists) { db = doc.data().conteudo; save(); location.reload(); }
-        }
-    }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
@@ -269,7 +287,7 @@
 
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
         MESES.forEach((m, i) => { 
-            corpoPlan.innerHTML += `<tr><td class="plan-month-col">${m}</td><td><textarea ${!isAdmin?'disabled':''} class="plan-text-area" onkeydown="if(event.key==='Enter'){this.blur()}" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
+            corpoPlan.innerHTML += `<tr><td class="plan-month-col">${m}</td><td><textarea ${!isAdmin?'disabled':''} class="plan-text-area" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
         });
 
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
@@ -346,7 +364,7 @@
 
     function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function cliqueDia(dStr) { if(isAdmin) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); } }
     
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
