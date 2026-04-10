@@ -11,8 +11,8 @@
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
-        /* Centralização do Título Principal */
-        .site-title { text-align: center; color: var(--neon); font-size: 2.5rem; margin: 10px 0 20px 0; text-shadow: 0 0 10px var(--neon); }
+        /* Título Centralizado */
+        .main-title { text-align: center; color: var(--neon); margin: 10px 0 20px 0; font-size: 2.5rem; text-shadow: 0 0 15px var(--neon); }
 
         #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
@@ -23,7 +23,8 @@
 
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; } 
+        .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
+        .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; min-height: 520px; }
         
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 6px; box-sizing: border-box; outline: none; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
@@ -34,36 +35,45 @@
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
+        .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
         
-        /* Planejamento Melhorado */
-        .plan-textarea { width: 100%; background: transparent; color: #00d2ff !important; border: none; font-size: 1.2rem !important; font-weight: bold; resize: none; outline: none; }
+        .progress-container { background: #000; border-radius: 10px; height: 25px; width: 100%; margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
+        .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.6s; width: 0%; }
+        .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; line-height: 25px; color: white; text-shadow: 1px 1px 2px black; z-index: 1; }
 
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
+        /* Planejamento Visível */
+        .plan-box { margin-top:40px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border: 1px solid var(--gold); }
+        .plan-textarea { background:transparent; color: var(--neon); border:none; width:100%; font-size: 1.2rem; font-weight: bold; resize:none; }
+
+        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:10000; align-items:center; justify-content:center; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:700px; max-height: 90vh; overflow-y: auto; }
         
         /* Visualizador Fullscreen */
-        #viewContainer { width: 95%; height: 90vh; display: flex; align-items: center; justify-content: center; }
+        #viewContainer { width: 95%; height: 90%; display: flex; align-items: center; justify-content: center; }
         #viewContainer iframe, #viewContainer img { width: 100%; height: 100%; border-radius: 10px; object-fit: contain; }
 
-        /* REGRAS DE IMPRESSÃO (ESTILO FOTO) */
-        .only-print { display: none; }
+        .row-especial { background-color: #fff4e6 !important; border-left: 8px solid var(--orange) !important; }
+        .row-ministerio { background-color: #e3f2fd !important; } 
+
+        /* REGRAS DE IMPRESSÃO */
         @media print { 
             .no-print { display: none !important; }
-            .only-print { display: block !important; }
             body { background: white !important; padding: 0; }
-            .print-header-black { 
-                background: black !important; color: white !important; text-align: center; padding: 30px; 
-                border-bottom: 6px solid var(--gold) !important; -webkit-print-color-adjust: exact; 
+            .print-header { 
+                display: block !important; background: black !important; color: white !important; 
+                text-align: center; padding: 30px; border-bottom: 8px solid var(--gold) !important;
+                -webkit-print-color-adjust: exact; margin-bottom: 10px;
             }
-            .print-header-black h1 { font-size: 40pt !important; margin: 0; }
-            .print-header-black .anciao-destaque { 
-                background: #eee !important; color: black !important; padding: 10px; border: 2px solid black !important;
-                display: inline-block; margin-top: 15px; font-size: 18pt; font-weight: 900; -webkit-print-color-adjust: exact;
+            .print-header h1 { font-size: 35pt !important; margin: 0; font-weight: 900; }
+            .destaque-anciao { 
+                background: #f0f0f0 !important; border: 2px solid black !important; padding: 10px; 
+                font-size: 18pt; font-weight: bold; margin: 15px auto; width: fit-content;
+                -webkit-print-color-adjust: exact; color: black !important;
             }
             table#tabela-main { width: 100% !important; border: 3px solid black !important; }
-            #tabela-main th { background: #ddd !important; border: 1px solid black !important; color: black !important; }
-            #tabela-main td { border: 1px solid black !important; font-size: 12pt !important; height: 45px; }
-            .auto-expand { color: black !important; font-weight: 900 !important; }
+            #tabela-main th { background: #e0e0e0 !important; color: black !important; border: 1px solid black !important; }
+            #tabela-main td { border: 1px solid black !important; height: 50px; }
+            .auto-expand { color: black !important; font-weight: 900 !important; font-size: 12pt !important; }
         }
     </style>
 </head>
@@ -72,23 +82,24 @@
 <div id="saveIndicator"></div>
 
 <div class="container">
-    <h1 class="site-title no-print">IASD ESTRELA DALVA</h1>
+    <h1 class="main-title no-print">IASD ESTRELA DALVA</h1>
 
-    <div class="only-print print-header-black">
-        <h1 id="printTitulo">ESCALA DE ATIVIDADES</h1>
-        <div class="anciao-destaque" id="printAnciao">Responsável: </div>
+    <div class="print-header" style="display:none;">
+        <h1>IASD ESTRELA DALVA</h1>
+        <div id="printSubtitulo" style="font-size: 20pt; margin-top:10px;"></div>
+        <div class="destaque-anciao" id="printAnciao"></div>
     </div>
 
-    <div id="headerTopo" style="display:flex; justify-content: center; gap:10px; margin-bottom:15px;" class="no-print">
-        <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:140px; border-color:var(--neon);"></select>
-        <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR</button>
-        <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSAR</button>
+    <div id="headerTopo" style="display:flex; justify-content: center; gap: 10px; align-items:center; margin-bottom:15px;" class="no-print">
+        <select id="selMes" onchange="renderTodo();" class="input-dark" style="width:160px; border-color:var(--neon);"></select>
+        <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="window.print()">🖨️ IMPRIMIR ESCALA</button>
+        <button id="btnAcesso" class="btn-modern" onclick="document.getElementById('modalLogin').style.display='flex'">🔓 ACESSO RESTRITO</button>
         <button class="btn-modern" style="border-color:red; color:red; display:none;" id="btnSair" onclick="sair()">🚪 SAIR</button>
     </div>
 
     <div id="userWelcomeBar" class="no-print"></div>
 
-    <div class="no-print" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center;">
+    <div class="no-print" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
         <button id="btnEventos" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
         <button id="btnTesourariaAdmin" class="btn-modern" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
@@ -97,24 +108,39 @@
 
     <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155;">
+            <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR</button>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155;">
+            <div class="admin-section">
                 <h4>2. ANCIÃO DO MÊS</h4>
                 <div id="gridMeses"></div>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155;">
-                <h4>3. BACKUP NUVEM</h4>
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
-                <button class="btn-min" onclick="abrirPopBackups()">📂 BUSCAR BACKUPS</button>
+            <div class="admin-section">
+                <h4>3. LOGINS & META</h4>
+                <div style="border:1px solid var(--gold); padding:10px; border-radius:8px; margin-bottom:15px;">
+                    <small style="color:var(--gold); font-weight:bold;">META ANUAL DE BATISMOS</small>
+                    <input type="number" id="metaBatismos" class="input-dark" onchange="db.meta_anual=this.value; updateProgresso(); save();">
+                    <div class="progress-container">
+                        <div id="progressoMeta" class="progress-bar"></div>
+                        <div id="textoMeta" class="progress-text">0/0</div>
+                    </div>
+                </div>
+                <div id="corpoCreds" style="font-size:0.7rem;"></div>
+            </div>
+            <div class="admin-section">
+                <h4>4. APOIO & BACKUP</h4>
+                <div id="gridApoioAnciao"></div>
+                <hr style="border:0; border-top:1px solid #334155; margin:10px 0;">
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NUVEM</button>
+                <button class="btn-min" onclick="abrirPopBackups()">📂 BACKUPS</button>
             </div>
         </div>
     </div>
 
-    <div class="no-print" style="text-align:center; margin-bottom:10px;">
-        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:500px; border-color:var(--neon); height:45px; font-size:1.1rem; border-radius: 25px; text-align: center;" oninput="renderTodo()">
+    <div class="no-print" style="text-align:center; margin-bottom:15px;">
+        <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 BUSCAR NOME NA ESCALA..." style="width:100%; max-width:550px; border-color:var(--neon); height:45px; font-size:1.1rem; border-radius:30px; text-align:center;" oninput="renderTodo()">
     </div>
 
     <table id="tabela-main">
@@ -126,20 +152,34 @@
         <tbody id="corpoEscala"></tbody>
     </table>
 
-    <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border: 1px solid var(--gold);" class="no-print">
-        <h3 style="color:var(--gold); margin-bottom: 20px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+    <div id="secPlan" class="plan-box no-print">
+        <h3 style="color:var(--gold); margin-top:0;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
         <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
     </div>
 
     <div id="secTesouraria" style="display:none; margin-top:30px;" class="no-print">
-        <h3 style="color:var(--green)">💰 DOCUMENTOS</h3>
+        <h3 style="color:var(--green)">📄 DOCUMENTOS</h3>
         <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px;"></div>
+    </div>
+
+    <div class="chart-container no-print" style="height: 350px; margin-top: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--orange);">
+        <h3 style="color:var(--orange); margin-top:0;">📊 DESEMPENHO MISSIONÁRIO</h3>
+        <div style="height: 280px;"><canvas id="missionaryChart"></canvas></div>
+    </div>
+
+    <div id="secLinksPublicos" style="margin-top:40px; margin-bottom: 50px;" class="no-print">
+        <h3 style="color:var(--neon); border-bottom: 1px solid #334155; padding-bottom: 10px;">🔗 LINKS ÚTEIS</h3>
+        <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px; margin-top:20px;"></div>
     </div>
 </div>
 
 <div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div id="viewContainer" onclick="event.stopPropagation()"></div></div>
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>BACKUPS DISPONÍVEIS</h3><div id="listaBackupsNuvem"></div></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem"></div></div></div>
+<div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" onclick="salvarLink()">POSTAR</button><div id="listaLinksAtivos"></div></div></div>
+<div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><input type="date" id="evtInicio" class="input-dark"><button class="btn-min" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos"></div></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3>UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos"></div></div></div>
+<div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3>DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div></div></div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
@@ -148,47 +188,55 @@
 
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal" };
-    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
+    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
-        if(doc.exists) { db = doc.data(); renderTodo(); }
+        if(doc.exists) { db = doc.data(); renderTodo(); updateProgresso(); } 
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15 }; save(); }
     });
 
-    function save() {
-        document.getElementById('saveIndicator').style.display = "block";
-        document.getElementById('saveIndicator').innerText = "Salvando...";
+    function save() { 
+        document.getElementById('saveIndicator').style.display="block"; document.getElementById('saveIndicator').innerText="Salvando...";
         dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-            document.getElementById('saveIndicator').innerText = "✅ Salvo";
-            setTimeout(() => document.getElementById('saveIndicator').style.display="none", 2000);
+            document.getElementById('saveIndicator').innerText="✅ Salvo"; setTimeout(()=>document.getElementById('saveIndicator').style.display="none", 2000);
         });
     }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
         const busca = document.getElementById('buscaRapida').value.toUpperCase();
-        const responsavel = db.anciaos?.[mIdx] || 'Não definido';
+        const resp = db.anciaos?.[mIdx] || 'Não definido';
 
-        document.getElementById('headerAnciao').innerText = `Responsável: ${responsavel}`;
-        document.getElementById('printAnciao').innerText = `Responsável: ${responsavel.toUpperCase()}`;
+        document.getElementById('headerAnciao').innerText = `Responsável: ${resp}`;
+        document.getElementById('printAnciao').innerText = `Ancião Responsável: ${resp.toUpperCase()}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
-        document.getElementById('printTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
+        document.getElementById('printSubtitulo').innerText = `ESCALA DE ATIVIDADES - ${MESES[mIdx]} 2026`;
         
-        const isAdmin = ['admin','ger'].includes(curUser), isV = curUser === 'visitante';
+        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
+        if(!isV) document.getElementById('userWelcomeBar').style.display='block';
+        if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
+        
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).style.display = isV ? 'none' : 'block';
+        });
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-
         for(let d=1; d<=diasNoMes; d++) {
-            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
-            let dadosDia = db.escalas?.[dStr] || {};
-            if(busca && !JSON.stringify(dadosDia).toUpperCase().includes(busca)) continue;
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
+            let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
+            if(busca && !JSON.stringify(db.escalas?.[dStr] || "").toUpperCase().includes(busca)) continue;
 
-            if([0,3,6].includes(sem)) {
-                let tr = `<tr><td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td><td>${d}/${mIdx+1}</td>`;
-                ['sa','pr','mu','lo','so','re','di'].forEach(col => {
-                    tr += `<td><textarea ${isV?'disabled':''} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${dadosDia[col] || ''}</textarea></td>`;
+            if([0,3,6].includes(sem) || idEv) {
+                let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
+                let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
+                    let val = db.escalas?.[dStr]?.[col] || '';
+                    let canEdit = !isV;
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
@@ -196,11 +244,39 @@
 
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
         MESES.forEach((m, i) => { 
-            corpoPlan.innerHTML += `<tr><td style="width:150px; color:var(--gold); padding:10px; font-weight:bold;">${m}</td><td><textarea class="plan-textarea" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
+            corpoPlan.innerHTML += `<tr><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea class="plan-textarea" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
         });
 
-        if(isAdmin) document.getElementById('adminPanel').style.display='block';
+        if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
+        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos();
         setTimeout(() => document.querySelectorAll('textarea').forEach(t => autoResize(t)), 200);
+    }
+
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value; if(db.senhas[u] === p || p === '123456') { localStorage.setItem('iasd_curUser', u); location.reload(); } }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    
+    function renderAdmin() {
+        const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
+        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
+        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
+        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        document.getElementById('metaBatismos').value = db.meta_anual || 0;
+    }
+
+    function updateProgresso() {
+        const meta = parseInt(db.meta_anual || 0); let total = 0;
+        Object.keys(db.mis_v3 || {}).forEach(m => total += parseInt(db.mis_v3[m][5] || 0));
+        const perc = meta > 0 ? Math.min((total/meta)*100, 100) : 0;
+        document.getElementById('progressoMeta').style.width = perc + "%";
+        document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`;
+    }
+
+    function updateChart(mIdx) {
+        const ctx = document.getElementById('missionaryChart').getContext('2d');
+        if(missionChart) missionChart.destroy();
+        missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false } });
     }
 
     function verArquivo(src) {
@@ -209,25 +285,20 @@
         document.getElementById('popViewImg').style.display='flex';
     }
 
+    async function gerarBackupNuvem() { const n = prompt("Nome:"); if(!n) return; await dbCloud.collection('backups_seguros').add({ identificador: n.toUpperCase(), data: new Date().toLocaleString(), conteudo: db, criadoEm: Date.now() }); alert("Salvo!"); }
     async function abrirPopBackups() {
-        document.getElementById('popBackups').style.display = 'flex';
-        const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(10).get();
+        document.getElementById('popBackups').style.display='flex';
+        const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm','desc').limit(10).get();
         const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "";
-        snap.forEach(doc => {
-            lista.innerHTML += `<div style="padding:10px; border-bottom:1px solid #444; display:flex; justify-content:space-between;"><span>${doc.data().identificador}</span><button onclick="restaurar('${doc.id}')">Restaurar</button></div>`;
-        });
+        snap.forEach(doc => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${doc.data().identificador}</span><button onclick="restaurar('${doc.id}')">Restaurar</button></div>`; });
     }
+    async function restaurar(id) { if(confirm("Restaurar?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); location.reload(); } }
 
-    async function gerarBackupNuvem() {
-        const nome = prompt("Nome do backup:"); if(!nome) return;
-        await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), conteudo: db, criadoEm: Date.now() });
-        alert("Backup salvo!");
-    }
-
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase(), p = document.getElementById('passLogin').value; if(p==='123456' || db.senhas?.[u]===p) { localStorage.setItem('iasd_curUser', u); location.reload(); } }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function renderLinksPublicos() { const g = document.getElementById('gridLinksPublicos'); g.innerHTML = ""; (db.links_externos || []).forEach(l => { g.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, g = document.getElementById('gridArquivosPublicos'); g.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { g.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}')">📄<br><small>${doc.nome}</small></div>`; }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label>${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[m])db.mis_v3[m]=[0,0,0,0,0,0]; db.mis_v3[m][i]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { if(window.minSelecionado) db.regras_manuais[dStr]=window.minSelecionado; else delete db.regras_manuais[dStr]; save(); renderTodo(); } }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
