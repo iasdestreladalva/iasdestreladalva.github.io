@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>IASD Estrela Dalva - Sistema Completo</title>
+    <title>IASD Estrela Dalva</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,7 +11,7 @@
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
-        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
         .saved { background: var(--green); color: white; border: 2px solid white; }
 
@@ -33,14 +33,14 @@
         
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
         .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
-
-        /* ESTILO DO CRONOGRAMA DINÂMICO */
+        
+        /* ESTILO DO CRONOGRAMA INTEGRADO */
         .cron-container { background: white; color: black; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; }
         .bloco { border: 2px solid #ddd; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #fff; }
         .bloco-header { background: #f8f9fa; padding: 10px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #eee; }
         .sub-item-table { width: 100%; border-collapse: collapse; }
         .sub-item-table td { padding: 8px; border-top: 1px solid #eee; }
-        .cron-input { border: 1px solid transparent; padding: 5px; border-radius: 4px; outline: none; }
+        .cron-input { border: 1px solid transparent; padding: 5px; border-radius: 4px; outline: none; font-family: inherit; }
         .cron-input:focus { background: #f0f7ff; border-color: var(--neon); }
 
         .progress-container { background: #000; border-radius: 10px; height: 25px; width: 100%; margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
@@ -52,13 +52,19 @@
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
 
         .row-especial { background-color: #fff4e6 !important; }
+        .row-especial td { border-color: #ffd8a8 !important; }
         .row-ministerio { background-color: #e3f2fd !important; }
+        .row-ministerio td { border-color: #bbdefb !important; }
 
         @media print { 
-            .no-print, #adminPanel, #userWelcomeBar, .btn-modern, select, #saveIndicator, .busca-container, .controls-cron { display: none !important; }
+            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container, .controls-cron { display: none !important; }
             body { background: white; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            #areaEscala, #areaCronograma { display: block !important; }
+            #areaCronograma { display: block !important; padding: 0; }
             table#tabela-main { margin-top: 0; width: 100%; border: 1px solid #ccc !important; }
+            .row-especial { background-color: #fff4e6 !important; }
+            .row-ministerio { background-color: #e3f2fd !important; }
+            #headerTitulo { background: var(--blue) !important; color: white !important; display: table-cell !important; padding: 15px !important; }
+            #headerAnciao { background: var(--blue) !important; color: var(--gold) !important; display: table-cell !important; padding: 0 15px 15px 15px !important; }
         }
     </style>
 </head>
@@ -80,7 +86,7 @@
     <div id="userWelcomeBar" class="no-print"></div>
 
     <div class="no-print" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
-        <button id="btnCronToggle" class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="toggleCronograma()">📝 CRONOGRAMA</button>
+        <button id="btnCron" class="btn-modern" style="border-color:var(--gold); color:var(--gold); display:none;" onclick="toggleCronograma()">📝 CRONOGRAMA</button>
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
         <button id="btnEventos" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
         <button id="btnTesourariaAdmin" class="btn-modern" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
@@ -124,11 +130,11 @@
     </div>
 
     <div id="areaCronograma" class="cron-container">
-        <h2 style="text-align: center; border-bottom: 2px solid var(--blue); padding-bottom: 10px;">CRONOGRAMA DE CULTO</h2>
+        <h2 style="text-align: center; border-bottom: 2px solid var(--blue); padding-bottom: 10px; color: var(--blue);">CRONOGRAMA DE CULTO</h2>
         <div id="cronograma-lista"></div>
-        <div class="controls-cron no-print" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
-            <button class="btn-modern" style="background:var(--blue); color:white;" onclick="addBlocoCron()">+ ADICIONAR SEÇÃO</button>
-            <button class="btn-modern" style="background:var(--green); color:white;" onclick="salvarCronograma()">💾 SALVAR NO BANCO</button>
+        <div class="controls-cron no-print" id="adminCronControls" style="margin-top: 20px; display: none; gap: 10px; justify-content: center;">
+            <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ ADICIONAR SEÇÃO</button>
+            <button class="btn-modern" style="background:var(--green); color:white; border:none;" onclick="salvarCronograma()">💾 SALVAR NO BANCO</button>
         </div>
     </div>
 
@@ -145,11 +151,11 @@
             </thead>
             <tbody id="corpoEscala"></tbody>
         </table>
+    </div>
 
-        <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; border: 1px solid #334155;" class="no-print">
-            <h3 style="color:var(--gold); margin-bottom: 20px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
-            <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
-        </div>
+    <div id="secPlan" style="margin-top:40px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; border: 1px solid #334155;" class="no-print">
+        <h3 style="color:var(--gold); margin-bottom: 20px;">🗓️ PLANEJAMENTO ANUAL 2026</h3>
+        <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
     </div>
 
     <div id="secTesouraria" style="display:none; margin-top:30px; border:1px solid var(--green); padding:15px; border-radius:12px;" class="no-print">
@@ -177,31 +183,27 @@
 <div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 90%;" id="viewContainer"></div></div>
 
 <script>
-    // CONFIGURAÇÃO FIREBASE
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
-    // CONSTANTES
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
-    // CARREGAMENTO REAL-TIME
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { 
             db = doc.data(); 
             renderTodo(); 
             updateProgresso(); 
             if(db.cronograma) carregarCronograma(db.cronograma);
-        } else {
+        } else { 
             db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15, cronograma: [] }; 
             save(); 
         }
     });
 
-    // FUNÇÕES DE PERSISTÊNCIA
     function showStatus(txt, classe) {
         const el = document.getElementById('saveIndicator');
         el.innerText = txt; el.className = classe; el.style.display = "block";
@@ -215,48 +217,60 @@
         }).catch(e => alert("Erro ao salvar: " + e.message));
     }
 
-    // --- LÓGICA DO CRONOGRAMA ---
+    // --- LÓGICA DO CRONOGRAMA INTEGRADA ---
     function toggleCronograma() {
         const cron = document.getElementById('areaCronograma');
         const escala = document.getElementById('areaEscala');
-        if(cron.style.display === 'block') { cron.style.display = 'none'; escala.style.display = 'block'; }
-        else { cron.style.display = 'block'; escala.style.display = 'none'; }
+        if(cron.style.display === 'block') {
+            cron.style.display = 'none'; escala.style.display = 'block';
+        } else {
+            cron.style.display = 'block'; escala.style.display = 'none';
+        }
     }
 
     function addBlocoCron(dados = { horario: '', titulo: '', itens: [] }) {
+        const isAdmin = ['admin','ger'].includes(curUser);
         const container = document.getElementById('cronograma-lista');
         const novoBloco = document.createElement('div');
         novoBloco.className = 'bloco';
         novoBloco.innerHTML = `
             <div class="bloco-header">
-                <input type="text" class="cron-input" style="font-weight:bold; color:var(--blue)" value="${dados.horario}" placeholder="Horário">
-                <input type="text" class="cron-input" style="flex-grow:1; font-weight:bold;" value="${dados.titulo}" placeholder="Título da Seção">
-                <button class="btn-modern" onclick="addItemCron(this)">+ Item</button>
-                <button class="btn-modern" style="color:red; border-color:red" onclick="this.closest('.bloco').remove()">X</button>
+                <input type="text" class="cron-input" style="font-weight:bold; width:130px; color:var(--blue)" value="${dados.horario}" placeholder="Horário" ${!isAdmin?'disabled':''}>
+                <input type="text" class="cron-input" style="flex-grow:1; font-weight:bold; text-transform:uppercase" value="${dados.titulo}" placeholder="Título da Seção" ${!isAdmin?'disabled':''}>
+                ${isAdmin ? `<button class="btn-modern" onclick="addItemCron(this)">+ Item</button><button class="btn-modern" style="color:red; border-color:red" onclick="this.closest('.bloco').remove()">X</button>` : ''}
             </div>
             <table class="sub-item-table"><tbody></tbody></table>
         `;
         container.appendChild(novoBloco);
-        if(dados.itens) dados.itens.forEach(it => addItemCron(novoBloco.querySelector('.btn-modern'), it));
+        if(dados.itens) dados.itens.forEach(it => addItemCron(novoBloco.querySelector('table'), it));
     }
 
-    function addItemCron(botao, it = { nome: '', tempo: '' }) {
-        const tabelaBody = botao.closest('.bloco').querySelector('tbody');
+    function addItemCron(target, it = { nome: '', tempo: '' }) {
+        const isAdmin = ['admin','ger'].includes(curUser);
+        const tabelaBody = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td width="5%"><button style="color:red; border:none; background:none; cursor:pointer" onclick="this.closest('tr').remove()">x</button></td>
-            <td><input type="text" style="width:90%" class="cron-input it-nome" value="${it.nome}" placeholder="Música ou Atividade"></td>
-            <td><input type="text" style="width:80px" class="cron-input it-tempo" value="${it.tempo}" placeholder="Duração"></td>
+            ${isAdmin ? `<td width="5%"><button style="color:red; border:none; background:none; cursor:pointer" onclick="this.closest('tr').remove()">x</button></td>` : '<td></td>'}
+            <td><input type="text" style="width:95%" class="cron-input it-nome" value="${it.nome}" placeholder="Música ou Atividade" ${!isAdmin?'disabled':''}></td>
+            <td><input type="text" style="width:80px; text-align:right" class="cron-input it-tempo" value="${it.tempo}" placeholder="Tempo" ${!isAdmin?'disabled':''}></td>
         `;
         tabelaBody.appendChild(tr);
     }
 
     function salvarCronograma() {
+        if(!['admin','ger'].includes(curUser)) return;
         let lista = [];
         document.querySelectorAll('.bloco').forEach(b => {
-            let bloco = { horario: b.querySelectorAll('.cron-input')[0].value, titulo: b.querySelectorAll('.cron-input')[1].value, itens: [] };
+            let bloco = {
+                horario: b.querySelectorAll('.cron-input')[0].value,
+                titulo: b.querySelectorAll('.cron-input')[1].value,
+                itens: []
+            };
             b.querySelectorAll('tbody tr').forEach(tr => {
-                bloco.itens.push({ nome: tr.querySelector('.it-nome').value, tempo: tr.querySelector('.it-tempo').value });
+                bloco.itens.push({
+                    nome: tr.querySelector('.it-nome').value,
+                    tempo: tr.querySelector('.it-tempo').value
+                });
             });
             lista.push(bloco);
         });
@@ -270,25 +284,7 @@
         lista.forEach(dados => addBlocoCron(dados));
     }
 
-    // --- CORREÇÃO PDF PARA CELULAR ---
-    function verArquivo(src, ext, nome) { 
-        if(['ppt','pptx','pdf'].includes(ext)) {
-            try {
-                const byteString = atob(src.split(',')[1]);
-                const mimeString = src.split(',')[0].split(':')[1].split(';')[0];
-                const ab = new ArrayBuffer(byteString.length);
-                const ia = new Uint8Array(ab);
-                for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-                const blob = new Blob([ab], {type: mimeString});
-                window.open(URL.createObjectURL(blob), '_blank');
-            } catch(e) { window.open(src, '_blank'); }
-            return;
-        } 
-        document.getElementById('viewContainer').innerHTML = `<img src="${src}" style="max-width:100%; max-height:80vh; border-radius:10px;">`; 
-        document.getElementById('popViewImg').style.display='flex'; 
-    }
-
-    // --- FUNÇÕES DE ADMIN E ESCALA (MANTIDAS DO ORIGINAL) ---
+    // --- FUNÇÕES ORIGINAIS DO SISTEMA ---
     async function abrirPopBackups() { 
         document.getElementById('popBackups').style.display = 'flex'; 
         const lista = document.getElementById('listaBackupsNuvem'); 
@@ -300,11 +296,12 @@
                 const b = doc.data(); 
                 lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; 
             }); 
-        } catch(e) { console.error(e); } 
+            if(snap.empty) lista.innerHTML = "Nenhum backup encontrado.";
+        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } 
     }
 
-    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ Backup Criado", "saved"); } catch(e) { alert(e.message); } }
-    async function restaurarBackup(id) { if(confirm("Deseja restaurar este backup?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
+    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving"); try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved"); } catch(e) { alert(e.message); } }
+    async function restaurarBackup(id) { if(confirm("Deseja restaurar este backup? Os dados atuais serão substituídos.")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
 
     function updateProgresso() {
         const meta = parseInt(db.meta_anual || 0);
@@ -327,6 +324,12 @@
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
         document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
+        
+        // CONTROLE DO BOTÃO CRONOGRAMA (Só aparece para logados)
+        document.getElementById('btnCron').style.display = isV ? 'none' : 'block';
+        // CONTROLE DOS BOTÕES DE EDIÇÃO DO CRONOGRAMA
+        document.getElementById('adminCronControls').style.display = isAdmin ? 'flex' : 'none';
+
         if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
         
         ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria'].forEach(id => {
@@ -353,44 +356,54 @@
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        
+
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
         MESES.forEach((m, i) => { 
             corpoPlan.innerHTML += `<tr style="border-bottom:1px solid #334155;"><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
         });
 
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
-        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos();
+        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso();
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
 
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
         Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
         MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        document.getElementById('metaBatismos').value = db.meta_anual || 0;
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td style="color:var(--neon)">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
+        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); font-weight:bold; padding-left:10px;">${k}</td><td style="padding-left:10px;"><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
         Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
             let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
-            gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();">${options}</select></div>`;
+            gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
         });
     }
 
-    // (As funções abrirPopLinks, salvarLink, abrirPopEventos, salvarEventoEspecial, uploadArquivo seguem a mesma lógica original do seu index.html)
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if((db.senhas?.[u] || (u==='admin'?'123456':null)) === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
-    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
-
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return; if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
+    function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" class="link-card" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
+    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!n || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00"); if(!db.eventos_especiais) db.eventos_especiais = {}; while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: n.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
+    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || isAdmin) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
+    function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
     function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
     function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
     function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
-    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
-    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para==='todos'||doc.para===curUser||['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
-
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
+    
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
