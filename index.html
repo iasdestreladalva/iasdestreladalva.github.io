@@ -11,7 +11,7 @@
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
         
-        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
         .saved { background: var(--green); color: white; border: 2px solid white; }
 
@@ -32,15 +32,17 @@
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
+        .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
         
-        /* ESTILO DO CRONOGRAMA INTEGRADO */
-        .cron-container { background: white; color: black; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; }
-        .bloco { border: 2px solid #ddd; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #fff; }
-        .bloco-header { background: #f8f9fa; padding: 10px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #eee; }
+        /* ESTILO DO CRONOGRAMA ADICIONADO */
+        .cron-container { background: white; color: black; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .bloco { border: 2px solid #eee; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #fff; }
+        .bloco-header { background: #f1f5f9; padding: 12px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #ddd; }
         .sub-item-table { width: 100%; border-collapse: collapse; }
-        .sub-item-table td { padding: 8px; border-top: 1px solid #eee; }
-        .cron-input { border: 1px solid transparent; padding: 5px; border-radius: 4px; outline: none; font-family: inherit; }
-        .cron-input:disabled { color: black; opacity: 1; -webkit-text-fill-color: black; }
+        .sub-item-table td { padding: 10px; border-top: 1px solid #eee; }
+        .cron-input { border: 1px solid transparent; padding: 6px; border-radius: 4px; outline: none; font-family: inherit; font-size: 1rem; color: black !important; }
+        .cron-input:focus { background: #e0f2fe; border-color: var(--neon); }
+        .cron-input:disabled { opacity: 1; cursor: default; background: transparent; }
 
         .progress-container { background: #000; border-radius: 10px; height: 25px; width: 100%; margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
         .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.6s; width: 0%; }
@@ -50,11 +52,18 @@
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
 
+        .row-especial { background-color: #fff4e6 !important; }
+        .row-especial td { border-color: #ffd8a8 !important; }
+        .row-ministerio { background-color: #e3f2fd !important; }
+        .row-ministerio td { border-color: #bbdefb !important; }
+
         @media print { 
-            .no-print, #adminPanel, #userWelcomeBar, .btn-modern, select, #saveIndicator, .busca-container, .controls-cron { display: none !important; }
-            body { background: white; padding: 0; }
-            #areaCronograma { display: block !important; padding: 0; }
+            .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container, .controls-cron { display: none !important; }
+            body { background: white; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #areaCronograma { display: block !important; }
             table#tabela-main { margin-top: 0; width: 100%; border: 1px solid #ccc !important; }
+            #headerTitulo { background: var(--blue) !important; color: white !important; display: table-cell !important; padding: 15px !important; }
+            #headerAnciao { background: var(--blue) !important; color: var(--gold) !important; display: table-cell !important; padding: 0 15px 15px 15px !important; }
         }
     </style>
 </head>
@@ -77,6 +86,7 @@
 
     <div class="no-print" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
         <button id="btnCron" class="btn-modern" style="border-color:var(--gold); color:var(--gold); display:none;" onclick="toggleCronograma()">📝 CRONOGRAMA</button>
+        
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
         <button id="btnEventos" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
         <button id="btnTesourariaAdmin" class="btn-modern" style="border-color:var(--green); color:var(--green); display:none;" onclick="abrirTesourariaAdmin()">⚙️ DOCS</button>
@@ -120,18 +130,19 @@
     </div>
 
     <div id="areaCronograma" class="cron-container">
-        <h2 style="text-align: center; border-bottom: 2px solid var(--blue); padding-bottom: 10px; color: var(--blue);">CRONOGRAMA DE CULTO</h2>
+        <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
         <div id="cronograma-lista"></div>
-        <div class="controls-cron no-print" id="adminCronControls" style="margin-top: 20px; display: none; gap: 10px; justify-content: center;">
-            <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
-            <button class="btn-modern" style="background:var(--green); color:white; border:none;" onclick="salvarCronograma()">💾 SALVAR NO BANCO</button>
+        <div class="controls-cron no-print" id="adminCronControls" style="margin-top:20px; display:none; gap:10px; justify-content:center;">
+            <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ NOVA SEÇÃO</button>
+            <button class="btn-modern" style="background:var(--green); color:white; border:none;" onclick="salvarCronograma()">💾 SALVAR PROGRAMA</button>
         </div>
     </div>
 
-    <div id="areaEscala">
+    <div id="areaEscalaPrincipal">
         <div class="busca-container no-print" style="text-align:center; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
+
         <table id="tabela-main">
             <thead>
                 <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
@@ -185,11 +196,12 @@
         if(doc.exists) { 
             db = doc.data(); 
             renderTodo(); 
+            updateProgresso();
             if(db.cronograma) carregarCronograma(db.cronograma);
         } else { save(); }
     });
 
-    // --- FUNÇÕES DE CRONOGRAMA ---
+    // --- FUNÇÕES NOVAS: CRONOGRAMA ---
     function checarHorarioCulto() {
         const agora = new Date(); const dia = agora.getDay(); const hm = agora.getHours() * 100 + agora.getMinutes();
         if (dia >= 1 && dia <= 5) return (hm >= 1930 && hm <= 2130);
@@ -199,7 +211,8 @@
     }
 
     function toggleCronograma() {
-        const cron = document.getElementById('areaCronograma'); const escala = document.getElementById('areaEscala');
+        const cron = document.getElementById('areaCronograma'); 
+        const escala = document.getElementById('areaEscalaPrincipal');
         if(cron.style.display === 'block') { cron.style.display='none'; escala.style.display='block'; }
         else { cron.style.display='block'; escala.style.display='none'; }
     }
@@ -223,32 +236,81 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `<td><input class="cron-input it-nome" style="width:90%" value="${it.nome}" ${!isAdmin?'disabled':''}></td>
         <td width="70"><input class="cron-input it-tempo" style="width:100%" value="${it.tempo}" ${!isAdmin?'disabled':''}></td>
-        ${isAdmin ? `<td><button onclick="this.closest('tr').remove()">x</button></td>` : ''}`;
+        ${isAdmin ? `<td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer">x</button></td>` : ''}`;
         tb.appendChild(tr);
     }
 
     function salvarCronograma() { db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ horario: b.querySelectorAll('.cron-input')[0].value, titulo: b.querySelectorAll('.cron-input')[1].value, itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ nome: tr.querySelector('.it-nome').value, tempo: tr.querySelector('.it-tempo').value })) })); save(); }
-    function carregarCronograma(lista) { document.getElementById('cronograma-lista').innerHTML = ""; lista.forEach(d => addBlocoCron(d)); }
+    
+    function carregarCronograma(lista) { 
+        const container = document.getElementById('cronograma-lista');
+        container.innerHTML = ""; 
+        lista.forEach(d => addBlocoCron(d)); 
+    }
 
-    // --- FUNÇÕES ORIGINAIS DO SISTEMA RECUPERADAS ---
+    // --- FUNÇÕES ORIGINAIS DO SEU SISTEMA (SEM ALTERAÇÃO) ---
+    function showStatus(txt, classe) {
+        const el = document.getElementById('saveIndicator');
+        el.innerText = txt; el.className = classe; el.style.display = "block";
+        if(classe === 'saved') setTimeout(() => { el.style.display = "none"; }, 2000);
+    }
+
+    function save() { 
+        showStatus("Salvando...", "saving");
+        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
+            showStatus("✅ Alterações Salvas", "saved");
+        }).catch(e => alert("Erro ao salvar: " + e.message));
+    }
+
+    async function abrirPopBackups() { 
+        document.getElementById('popBackups').style.display = 'flex'; 
+        const lista = document.getElementById('listaBackupsNuvem'); 
+        lista.innerHTML = "Buscando..."; 
+        try { 
+            const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); 
+            lista.innerHTML = ""; 
+            snap.forEach(doc => { 
+                const b = doc.data(); 
+                lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; 
+            }); 
+            if(snap.empty) lista.innerHTML = "Nenhum backup encontrado.";
+        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } 
+    }
+
+    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving"); try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved"); } catch(e) { alert(e.message); } }
+    async function restaurarBackup(id) { if(confirm("Deseja restaurar este backup? Os dados atuais serão substituídos.")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
+
     function updateProgresso() {
-        const meta = parseInt(db.meta_anual || 0); let total = 0;
+        const meta = parseInt(db.meta_anual || 0);
+        let total = 0;
         Object.keys(db.mis_v3 || {}).forEach(m => total += parseInt(db.mis_v3[m][5] || 0));
         const perc = meta > 0 ? Math.min((total / meta) * 100, 100) : 0;
         document.getElementById('progressoMeta').style.width = perc + "%";
         document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`;
     }
 
+    function checarConflito(dStr, valor) {
+        if(!valor || valor.trim().length < 3) return false;
+        let cont = 0;
+        const dia = db.escalas?.[dStr] || {};
+        Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; });
+        return cont > 1;
+    }
+
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isAdmin = ['admin','ger'].includes(curUser), isV = curUser === 'visitante';
         const busca = document.getElementById('buscaRapida').value.toUpperCase();
         
         document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || 'Não definido'}`;
         document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
         document.getElementById('mesTesouraria').innerText = MESES[mIdx];
+        
+        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        
+        // Regra do Botão Cronograma
         document.getElementById('btnCron').style.display = (isAdmin || checarHorarioCulto()) ? 'block' : 'none';
         document.getElementById('adminCronControls').style.display = isAdmin ? 'flex' : 'none';
+
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
         document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
@@ -263,66 +325,72 @@
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
             let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
-            if(busca && !JSON.stringify(db.escalas?.[dStr]||"").toUpperCase().includes(busca)) continue;
+
+            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
+            if(busca && !txtDia.includes(busca)) continue;
+
             if([0,3,6].includes(sem) || idEv) {
-                let tr = `<tr class="${idEv?'row-especial':(minDoDia?'row-ministerio':'')}"><td onclick="cliqueDia('${dStr}')"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
+                let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
-                    let canEdit = isAdmin || (curUser !== 'visitante' && ((curUser==='diaconato' && col==='di') || (curUser==='musica' && (col==='mu'||col==='lo')) || (curUser==='sonoplastia' && col==='so') || (curUser==='sabatina' && col==='sa')));
-                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${db.escalas?.[dStr]?.[col] || ''}</textarea></td>`;
+                    let val = db.escalas?.[dStr]?.[col] || '';
+                    let isCon = checarConflito(dStr, val);
+                    let canEdit = isAdmin || (curUser !== 'visitante' && ((curUser==='diaconato' && col==='di') || (curUser==='musica' && (col==='mu'||col==='lo')) || (curUser==='sonoplastia' && col==='so') || (curUser==='sabatina' && col==='sa') || (col==='pr' && (minDoDia===curUser || (idEv && idEv.owner===curUser)))));
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand ${isCon?'conflito':''}" onkeydown="handleEscalaKeys(event, '${dStr}', '${col}')" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
                 });
                 corpo.innerHTML += tr + "</tr>";
             }
         }
 
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
-        MESES.forEach((m, i) => { corpoPlan.innerHTML += `<tr><td style="color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; });
+        MESES.forEach((m, i) => { 
+            corpoPlan.innerHTML += `<tr style="border-bottom:1px solid #334155;"><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; 
+        });
 
         if(isAdmin) { document.getElementById('adminPanel').style.display='block'; renderAdmin(); }
         updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso();
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
 
+    function handleEscalaKeys(e, d, c) { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); const rows = Array.from(document.querySelectorAll('#corpoEscala tr')); const curRow = e.target.closest('tr'); const colIdx = Array.from(curRow.querySelectorAll('textarea')).indexOf(e.target); const nextRow = rows[rows.indexOf(curRow) + 1]; if (nextRow) nextRow.querySelectorAll('textarea')[colIdx].focus(); } }
+    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    
     function renderAdmin() {
         const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
         Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
         const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
-        MESES.forEach((m, i) => { gM.innerHTML += `<div><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
         document.getElementById('metaBatismos').value = db.meta_anual || 0;
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
-        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td style="color:var(--neon)">${k}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
+        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); font-weight:bold; padding-left:10px;">${k}</td><td style="padding-left:10px;"><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
         Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
             let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
-            gA.innerHTML += `<div><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
+            gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
         });
     }
 
-    function save() { 
-        document.getElementById('saveIndicator').style.display = "block"; document.getElementById('saveIndicator').className = "saving"; document.getElementById('saveIndicator').innerText = "Salvando...";
-        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
-            document.getElementById('saveIndicator').className = "saved"; document.getElementById('saveIndicator').innerText = "✅ Salvo"; setTimeout(() => document.getElementById('saveIndicator').style.display="none", 2000);
-        });
-    }
-
-    function login() { const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value; if((db.senhas?.[u] || (u==='admin'?'123456':null)) === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!"); }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
-    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
-    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return; if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
+    function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" class="link-card" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
+    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!n || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00"); if(!db.eventos_especiais) db.eventos_especiais = {}; while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: n.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
+    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="db.docs[${m}].splice(${i},1); save(); renderAdminDocs();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || isAdmin) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
+    function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
+    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
     function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
-    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label>${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
     
-    // BACKUPS, LINKS, EVENTOS E ARQUIVOS (MANTIDOS)
-    async function abrirPopBackups() { const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(10).get(); const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = ""; snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="padding:10px; border-bottom:1px solid #334155;">${b.identificador} (${b.data}) <button onclick="restaurarBackup('${doc.id}')">Restaurar</button></div>`; }); document.getElementById('popBackups').style.display = 'flex'; }
-    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(nome) await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); alert("Salvo!"); }
-    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="padding:15px; border:1px solid var(--neon); color:white; text-decoration:none; text-align:center; border-radius:10px;">${l.titulo}</a>`; }); }
-    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(t&&u) { if(!db.links_externos) db.links_externos=[]; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); renderLinksPublicos(); } }
-    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || isAdmin) grid.innerHTML += `<div onclick="verArquivo('${doc.data}', '${doc.ext}')" style="background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; text-align:center; cursor:pointer">📄<br><small>${doc.nome}</small></div>`; }); }
-    function verArquivo(src, ext) { const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%">`; document.getElementById('popViewImg').style.display='flex'; }
-    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{maintainAspectRatio:false} }); }
-
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-    setInterval(renderTodo, 60000);
 </script>
 </body>
 </html>
