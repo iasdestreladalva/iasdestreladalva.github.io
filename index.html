@@ -8,33 +8,55 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* CSS MANTIDO IGUAL PARA NÃO MUDAR O VISUAL */
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
+        
         #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
         .saved { background: var(--green); color: white; border: 2px solid white; }
+
         .btn-modern { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8rem; }
         .btn-modern:hover { background: var(--neon); color: var(--blue); box-shadow: 0 0 10px var(--neon); }
+
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; height: auto; min-height: 520px; }
+        
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 6px; box-sizing: border-box; outline: none; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
+        .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; margin-top: 10px; border-radius: 10px 10px 0 0; overflow: hidden; }
+        #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
+        .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
+        
+        .progress-container { background: #000; border-radius: 10px; height: 25px; width: 100%; margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
+        .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.6s; width: 0%; }
+        .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; line-height: 25px; color: white; text-shadow: 1px 1px 2px black; z-index: 1; }
+
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
-        .cron-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20000; align-items: center; justify-content: center; padding: 20px; }
-        .cron-container { background: white; color: black; padding: 25px; border-radius: 15px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; }
-        .bloco { border: 1px solid #ddd; margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
+
         #newsTicker { background: var(--red); color: white; padding: 8px; font-weight: bold; overflow: hidden; white-space: nowrap; border-radius: 5px; margin-bottom: 10px; display: none; }
         #newsTicker span { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
         @keyframes ticker { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
+        /* Estilos Ordem do Culto */
+        .cron-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20000; align-items: center; justify-content: center; padding: 20px; }
+        .cron-container { background: white; color: black; padding: 25px; border-radius: 15px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .bloco { border: 1px solid #ddd; margin-bottom: 15px; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        @media print { 
+            .no-print, #adminPanel, #userWelcomeBar, .btn-modern, .btn-fechar, .cron-overlay { display: none !important; }
+            body { background: white; color: black; }
+            table#tabela-main { border: 1px solid #000 !important; }
+        }
     </style>
 </head>
 <body>
@@ -56,7 +78,7 @@
     <div id="userWelcomeBar" class="no-print"></div>
 
     <div class="no-print" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
-        <button id="btnCron" class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="document.getElementById('modalCronograma').style.display='flex'">📝 ORDEM DO CULTO</button>
+        <button class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="document.getElementById('modalCronograma').style.display='flex'">📝 ORDEM DO CULTO</button>
         <button id="btnMembros" class="btn-modern" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="document.getElementById('popMembros').style.display='flex'; renderMembros();">👥 EQUIPE</button>
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
         <button id="btnEventos" class="btn-modern" style="border-color:var(--red); color:var(--red); display:none;" onclick="abrirPopEventos()">🔥 EVENTOS</button>
@@ -64,63 +86,128 @@
         <button id="btnDados" class="btn-modern" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPop()">📊 TERMÔMETRO</button>
     </div>
 
-    <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
-        <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
-            <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
-            
-            <div id="cronograma-lista"></div>
-
-            <div class="no-print" id="adminCronControls" style="margin-top:20px; display:none; gap:10px; justify-content:center;">
-                <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ ADICIONAR SEÇÃO (ADMIN)</button>
-            </div>
-
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="btn-modern" id="btnSalvarCron" style="background:var(--green); color:white; border:none; flex:1; display:none;" onclick="salvarCronograma()">💾 SALVAR ALTERAÇÕES</button>
-                <button class="btn-fechar" style="margin-top:0; flex:1;" onclick="document.getElementById('modalCronograma').style.display='none'">FECHAR</button>
-            </div>
-            <p style="font-size: 0.7rem; color: #666; text-align: center; margin-top: 10px;">* Ministérios podem editar apenas blocos que levam seu nome no título.</p>
-        </div>
-    </div>
-
     <div id="adminPanel" class="admin-box no-print">
         <div class="admin-grid">
-            <div class="admin-section"><h4>1. MINISTÉRIO DO DIA</h4><div id="listaMinisterios"></div></div>
-            <div class="admin-section"><h4>2. ANCIÃO DO MÊS</h4><div id="gridMeses"></div></div>
-            <div class="admin-section"><h4>3. LOGINS & SENHAS</h4><input type="text" id="inputTicker" class="input-dark"><div id="corpoCreds"></div></div>
-            <div class="admin-section"><h4>4. APOIO / NUVEM</h4><button class="btn-min" onclick="gerarBackupNuvem()">💾 BACKUP NUVEM</button><button class="btn-min" onclick="exportarRelatorioPDF()">📄 PDF MÊS</button></div>
+            <div class="admin-section">
+                <h4>1. MINISTÉRIO DO DIA</h4>
+                <div id="listaMinisterios"></div>
+                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
+            </div>
+            <div class="admin-section">
+                <h4>2. ANCIÃO DO MÊS</h4>
+                <div id="gridMeses"></div>
+            </div>
+            <div class="admin-section">
+                <h4>3. LOGINS & SENHAS</h4>
+                <small style="color:var(--gold)">AVISO NO TOPO:</small>
+                <input type="text" id="inputTicker" class="input-dark" placeholder="Texto rolante..." onchange="db.aviso_ticker=this.value; save(); renderAvisos();" style="margin-bottom:10px;">
+                <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
+                    <tbody id="corpoCreds"></tbody>
+                </table>
+            </div>
+            <div class="admin-section">
+                <h4>4. APOIO / NUVEM</h4>
+                <div id="gridApoioAnciao"></div>
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold); margin-top:10px;">💾 SALVAR BACKUP</button>
+                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
+            </div>
         </div>
     </div>
 
-    <table id="tabela-main">
-        <thead>
-            <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
-            <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
-            <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
-        </thead>
-        <tbody id="corpoEscala"></tbody>
-    </table>
+    <div id="areaEscalaPrincipal">
+        <div class="busca-container no-print" style="text-align:center; margin-bottom:15px;">
+            <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
+        </div>
+        <table id="tabela-main">
+            <thead>
+                <tr><th colspan="9" style="background:var(--blue); color:white; font-size:1.6rem; padding:15px; text-align:left;" id="headerTitulo">ESCALA</th></tr>
+                <tr><th colspan="9" style="background:var(--blue); color:var(--gold); font-size:1.2rem; padding:0 15px 15px 15px; text-align:left;" id="headerAnciao">Responsável: </th></tr>
+                <tr><th style="width:130px">DIA</th><th style="width:50px">DATA</th><th>SABATINA</th><th>PREGADOR(A)</th><th>MÚSICA ESPECIAL</th><th>LOUVOR</th><th>SONOPLASTIA</th><th>RECEPÇÃO</th><th>DIACONATO</th></tr>
+            </thead>
+            <tbody id="corpoEscala"></tbody>
+        </table>
+    </div>
 </div>
 
+<div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
+    <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
+        <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
+        <div id="cronograma-lista"></div>
+        <div id="adminCronControls" style="display:none; gap:10px; justify-content:center; margin-top:15px;">
+            <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ NOVA SEÇÃO</button>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button id="btnSalvarCron" class="btn-modern" style="background:var(--green); color:white; border:none; flex:1; display:none;" onclick="salvarCronograma()">💾 SALVAR ORDEM</button>
+            <button class="btn-fechar" style="margin-top:0; flex:1;" onclick="document.getElementById('modalCronograma').style.display='none'">FECHAR</button>
+        </div>
+    </div>
+</div>
+
+<div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE</h3><div id="listaMembros"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR BACKUP</h3><div id="listaBackupsNuvem"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+
 <script>
-    // CONFIGURAÇÃO FIREBASE MANTIDA
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
-    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
+    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
+    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
     dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
         if(doc.exists) { 
             db = doc.data(); 
             renderTodo(); 
+            renderAvisos();
             if(db.cronograma) carregarCronograma(db.cronograma);
         } else { save(); }
     });
 
     function save() { dbCloud.collection('dados').doc('estrela_v102').set(db); }
 
+    function renderTodo() {
+        const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
+        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        const busca = document.getElementById('buscaRapida').value.toUpperCase();
+
+        document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
+        document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
+        document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
+        if(!isV) {
+            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser]}</b>`;
+            document.getElementById('btnSalvarCron').style.display = 'block';
+        }
+        if(isAdmin) {
+            document.getElementById('adminPanel').style.display='block';
+            document.getElementById('adminCronControls').style.display='flex';
+            renderAdmin();
+        }
+
+        // Renderização da Tabela de Escala
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
+        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+        for(let d=1; d<=diasNoMes; d++) {
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay();
+            if([0,3,6].includes(sem)) {
+                let tr = `<tr><td><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b></td><td>${d}/${mIdx+1}</td>`;
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
+                    let val = db.escalas?.[dStr]?.[col] || '';
+                    let canEdit = isAdmin || (curUser !== 'visitante' && ((curUser==='diaconato' && col==='di') || (curUser==='musica' && (col==='mu'||col==='lo'))));
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand" onchange="atuCel('${dStr}','${col}',this.value)">${val}</textarea></td>`;
+                });
+                corpo.innerHTML += tr + "</tr>";
+            }
+        }
+        // Mostrar botões de ministérios
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin', 'btnMembros'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block';
+        });
+    }
+
+    // LOGICA DO CRONOGRAMA
     function carregarCronograma(lista) {
         const container = document.getElementById('cronograma-lista');
         container.innerHTML = "";
@@ -129,70 +216,51 @@
 
     function addBlocoCron(dados = { horario: '', titulo: '', itens: [] }, index) {
         const isAdmin = ['admin','ger'].includes(curUser);
-        const userNomeMinisterio = MINS[curUser] || "";
+        const userNomeMin = MINS[curUser] || "";
+        const podeEditarBloco = isAdmin || (userNomeMin !== "" && dados.titulo.toUpperCase().includes(userNomeMin.toUpperCase()));
         
-        // LOGICA DE PERMISSÃO: Admin pode tudo. Ministério edita se o título do bloco for o nome dele.
-        const podeEditarBloco = isAdmin || (userNomeMinisterio !== "" && dados.titulo.toUpperCase().includes(userNomeMinisterio.toUpperCase()));
-        
-        if (!isAdmin && curUser !== 'visitante') document.getElementById('btnSalvarCron').style.display = 'block';
-
         const b = document.createElement('div');
         b.className = 'bloco';
         b.innerHTML = `
-            <div style="background:#f8f9fa; padding:10px; display:flex; gap:10px; border-bottom:1px solid #eee;">
-                <input style="width:75px; font-weight:bold" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v input-dark">
-                <input style="flex-grow:1; font-weight:bold" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v input-dark" placeholder="Ex: LOUVOR">
+            <div style="background:#f0f2f5; padding:10px; display:flex; gap:10px; align-items:center;">
+                <input style="width:70px; font-weight:bold" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v input-dark">
+                <input style="flex-grow:1; font-weight:bold; color:var(--blue) !important" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v input-dark" placeholder="Título (ex: LOUVOR)">
                 ${isAdmin ? `
                     <button onclick="moverBloco(${index}, -1)" class="btn-modern">↑</button>
                     <button onclick="moverBloco(${index}, 1)" class="btn-modern">↓</button>
-                    <button onclick="addItemCron(this)" class="btn-modern" style="color:green">+</button>
-                    <button onclick="removerBloco(${index})" class="btn-modern" style="color:red">X</button>
-                ` : podeEditarBloco ? `<button onclick="addItemCron(this)" class="btn-modern" style="color:green">+ Adicionar Linha</button>` : ''}
+                    <button onclick="removerBloco(${index})" style="color:red" class="btn-modern">X</button>
+                ` : ''}
+                ${podeEditarBloco ? `<button onclick="addItemCron(this)" class="btn-modern" style="border-color:var(--green); color:var(--green)">+ ITEM</button>` : ''}
             </div>
-            <table style="width:100%; background:white;">
-                <tbody class="corpo-itens"></tbody>
-            </table>
+            <table style="width:100%; border-collapse:collapse;"><tbody class="corpo-itens"></tbody></table>
         `;
         document.getElementById('cronograma-lista').appendChild(b);
         if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it, podeEditarBloco));
     }
 
     function addItemCron(target, it = { nome: '', tempo: '' }, podeEditar = true) {
-        const isAdmin = ['admin','ger'].includes(curUser);
         const tb = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody');
         const tr = document.createElement('tr');
+        tr.style.borderBottom = "1px solid #eee";
         tr.innerHTML = `
-            <td style="padding:8px">
-                <input class="it-n input-dark" style="width:95%; background:white !important; color:black !important; border:1px solid #ddd !important;" 
-                value="${it.nome}" ${!podeEditar?'disabled':''} placeholder="O que será feito?">
-            </td>
-            <td width="80">
-                <input class="it-t input-dark" style="width:100%; background:white !important; color:black !important; border:1px solid #ddd !important;" 
-                value="${it.tempo}" ${!podeEditar?'disabled':''} placeholder="Tempo">
-            </td>
-            ${podeEditar ? `<td width="30"><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;">x</button></td>` : ''}
+            <td style="padding:8px"><input class="it-n" style="width:95%; border:none; outline:none; font-size:1rem" value="${it.nome}" ${!podeEditar?'disabled':''} placeholder="Atividade..."></td>
+            <td width="70"><input class="it-t" style="width:100%; border:none; outline:none; font-weight:bold; color:#666" value="${it.tempo}" ${!podeEditar?'disabled':''} placeholder="00min"></td>
+            ${podeEditar ? `<td width="30"><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;">×</button></td>` : ''}
         `;
         tb.appendChild(tr);
     }
 
-    // AUTONOMIA DO ADMIN: Reposicionar blocos
-    function moverBloco(index, direcao) {
-        if (!db.cronograma) return;
-        const novoIndex = index + direcao;
-        if (novoIndex >= 0 && novoIndex < db.cronograma.length) {
+    function moverBloco(index, dir) {
+        const novo = index + dir;
+        if(novo >= 0 && novo < db.cronograma.length) {
             const temp = db.cronograma[index];
-            db.cronograma[index] = db.cronograma[novoIndex];
-            db.cronograma[novoIndex] = temp;
+            db.cronograma[index] = db.cronograma[novo];
+            db.cronograma[novo] = temp;
             save();
         }
     }
 
-    function removerBloco(index) {
-        if(confirm("Excluir esta seção inteira?")) {
-            db.cronograma.splice(index, 1);
-            save();
-        }
-    }
+    function removerBloco(i) { if(confirm("Remover seção?")) { db.cronograma.splice(i,1); save(); } }
 
     function salvarCronograma() {
         db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({
@@ -204,34 +272,24 @@
             }))
         }));
         save();
-        alert("Cronograma atualizado com sucesso!");
+        alert("Salvo com sucesso!");
     }
 
-    // RESTANTE DAS FUNÇÕES (LOGIN, RENDER ESCALA, ETC) MANTIDAS INTEGRALMENTE
-    function renderTodo() {
-        const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
-        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
-        document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
-        document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
-        if(isAdmin) document.getElementById('adminCronControls').style.display = 'flex';
-        if(!isV) {
-            document.getElementById('btnSalvarCron').style.display = 'block';
-            document.getElementById('userWelcomeBar').style.display = 'block';
-            document.getElementById('userWelcomeBar').innerHTML = `Logado como: <b>${MINS[curUser]}</b>`;
-        }
-        // ... (resto da lógica de renderização da escala igual ao código anterior)
+    // Funções Administrativas e Login
+    function renderAdmin() {
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).forEach(k => { tC.innerHTML += `<tr><td>${MINS[k]}</td><td><input class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"></td></tr>`; });
     }
-
     function login() { 
         const u = document.getElementById('userLogin').value.toLowerCase().trim(), p = document.getElementById('passLogin').value;
         const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
-        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Senha incorreta!");
+        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else alert("Erro!");
     }
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); }
+    function renderAvisos() { const bar = document.getElementById('newsTicker'); if(db.aviso_ticker) { bar.style.display='block'; bar.querySelector('span').innerText=db.aviso_ticker; } }
 
-    const sM = document.getElementById('selMes');
-    MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
-
 </body>
 </html>
