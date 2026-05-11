@@ -32,7 +32,6 @@
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
         
-        /* DESTAQUE DIA ATUAL */
         .hoje { outline: 3px solid var(--gold) !important; position: relative; z-index: 5; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
 
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1.1rem; display: block; padding: 8px 0; outline: none; }
@@ -145,9 +144,16 @@
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
             <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
             <div id="cronograma-lista"></div>
-            <div class="no-print" id="adminCronControls" style="margin-top:20px; display:none; gap:10px; justify-content:center;">
-                <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
-                <button class="btn-modern" style="background:var(--green); color:white; border:none;" onclick="salvarCronograma()">💾 SALVAR ORDEM</button>
+            <div class="no-print" id="adminCronControls" style="margin-top:20px; display:none; flex-direction:column; gap:10px; align-items:center;">
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn-modern" style="background:#444; color:white; border:none;" onclick="carregarPreset('SABADO')">📅 SET SÁBADO</button>
+                    <button class="btn-modern" style="background:#444; color:white; border:none;" onclick="carregarPreset('DOMINGO')">📅 SET DOMINGO</button>
+                    <button class="btn-modern" style="background:#444; color:white; border:none;" onclick="carregarPreset('QUARTA')">📅 SET QUARTA</button>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:center; margin-top:5px;">
+                    <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
+                    <button class="btn-modern" style="background:var(--green); color:white; border:none;" onclick="salvarCronograma()">💾 SALVAR NO BANCO</button>
+                </div>
             </div>
             <button class="btn-fechar" onclick="document.getElementById('modalCronograma').style.display='none'">FECHAR CRONOGRAMA</button>
         </div>
@@ -208,7 +214,31 @@
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
 
-    // Monitor de Scroll para botão voltar ao topo
+    const PRESETS = {
+        SABADO: [
+            {"horario": "08:45", "titulo": "LOUVOR", "itens": [{"nome": "Música 1", "tempo": ""}, {"nome": "Música 2", "tempo": ""}]},
+            {"horario": "09:00", "titulo": "ESCOLA SABATINA", "itens": [{"nome": "Oração", "tempo": ""}, {"nome": "Anúncio de Início", "tempo": ""}, {"nome": "Hino Inicial", "tempo": ""}, {"nome": "Carta Missionária", "tempo": ""}, {"nome": "Música Especial", "tempo": ""}, {"nome": "Recapitulação", "tempo": ""}, {"nome": "Música Especial", "tempo": ""}, {"nome": "Oração Final", "tempo": ""}]},
+            {"horario": "10:20", "titulo": "DOXOLOGIA", "itens": [{"nome": "Música", "tempo": ""}, {"nome": "Oração Pregador", "tempo": ""}, {"nome": "Comunicação (Anúncios)", "tempo": ""}]},
+            {"horario": "10:23", "titulo": "OFERTÓRIO", "itens": [{"nome": "Vídeo Provai e Vede", "tempo": ""}, {"nome": "Música", "tempo": ""}]},
+            {"horario": "10:30", "titulo": "LOUVOR COM A IGREJA", "itens": [{"nome": "1ª Música", "tempo": ""}, {"nome": "2ª Música", "tempo": ""}, {"nome": "Hino Inicial (De Pé)", "tempo": ""}]},
+            {"horario": "10:45", "titulo": "ORAÇÃO (DE JOELHOS)", "itens": [{"nome": "Momento de Intercessão", "tempo": "5 min"}]},
+            {"horario": "10:50", "titulo": "MOMENTO DA CRIANÇA", "itens": [{"nome": "História Infantil", "tempo": "7 min"}]},
+            {"horario": "10:57", "titulo": "MENSAGEM BÍBLICA", "itens": [{"nome": "Música Especial", "tempo": ""}, {"nome": "Sermão", "tempo": ""}, {"nome": "Música Especial (Final)", "tempo": ""}]}
+        ],
+        DOMINGO: [
+            {"horario": "19:00", "titulo": "ORAÇÃO INICIAL", "itens": [{"nome": "Oração de Abertura", "tempo": ""}]},
+            {"horario": "19:05", "titulo": "MOMENTO DE LOUVOR", "itens": [{"nome": "Música 1", "tempo": ""}, {"nome": "Música 2", "tempo": ""}, {"nome": "Hino Inicial (De Pé)", "tempo": ""}]},
+            {"horario": "19:25", "titulo": "OFERTÓRIO / ORAÇÃO", "itens": [{"nome": "Recolhimento", "tempo": ""}, {"nome": "Oração", "tempo": ""}]},
+            {"horario": "19:35", "titulo": "MENSAGEM", "itens": [{"nome": "Música Especial", "tempo": ""}, {"nome": "Sermão", "tempo": ""}, {"nome": "Música Especial", "tempo": ""}]}
+        ],
+        QUARTA: [
+            {"horario": "19:30", "titulo": "ABERTURA", "itens": [{"nome": "Oração", "tempo": ""}]},
+            {"horario": "19:35", "titulo": "GRUPO DE LOUVOR", "itens": [{"nome": "Música 1", "tempo": ""}, {"nome": "Música 2", "tempo": ""}, {"nome": "Hino Inicial (De Pé)", "tempo": ""}]},
+            {"horario": "19:55", "titulo": "INTERCESSÃO", "itens": [{"nome": "Oração", "tempo": ""}, {"nome": "Pedidos e Agradecimentos", "tempo": ""}]},
+            {"horario": "20:10", "titulo": "MENSAGEM", "itens": [{"nome": "Música Especial", "tempo": ""}, {"nome": "Sermão", "tempo": ""}, {"nome": "Música Especial", "tempo": ""}]}
+        ]
+    };
+
     window.onscroll = function() { 
         const btn = document.getElementById("btnTopo");
         if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) { btn.style.display = "block"; } 
@@ -260,7 +290,6 @@
             if(busca && !txtDia.includes(busca)) continue;
             
             if([0,3,6].includes(sem) || idEv) {
-                // Melhoria: Destaque visual do dia de HOJE
                 let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
                 if(dStr === hojeFormatado) rowClass += ' hoje';
 
@@ -286,8 +315,15 @@
     }
 
     function renderAvisos() { const bar = document.getElementById('newsTicker'); if(bar) { if(db.aviso_ticker) { bar.style.display = 'block'; bar.querySelector('span').innerText = db.aviso_ticker; } else bar.style.display = 'none'; } }
+    
     function carregarCronograma(lista) { const container = document.getElementById('cronograma-lista'); if(container) { container.innerHTML = ""; lista.forEach(d => addBlocoCron(d)); } }
     
+    function carregarPreset(tipo) {
+        if(confirm(`Deseja carregar o esqueleto de ${tipo}? Isso substituirá o cronograma atual na tela (clique em Salvar depois para confirmar no banco).`)) {
+            carregarCronograma(PRESETS[tipo]);
+        }
+    }
+
     function addBlocoCron(dados = { horario: '', titulo: '', itens: [] }) {
         const isAdmin = ['admin','ger'].includes(curUser);
         const b = document.createElement('div'); b.className = 'bloco'; b.style.border = "1px solid #ddd"; b.style.marginBottom="10px";
@@ -319,7 +355,6 @@
     function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
     function updateProgresso() { const meta = parseInt(db.meta_anual || 0); let total = 0; Object.keys(db.mis_v3 || {}).forEach(m => total += parseInt(db.mis_v3[m][5] || 0)); const perc = meta > 0 ? Math.min((total / meta) * 100, 100) : 0; document.getElementById('progressoMeta').style.width = perc + "%"; document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`; }
 
-    // Toggle para visualizar senha
     function togglePass(id) { let el = document.getElementById(id); el.type = el.type === "password" ? "text" : "password"; }
 
     function renderAdmin() {
@@ -329,7 +364,6 @@
         MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
         document.getElementById('metaBatismos').value = db.meta_anual || 0;
         
-        // Melhoria: Tabela de senhas agora oculta o conteúdo por padrão
         const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
         Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { 
             tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); font-weight:bold; padding-left:10px;">${k}</td><td style="padding-left:10px; display:flex;"><input type="password" id="p_${k}" class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"><button onclick="togglePass('p_${k}')" style="background:none; border:none; cursor:pointer; color:white;">👁️</button></td></tr>`; 
