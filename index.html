@@ -28,7 +28,6 @@
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
-        /* AJUSTE PARA RESPONSIVIDADE SEM CORTAR TEXTO */
         #areaEscalaPrincipal { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 10px 10px 0 0; }
         
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; min-width: 1000px; }
@@ -62,10 +61,7 @@
 
         #btnTopo { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--neon); color: var(--blue); border: none; font-weight: bold; font-size: 1.5rem; cursor: pointer; display: none; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        @media (min-width: 1200px) {
-            table#tabela-main { min-width: 100%; }
-        }
-
+        @media (min-width: 1200px) { table#tabela-main { min-width: 100%; } }
         @media print { 
             .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container, #newsTicker, .cron-overlay, #btnTopo { display: none !important; }
             #areaEscalaPrincipal { display: block !important; position: static !important; width: 100% !important; box-shadow: none !important; overflow: visible !important; }
@@ -150,9 +146,17 @@
     <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
             <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
+            
+            <div class="no-print" id="modelosCronograma" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
+                <span style="align-self:center; font-weight:bold; font-size:0.85rem; color:#475569;">MODELOS FIXOS:</span>
+                <button class="btn-modern" style="background:#fff; border-color:#64748b; color:#334155;" onclick="carregarModeloFixo('quarta')">🕒 QUARTA</button>
+                <button class="btn-modern" style="background:#ffedd5; border-color:#f97316; color:#c2410c;" onclick="carregarModeloFixo('sabado')">☀️ SÁBADO</button>
+                <button class="btn-modern" style="background:#f0fdf4; border-color:#22c55e; color:#15803d;" onclick="carregarModeloFixo('domingo')">🌙 DOMINGO</button>
+            </div>
+
             <div id="cronograma-lista"></div>
             <div class="no-print" id="adminCronControls" style="margin-top:20px; display:none; gap:10px; justify-content:center;">
-                <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
+                <button id="btnCronAddSecao" class="btn-modern" style="background:var(--blue); color:white; border:none; display:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
                 <button class="btn-modern" style="background:var(--green); color:white; border:none;" onclick="salvarCronograma()">💾 SALVAR ORDEM</button>
             </div>
             <button class="btn-fechar" onclick="document.getElementById('modalCronograma').style.display='none'">FECHAR CRONOGRAMA</button>
@@ -251,10 +255,19 @@
         if(!isV) document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser]}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
         
         document.getElementById('btnCron').style.display = 'block';
-
         ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria', 'btnMembros'].forEach(id => {
             const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block';
         });
+        const modelosDiv = document.getElementById('modelosCronograma');
+        if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
+
+        // Ativa os controles de salvar cronograma para qualquer um logado (que não seja visitante)
+        if (!isV) {
+            document.getElementById('adminCronControls').style.display = 'flex';
+            document.getElementById('btnCronAddSecao').style.display = isAdmin ? 'block' : 'none';
+        } else {
+            document.getElementById('adminCronControls').style.display = 'none';
+        }
 
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
@@ -263,11 +276,9 @@
             let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
             let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
             if(busca && !txtDia.includes(busca)) continue;
-            
             if([0,3,6].includes(sem) || idEv) {
                 let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
                 if(dStr === hojeFormatado) rowClass += ' hoje';
-
                 let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
                 ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
                     let val = db.escalas?.[dStr]?.[col] || '';
@@ -278,88 +289,191 @@
                 corpo.innerHTML += tr + "</tr>";
             }
         }
-        const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
+        const corpoPlan = document.getElementById('corpoPlan');
+        corpoPlan.innerHTML = "";
         MESES.forEach((m, i) => { corpoPlan.innerHTML += `<tr style="border-bottom:1px solid #334155;"><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; });
-        
         if(isAdmin) { 
             document.getElementById('adminPanel').style.display='block'; 
-            document.getElementById('adminCronControls').style.display='flex';
-            renderAdmin(); 
-        } else if(curUser !== 'visitante') {
-            // Libera a visualização dos controles de salvar/adicionar seção na Ordem do Culto para funções permitidas
-            document.getElementById('adminCronControls').style.display='flex';
-        } else {
-            document.getElementById('adminCronControls').style.display='none';
+            renderAdmin();
         }
-        
         updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso();
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
 
     function renderAvisos() { const bar = document.getElementById('newsTicker'); if(bar) { if(db.aviso_ticker) { bar.style.display = 'block'; bar.querySelector('span').innerText = db.aviso_ticker; } else bar.style.display = 'none'; } }
-    function carregarCronograma(lista) { const container = document.getElementById('cronograma-lista'); if(container) { container.innerHTML = ""; lista.forEach(d => addBlocoCron(d)); } }
     
-    function addBlocoCron(dados = { horario: '', titulo: '', itens: [] }) {
-        const isV = curUser === 'visitante';
-        const isAdmin = ['admin','ger'].includes(curUser);
-        
-        // Verifica se é uma seção ligada à Escola Sabatina (por título ou por horário matinal inferior às 10h)
-        const tUpper = (dados.titulo || '').toUpperCase();
-        const isEscolaSabatina = tUpper.includes("SABATINA") || tUpper.includes("ESCOLA") || (dados.horario && parseInt(dados.horario) < 10);
-        
-        // A Escola Sabatina pode editar e criar blocos/seções que pertençam a ela
-        const podeEditarBloco = isAdmin || (curUser === 'sabatina' && isEscolaSabatina);
-
-        const b = document.createElement('div'); b.className = 'bloco'; b.style.border = "1px solid #ddd"; b.style.marginBottom="10px";
-        b.innerHTML = `<div style="background:#f0f0f0; padding:10px; display:flex; gap:10px;">
-            <input style="width:70px; font-weight:bold" value="${dados.horario}" ${!podeEditarBloco?'disabled':''} class="cron-v">
-            <input style="flex-grow:1; font-weight:bold" value="${dados.titulo}" ${!podeEditarBloco?'disabled':''} class="cron-v">
-            ${!isV ? `<button onclick="addItemCron(this, undefined, ${isEscolaSabatina})">+</button>` : ''}
-            ${isAdmin ? `<button onclick="this.closest('.bloco').remove()">X</button>` : ''}
-        </div><table style="width:100%"><tbody></tbody></table>`;
-        
-        document.getElementById('cronograma-lista').appendChild(b);
-        if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it, isEscolaSabatina));
+    function carregarCronograma(lista) { 
+        const container = document.getElementById('cronograma-lista');
+        if(container) { 
+            container.innerHTML = ""; 
+            lista.forEach(d => addBlocoCron(d));
+        } 
     }
     
-    function addItemCron(target, it = { nome: '', tempo: '' }, BlocoIsEscolaSabatina = false) {
-        const isV = curUser === 'visitante';
+    function addBlocoCron(dados = { horario: '', titulo: '', itens: [], corBg: '#f0f0f0', corTxt: '#000000' }) {
         const isAdmin = ['admin','ger'].includes(curUser);
-        const itemUpper = (it.nome || '').toUpperCase();
+        const bg = dados.corBg || '#f0f0f0';
+        const txtColor = dados.corTxt || '#000000';
+        const b = document.createElement('div'); 
+        b.className = 'bloco';
+        b.style.border = "1px solid #cbd5e1"; 
+        b.style.marginBottom = "12px";
+        b.style.borderRadius = "6px";
+        b.style.overflow = "hidden";
+        b.innerHTML = `
+            <div style="background:${bg}; color:${txtColor}; padding:10px; display:flex; gap:10px; align-items:center;">
+                <input style="width:110px; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v cron-horario">
+                <input style="flex-grow:1; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v cron-titulo">
+                <input type="hidden" class="cron-bg" value="${bg}">
+                <input type="hidden" class="cron-txt" value="${txtColor}">
+                ${isAdmin ? `<button class="btn-modern" style="padding:4px 8px; background:white; border-color:#94a3b8;" onclick="addItemCron(this)">+ Item</button><button class="btn-modern" style="padding:4px 8px; background:#fee2e2; border-color:#ef4444; color:#b91c1c;" onclick="this.closest('.bloco').remove()">X</button>` : ''}
+            </div>
+            <table style="width:100%; border-collapse:collapse; background:#fff;">
+                <tbody style="color:#000;"></tbody>
+            </table>`;
+        document.getElementById('cronograma-lista').appendChild(b);
+        if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it, dados.titulo));
+    }
+    
+    function addItemCron(target, it = { nome: '', tempo: '' }, tituloBloco = '') {
+        const isAdmin = ['admin','ger'].includes(curUser);
+        const tb = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody');
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = "1px solid #f1f5f9";
         
-        // Mapeamento dinâmico de palavras-chave para identificar as atribuições de cada ministério
-        const isParteMusica = itemUpper.includes("LOUVOR") || itemUpper.includes("MÚSICA") || itemUpper.includes("MUSICA") || itemUpper.includes("CANTAR") || itemUpper.includes("HINÁRIO") || itemUpper.includes("HINARIO") || itemUpper.includes("ESPECIAL");
-        const isParteSonoplastia = itemUpper.includes("PROVAI") || itemUpper.includes("VEDE") || itemUpper.includes("INFORMATIVO") || itemUpper.includes("VÍDEO") || itemUpper.includes("VIDEO") || itemUpper.includes("ÁUDIO") || itemUpper.includes("AUDIO");
-
-        let podeEditarItem = false;
-
-        if (isAdmin) {
-            podeEditarItem = true;
-        } else if (!isV) {
-            if (curUser === 'musica' && isParteMusica) {
-                podeEditarItem = true;
-            } else if (curUser === 'sonoplastia' && isParteSonoplastia) {
-                podeEditarItem = true;
-            } else if (BlocoIsEscolaSabatina && curUser === 'sabatina') {
-                podeEditarItem = true;
+        // Se não houver título definido no bloco, busca direto do cabeçalho dele
+        if (!tituloBloco && target.closest('.bloco')) {
+            tituloBloco = target.closest('.bloco').querySelector('.cron-titulo').value;
+        }
+        
+        let tituloTratado = (tituloBloco || '').toUpperCase();
+        let nomeItemTratado = (it.nome || '').toUpperCase();
+        
+        // REGRA DE PERMISSÕES DINÂMICAS PARA A ORDEM DO CULTO:
+        let canEditItem = isAdmin; // admin e ger sempre editam tudo
+        
+        if (curUser !== 'visitante' && !canEditItem) {
+            // MÚSICA: louvor e música especial
+            if (curUser === 'musica' && (nomeItemTratado.includes('LOUVOR') || nomeItemTratado.includes('MÚSICA') || nomeItemTratado.includes('MUSICA') || nomeItemTratado.includes('HINO'))) {
+                canEditItem = true;
             }
-            // Cruzamento permitido: Música e Sonoplastia podem editar itens correspondentes de dentro da Escola Sabatina
-            if (BlocoIsEscolaSabatina && (curUser === 'sonoplastia' || curUser === 'musica') && (isParteMusica || isParteSonoplastia)) {
-                podeEditarItem = true;
+            // SONOPLASTIA: provai e vede, vídeo, música, informativo, sonoplastia, carta missionária
+            else if (curUser === 'sonoplastia' && (nomeItemTratado.includes('PROVAI') || nomeItemTratado.includes('VÍDEO') || nomeItemTratado.includes('VIDEO') || nomeItemTratado.includes('SONOPLASTIA') || nomeItemTratado.includes('MUSICA') || nomeItemTratado.includes('MÚSICA') || nomeItemTratado.includes('INFORMATIVO') || nomeItemTratado.includes('CARTA'))) {
+                canEditItem = true;
+            }
+            // ESCOLA SABATINA: tudo do primeiro horário / bloco da escola sabatina
+            else if (curUser === 'sabatina' && tituloTratado.includes('ESCOLA SABATINA')) {
+                canEditItem = true;
             }
         }
 
-        const tb = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody');
-        const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="padding:5px"><input class="it-n" style="width:90%" value="${it.nome}" ${!podeEditarItem?'disabled':''}></td>
-            <td width="60"><input class="it-t" style="width:100%" value="${it.tempo}" ${!podeEditarItem?'disabled':''}></td>
-            ${podeEditarItem ? `<td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;">x</button></td>` : ''}
-        `;
+            <td style="padding:6px 10px; font-weight:500; width:45%; background:#fafafa;">
+                ${it.nome.includes(":") ? `style="padding-left:15px; font-size:0.9rem;"` : ''}
+                <input class="it-n" style="width:95%; border:none; background:transparent; font-weight:bold; color:#1e293b;" value="${it.nome}" ${!isAdmin?'disabled':''}>
+            </td>
+            <td style="padding:6px 10px;">
+                <input class="it-t" style="width:100%; border:1px solid #e2e8f0; border-radius:4px; padding:3px; font-weight:bold; color:#0f172a;" value="${it.tempo}" placeholder="Responsável / Info" ${canEditItem ? '' : 'disabled'}>
+            </td>
+            ${isAdmin ? `<td width="30" style="text-align:center;"><button onclick="this.closest('tr').remove()" style="color:#ef4444; background:none; border:none; cursor:pointer; font-weight:bold;">x</button></td>` : ''}`;
         tb.appendChild(tr);
     }
     
-    function salvarCronograma() { db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ horario: b.querySelectorAll('.cron-v')[0].value, titulo: b.querySelectorAll('.cron-v')[1].value, itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ nome: tr.querySelector('.it-n').value, tempo: tr.querySelector('.it-t').value })) })); save(); }
+    function salvarCronograma() { 
+        db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ 
+            horario: b.querySelector('.cron-horario').value, 
+            titulo: b.querySelector('.cron-titulo').value, 
+            corBg: b.querySelector('.cron-bg').value,
+            corTxt: b.querySelector('.cron-txt').value,
+            itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ 
+                nome: tr.querySelector('.it-n').value, 
+                tempo: tr.querySelector('.it-t').value 
+            })) 
+        }));
+        save(); 
+    }
+
+    function carregarModeloFixo(tipo) {
+        if(!confirm("Carregar este modelo irá substituir o cronograma atual da tela. Deseja continuar?")) return;
+        let estrutura = [];
+        
+        if(tipo === 'quarta') {
+            estrutura = [
+                { horario: "CULTO", titulo: "CRONOGRAMA DO CULTO DE QUARTA", corBg: "#f8fafc", corTxt: "#0f172a", itens: [
+                    { nome: "ORAÇÃO", tempo: "" },
+                    { nome: "GRUPO DE LOUVOR", tempo: "" },
+                    { nome: "  1", tempo: "" },
+                    { nome: "  2", tempo: "" },
+                    { nome: "HINO INICIAL (DE PÉ)", tempo: "" },
+                    { nome: "ORAÇÃO", tempo: "" },
+                    { nome: "PED. E AGRA.", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" },
+                    { nome: "SERMÃO", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" }
+                ]}
+            ];
+        } else if(tipo === 'domingo') {
+            estrutura = [
+                { horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [
+                    { nome: "ORAÇÃO INICIAL", tempo: "" },
+                    { nome: "MOMENTO DE LOUVOR", tempo: "" },
+                    { nome: "  1", tempo: "" },
+                    { nome: "  2", tempo: "" },
+                    { nome: "HINO INICIAL (DE PÉ)", tempo: "" },
+                    { nome: "OFERTORIO", tempo: "" },
+                    { nome: "ORAÇÃO", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" },
+                    { nome: "SERMÃO", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" }
+                ]}
+            ];
+        } else if(tipo === 'sabado') {
+            estrutura = [
+                { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [
+                    { nome: "1º Hino", tempo: "" },
+                    { nome: "2º Hino", tempo: "" },
+                    { nome: "3º Hino", tempo: "" }
+                ]},
+                { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [
+                    { nome: "ORAÇÃO", tempo: "" },
+                    { nome: "ANUNCIO DE INICIO DA ESCOLA SABATINA", tempo: "" },
+                    { nome: "HINO INICIAL", tempo: "" },
+                    { nome: "CARTA MISSIONARIA", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" },
+                    { nome: "RECAPITULAÇÃO ESCOLA SABATINA", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" },
+                    { nome: "ORAÇÃO", tempo: "" }
+                ]},
+                { horario: "10:20 AS 10:23", titulo: "DOXOLOGIA", corBg: "#dbeafe", corTxt: "#1e40af", itens: [
+                    { nome: "MÚSICA", tempo: "" },
+                    { nome: "ORAÇÃO PREG.", tempo: "" },
+                    { nome: "COMUNICAÇÃO (ANUNCIOS)", tempo: "" }
+                ]},
+                { horario: "10:23 AS 10:30", titulo: "OFERTORIO", corBg: "#fef08a", corTxt: "#854d0e", itens: [
+                    { nome: "VIDEO: PROVAI E VEDE", tempo: "" },
+                    { nome: "MUSICA", tempo: "" }
+                ]},
+                { horario: "10:30 AS 10:45", titulo: "LOUVOR COM A IGREJA", corBg: "#dcfce7", corTxt: "#166534", itens: [
+                    { nome: "1ª MUSICA", tempo: "" },
+                    { nome: "2ª MUSICA", tempo: "" },
+                    { nome: "HINO INICIAL (DE PÉ)", tempo: "" }
+                ]},
+                { horario: "10:45 AS 10:50", titulo: "ORAÇÃO (DE JOELHOS)", corBg: "#e0f2fe", corTxt: "#075985", itens: [
+                    { nome: "Oração Principal", tempo: "" }
+                ]},
+                { horario: "10:50 AS 10:57", titulo: "MOMENTO DA CRIANÇA", corBg: "#fce7f3", corTxt: "#9d174d", itens: [
+                    { nome: "História Infantil", tempo: "" }
+                ]},
+                { horario: "10:57 AS 11:45", titulo: "MENSAGEM BIBLICA + MÚSICA ESPECIAL", corBg: "#dbeafe", corTxt: "#1d4ed8", itens: [
+                    { nome: "MUSICA ESPECIAL", tempo: "" },
+                    { nome: "SERMÃO", tempo: "" },
+                    { nome: "MUSICA ESPECIAL", tempo: "" }
+                ]}
+            ];
+        }
+        carregarCronograma(estrutura);
+    }
+    
     function exportarRelatorioPDF() { const m = document.getElementById('selMes').value; const opt = { margin: 0.5, filename: `Escala_IASD_${MESES[m]}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' } }; html2pdf().set(opt).from(document.getElementById('areaEscalaPrincipal')).save(); }
     
     function addMembro() { const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value; if(!n) return; if(!db.membros) db.membros = []; db.membros.push({nome:n, cargo:c}); save(); renderMembros(); }
@@ -387,7 +501,6 @@
         Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { 
             tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); font-weight:bold; padding-left:10px;">${k}</td><td style="padding-left:10px; display:flex;"><input type="password" id="p_${k}" class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"><button onclick="togglePass('p_${k}')" style="background:none; border:none; cursor:pointer; color:white;">👁️</button></td></tr>`; 
         });
-
         const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
         Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
             let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
@@ -396,21 +509,29 @@
         if(db.aviso_ticker) document.getElementById('inputTicker').value = db.aviso_ticker;
     }
 
-    async function abrirPopBackups() { document.getElementById('popBackups').style.display='flex'; const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando..."; try { const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); lista.innerHTML = ""; snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; }); if(snap.empty) lista.innerHTML = "Nenhum backup encontrado."; } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } }
-    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving"); try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved"); } catch(e) { alert(e.message); } }
+    async function abrirPopBackups() { document.getElementById('popBackups').style.display='flex'; const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando...";
+        try { const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); lista.innerHTML = "";
+        snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; });
+        if(snap.empty) lista.innerHTML = "Nenhum backup encontrado."; } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } }
+    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving");
+        try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved");
+        } catch(e) { alert(e.message); } }
     async function restaurarBackup(id) { if(confirm("Deseja restaurar esta versão? Os dados atuais serão substituídos.")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
     
     function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
-    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return; if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return;
+        if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
     function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="if(confirm('Excluir link?')){db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
     
-    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!n || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00"); if(!db.eventos_especiais) db.eventos_especiais = {}; while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: n.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
+    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!n || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00");
+        if(!db.eventos_especiais) db.eventos_especiais = {}; while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: n.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
     function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="if(confirm('Excluir evento?')){delete db.eventos_especiais['${k}']; save(); renderListaEventos();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
     
     function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
-    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return;
+        const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
     function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
     function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
