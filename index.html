@@ -81,6 +81,12 @@
         .section-header h3 { margin: 0; font-size: 1.1rem; }
         .section-toggle-btn { background: transparent; border: 1px solid var(--neon); color: var(--neon); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
+        /* Tabela de Relatórios Secretarias */
+        .tabla-secre { width: 100%; border-collapse: collapse; margin-top: 15px; color: white; font-size: 0.85rem; }
+        .tabla-secre th { background: var(--blue); color: var(--neon); border: 1px solid #334155; padding: 8px; }
+        .tabla-secre td { border: 1px solid #334155; padding: 8px; text-align: center; }
+        .row-total-secre { background: rgba(0, 210, 255, 0.15); font-weight: bold; color: var(--gold); }
+
         @media (min-width: 1200px) { table#tabela-main { min-width: 100%; } }
         @media print { 
             .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container, #newsTicker, .cron-overlay, #btnTopo, .card-bege, .dashboard-cartao, .section-header { display: none !important; }
@@ -116,6 +122,7 @@
 
     <div class="no-print" id="menuNavegacaoGeral" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
         <button id="btnCron" class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="document.getElementById('modalCronograma').style.display='flex'">📝 ORDEM DO CULTO</button>
+        <button id="btnRelatorioSabatina" class="btn-modern" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirRelatorioSabatina()">📈 RELATÓRIO ESCOLA SABATINA</button>
         <button id="btnUnidades" class="btn-modern" style="border-color:var(--gold); color:var(--gold); display:none;" onclick="document.getElementById('popUnidades').style.display='flex'; renderUnidadesAdmin();">🏫 UNIDADES</button>
         <button id="btnMembros" class="btn-modern" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="document.getElementById('popMembros').style.display='flex'; renderMembros();">👥 EQUIPE</button>
         <button id="btnLinks" class="btn-modern" style="display:none;" onclick="abrirPopLinks()">🔗 LINKS</button>
@@ -167,14 +174,12 @@
     <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
             <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
-            
             <div class="no-print" id="modelosCronograma" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
                 <span style="align-self:center; font-weight:bold; font-size:0.85rem; color:#475569;">MODELOS FIXOS:</span>
                 <button class="btn-modern" style="background:#fff; border-color:#64748b; color:#334155;" onclick="carregarModeloFixo('quarta')">🕒 QUARTA</button>
                 <button class="btn-modern" style="background:#ffedd5; border-color:#f97316; color:#c2410c;" onclick="carregarModeloFixo('sabado')">☀️ SÁBADO</button>
                 <button class="btn-modern" style="background:#f0fdf4; border-color:#22c55e; color:#15803d;" onclick="carregarModeloFixo('domingo')">🌙 DOMINGO</button>
             </div>
-
             <div id="cronograma-lista"></div>
             <div class="no-print" id="adminCronControls" style="margin-top:20px; display:none; gap:10px; justify-content:center;">
                 <button id="btnCronAddSecao" class="btn-modern" style="background:var(--blue); color:white; border:none; display:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
@@ -185,11 +190,17 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
-        <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;">
             <div style="text-align: left;">
                 <span style="font-size: 1.1rem; font-weight: bold; color: var(--gold);">🏫 MÓDULO EXCLUSIVO DA ESCOLA SABATINA</span><br>
                 <span id="txtInfoUnidadeAtual" style="font-size: 1rem; color: #fff;"></span>
             </div>
+            
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label style="color:var(--neon); font-weight:bold; font-size:0.9rem;">📅 VER OUTRO SÁBADO:</label>
+                <select id="selSabadoCartao" class="input-dark" style="width:160px; border-color:var(--gold); font-size:0.9rem;" onchange="initCartaoUnidade()"></select>
+            </div>
+
             <button id="btnSairProfessor" class="btn-modern" style="border-color:red; color:red; display:none;" onclick="sair()">🚪 SAIR DO SISTEMA</button>
         </div>
         
@@ -233,10 +244,18 @@
                         <h4 style="margin:0 0 8px 0; text-align: center; font-size: 0.75rem;">DUPLAS (Nomes | Dando Estudo? | Qtd)</h4>
                         <div id="listaDuplas"></div>
                     </div>
-                    <div class="area-missao" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 15px;">
-                        <label style="font-weight: bold; font-size: 0.8rem; color: #4e342e;">4. QTD DE BATISMOS:</label>
-                        <input type="number" id="inputBatismos" value="0" min="0" oninput="forçarCalculoProf()" style="width: 50px; padding: 4px; text-align: center;">
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                        <div class="area-missao" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-top:0;">
+                            <label style="font-weight: bold; font-size: 0.75rem; color: #4e342e;">4. BATISMOS:</label>
+                            <input type="number" id="inputBatismos" value="0" min="0" oninput="forçarCalculoProf()" style="width: 50px; padding: 4px; text-align: center;">
+                        </div>
+                        <div class="area-missao" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-top:0; border-color:var(--green)">
+                            <label style="font-weight: bold; font-size: 0.75rem; color: #1b5e20;">💰 OFERTAS (R$):</label>
+                            <input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -302,6 +321,30 @@
             <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
         </div>
 
+    </div>
+</div>
+
+<div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
+        <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
+        <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+        
+        <div style="max-height: 450px; overflow-y: auto;">
+            <table class="tabla-secre">
+                <thead>
+                    <tr>
+                        <th>SÁBADO</th>
+                        <th>MEMBROS ATIVOS</th>
+                        <th>PRESENTES</th>
+                        <th>% PRESENÇA</th>
+                        <th>VISITAS RECOLHIDAS (P7)</th>
+                        <th>OFERTAS DO DIA</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoRelatorioSecretaria"></tbody>
+            </table>
+        </div>
+        <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
     </div>
 </div>
 
@@ -382,6 +425,7 @@
             if(!db.trimestre_atual) db.trimestre_atual = obterTrimestreAtual();
             
             verificarViradaTrimestre();
+            popularListaSabadosSeletor();
             renderTodo(); 
             updateProgresso(); 
             renderAvisos();
@@ -400,6 +444,32 @@
         if(mes <= 5) return "T2-2026";
         if(mes <= 8) return "T3-2026";
         return "T4-2026";
+    }
+
+    // Calcula todos os sábados do ano de 2026
+    function listarSabados2026() {
+        let sabados = [];
+        let d = new Date(2026, 0, 1);
+        while (d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
+        while (d.getFullYear() === 2026) {
+            sabados.push(`${d.getDate()}_${d.getMonth() + 1}_${d.getFullYear()}`);
+            d.setDate(d.getDate() + 7);
+        }
+        return sabados;
+    }
+
+    function popularListaSabadosSeletor() {
+        const sel = document.getElementById('selSabadoCartao');
+        if(!sel || sel.options.length > 0) return;
+        const list = listarSabados2026();
+        const sabHoje = obterDataSabadoAtual();
+        list.forEach(s => {
+            let op = document.createElement('option');
+            op.value = s;
+            op.innerText = s.replace(/_/g, '/');
+            if(s === sabHoje) op.selected = true;
+            sel.appendChild(op);
+        });
     }
 
     function verificarViradaTrimestre() {
@@ -443,7 +513,6 @@
         
         const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
         
-        // REGRA DE TELA CHEIA ABSOLUTA DO PROFESSOR: Oculta o ecossistema caso o login seja uma unidade
         if(isUnidade) {
             document.getElementById('headerTopo').style.display = 'none';
             document.getElementById('menuNavegacaoGeral').style.display = 'none';
@@ -467,6 +536,7 @@
         });
         
         document.getElementById('btnUnidades').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
+        document.getElementById('btnRelatorioSabatina').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
 
         const modelosDiv = document.getElementById('modelosCronograma');
         if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
@@ -510,7 +580,6 @@
     }
 
     function renderAvisos() { const bar = document.getElementById('newsTicker'); if(bar) { if(db.aviso_ticker) { bar.style.display = 'block'; bar.querySelector('span').innerText = db.aviso_ticker; } else bar.style.display = 'none'; } }
-    
     function carregarCronograma(lista) { const container = document.getElementById('cronograma-lista'); if(container) { container.innerHTML = ""; lista.forEach(d => addBlocoCron(d)); } }
     
     function addBlocoCron(dados = { horario: '', titulo: '', itens: [], corBg: '#f0f0f0', corTxt: '#000000' }) {
@@ -667,7 +736,10 @@
         let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
         if(!unAlvo) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
 
-        const dadosUnidade = db.unidades_acao[unAlvo]; const sabKey = obterDataSabadoAtual();
+        // Pega o sábado selecionado no menu do cabeçalho
+        const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
+        const dadosUnidade = db.unidades_acao[unAlvo];
+        
         document.getElementById('lblCardUnidade').innerText = `UNIDADE: ${unAlvo.toUpperCase()}`;
         document.getElementById('lblCardProfessor').innerText = `PROFESSOR(A): ${dadosUnidade.professor.toUpperCase()}`;
         document.getElementById('lblCardAnciao').innerText = `ANCIÃO DE APOIO: ${dadosUnidade.anciao.toUpperCase()}`;
@@ -681,7 +753,8 @@
                 alunos: Array(TOTAL_ALUNOS).fill().map(() => ({ nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
                 instrutores: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
                 duplas: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
-                batismos: 0
+                batismos: 0,
+                ofertas: 0
             };
         }
 
@@ -691,7 +764,7 @@
         for(let i=0; i<TOTAL_ALUNOS; i++) {
             let al = payload.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
             corpo.innerHTML += `<tr>
-                <td><input type="text" class="input-aluno input-nome-aluno-field" id="nome_${i}" data-index="${i}" placeholder="Nome do Aluno..." value="${al.nome}" onkeydown="handleNomeEnter(event, ${i}, '${unAlvo}', '${sabKey}')" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                <td><input type="text" class="input-aluno" id="nome_${i}" placeholder="Nome do Aluno..." value="${al.nome}" onkeydown="handleNomeEnter(event, ${i}, '${unAlvo}', '${sabKey}')" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
                 <td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
                 ${[1,2,3,5,6,7,8].map(n => `<td><input type="checkbox" id="c${n}_${i}" ${al['c'+n]?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>`).join('')}
             </tr>`;
@@ -710,33 +783,32 @@
         }
 
         document.getElementById('inputBatismos').value = payload.batismos || 0;
+        document.getElementById('inputOfertas').value = parseFloat(payload.ofertas || 0).toFixed(2);
         calcularCartao();
     }
 
-    // DISPARO DE ENTER: Salva o nome imediatamente e move o cursor para a linha de baixo
     function handleNomeEnter(event, index, unAlvo, sabKey) {
         if(event.key === 'Enter') {
             event.preventDefault();
             sincronizarEGuardarCartao(unAlvo, sabKey);
             const nextInput = document.getElementById(`nome_${index + 1}`);
-            if(nextInput) {
-                nextInput.focus();
-            } else {
-                event.target.blur();
-            }
+            if(nextInput) nextInput.focus();
+            else event.target.blur();
         }
     }
 
     function forçarCalculoProf() {
         const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
         let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
-        sincronizarEGuardarCartao(unAlvo, obterDataSabadoAtual());
+        const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
+        sincronizarEGuardarCartao(unAlvo, sabKey);
     }
 
     function sincronizarEGuardarCartao(unAlvo, sabKey) {
         if(!db.historico_cartoes[sabKey] || !db.historico_cartoes[sabKey][unAlvo]) return;
         let payload = db.historico_cartoes[sabKey][unAlvo];
         payload.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
+        payload.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
 
         for(let i=0; i<TOTAL_ALUNOS; i++) {
             payload.alunos[i] = {
@@ -759,7 +831,6 @@
 
         calcularCartao();
         
-        // REALIMENTAÇÃO DA ESTRUTURA GLOBAL (TERMÔMETRO MISSIONÁRIO DO MÊS)
         const mIdx = new Date().getMonth(); if(!db.mis_v3) db.mis_v3 = {};
         let totalEstudosGerais = 0, totalDuplasGerais = 0, totalBatismosGerais = 0;
 
@@ -790,7 +861,7 @@
         for(let i=0; i<TOTAL_ALUNOS; i++) {
             let elNome = document.getElementById(`nome_${i}`);
             if(elNome && elNome.value.trim() !== "") {
-                d.ativos++;
+                d.whitespaces = false; d.ativos++;
                 if(document.getElementById(`p_${i}`).checked) d.pres++;
                 [1,2,3,5,6,7,8].forEach(n => { if(document.getElementById(`c${n}_${i}`).checked) d['v'+n]++; });
             }
@@ -819,6 +890,69 @@
             data: { labels: ['3. Est. Alunos', '4. Batismos', '7. Visitas', '8. Solidário', 'Est. Instrutores', 'Est. Duplas'], datasets: [{ label: 'Quantidade Total', data: [d.v3, d.v4, d.v7, d.v8, d.qEstudosIns, d.qEstudosDup], backgroundColor: '#ff7f50' }] },
             options: { maintainAspectRatio: false }
         });
+    }
+
+    /* =========================================================================
+       COMPILADOR DA SECRETARIA DA ESCOLA SABATINA (RELATÓRIOS GERAIS)
+       ========================================================================= */
+    function abrirRelatorioSabatina() {
+        document.getElementById('popRelatorioSabatina').style.display = 'flex';
+        const corpo = document.getElementById('corpoRelatorioSecretaria');
+        corpo.innerHTML = "";
+
+        const todosSabados = listarSabados2026();
+        let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0, sabadosComDados = 0;
+
+        todosSabados.forEach(sabKey => {
+            let sabDados = db.historico_cartoes?.[sabKey];
+            if(!sabDados) return; // Pula se o sábado não possuir nenhum registro criado
+
+            let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0, temRegistro = false;
+
+            Object.keys(sabDados).forEach(unKey => {
+                let un = sabDados[unKey];
+                temRegistro = true;
+                sOfertas += parseFloat(un.ofertas || 0);
+                
+                un.alunos.forEach(al => {
+                    if(al.nome && al.nome.trim() !== "") {
+                        sAtivos++;
+                        if(al.p) sPres++;
+                        if(al.c7) sVisitas++; // Pergunta 7: Recebeu visitas?
+                    }
+                });
+            });
+
+            if(temRegistro) {
+                sabadosComDados++;
+                tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
+                let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
+
+                corpo.innerHTML += `<tr>
+                    <td><b>${sabKey.replace(/_/g, '/')}</b></td>
+                    <td>${sAtivos}</td>
+                    <td>${sPres}</td>
+                    <td style="color:var(--neon)">${percPres}%</td>
+                    <td>${sVisitas}</td>
+                    <td style="color:var(--green); font-weight:bold;">R$ ${sOfertas.toFixed(2)}</td>
+                </tr>`;
+            }
+        });
+
+        // Adiciona linha de totalizadores e somatórias gerais
+        let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
+        corpo.innerHTML += `<tr class="row-total-secre">
+            <td>SOMATÓRIA / MÉDIA TRIMESTRE</td>
+            <td>${tAtivos} (Total)</td>
+            <td>${tPres} (Total)</td>
+            <td>Média: ${percGeral}%</td>
+            <td>${tVisitas} Visitas</td>
+            <td>Total: R$ ${tOfertas.toFixed(2)}</td>
+        </tr>`;
+
+        if(sabadosComDados === 0) {
+            corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--red);">Nenhum cartão foi preenchido neste trimestre ainda!</td></tr>`;
+        }
     }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
