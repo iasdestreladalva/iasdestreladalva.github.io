@@ -28,6 +28,7 @@
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
         
+        /* AJUSTE PARA RESPONSIVIDADE SEM CORTAR TEXTO */
         #areaEscalaPrincipal { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 10px 10px 0 0; }
         
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; min-width: 1000px; }
@@ -149,14 +150,6 @@
     <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
             <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
-            
-            <div class="no-print" id="modelosCronograma" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
-                <span style="align-self:center; font-weight:bold; font-size:0.85rem; color:#475569;">MODELOS FIXOS:</span>
-                <button class="btn-modern" style="background:#fff; border-color:#64748b; color:#334155;" onclick="carregarModeloFixo('quarta')">🕒 QUARTA</button>
-                <button class="btn-modern" style="background:#ffedd5; border-color:#f97316; color:#c2410c;" onclick="carregarModeloFixo('sabado')">☀️ SÁBADO</button>
-                <button class="btn-modern" style="background:#f0fdf4; border-color:#22c55e; color:#15803d;" onclick="carregarModeloFixo('domingo')">🌙 DOMINGO</button>
-            </div>
-
             <div id="cronograma-lista"></div>
             <div class="no-print" id="adminCronControls" style="margin-top:20px; display:none; gap:10px; justify-content:center;">
                 <button class="btn-modern" style="background:var(--blue); color:white; border:none;" onclick="addBlocoCron()">+ SEÇÃO</button>
@@ -263,9 +256,6 @@
             const el = document.getElementById(id); if(el) el.style.display = isV ? 'none' : 'block';
         });
 
-        const modelosDiv = document.getElementById('modelosCronograma');
-        if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
-
         const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
@@ -290,163 +280,86 @@
         }
         const corpoPlan = document.getElementById('corpoPlan'); corpoPlan.innerHTML = "";
         MESES.forEach((m, i) => { corpoPlan.innerHTML += `<tr style="border-bottom:1px solid #334155;"><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; });
+        
         if(isAdmin) { 
             document.getElementById('adminPanel').style.display='block'; 
             document.getElementById('adminCronControls').style.display='flex';
             renderAdmin(); 
+        } else if(curUser !== 'visitante') {
+            // Libera a visualização dos controles de salvar/adicionar seção na Ordem do Culto para funções permitidas
+            document.getElementById('adminCronControls').style.display='flex';
+        } else {
+            document.getElementById('adminCronControls').style.display='none';
         }
+        
         updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso();
         setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
 
     function renderAvisos() { const bar = document.getElementById('newsTicker'); if(bar) { if(db.aviso_ticker) { bar.style.display = 'block'; bar.querySelector('span').innerText = db.aviso_ticker; } else bar.style.display = 'none'; } }
+    function carregarCronograma(lista) { const container = document.getElementById('cronograma-lista'); if(container) { container.innerHTML = ""; lista.forEach(d => addBlocoCron(d)); } }
     
-    function carregarCronograma(lista) { 
-        const container = document.getElementById('cronograma-lista'); 
-        if(container) { 
-            container.innerHTML = ""; 
-            lista.forEach(d => addBlocoCron(d)); 
-        } 
-    }
-    
-    function addBlocoCron(dados = { horario: '', titulo: '', itens: [], corBg: '#f0f0f0', corTxt: '#000000' }) {
+    function addBlocoCron(dados = { horario: '', titulo: '', itens: [] }) {
+        const isV = curUser === 'visitante';
         const isAdmin = ['admin','ger'].includes(curUser);
-        const bg = dados.corBg || '#f0f0f0';
-        const txtColor = dados.corTxt || '#000000';
-        const b = document.createElement('div'); 
-        b.className = 'bloco'; 
-        b.style.border = "1px solid #cbd5e1"; 
-        b.style.marginBottom = "12px";
-        b.style.borderRadius = "6px";
-        b.style.overflow = "hidden";
         
-        b.innerHTML = `
-            <div style="background:${bg}; color:${txtColor}; padding:10px; display:flex; gap:10px; align-items:center;">
-                <input style="width:110px; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v cron-horario">
-                <input style="flex-grow:1; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v cron-titulo">
-                <input type="hidden" class="cron-bg" value="${bg}">
-                <input type="hidden" class="cron-txt" value="${txtColor}">
-                ${isAdmin ? `<button class="btn-modern" style="padding:4px 8px; background:white; border-color:#94a3b8;" onclick="addItemCron(this)">+ Item</button><button class="btn-modern" style="padding:4px 8px; background:#fee2e2; border-color:#ef4444; color:#b91c1c;" onclick="this.closest('.bloco').remove()">X</button>` : ''}
-            </div>
-            <table style="width:100%; border-collapse:collapse; background:#fff;">
-                <tbody style="color:#000;"></tbody>
-            </table>`;
+        // Verifica se é uma seção ligada à Escola Sabatina (por título ou por horário matinal inferior às 10h)
+        const tUpper = (dados.titulo || '').toUpperCase();
+        const isEscolaSabatina = tUpper.includes("SABATINA") || tUpper.includes("ESCOLA") || (dados.horario && parseInt(dados.horario) < 10);
+        
+        // A Escola Sabatina pode editar e criar blocos/seções que pertençam a ela
+        const podeEditarBloco = isAdmin || (curUser === 'sabatina' && isEscolaSabatina);
+
+        const b = document.createElement('div'); b.className = 'bloco'; b.style.border = "1px solid #ddd"; b.style.marginBottom="10px";
+        b.innerHTML = `<div style="background:#f0f0f0; padding:10px; display:flex; gap:10px;">
+            <input style="width:70px; font-weight:bold" value="${dados.horario}" ${!podeEditarBloco?'disabled':''} class="cron-v">
+            <input style="flex-grow:1; font-weight:bold" value="${dados.titulo}" ${!podeEditarBloco?'disabled':''} class="cron-v">
+            ${!isV ? `<button onclick="addItemCron(this, undefined, ${isEscolaSabatina})">+</button>` : ''}
+            ${isAdmin ? `<button onclick="this.closest('.bloco').remove()">X</button>` : ''}
+        </div><table style="width:100%"><tbody></tbody></table>`;
+        
         document.getElementById('cronograma-lista').appendChild(b);
-        if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it));
+        if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it, isEscolaSabatina));
     }
     
-    function addItemCron(target, it = { nome: '', tempo: '' }) {
+    function addItemCron(target, it = { nome: '', tempo: '' }, BlocoIsEscolaSabatina = false) {
+        const isV = curUser === 'visitante';
         const isAdmin = ['admin','ger'].includes(curUser);
+        const itemUpper = (it.nome || '').toUpperCase();
+        
+        // Mapeamento dinâmico de palavras-chave para identificar as atribuições de cada ministério
+        const isParteMusica = itemUpper.includes("LOUVOR") || itemUpper.includes("MÚSICA") || itemUpper.includes("MUSICA") || itemUpper.includes("CANTAR") || itemUpper.includes("HINÁRIO") || itemUpper.includes("HINARIO") || itemUpper.includes("ESPECIAL");
+        const isParteSonoplastia = itemUpper.includes("PROVAI") || itemUpper.includes("VEDE") || itemUpper.includes("INFORMATIVO") || itemUpper.includes("VÍDEO") || itemUpper.includes("VIDEO") || itemUpper.includes("ÁUDIO") || itemUpper.includes("AUDIO");
+
+        let podeEditarItem = false;
+
+        if (isAdmin) {
+            podeEditarItem = true;
+        } else if (!isV) {
+            if (curUser === 'musica' && isParteMusica) {
+                podeEditarItem = true;
+            } else if (curUser === 'sonoplastia' && isParteSonoplastia) {
+                podeEditarItem = true;
+            } else if (BlocoIsEscolaSabatina && curUser === 'sabatina') {
+                podeEditarItem = true;
+            }
+            // Cruzamento permitido: Música e Sonoplastia podem editar itens correspondentes de dentro da Escola Sabatina
+            if (BlocoIsEscolaSabatina && (curUser === 'sonoplastia' || curUser === 'musica') && (isParteMusica || isParteSonoplastia)) {
+                podeEditarItem = true;
+            }
+        }
+
         const tb = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody');
         const tr = document.createElement('tr');
-        tr.style.borderBottom = "1px solid #f1f5f9";
         tr.innerHTML = `
-            <td style="padding:6px 10px; font-weight:500; width:45%; background:#fafafa;">
-                ${it.nome.includes(":") ? `style="padding-left:15px; font-size:0.9rem;"` : ''}
-                <input class="it-n" style="width:95%; border:none; background:transparent; font-weight:bold; color:#1e293b;" value="${it.nome}" ${!isAdmin?'disabled':''}>
-            </td>
-            <td style="padding:6px 10px;">
-                <input class="it-t" style="width:100%; border:1px solid #e2e8f0; border-radius:4px; padding:3px; font-weight:bold; color:#0f172a;" value="${it.tempo}" placeholder="Responsável / Info">
-            </td>
-            ${isAdmin ? `<td width="30" style="text-align:center;"><button onclick="this.closest('tr').remove()" style="color:#ef4444; background:none; border:none; cursor:pointer; font-weight:bold;">x</button></td>` : ''}`;
+            <td style="padding:5px"><input class="it-n" style="width:90%" value="${it.nome}" ${!podeEditarItem?'disabled':''}></td>
+            <td width="60"><input class="it-t" style="width:100%" value="${it.tempo}" ${!podeEditarItem?'disabled':''}></td>
+            ${podeEditarItem ? `<td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;">x</button></td>` : ''}
+        `;
         tb.appendChild(tr);
     }
     
-    function salvarCronograma() { 
-        db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ 
-            horario: b.querySelector('.cron-horario').value, 
-            titulo: b.querySelector('.cron-titulo').value, 
-            corBg: b.querySelector('.cron-bg').value,
-            corTxt: b.querySelector('.cron-txt').value,
-            itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ 
-                nome: tr.querySelector('.it-n').value, 
-                tempo: tr.querySelector('.it-t').value 
-            })) 
-        })); 
-        save(); 
-    }
-
-    function carregarModeloFixo(tipo) {
-        if(!confirm("Carregar este modelo irá substituir o cronograma atual da tela. Deseja continuar?")) return;
-        let estrutura = [];
-        
-        if(tipo === 'quarta') {
-            estrutura = [
-                { horario: "CULTO", titulo: "CRONOGRAMA DO CULTO DE QUARTA", corBg: "#f8fafc", corTxt: "#0f172a", itens: [
-                    { nome: "ORAÇÃO", tempo: "" },
-                    { nome: "GRUBO DE LOUVOR", tempo: "" },
-                    { nome: "  1", tempo: "" },
-                    { nome: "  2", tempo: "" },
-                    { nome: "HINO INICIAL (DE PÉ)", tempo: "" },
-                    { nome: "ORAÇÃO", tempo: "" },
-                    { nome: "PED. E AGRA.", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" },
-                    { nome: "SERMÃO", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" }
-                ]}
-            ];
-        } else if(tipo === 'domingo') {
-            estrutura = [
-                { horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [
-                    { nome: "ORAÇÃO INICIAL", tempo: "" },
-                    { nome: "MOMENTO DE LOUVOR", tempo: "" },
-                    { nome: "  1", tempo: "" },
-                    { nome: "  2", tempo: "" },
-                    { nome: "HINO INICIAL (DE PÉ)", tempo: "" },
-                    { nome: "OFERTORIO", tempo: "" },
-                    { nome: "ORAÇÃO", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" },
-                    { nome: "SERMÃO", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" }
-                ]}
-            ];
-        } else if(tipo === 'sabado') {
-            estrutura = [
-                { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [
-                    { nome: "1º Hino", tempo: "" },
-                    { nome: "2º Hino", tempo: "" },
-                    { nome: "3º Hino", tempo: "" }
-                ]},
-                { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [
-                    { nome: "ORAÇÃO", tempo: "" },
-                    { nome: "ANUNCIO DE INICIO DA ESCOLA SABATINA", tempo: "" },
-                    { nome: "HINO INICIAL", tempo: "" },
-                    { nome: "CARTA MISSIONARIA", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" },
-                    { nome: "RECAPITULAÇÃO ESCOLA SABATINA", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" },
-                    { nome: "ORAÇÃO", tempo: "" }
-                ]},
-                { horario: "10:20 AS 10:23", titulo: "DOXOLOGIA", corBg: "#dbeafe", corTxt: "#1e40af", itens: [
-                    { nome: "MÚSICA", tempo: "" },
-                    { nome: "ORAÇÃO PREG.", tempo: "" },
-                    { nome: "COMUNICAÇÃO (ANUNCIOS)", tempo: "" }
-                ]},
-                { horario: "10:23 AS 10:30", titulo: "OFERTORIO", corBg: "#fef08a", corTxt: "#854d0e", itens: [
-                    { nome: "VIDEO: PROVAI E VEDE", tempo: "" },
-                    { nome: "MUSICA", tempo: "" }
-                ]},
-                { horario: "10:30 AS 10:45", titulo: "LOUVOR COM A IGREJA", corBg: "#dcfce7", corTxt: "#166534", itens: [
-                    { nome: "1ª MUSICA", tempo: "" },
-                    { nome: "2ª MUSICA", tempo: "" },
-                    { nome: "HINO INICIAL (DE PÉ)", tempo: "" }
-                ]},
-                { horario: "10:45 AS 10:50", titulo: "ORAÇÃO (DE JOELHOS)", corBg: "#e0f2fe", corTxt: "#075985", itens: [
-                    { nome: "Oração Principal", tempo: "" }
-                ]},
-                { horario: "10:50 AS 10:57", titulo: "MOMENTO DA CRIANÇA", corBg: "#fce7f3", corTxt: "#9d174d", itens: [
-                    { nome: "História Infantil", tempo: "" }
-                ]},
-                { horario: "10:57 AS 11:45", titulo: "MENSAGEM BIBLICA + MÚSICA ESPECIAL", corBg: "#dbeafe", corTxt: "#1d4ed8", itens: [
-                    { nome: "MUSICA ESPECIAL", tempo: "" },
-                    { nome: "SERMÃO", tempo: "" },
-                    { nome: "MUSICA ESPECIAL", tempo: "" }
-                ]}
-            ];
-        }
-        carregarCronograma(estrutura);
-    }
-    
+    function salvarCronograma() { db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ horario: b.querySelectorAll('.cron-v')[0].value, titulo: b.querySelectorAll('.cron-v')[1].value, itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ nome: tr.querySelector('.it-n').value, tempo: tr.querySelector('.it-t').value })) })); save(); }
     function exportarRelatorioPDF() { const m = document.getElementById('selMes').value; const opt = { margin: 0.5, filename: `Escala_IASD_${MESES[m]}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' } }; html2pdf().set(opt).from(document.getElementById('areaEscalaPrincipal')).save(); }
     
     function addMembro() { const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value; if(!n) return; if(!db.membros) db.membros = []; db.membros.push({nome:n, cargo:c}); save(); renderMembros(); }
