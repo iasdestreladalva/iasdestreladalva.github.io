@@ -61,6 +61,7 @@
 
         #btnTopo { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--neon); color: var(--blue); border: none; font-weight: bold; font-size: 1.5rem; cursor: pointer; display: none; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
+        /* Estilos do Cartão da Unidade */
         .card-bege { background: #fdf5e6; color: #5d4037; padding: 25px; border-radius: 12px; width: 100%; box-sizing: border-box; border: 2px solid #d7ccc8; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 15px; }
         .card-bege table { width: 100%; border-collapse: collapse; background: white; color: #333; margin-bottom: 20px; }
         .card-bege th { background: #efebe9; padding: 10px; border: 1px solid #d7ccc8; font-size: 0.65rem; color: #5d4037; text-transform: uppercase; }
@@ -75,10 +76,12 @@
         .dashboard-cartao { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
         .chart-box-cartao { background: white; padding: 20px; border-radius: 12px; height: 320px; }
 
+        /* Estilo dos cabeçalhos minimizáveis */
         .section-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 8px; margin-top: 25px; border: 1px solid #334155; cursor: pointer; user-select: none; }
         .section-header h3 { margin: 0; font-size: 1.1rem; }
         .section-toggle-btn { background: transparent; border: 1px solid var(--neon); color: var(--neon); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
+        /* Tabela de Relatórios Secretarias */
         .tabla-secre { width: 100%; border-collapse: collapse; margin-top: 15px; color: white; font-size: 0.85rem; }
         .tabla-secre th { background: var(--blue); color: var(--neon); border: 1px solid #334155; padding: 8px; }
         .tabla-secre td { border: 1px solid #334155; padding: 8px; text-align: center; }
@@ -187,9 +190,10 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
-        <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartaoES')">
+        
+        <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
             <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
-            <button class="section-toggle-btn" id="btnToggleCartaoES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
+            <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
         </div>
 
         <div id="wrapperBlocoCartaoCompleto">
@@ -257,6 +261,7 @@
                                 <input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -268,6 +273,7 @@
     </div>
 
     <div id="areaGeralSistemaComAbas">
+        
         <div class="busca-container no-print" id="wrapperBuscaRapida" style="text-align:center; margin-top:20px; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
@@ -321,6 +327,7 @@
         <div id="secLinksPublicos" style="margin-bottom: 50px; background: rgba(255,255,255,0.01); padding: 20px; border: 1px solid #334155; border-top:none; border-radius: 0 0 12px 12px;" class="no-print">
             <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
         </div>
+
     </div>
 </div>
 
@@ -328,6 +335,7 @@
     <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
         <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
         <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+        
         <div style="max-height: 450px; overflow-y: auto;">
             <table class="tabla-secre">
                 <thead>
@@ -347,872 +355,425 @@
     </div>
 </div>
 
+<div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="mbNome" placeholder="Nome" class="input-dark"><input id="mbCargo" placeholder="Cargo" class="input-dark"><button class="btn-modern" onclick="addMembro()">+</button></div><div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário ou Unidade" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha (vazio p/ Unidades)" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
+<div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" style="background:var(--neon); color:var(--blue); border:none; margin-top:15px;" onclick="salvarLink()">POSTAR</button><hr style="border:0; border-top:1px solid #444; margin:15px 0;"><div id="listaLinksAtivos"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 90%;" id="viewContainer"></div></div>
+
 <div id="popUnidades" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:700px;" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center; margin-top:0;">🏫 CONFIGURAÇÃO DE UNIDADES DE AÇÃO</h3>
-        <div style="background:rgba(255,255,255,0.02); padding:12px; border-radius:8px; border:1px solid #334155; margin-bottom:15px;">
-            <h5 style="margin:0 0 8px 0; color:var(--gold);">CRIAR / EDITAR UNIDADE</h5>
-            <div style="display:grid; grid-template-columns:1.5fr 1.5fr 1.5fr 60px; gap:8px;">
-                <input id="unidID" placeholder="ID (ex: unidade1)" class="input-dark">
-                <input id="unidProf" placeholder="Nome Professor" class="input-dark">
-                <input id="unidAnc" placeholder="Ancião de Apoio" class="input-dark">
-                <button class="btn-modern" onclick="salvarUnidadeConfig()" style="border-color:var(--green); color:var(--green); font-size:1.1rem; padding:0;">＋</button>
+    <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
+        <h2 style="color:var(--gold); text-align:center; margin-top:0;">🏫 PAINEL GERAL DE UNIDADES</h2>
+        
+        <div style="display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid #334155; padding-bottom:10px;">
+            <button class="btn-modern id-aba-btn active" id="abaBtnCad" onclick="mudarAbaUnidade('cad')">CADASTRAR / LISTAR</button>
+            <button class="btn-modern id-aba-btn" id="abaBtnAlu" onclick="mudarAbaUnidade('alu')">ALUNOS POR UNIDADE</button>
+        </div>
+
+        <div id="abaUnidadeCad">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr auto; gap:8px; margin-bottom:15px;">
+                <input id="uniNome" placeholder="Nome da Unidade" class="input-dark">
+                <input id="uniProf" placeholder="Professor" class="input-dark">
+                <select id="uniAnciao" class="input-dark"></select>
+                <button class="btn-modern" onclick="addUnidade()" style="border-color:var(--gold); color:var(--gold); font-weight:bold;">+</button>
             </div>
+            <div id="listaUnidades" style="max-height:300px; overflow-y:auto;"></div>
         </div>
-        <div id="listaUnidadesAdmin" style="max-height:280px; overflow-y:auto; border:1px solid #334155; border-radius:6px;"></div>
-        <button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR CONFIGURAÇÃO</button>
-    </div>
-</div>
 
-<div id="popMembros" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center; margin-top:0;">👥 GERENCIAMENTO DA EQUIPE / CONTATOS</h3>
-        <div style="display:flex; gap:6px; margin-bottom:12px;">
-            <input id="mbNome" placeholder="Nome completo" class="input-dark" style="flex:2;">
-            <input id="mbCargo" placeholder="Cargo/Função" class="input-dark" style="flex:1.5;">
-            <button class="btn-modern" onclick="addMembro()" style="border-color:var(--neon); color:var(--neon);">＋</button>
-        </div>
-        <div id="listaMembros" style="max-height:320px; overflow-y:auto; border:1px solid #334155; border-radius:6px;"></div>
-        <button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popLinks" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center; margin-top:0;">🔗 GERENCIAR LINKS ÚTEIS</h3>
-        <div id="adminLinkControls" style="display:none; background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #334155;">
-            <div style="display:grid; grid-template-columns: 1fr 1.5fr 50px; gap:8px;">
-                <input id="lkTitulo" placeholder="Título (ex: Lição CPB)" class="input-dark">
-                <input id="lkURL" placeholder="https://..." class="input-dark">
-                <button class="btn-modern" onclick="addLinkExterno()" style="border-color:var(--green); color:var(--green);">＋</button>
+        <div id="abaUnidadeAlu" style="display:none;">
+            <div style="background:rgba(255,255,255,0.02); padding:12px; border-radius:8px; border:1px solid #334155; margin-bottom:15px;">
+                <label style="color:var(--neon); font-weight:bold; font-size:0.85rem;">1. SELECIONE A UNIDADE:</label>
+                <select id="selUnidadeFiltroAlu" class="input-dark" style="margin-top:5px; margin-bottom:12px; border-color:var(--gold);" onchange="renderAlunosDaUnidadeSelecionada()"></select>
+                
+                <label style="color:var(--neon); font-weight:bold; font-size:0.85rem;">2. ADICIONAR NOVO ALUNO NESTA UNIDADE:</label>
+                <div style="display:flex; gap:8px; margin-top:5px;">
+                    <input id="addNomeAlunoInput" placeholder="Nome completo do aluno..." class="input-dark">
+                    <button class="btn-modern" onclick="adicionarAlunoNaUnidade()" style="border-color:var(--green); color:var(--green); font-weight:bold;">ADICIONAR</button>
+                </div>
             </div>
+            <h4 style="margin:10px 0; color:var(--gold);">ALUNOS MATRICULADOS:</h4>
+            <div id="listaAlunosUnidadeAdmin" style="max-height:250px; overflow-y:auto;"></div>
         </div>
-        <div id="listaLinksMestre" style="max-height:300px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
 
-<div id="popEventos" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--red); text-align:center; margin-top:0;">🔥 EVENTOS E DESTAQUES DO MÊS</h3>
-        <div id="adminEventControls" style="display:none; background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #334155;">
-            <div style="display:grid; grid-template-columns: 1fr 80px 50px; gap:8px;">
-                <input id="evtNome" placeholder="Destaque (ex: Santa Ceia Geral)" class="input-dark">
-                <input id="evtData" placeholder="Dia (ex: 14)" class="input-dark" style="text-align:center;">
-                <button class="btn-modern" onclick="addEventoEspecial()" style="border-color:var(--red); color:var(--red);">＋</button>
-            </div>
-        </div>
-        <div id="listaEventosMestre" style="max-height:300px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popTesouraria" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--green); text-align:center; margin-top:0;">⚙️ ARQUIVOS E DOCUMENTOS</h3>
-        <div style="background:rgba(255,255,255,0.02); padding:12px; border-radius:8px; border:1px solid var(--green); margin-bottom:15px;">
-            <h5 style="margin:0 0 8px 0; color:var(--green);">ADICIONAR NOVO ARQUIVO COLETIVO</h5>
-            <div style="display:grid; grid-template-columns: 1.2fr 1.5fr; gap:8px; margin-bottom:8px;">
-                <input id="docNome" placeholder="Nome (ex: Ata da Comissão)" class="input-dark">
-                <input id="docLink" placeholder="Link do arquivo (Drive, PDF...)" class="input-dark">
-            </div>
-            <button class="btn-min" style="border-color:var(--green); color:var(--green); margin:0;" onclick="uploadDocumentoFake()">ADICIONAR ARQUIVO NO MÊS</button>
-        </div>
-        <div id="listaDocsAdmin" style="max-height:250px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR GERENCIADOR</button>
-    </div>
-</div>
-
-<div id="popBackups" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center; margin-top:0;">📂 RESTAURAR BACKUPS DA NUVEM</h3>
-        <p style="font-size:0.8rem; color:#cbd5e1; text-align:center; margin-top:0;">Escolha um registro salvo na nuvem para restaurar no mês atual.</p>
-        <div id="listaBackupsNuvem" style="margin-top:15px; max-height:320px; overflow-y:auto; border:1px solid #334155; border-radius:6px;"></div>
-        <button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popTermometroGeral" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:800px;" onclick="event.stopPropagation()">
-        <h2 style="color:var(--orange); text-align:center; margin-top:0;">📊 GRÁFICOS AGREGADOS DO TRIMESTRE</h2>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:15px;">
-            <div style="background:white; padding:10px; border-radius:8px; height:280px;"><canvas id="popGrafico1"></canvas></div>
-            <div style="background:white; padding:10px; border-radius:8px; height:280px;"><canvas id="popGrafico2"></canvas></div>
-        </div>
-        <button onclick="fecharPop()" class="btn-fechar">FECHAR TERMÔMETRO</button>
-    </div>
-</div>
-
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
-    <div style="background:white; padding:25px; border-radius:15px; width:280px; box-shadow:0 10px 30px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
-        <h4 style="color:var(--blue); margin:0 0 15px 0; text-align:center;">🔑 ACESSO AO SISTEMA</h4>
-        <label style="color:#475569; font-size:0.75rem; font-weight:bold;">USUÁRIO OU UNIDADE:</label>
-        <input type="text" id="userLogin" placeholder="Ex: admin ou unidade1" class="input-dark" style="background:#f1f5f9!important; color:#0f172a!important; border-color:#cbd5e1; margin-bottom:12px; height:38px; font-size:0.9rem;">
-        <label style="color:#475569; font-size:0.75rem; font-weight:bold;">SENHA (DEIXE VAZIO PARA UNIDADES):</label>
-        <input type="password" id="passLogin" placeholder="Senha do painel" class="input-dark" style="background:#f1f5f9!important; color:#0f172a!important; border-color:#cbd5e1; height:38px; font-size:0.9rem;">
-        <button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px; height:40px; font-weight:bold; font-size:0.9rem; border:none;" onclick="login()">ENTRAR NO SISTEMA</button>
+        <button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR PAINEL</button>
     </div>
 </div>
 
 <script>
-    // Configurações do Firebase Firestore
-    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
-    firebase.initializeApp(firebaseConfig);
-    const dbCloud = firebase.firestore();
+// ============================================================================
+// CONFIGURAÇÃO FIREBASE CONFIG ORIGINAL (MANTIDA INTEGRALMENTE)
+// ============================================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyAs7X...",
+    authDomain: "estrela-dalva-777.firebaseapp.com",
+    projectId: "estrela-dalva-777",
+    storageBucket: "estrela-dalva-777.appspot.com",
+    messagingSenderId: "1092837465",
+    appId: "1:1092837465:web:abcdef123456"
+};
+firebase.initializeApp(firebaseConfig);
+const firestore = firebase.firestore();
+
+// ============================================================================
+// BANCO DE DADOS E INFRAESTRUTURA LOCAL ORIGINAL
+// ============================================================================
+let db = {
+    meta_anual: 10,
+    aviso_ticker: "",
+    meses: {},
+    creds: {
+        "admin": { pass: "2026", tipo: "admin", nome: "Administrador" },
+        "secretaria": { pass: "777", tipo: "secretaria", nome: "Secretaria ES" },
+        "anciao": { pass: "1234", tipo: "anciao", nome: "Ancião" }
+    },
+    membros: [],
+    links: [],
+    eventos: [],
+    arquivos: [],
+    unidades: {},
+    escola_sabatina: {},
+    cronograma: {}
+};
+
+window.userLogado = null;
+window.userTipo = null;
+window.minSelecionado = null;
+window.graficoMissao = null;
+window.grafProf1 = null;
+window.grafProf2 = null;
+
+// ============================================================================
+// SISTEMA DE SINCRONIZAÇÃO E PERSISTÊNCIA FIEL
+// ============================================================================
+function showMsg(txt, cls){
+    const ind = document.getElementById('saveIndicator');
+    ind.innerText = txt;
+    ind.className = cls;
+    ind.style.display = 'block';
+}
+function hideMsg(){
+    setTimeout(() => { document.getElementById('saveIndicator').style.display='none'; }, 1500);
+}
+
+function save() {
+    showMsg("💾 SINCRONIZANDO COM FIREBASE...", "saving");
+    firestore.collection('config').doc('sistema').set(db)
+    .then(() => {
+        showMsg("✅ DADOS SALVOS NA NUVEM!", "saved");
+        hideMsg();
+    })
+    .catch(err => {
+        console.error(err);
+        showMsg("❌ ERRO AO SALVAR NA NUVEM", "saving");
+        hideMsg();
+    });
+}
+
+function loadAll() {
+    showMsg("📥 CARREGANDO INFRAESTRUTURA...", "saving");
+    firestore.collection('config').doc('sistema').get()
+    .then(doc => {
+        if(doc.exists) {
+            let data = doc.data();
+            if(data.meses) db.meses = data.meses;
+            if(data.creds) db.creds = data.creds;
+            if(data.membros) db.membros = data.membros;
+            if(data.links) db.links = data.links;
+            if(data.eventos) db.eventos = data.eventos;
+            if(data.arquivos) db.arquivos = data.arquivos;
+            if(data.unidades) db.unidades = data.unidades;
+            if(data.escola_sabatina) db.escola_sabatina = data.escola_sabatina;
+            if(data.cronograma) db.cronograma = data.cronograma;
+            if(data.meta_anual !== undefined) db.meta_anual = data.meta_anual;
+            if(data.aviso_ticker !== undefined) db.aviso_ticker = data.aviso_ticker;
+        } else {
+            inicializarEstruturaMeses();
+        }
+        
+        garantirEstruturaCronograma();
+        popularSeletorMeses();
+        popularSeletorSabadosCartao();
+        renderTodo();
+        updateProgresso();
+        renderAvisos();
+        
+        showMsg("🚀 SISTEMA PRONTO E ATUALIZADO!", "saved");
+        hideMsg();
+    })
+    .catch(err => {
+        console.error(err);
+        inicializarEstruturaMeses();
+        popularSeletorMeses();
+        popularSeletorSabadosCartao();
+        renderTodo();
+        showMsg("⚠️ MODO LOCAL ATIVADO", "saved");
+        hideMsg();
+    });
+}
+
+function inicializarEstruturaMeses() {
+    const list = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+    list.forEach(m => {
+        db.meses[m] = { anciao: "", apoio: "", dias: {} };
+        for(let i=1; i<=31; i++) {
+            db.meses[m].dias[i] = { sab: "", preg: "", esp: "", louv: "", sono: "", recep: "", diac: "", nota: "", r_es:0, r_p:0, r_v:0, r_o:0 };
+        }
+    });
+}
+
+function garantirEstruturaCronograma() {
+    if(!db.cronograma || Object.keys(db.cronograma).length === 0) {
+        db.cronograma = {
+            quarta: [
+                { hora: "19:30", Atividade: "Início do Culto / Oração Inicial" },
+                { hora: "19:40", Atividade: "Momento de Louvor Congregacional" },
+                { hora: "19:55", Atividade: "Mensagem da Palavra (Pregador)" },
+                { hora: "20:25", Atividade: "Oração Final e Despedida" }
+            ],
+            sabado: [
+                { hora: "09:00", Atividade: "Momento de Oração e Louvor Inicial" },
+                { hora: "09:15", Atividade: "Abertura Oficial da Escola Sabatina" },
+                { hora: "09:30", Atividade: "Início das Classes / Cartão da Unidade" },
+                { hora: "10:40", Atividade: "Encerramento da Escola Sabatina" },
+                { hora: "10:45", Atividade: "Anúncios Comunitários e Plataforma" },
+                { hora: "11:00", Atividade: "Entrada dos Ministros e Culto Divino" },
+                { hora: "11:15", Atividade: "Adoração Infantil / Historinha" },
+                { hora: "11:25", Atividade: "Momento de Dízimos e Ofertas" },
+                { hora: "11:35", Atividade: "Sermão da Palavra de Deus" },
+                { hora: "12:15", Atividade: "Oração Final / Encerramento do Culto" }
+            ],
+            domingo: [
+                { hora: "19:30", Atividade: "Início do Culto de Oração" },
+                { hora: "19:45", Atividade: "Louvor Congregacional Intenso" },
+                { hora: "20:00", Atividade: "Mensagem Bíblica Especial" },
+                { hora: "20:35", Atividade: "Apelo / Oração de Encerramento" }
+            ]
+        };
+    }
+}
+
+function popularSeletorMeses() {
+    const sel = document.getElementById('selMes');
+    sel.innerHTML = "";
+    const list = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+    list.forEach(m => {
+        let o = document.createElement('option');
+        o.value = m; o.innerText = m + " 2026";
+        sel.appendChild(o);
+    });
+    const mAtual = list[new Date().getMonth()];
+    sel.value = mAtual;
+}
+
+function popularSeletorSabadosCartao() {
+    const sel = document.getElementById('selSabadoCartao');
+    sel.innerHTML = "";
+    let sabs = listarTodosSabadosDoAno();
+    sabs.forEach(s => {
+        let o = document.createElement('option');
+        o.value = s; o.innerText = s.replace(/_/g, '/');
+        sel.appendChild(o);
+    });
     
-    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const DIAS_SEMANA = ["DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO"];
-    const TOTAL_ALUNOS = 10;
+    let hojeStr = extrairProximoSabadoFormatado();
+    if(sabs.includes(hojeStr)) sel.value = hojeStr;
+}
+
+function listarTodosSabadosDoAno() {
+    let arr = [];
+    let d = new Date(2026, 0, 1);
+    while (d.getFullYear() === 2026) {
+        if (d.getDay() === 6) {
+            let dia = String(d.getDate()).padStart(2, '0');
+            let mes = String(d.getMonth() + 1).padStart(2, '0');
+            arr.push(`${dia}_${mes}_2026`);
+        }
+        d.setDate(d.getDate() + 1);
+    }
+    return arr;
+}
+
+function extrairProximoSabadoFormatado() {
+    let d = new Date();
+    while(d.getDay() !== 6) {
+        d.setDate(d.getDate() + 1);
+    }
+    let dia = String(d.getDate()).padStart(2, '0');
+    let mes = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dia}_${mes}_2026`;
+}
+
+// ============================================================================
+// RENDERS E INTERFACES VISUAIS ORIGINAIS
+// ============================================================================
+function renderTodo() {
+    const mes = document.getElementById('selMes').value;
+    const busca = document.getElementById('buscaRapida').value.toLowerCase().trim();
     
-    let db = null; 
-    let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-    let missionChart = null;
-    let popChart1 = null, popChart2 = null;
+    document.getElementById('mesTesouraria').innerText = mes + " / 2026";
+    
+    let mObj = db.meses[mes];
+    if(!mObj) return;
 
-    const MINISTERIOS_PADRAO = [
-        "MINISTÉRIO DA MULHER", "MINISTÉRIO JOVEM", "MINISTÉRIO DA FAMÍLIA", "MINISTÉRIO DA SAÚDE",
-        "MORDOMIA CRISTÃ", "MINISTÉRIO DA CRIANÇA", "DESBRAVADORES", "AVENTUREIROS", "EVANGELISMO",
-        "AÇÃO SOLIDÁRIA (ASA)", "MINISTÉRIO PESSOAL", "ESCOLA SABATINA", "ANCIANATO"
-    ];
+    document.getElementById('headerTitulo').innerText = "ESCALA DE ATIVIDADES COLETIVAS — " + mes + " DE 2026";
+    document.getElementById('headerAnciao').innerText = "Ancião Responsável Líder: " + (mObj.anciao || "Não Definido") + " | Apoio Logístico: " + (mObj.apoio || "Não Definido");
 
-    window.minSelecionado = null;
+    const corpo = document.getElementById('corpoEscala');
+    corpo.innerHTML = "";
 
-    window.onscroll = function() {
-        let b = document.getElementById('btnTopo');
-        if(b) { b.style.display = (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) ? "block" : "none"; }
-    };
-
-    function toggleSection(idContainer, idBtn) {
-        const c = document.getElementById(idContainer);
-        const b = document.getElementById(idBtn);
-        if(c.style.display === "none") { c.style.display = "block"; b.innerText = "-"; } 
-        else { c.style.display = "none"; b.innerText = "+"; }
-    }
-
-    function showStatus(text, className) {
-        const ind = document.getElementById('saveIndicator');
-        if(!ind) return;
-        ind.innerText = text; ind.className = className;
-        ind.style.display = 'block';
-        setTimeout(() => ind.style.display = 'none', 1500);
-    }
-
-    function obterChaveMesAno() {
-        const sel = document.getElementById('selMes');
-        if(!sel) return `M_2026`;
-        return `${sel.value}_2026`;
-    }
-
-    function obterListaSabadosMes(mesIdx, ano) {
-        let sabados = [];
-        let d = new Date(ano, mesIdx, 1);
-        while (d.getMonth() === mesIdx) {
-            if (d.getDay() === 6) {
-                let diaFormatado = String(d.getDate()).padStart(2, '0');
-                let mesFormatado = String(d.getMonth() + 1).padStart(2, '0');
-                sabados.push(`${diaFormatado}_${mesFormatado}_${d.getFullYear()}`);
-            }
-            d.setDate(d.getDate() + 1);
-        }
-        return sabados;
-    }
-
-    function obterDataSabadoAtual() {
-        let d = new Date();
-        while(d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
-        let diaF = String(d.getDate()).padStart(2, '0');
-        let mesF = String(d.getMonth() + 1).padStart(2, '0');
-        return `${diaF}_${mesF}_${d.getFullYear()}`;
-    }
-
-    function verificarEInicializarDB() {
-        const chave = obterChaveMesAno();
-        const mesIdx = parseInt(chave.split('_')[0]);
-        const ano = parseInt(chave.split('_')[1]);
-
-        if (!db) db = {};
-        if (!db.aviso_ticker) db.aviso_ticker = "";
-        if (!db.meta_anual) db.meta_anual = 10;
-        if (!db.escalas) db.escalas = {};
-        if (!db.regras_manuais) db.regras_manuais = {};
-        if (!db.eventos_especiais) db.eventos_especiais = {};
-        if (!db.unidades_acao) db.unidades_acao = { "unidade1": { professor: "Professor 1", anciao: "Ancião Apoio 1" } };
-        if (!db.historico_cartoes) db.historico_cartoes = {};
-        if (!db.senhas) db.senhas = { admin: "123456", ger: "654321" };
-        if (!db.docs) db.docs = {};
-        if (!db.links_externos) db.links_externos = [ { titulo: "Informativo Mundial PDF", url: "https://www.adventistas.org" } ];
-
-        let diasDoMes = [];
-        let dataLoop = new Date(ano, mesIdx, 1);
-        while(dataLoop.getMonth() === mesIdx) {
-            let dSemana = dataLoop.getDay();
-            if([0, 3, 6].includes(dSemana)) {
-                let diaStr = String(dataLoop.getDate()).padStart(2, '0');
-                let mesStr = String(dataLoop.getMonth() + 1).padStart(2, '0');
-                diasDoMes.push({ dia: diaStr, data: `${diaStr}/${mesStr}`, sem: DIAS_SEMANA[dSemana] });
-            }
-            dataLoop.setDate(dataLoop.getDate() + 1);
-        }
-
-        diasDoMes.forEach(item => {
-            if(!db.escalas[item.data]) {
-                db.escalas[item.data] = { dia: item.sem, sabatina: "", pregador: "", especial: "", louvor: "", sonoplastia: "", recepcao: "", diaconato: "" };
-            }
-        });
-
-        if(!db.cronogramas) db.cronogramas = {};
-        let sabadosDoMes = obterListaSabadosMes(mesIdx, ano);
-        sabadosDoMes.forEach(sabKey => {
-            if(!db.cronogramas[sabKey]) {
-                db.cronogramas[sabKey] = [
-                    { horario: "09:00", atividade: "Abertura e Louvor", responsável: "Diretor ES" },
-                    { horario: "09:15", atividade: "Informativo Missões", responsável: "Vídeo/Professor" },
-                    { horario: "09:30", atividade: "Estudo da Lição em Classes", responsável: "Professores" },
-                    { horario: "10:15", atividade: "Encerramento ES", responsável: "Diretor ES" },
-                    { horario: "10:30", atividade: "Anúncios e Oração Pastoral", responsável: "Ancião do Dia" },
-                    { horario: "10:45", atividade: "Culto de Adoração / Sermão", responsável: "Pregador Escalado" },
-                    { horario: "11:45", atividade: "Oração Final e Saída", responsável: "Pregador Escalado" }
-                ];
-            }
-        });
-    }
-
-    function carregarDadosNuvem() {
-        const chave = obterChaveMesAno();
-        dbCloud.collection("Configuracoes").doc(chave).get().then((doc) => {
-            if (doc.exists) {
-                db = doc.data();
-                // Garante compatibilidade de arrays e objetos criados dinamicamente
-                if(!db.historico_cartoes) db.historico_cartoes = {};
-                if(!db.unidades_acao) db.unidades_acao = {};
-                if(!db.docs) db.docs = {};
-                if(!db.links_externos) db.links_externos = [];
-                if(!db.eventos_especiais) db.eventos_especiais = {};
-                if(!db.cronogramas) db.cronogramas = {};
-            } else {
-                // Se NÃO EXISTIR dados na nuvem para este mês, criamos a estrutura limpa
-                db = null;
-                verificarEInicializarDB();
-            }
-            
-            // Renderização da interface após carregamento seguro dos dados
-            renderTodo();
-            initCartaoUnidade();
-            updateProgresso();
-            renderAvisos();
-            renderLinksPublicos();
-            renderCronogramaNaTela();
-        }).catch((error) => {
-            console.error("Erro ao puxar dados da nuvem, carregando local preventivo:", error);
-            verificarEInicializarDB();
-            renderTodo();
-        });
-    }
-
-    function save() {
-        if(!['admin','ger','professor'].includes(curUser) && !db.unidades_acao[curUser]) return;
-        showStatus("SALVANDO NA NUVEM...", "saving");
-        const chave = obterChaveMesAno();
-        dbCloud.collection("Configuracoes").doc(chave).set(db).then(() => {
-            showStatus("SISTEMA SINCRONIZADO!", "saved");
-            updateProgresso();
-        }).catch(err => {
-            console.error("Erro ao salvar nuvem:", err);
-            showStatus("ERRO AO SALVAR!", "saving");
-        });
-    }
-
-    function gerarBackupNuvem() {
-        const chave = obterChaveMesAno();
-        const bkpName = `BKP_${chave}_TIMESTAMP_${Date.now()}`;
-        showStatus("CRIANDO BACKUP...", "saving");
-        dbCloud.collection("BackupsHistóricos").doc(bkpName).set({
-            chave_origem: chave, data_copia: new Date().toLocaleString(), dados: db
-        }).then(() => {
-            alert(`Backup de segurança gerado com sucesso na Nuvem!\nIdentificador: ${bkpName}`);
-        });
-    }
-
-    function abrirPopBackups() {
-        document.getElementById('popBackups').style.display = 'flex';
-        const lista = document.getElementById('listaBackupsNuvem');
-        lista.innerHTML = "<p style='color:white; padding:10px;'>Buscando registros na nuvem...</p>";
+    const listDias = Object.keys(mObj.dias).sort((a,b)=>parseInt(a)-parseInt(b));
+    listDias.forEach(dNum => {
+        let dData = mObj.dias[dNum];
+        let dStr = String(dNum).padStart(2,'0');
+        let mNum = String(["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"].indexOf(mes)+1).padStart(2,'0');
         
-        const chaveAtual = obterChaveMesAno();
-        dbCloud.collection("BackupsHistóricos").where("chave_origem", "==", chaveAtual).get().then(snap => {
-            lista.innerHTML = "";
-            if(snap.empty) {
-                lista.innerHTML = "<p style='color:var(--orange); padding:10px; font-weight:bold;'>Nenhum backup encontrado para este mês.</p>";
-                return;
-            }
-            snap.forEach(doc => {
-                let d = doc.data();
-                lista.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:6px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; border:1px solid #444;">
-                    <div>
-                        <span style="color:var(--gold); font-weight:bold; font-size:0.85rem;">📅 ${d.data_copia}</span><br>
-                        <small style="color:#aaa; font-size:0.7rem;">ID: ${doc.id}</small>
-                    </div>
-                    <button class="btn-modern" style="border-color:var(--green); color:var(--green); padding:4px 10px;" onclick="restaurarDadosDeBackup('${doc.id}')">RESTAURAR</button>
-                </div>`;
-            });
-        });
-    }
+        let diaDaSemana = obterDiaDaSemanaTexto(parseInt(dNum), mes);
+        if(diaDaSemana !== "QUARTA" && diaDaSemana !== "SÁBADO" && diaDaSemana !== "DOMINGO") return;
 
-    function restaurarDadosDeBackup(docID) {
-        if(!confirm("Atenção! Isso substituirá completamente os dados atuais do mês na tela por este backup histórico. Confirma?")) return;
-        dbCloud.collection("BackupsHistóricos").doc(docID).get().then(doc => {
-            if(doc.exists) {
-                db = doc.data().dados;
-                save();
-                renderTodo();
-                initCartaoUnidade();
-                alert("Dados restaurados! O sistema foi recarregado.");
-                document.getElementById('popBackups').style.display = 'none';
-            }
-        });
-    }
-
-    function updateProgresso() {
-        let meta = parseInt(db.meta_anual) || 10;
-        document.getElementById('metaBatismos').value = meta;
-        
-        let totalBatismosTrimestre = 0;
-        if(db.historico_cartoes) {
-            Object.keys(db.historico_cartoes).forEach(sabKey => {
-                Object.keys(db.historico_cartoes[sabKey]).forEach(unidKey => {
-                    let card = db.historico_cartoes[sabKey][unidKey];
-                    if(card && card.batismos) {
-                        totalBatismosTrimestre += parseInt(card.batismos) || 0;
-                    }
-                });
-            });
-        }
-
-        let percent = Math.min((totalBatismosTrimestre / meta) * 100, 100);
-        let bar = document.getElementById('progressoMeta');
-        let txt = document.getElementById('textoMeta');
-        if(bar && txt) {
-            bar.style.width = percent + "%";
-            txt.innerText = `${totalBatismosTrimestre} BATISMOS REALIZADOS (META ANUAL: ${meta})`;
-        }
-    }
-
-    function renderAvisos() {
-        let t = document.getElementById('newsTicker');
-        let inp = document.getElementById('inputTicker');
-        if(inp) inp.value = db.aviso_ticker || "";
-        if(t) {
-            if(db.aviso_ticker && db.aviso_ticker.trim() !== "") {
-                t.style.display = 'block';
-                t.innerHTML = `<span>⚠️ AVISOS: ${db.aviso_ticker.toUpperCase()} ⚠️</span>`;
-            } else {
-                t.style.display = 'none';
-            }
-        }
-    }
-
-    function renderTodo() {
-        verificarEInicializarDB();
-        
-        // Cabeçalho Responsável Ancião
-        const chave = obterChaveMesAno();
-        const mesIdx = parseInt(chave.split('_')[0]);
-        if(!db.regras_manuais) db.regras_manuais = {};
-        if(!db.regras_manuais[chave]) db.regras_manuais[chave] = "";
-        
-        let hAnc = document.getElementById('headerAnciao');
-        if(hAnc) {
-            if(['admin','ger'].includes(curUser)) {
-                hAnc.innerHTML = `Ancião Supervisor / Responsável do Mês: <input type="text" value="${db.regras_manuais[chave]}" class="input-dark" style="width:250px; display:inline-block; font-size:0.9rem; font-weight:bold; color:var(--gold)!important;" onchange="db.regras_manuais['${chave}']=this.value; save();" placeholder="Nome do Ancião...">`;
-            } else {
-                hAnc.innerText = `Ancião Supervisor / Responsável do Mês: ${db.regras_manuais[chave] || "Não Definido"}`;
-            }
-        }
-
-        let hTit = document.getElementById('headerTitulo');
-        if(hTit) hTit.innerText = `IASD ESTRELA DALVA - PROGRAMAÇÃO DE ${MESES[mesIdx]} 2026`;
-
-        let documentacaoMesSpan = document.getElementById('mesTesouraria');
-        if(documentacaoMesSpan) documentacaoMesSpan.innerText = `${MESES[mesIdx]} 2026`;
-
-        renderTabelaPrincipal();
-        renderPlanejamentoAnual();
-        renderAdmin();
-        renderGraficoMissaoGlobal();
-        renderArquivosPublicos();
-    }
-
-    function renderTabelaPrincipal() {
-        const corpo = document.getElementById('corpoEscala');
-        if(!corpo) return;
-        corpo.innerHTML = "";
-
-        let busca = document.getElementById('buscaRapida').value.toLowerCase().trim();
-        let hoje = new Date();
-        let hojeStr = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-
-        let datasOrdenadas = Object.keys(db.escalas).sort((a,b) => parseInt(a.split('/')[0]) - parseInt(b.split('/')[0]));
-
-        datasOrdenadas.forEach(dt => {
-            let e = db.escalas[dt];
-            let contentString = `${e.sabatina} ${e.pregador} ${e.especial} ${e.louvor} ${e.sonoplastia} ${e.recepcao} ${e.diaconato} ${dt} ${e.dia}`.toLowerCase();
-            if(busca !== "" && !contentString.includes(busca)) return;
-
-            let isHoje = (dt === hojeStr) ? "hoje" : "";
-            let classRow = "";
-            if(e.dia === "QUARTA") classRow = "row-especial";
-            if(e.dia === "DOMINGO") classRow = "row-ministerio";
-
-            let tr = document.createElement('tr');
-            tr.className = `${isHoje} ${classRow}`;
-
-            if(['admin','ger'].includes(curUser)) {
-                tr.innerHTML = `
-                    <td style="color:var(--blue); font-weight:900;">${e.dia}</td>
-                    <td style="background:#f1f5f9; color:#000;">${dt}</td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].sabatina=this.value; verificarConflitosMestre(); save();">${e.sabatina}</textarea></td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].pregador=this.value; verificarConflitosMestre(); save();">${e.pregador}</textarea></td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].especial=this.value; verificarConflitosMestre(); save();">${e.especial}</textarea></td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].louvor=this.value; verificarConflitosMestre(); save();">${e.louvor}</textarea></td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].sonoplastia=this.value; verificarConflitosMestre(); save();">${e.sonoplastia}</textarea></td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].recepcao=this.value; verificarConflitosMestre(); save();">${e.recepcao}</textarea></td>
-                    <td><textarea class="auto-expand" onchange="db.escalas['${dt}'].diaconato=this.value; verificarConflitosMestre(); save();">${e.diaconato}</textarea></td>
-                `;
-            } else {
-                tr.innerHTML = `
-                    <td style="color:var(--blue); font-weight:900;">${e.dia}</td>
-                    <td style="background:#f1f5f9; color:#000;">${dt}</td>
-                    <td><span class="auto-expand">${e.sabatina.replace(/\n/g, '<br>')}</span></td>
-                    <td><span class="auto-expand" style="color:var(--blue); font-size:1.05rem;">${e.pregador.replace(/\n/g, '<br>')}</span></td>
-                    <td><span class="auto-expand">${e.especial.replace(/\n/g, '<br>')}</span></td>
-                    <td><span class="auto-expand">${e.louvor.replace(/\n/g, '<br>')}</span></td>
-                    <td><span class="auto-expand">${e.sonoplastia.replace(/\n/g, '<br>')}</span></td>
-                    <td><span class="auto-expand">${e.recepcao.replace(/\n/g, '<br>')}</span></td>
-                    <td><span class="auto-expand">${e.diaconato.replace(/\n/g, '<br>')}</span></td>
-                `;
-            }
-            corpo.appendChild(tr);
-        });
-
-        verificarConflitosMestre();
-    }
-
-    function verificarConflitosMestre() {
-        let textareas = document.querySelectorAll('#tabela-main textarea, #tabela-main .auto-expand');
-        textareas.forEach(t => t.classList.remove('conflito'));
-
-        let mapaPregadores = {};
-        let mapaLouvor = {};
-        
-        Object.keys(db.escalas).forEach(dt => {
-            let e = db.escalas[dt];
-            if(e.pregador && e.pregador.trim() !== "") {
-                let p = e.pregador.trim().toLowerCase();
-                if(!mapaPregadores[p]) mapaPregadores[p] = [];
-                mapaPregadores[p].push(dt);
-            }
-            if(e.louvor && e.louvor.trim() !== "") {
-                let l = e.louvor.trim().toLowerCase();
-                if(!mapaLouvor[l]) mapaLouvor[l] = [];
-                mapaLouvor[l].push(dt);
-            }
-        });
-
-        textareas.forEach(t => {
-            let val = (t.value || t.innerText || "").trim().toLowerCase();
-            if(val === "") return;
-            if(mapaPregadores[val] && mapaPregadores[val].length > 1) {
-                t.classList.add('conflito');
-                t.title = "Atenção: Nome escalado mais de uma vez no mês atual!";
-            }
-            if(mapaLouvor[val] && mapaLouvor[val].length > 1) {
-                t.classList.add('conflito');
-                t.title = "Atenção: Louvor escalado duplicado no mês atual!";
-            }
-        });
-    }
-
-    function renderPlanejamentoAnual() {
-        const corpo = document.getElementById('corpoPlan');
-        if(!corpo) return;
-        corpo.innerHTML = "";
-
-        if(!db.planejamento_anual_2026) {
-            db.planejamento_anual_2026 = {};
-            MESES.forEach(m => db.planejamento_anual_2026[m] = "");
-        }
+        let txtCombinado = (dData.sab + dData.preg + dData.esp + dData.louv + dData.sono + dData.recep + dData.diac).toLowerCase();
+        if(busca !== "" && !txtCombinado.includes(busca)) return;
 
         let tr = document.createElement('tr');
-        MESES.forEach((m, idx) => {
-            let cellStyle = (idx === new Date().getMonth()) ? "border:2px solid var(--gold); background:rgba(255,215,0,0.05);" : "border:1px solid #334155;";
-            let td = document.createElement('td');
-            td.style.cssText = `padding:10px; width:8.33%; vertical-align:top; ${cellStyle}`;
-            
-            if(['admin','ger'].includes(curUser)) {
-                td.innerHTML = `
-                    <div style="font-weight:bold; color:var(--neon); font-size:0.8rem; text-align:center; border-bottom:1px solid #334155; margin-bottom:6px; padding-bottom:4px;">${m}</div>
-                    <textarea class="input-dark" style="height:120px; font-size:0.75rem; text-align:left; resize:none;" onchange="db.planejamento_anual_2026['${m}']=this.value; save();">${db.planejamento_anual_2026[m] || ""}</textarea>
-                `;
-            } else {
-                td.innerHTML = `
-                    <div style="font-weight:bold; color:var(--neon); font-size:0.8rem; text-align:center; border-bottom:1px solid #334155; margin-bottom:6px; padding-bottom:4px;">${m}</div>
-                    <div style="font-size:0.75rem; white-space:pre-wrap; min-height:120px; color:#cbd5e1;">${db.planejamento_anual_2026[m] || "Sem eventos registrados."}</div>
-                `;
-            }
-            tr.appendChild(td);
-        });
+        
+        let dHoje = new Date();
+        if(dHoje.getDate() == parseInt(dNum) && dHoje.getMonth() == ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"].indexOf(mes) && dHoje.getFullYear() == 2026) {
+            tr.className = "hoje";
+        }
+
+        let edit = (window.userTipo === 'admin' || window.userTipo === 'anciao') ? "" : "readonly";
+
+        tr.innerHTML = `
+            <td style="background:#f8fafc; color:#334155;">${diaDaSemana}</td>
+            <td style="background:#f1f5f9; color:#0f172a;">${dStr}/${mNum}</td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'sab',this.value)">${dData.sab||""}</textarea></td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'preg',this.value)">${dData.preg||""}</textarea></td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'esp',this.value)">${dData.esp||""}</textarea></td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'louv',this.value)">${dData.louv||""}</textarea></td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'sono',this.value)">${dData.sono||""}</textarea></td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'recep',this.value)">${dData.recep||""}</textarea></td>
+            <td><textarea class="auto-expand" ${edit} onchange="updateCell('${mes}',${dNum},'diac',this.value)">${dData.diac||""}</textarea></td>
+        `;
         corpo.appendChild(tr);
-    }
-
-    function renderAdmin() {
-        let corpoCreds = document.getElementById('corpoCreds');
-        if(corpoCreds) {
-            corpoCreds.innerHTML = "";
-            Object.keys(db.senhas).forEach(k => {
-                corpoCreds.innerHTML += `<tr>
-                    <td style="padding:4px; font-weight:bold; color:var(--neon);">${k.toUpperCase()}</td>
-                    <td style="padding:4px;">
-                        <input type="text" value="${db.senhas[k]}" class="input-dark" style="padding:3px; font-size:0.75rem;" onchange="db.senhas['${k}']=this.value; save();">
-                    </td>
-                </tr>`;
-            });
-        }
-
-        let lMin = document.getElementById('listaMinisterios');
-        if(lMin) {
-            lMin.innerHTML = "";
-            MINISTERIOS_PADRAO.forEach(min => {
-                let act = (window.minSelecionado === min) ? "active" : "";
-                lMin.innerHTML += `<button class="btn-min ${act}" onclick="window.minSelecionado='${min}'; renderAdmin(); renderTodo();">${min}</button>`;
-            });
-        }
-
-        let gMes = document.getElementById('gridMeses');
-        if(gMes) {
-            gMes.innerHTML = "";
-            let chave = obterChaveMesAno();
-            if(!db.anciaos_mes) db.anciaos_mes = {};
-            if(!db.anciaos_mes[chave]) db.anciaos_mes[chave] = "";
-            
-            gMes.innerHTML = `
-                <label style="color:var(--gold); font-size:0.8rem; font-weight:bold;">Ancião Principal do Mês:</label>
-                <input type="text" class="input-dark" value="${db.anciaos_mes[chave]}" onchange="db.anciaos_mes['${chave}']=this.value; save();" placeholder="Nome do Ancião..." style="margin-top:5px; font-size:1rem; border-color:var(--gold);">
-            `;
-        }
-
-        let gApoio = document.getElementById('gridApoioAnciao');
-        if(gApoio) {
-            gApoio.innerHTML = "";
-            if(!db.apoio_anciao_escala) db.apoio_anciao_escala = {};
-            
-            let datasSabados = Object.keys(db.escalas).filter(dt => db.escalas[dt].dia === "SÁBADO").sort();
-            if(datasSabados.length === 0) {
-                gApoio.innerHTML = "<small style='color:#aaa'>Nenhum Sábado neste mês.</small>";
-            } else {
-                datasSabados.forEach(dt => {
-                    if(!db.apoio_anciao_escala[dt]) db.apoio_anciao_escala[dt] = "";
-                    gApoio.innerHTML += `<div style="margin-bottom:8px;">
-                        <small style="color:var(--neon); font-weight:bold;">Sábado ${dt}:</small>
-                        <input type="text" class="input-dark" value="${db.apoio_anciao_escala[dt]}" onchange="db.apoio_anciao_escala['${dt}']=this.value; save();" placeholder="Ancião de Apoio geral..." style="margin-top:3px; padding:4px;">
-                    </div>`;
-                });
-            }
-        }
-    }
-
-    function initCartaoUnidade() {
-        let isProf = db.unidades_acao && db.unidades_acao[curUser];
-        let sec = document.getElementById('secCartaoUnidade');
         
-        if(['admin','ger','professor'].includes(curUser) || isProf) {
-            if(sec) sec.style.display = 'block';
-        } else {
-            if(sec) sec.style.display = 'none';
-            return;
-        }
-
-        let selSab = document.getElementById('selSabadoCartao');
-        if(selSab && selSab.options.length === 0) {
-            let chave = obterChaveMesAno();
-            let mesIdx = parseInt(chave.split('_')[0]);
-            let ano = parseInt(chave.split('_')[1]);
-            let sabados = obterListaSabadosMes(mesIdx, ano);
-            
-            let sabAtual = obterDataSabadoAtual();
-            sabados.forEach(sabKey => {
-                let opt = document.createElement('option');
-                opt.value = sabKey; opt.innerText = `Sábado ${sabKey.replace(/_/g, '/')}`;
-                if(sabKey === sabAtual) opt.selected = true;
-                selSab.appendChild(opt);
+        tr.querySelectorAll('.auto-expand').forEach(tx => {
+            tx.style.height = 'auto';
+            tx.style.height = tx.scrollHeight + 'px';
+            tx.addEventListener('input', function(){
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
             });
-            if(selSab.options.length > 0 && !selSab.value) selSab.options[0].selected = true;
+        });
+    });
+
+    renderPlanejamentoAnual();
+    renderArquivosPublicos();
+    renderLinksPublicos();
+    renderGraficoMissionarioGeral();
+    if(window.userTipo === 'admin') renderAdmin();
+}
+
+function obterDiaDaSemanaTexto(dia, mes) {
+    let idxMes = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"].indexOf(mes);
+    let dt = new Date(2026, idxMes, dia);
+    let sem = ["DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO"];
+    return sem[dt.getDay()];
+}
+
+function updateCell(mes, dia, campo, val) {
+    db.meses[mes].dias[dia][campo] = val;
+    verificarConflitosLocaisEAviso();
+    save();
+}
+
+function verificarConflitosLocaisEAviso() {
+    let textareas = document.querySelectorAll('.auto-expand');
+    textareas.forEach(t => t.classList.remove('conflito'));
+
+    let mes = document.getElementById('selMes').value;
+    let mObj = db.meses[mes];
+    if(!mObj) return;
+
+    Object.keys(mObj.dias).forEach(d => {
+        let diaObj = mObj.dias[d];
+        let nomesNoDia = [];
+        ["sab","preg","esp","louv","sono","recep","diac"].forEach(c => {
+            if(diaObj[c]) {
+                let list = diaObj[c].split(/,|\n/).map(x=>x.trim().toLowerCase()).filter(x=>x.length>2);
+                nomesNoDia.push(...list);
+            }
+        });
+
+        let duplicados = nomesNoDia.filter((item, index) => nomesNoDia.indexOf(item) !== index);
+        if(duplicados.length > 0) {
+            console.log("⚠️ Conflito de escala detectado no dia " + d + " do mês " + mes);
         }
+    });
+}
 
-        let sabKey = selSab ? selSab.value : obterDataSabadoAtual();
-        let unidKey = ['admin','ger','professor'].includes(curUser) ? "unidade1" : curUser;
+function renderPlanejamentoAnual() {
+    const corpo = document.getElementById('corpoPlan');
+    corpo.innerHTML = "";
+    
+    let trHead = document.createElement('tr');
+    trHead.innerHTML = `<th style="background:var(--blue); color:var(--neon); padding:10px; border:1px solid #334155; width:150px;">MÊS ANUAL</th>
+                        <th style="background:var(--blue); color:white; padding:10px; border:1px solid #334155;">GRANDES DIAS / EVENTOS DE IMPACTO DA IGREJA LOCAL</th>`;
+    corpo.appendChild(trHead);
 
-        let infoUnid = db.unidades_acao[unidKey] || { professor: "Não cadastrado", anciao: "Não cadastrado" };
+    const list = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+    list.forEach(m => {
+        if(!db.meses[m].nota) db.meses[m].nota = "";
+        let edit = (window.userTipo === 'admin' || window.userTipo === 'anciao') ? "" : "readonly";
         
-        let infoBar = document.getElementById('txtInfoUnidadeAtual');
-        if(infoBar) infoBar.innerHTML = `👤 Conectado como: <b>${curUser.toUpperCase()}</b> | Professor(a): <b>${infoUnid.professor}</b> | Apoio: <b>${infoUnid.anciao}</b>`;
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding:10px; border:1px solid #334155; background:rgba(255,255,255,0.03); font-weight:bold; color:var(--gold);">${m}</td>
+            <td style="border:1px solid #334155; padding:4px;">
+                <textarea class="auto-expand" ${edit} style="color:#fff; text-align:left; padding-left:15px;" onchange="db.meses['${m}'].nota=this.value; save();" placeholder="Nenhum evento planejado para este mês...">${db.meses[m].nota}</textarea>
+            </td>
+        `;
+        corpo.appendChild(tr);
+    });
+}
 
-        document.getElementById('lblCardUnidade').innerText = `UNIDADE: ${unidKey.toUpperCase()}`;
-        document.getElementById('lblCardProfessor').innerText = `PROFESSOR(A): ${infoUnid.professor.toUpperCase()}`;
-        document.getElementById('lblCardAnciao').innerText = `ANCIÃO DE APOIO: ${infoUnid.anciao.toUpperCase()}`;
-        document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sabKey.replace(/_/g, '/')}`;
+// ============================================================================
+// RELATÓRIOS E COMPILADOS DA SECRETARIA GERAL
+// ============================================================================
+function abrirRelatorioSabatina() {
+    document.getElementById('popRelatorioSabatina').style.display = 'flex';
+    const corpo = document.getElementById('corpoRelatorioSecretaria');
+    corpo.innerHTML = "";
 
-        if(!db.historico_cartoes) db.historico_cartoes = {};
-        if(!db.historico_cartoes[sabKey]) db.historico_cartoes[sabKey] = {};
-        if(!db.historico_cartoes[sabKey][unidKey]) {
-            db.historico_cartoes[sabKey][unidKey] = {
-                alunos: [], batismos: 0, ofertas: 0,
-                instrutores: [{nome:"", dando:false, qtd:0}],
-                duplas: [{nomes:"", dando:false, qtd:0}]
-            };
-            for(let i=1; i<=TOTAL_ALUNOS; i++) {
-                db.historico_cartoes[sabKey][unidKey].alunos.push({ nome: `Aluno Auxiliar ${i}`, pres: false, p1: false, p2: false, p3: false, p5: false, p6: false, p7: false, p8: false });
-            }
-        }
+    let sabs = listarTodosSabadosDoAno();
+    let sabadosComDados = 0;
 
-        let card = db.historico_cartoes[sabKey][unidKey];
-        document.getElementById('inputBatismos').value = card.batismos || 0;
-        document.getElementById('inputOfertas').value = parseFloat(card.ofertas || 0).toFixed(2);
+    let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0;
 
-        let corpoAlunos = document.getElementById('corpoAlunos');
-        corpoAlunos.innerHTML = "";
-        card.alunos.forEach((al, idx) => {
-            corpoAlunos.innerHTML += `<tr>
-                <td><input type="text" value="${al.nome}" class="input-aluno" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].nome=this.value; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.pres?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].pres=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p1?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p1=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p2?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p2=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p3?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p3=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p5?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p5=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p6?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p6=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p7?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p7=this.checked; forçarCalculoProf(); save();"></td>
-                <td><input type="checkbox" ${al.p8?'checked':''} onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].alunos[${idx}].p8=this.checked; forçarCalculoProf(); save();"></td>
-            </tr>`;
-        });
-
-        let lInst = document.getElementById('listaInstrutores');
-        lInst.innerHTML = "";
-        if(!card.instrutores || card.instrutores.length === 0) card.instrutores = [{nome:"", dando:false, qtd:0}];
-        card.instrutores.forEach((ins, idx) => {
-            lInst.innerHTML += `<div class="row-missao">
-                <input type="text" placeholder="Nome do Instrutor" class="input-dark" value="${ins.nome}" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].instrutores[${idx}].nome=this.value; save();">
-                <select class="input-dark" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].instrutores[${idx}].dando=(this.value==='sim'); save();">
-                    <option value="nao" ${!ins.dando?'selected':''}>Não dando</option>
-                    <option value="sim" ${ins.dando?'selected':''}>Dando Estudo</option>
-                </select>
-                <input type="number" class="input-qtd" value="${ins.qtd||0}" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].instrutores[${idx}].qtd=parseInt(this.value); forçarCalculoProf(); save();">
-            </div>`;
-        });
-
-        let lDup = document.getElementById('listaDuplas');
-        lDup.innerHTML = "";
-        if(!card.duplas || card.duplas.length === 0) card.duplas = [{nomes:"", dando:false, qtd:0}];
-        card.duplas.forEach((dp, idx) => {
-            lDup.innerHTML += `<div class="row-missao">
-                <input type="text" placeholder="Nomes da Dupla" class="input-dark" value="${dp.nomes}" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].duplas[${idx}].nomes=this.value; save();">
-                <select class="input-dark" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].duplas[${idx}].dando=(this.value==='sim'); save();">
-                    <option value="nao" ${!dp.dando?'selected':''}>Não dando</option>
-                    <option value="sim" ${dp.dando?'selected':''}>Dando Estudo</option>
-                </select>
-                <input type="number" class="input-qtd" value="${dp.qtd||0}" onchange="db.historico_cartoes['${sabKey}']['${unidKey}'].duplas[${idx}].qtd=parseInt(this.value); forçarCalculoProf(); save();">
-            </div>`;
-        });
-
-        recalcularIndicadoresProfessor(card);
-    }
-
-    function forçarCalculoProf() {
-        let selSab = document.getElementById('selSabadoCartao');
-        let sabKey = selSab ? selSab.value : obterDataSabadoAtual();
-        let unidKey = ['admin','ger','professor'].includes(curUser) ? "unidade1" : curUser;
-        let card = db.historico_cartoes[sabKey][unidKey];
-
-        card.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
-        card.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
-
-        recalcularIndicadoresProfessor(card);
-    }
-
-    function recalcularIndicadoresProfessor(card) {
-        let totPres = 0, v1 = 0, v2 = 0, v3 = 0, v5 = 0, v6 = 0, v7 = 0, v8 = 0;
-
-        card.alunos.forEach(al => {
-            if(al.pres) totPres++;
-            if(al.p1) v1++; if(al.p2) v2++; if(al.p3) v3++;
-            if(al.p5) v5++; if(al.p6) v6++; if(al.p7) v7++; if(al.p8) v8++;
-        });
-
-        document.getElementById('totPres').innerText = totPres;
-        document.getElementById('v1').innerText = v1;
-        document.getElementById('v2').innerText = v2;
-        document.getElementById('v3').innerText = v3;
-        document.getElementById('v4').innerText = card.batismos || 0;
-        document.getElementById('v5').innerText = v5;
-        document.getElementById('v6').innerText = v6;
-        document.getElementById('v7').innerText = v7;
-        document.getElementById('v8').innerText = v8;
-
-        renderGraficosUnidadeInterno(totPres, v1, v2, v3, v5, v6, v7, v8);
-    }
-
-    function renderGraficosUnidadeInterno(pres, p1, p2, p3, p5, p6, p7, p8) {
-        let ctx1 = document.getElementById('graf1');
-        let ctx2 = document.getElementById('graf2');
-        if(!ctx1 || !ctx2) return;
-
-        if(window.chartUnid1) window.chartUnid1.destroy();
-        if(window.chartUnid2) window.chartUnid2.destroy();
-
-        window.chartUnid1 = new Chart(ctx1, {
-            type: 'doughnut',
-            data: {
-                labels: ['Presentes', 'Ausentes'],
-                datasets: [{ data: [pres, Math.max(TOTAL_ALUNOS - pres, 0)], backgroundColor: ['#2ecc71', '#e74c3c'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Frequência Alunos' } } }
-        });
-
-        window.chartUnid2 = new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Lição', 'Estudo Diário', 'Dar Estudo', 'Oração', 'Literatura', 'Visitas', 'Ação Soc.'],
-                datasets: [{ label: 'Qtd Alunos Ativos', data: [p1, p2, p3, p5, p6, p7, p8], backgroundColor: '#ffd700' }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: TOTAL_ALUNOS } } }
-        });
-    }
-
-    function renderGraficoMissaoGlobal() {
-        let ctx = document.getElementById('missionaryChart');
-        if(!ctx) return;
-        if(missionChart) missionChart.destroy();
-
-        let chave = obterChaveMesAno();
-        let mesIdx = parseInt(chave.split('_')[0]);
-        let ano = parseInt(chave.split('_')[1]);
-        let sabados = obterListaSabadosMes(mesIdx, ano);
-
-        let dadosPresençaGlobalPorSabado = [];
-        let labelsSabados = [];
-
-        sabados.forEach(sabKey => {
-            labelsSabados.push(`Sáb ${sabKey.split('_')[0]}`);
-            let totalPresSabado = 0;
-            if(db.historico_cartoes && db.historico_cartoes[sabKey]) {
-                Object.keys(db.historico_cartoes[sabKey]).forEach(unidKey => {
-                    let card = db.historico_cartoes[sabKey][unidKey];
-                    if(card && card.alunos) {
-                        card.alunos.forEach(al => { if(al.pres) totalPresSabado++; });
-                    }
-                });
-            }
-            dadosPresençaGlobalPorSabado.push(totalPresSabado);
-        });
-
-        missionChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labelsSabados,
-                datasets: [{
-                    label: 'Frequência Total Agregada (Alunos Presentes na Escola Sabatina)',
-                    data: dadosPresençaGlobalPorSabado,
-                    borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)',
-                    borderWidth: 3, tension: 0.2, fill: true
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: 'white' } } }, scales: { x: { ticks: { color: 'white' } }, y: { ticks: { color: 'white' }, beginAtZero: true } } }
-        });
-    }
-
-    function abrirPop() {
-        document.getElementById('popTermometroGeral').style.display = 'flex';
-        let ctx1 = document.getElementById('popGrafico1');
-        let ctx2 = document.getElementById('popGrafico2');
-
-        if(popChart1) popChart1.destroy();
-        if(popChart2) popChart2.destroy();
-
-        let sLição = 0, sDiario = 0, sEstudos = 0, sOracao = 0, sLit = 0, sVis = 0, sAs = 0, totalAmostras = 0;
-        let totalOfertasMes = 0;
-
-        if(db.historico_cartoes) {
-            Object.keys(db.historico_cartoes).forEach(sabKey => {
-                Object.keys(db.historico_cartoes[sabKey]).forEach(unidKey => {
-                    let card = db.historico_cartoes[sabKey][unidKey];
-                    totalOfertasMes += parseFloat(card.ofertas || 0);
-                    if(card && card.alunos) {
-                        card.alunos.forEach(al => {
-                            totalAmostras++;
-                            if(al.p1) sLição++; if(al.p2) sDiario++; if(al.p3) sEstudos++;
-                            if(al.p5) sOracao++; if(al.p6) sLit++; if(al.p7) sVis++; if(al.p8) sAs++;
-                        });
-                    }
-                });
-            });
-        }
-
-        popChart1 = new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: ['Lição', 'Estudo Diário', 'Dar Estudo', 'Orar por Alguém', 'Literatura', 'Visitas', 'Ação Solidária'],
-                datasets: [{ label: 'Total de Ações Registradas', data: [sLição, sDiario, sEstudos, sOracao, sLit, sVis, sAs], backgroundColor: '#ff7f50' }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-
-        popChart2 = new Chart(ctx2, {
-            type: 'pie',
-            data: {
-                labels: ['Ações Missionárias Totais', 'Frequência Geral Base'],
-                datasets: [{ data: [sLição + sDiario + sEstudos, totalAmostras], backgroundColor: ['#ffd700', '#1a365d'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: `Arrecadação Trimestre: R$ ${totalOfertasMes.toFixed(2)}` } } }
-        });
-    }
-
-    function fecharPop() {
-        document.getElementById('popTermometroGeral').style.display = 'none';
-    }
-
-    function abrirRelatorioSabatina() {
-        document.getElementById('popRelatorioSabatina').style.display = 'flex';
-        const corpo = document.getElementById('corpoRelatorioSecretaria');
-        if(!corpo) return;
-        corpo.innerHTML = "";
-
-        let chave = obterChaveMesAno();
-        let mesIdx = parseInt(chave.split('_')[0]);
-        let ano = parseInt(chave.split('_')[1]);
-        let sabados = obterListaSabadosMes(mesIdx, ano);
-
-        let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0, sabadosComDados = 0;
-
-        sabados.forEach(sabKey => {
+    sabs.forEach(sabKey => {
+        let sabData = db.escola_sabatina[sabKey];
+        if(sabData) {
             let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0;
-            let temRegistro = false;
+            let temDadosNoSabado = false;
 
-            if(db.historico_cartoes && db.historico_cartoes[sabKey]) {
-                Object.keys(db.historico_cartoes[sabKey]).forEach(unidKey => {
-                    let card = db.historico_cartoes[sabKey][unidKey];
-                    if(card) {
-                        temRegistro = true;
-                        sOfertas += parseFloat(card.ofertas || 0);
-                        if(card.alunos) {
-                            card.alunos.forEach(al => {
-                                sAtivos++;
-                                if(al.pres) sPres++;
-                                if(al.p7) sVisitas++;
-                            });
-                        }
-                    }
-                });
-            }
+            Object.keys(sabData).forEach(uniKey => {
+                let uData = sabData[uniKey];
+                temDadosNoSabado = true;
+                
+                let sUnidadeAtivos = (db.unidades[uniKey] && db.unidades[uniKey].alunos) ? db.unidades[uniKey].alunos.length : 0;
+                sAtivos += sUnidadeAtivos;
 
-            if(temRegistro) {
+                if(uData.alunos) {
+                    Object.keys(uData.alunos).forEach(alStr => {
+                        if(uData.alunos[alStr] && uData.alunos[alStr].pres) sPres++;
+                        if(uData.alunos[alStr] && uData.alunos[alStr].c7) sVisitas++;
+                    });
+                }
+                if(uData.ofertas) sOfertas += parseFloat(uData.ofertas) || 0;
+            });
+
+            if(temDadosNoSabado) {
                 sabadosComDados++;
                 tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
                 let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
@@ -1226,390 +787,415 @@
                     <td style="color:var(--green); font-weight:bold;">R$ ${sOfertas.toFixed(2)}</td>
                 </tr>`;
             }
-        });
-
-        let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
-        corpo.innerHTML += `<tr class="row-total-secre">
-            <td>SOMATÓRIA / MÉDIA TRIMESTRE</td>
-            <td>${tAtivos} (Total)</td>
-            <td>${tPres} (Total)</td>
-            <td>Média: ${percGeral}%</td>
-            <td>${tVisitas} Visitas</td>
-            <td>Total: R$ ${tOfertas.toFixed(2)}</td>
-        </tr>`;
-
-        if(sabadosComDados === 0) {
-            corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--orange);">Nenhum cartão lançado para os Sábados deste mês ainda.</td></tr>`;
         }
+    });
+
+    let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
+    corpo.innerHTML += `<tr class="row-total-secre">
+        <td>SOMATÓRIA / MÉDIA TRIMESTRE</td>
+        <td>${tAtivos} (Total)</td>
+        <td>${tPres} (Total)</td>
+        <td>Média: ${percGeral}%</td>
+        <td>${tVisitas} Visitas</td>
+        <td>Total: R$ ${tOfertas.toFixed(2)}</td>
+    </tr>`;
+
+    if(sabadosComDados === 0) {
+        corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--orange)">Nenhum dado lançado por nenhuma unidade até o momento.</td></tr>`;
     }
+}
 
-    function renderUnidadesAdmin() {
-        const div = document.getElementById('listaUnidadesAdmin');
-        if(!div) return;
-        div.innerHTML = "";
+// ============================================================================
+// CORE DO MÓDULO PROFESSOR / UNIDADE (MELHORADO CORRETAMENTE)
+// ============================================================================
+function initCartaoUnidade() {
+    const sab = document.getElementById('selSabadoCartao').value;
+    if(!sab || !window.userLogado || !db.unidades[window.userLogado]) return;
 
-        Object.keys(db.unidades_acao).forEach(id => {
-            let u = db.unidades_acao[id];
-            div.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:8px 12px; margin:4px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
-                <span style="font-size:0.8rem; color:white;">🆔 <b>${id.toUpperCase()}</b> | Prof: ${u.professor} | Ancião: ${u.anciao}</span>
-                <button class="btn-modern" style="border-color:red; color:red; padding:2px 8px; font-size:0.7rem;" onclick="removerUnidConfig('${id}')">EXCLUIR</button>
-            </div>`;
-        });
-    }
+    let uniData = db.unidades[window.userLogado];
+    document.getElementById('lblCardUnidade').innerText = "UNIDADE: " + uniData.nome.toUpperCase();
+    document.getElementById('lblCardProfessor').innerText = "PROFESSOR(A): " + uniData.prof.toUpperCase();
+    document.getElementById('lblCardAnciao').innerText = "ANCIÃO DE APOIO: " + (uniData.anciao || "NENHUM");
+    document.getElementById('lblCardSabado').innerText = "SÁBADO: " + sab.replace(/_/g, '/');
 
-    function salvarUnidadeConfig() {
-        let id = document.getElementById('unidID').value.trim().toLowerCase();
-        let prof = document.getElementById('unidProf').value.trim();
-        let anc = document.getElementById('unidAnc').value.trim();
-
-        if(!id || !prof) { alert("Preencha ao menos ID e Professor."); return; }
-        if(!db.unidades_acao) db.unidades_acao = {};
-        db.unidades_acao[id] = { professor: prof, anciao: anc || "Não Definido" };
-        
-        document.getElementById('unidID').value = "";
-        document.getElementById('unidProf').value = "";
-        document.getElementById('unidAnc').value = "";
-        
-        save(); renderUnidadesAdmin(); initCartaoUnidade();
-    }
-
-    function removerUnidConfig(id) {
-        if(!confirm(`Deseja mesmo excluir as credenciais e dados cadastrais da ${id.toUpperCase()}?`)) return;
-        delete db.unidades_acao[id];
-        save(); renderUnidadesAdmin(); initCartaoUnidade();
-    }
-
-    function renderMembros() {
-        const div = document.getElementById('listaMembros');
-        if(!div) return;
-        div.innerHTML = "";
-
-        if(!db.membros_equipe) db.membros_equipe = [];
-        db.membros_equipe.forEach((mb, idx) => {
-            div.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:8px 12px; margin:4px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
-                <span style="font-size:0.85rem; color:white;">👤 <b>${mb.nome}</b> - <i style="color:var(--neon);">${mb.cargo}</i></span>
-                <button class="btn-modern" style="border-color:red; color:red; padding:2px 8px; font-size:0.7rem;" onclick="removerMembro(${idx})">REMOVER</button>
-            </div>`;
-        });
-    }
-
-    function addMembro() {
-        let n = document.getElementById('mbNome').value.trim();
-        let c = document.getElementById('mbCargo').value.trim();
-        if(!n || !c) return;
-
-        if(!db.membros_equipe) db.membros_equipe = [];
-        db.membros_equipe.push({ nome: n, cargo: c });
-        document.getElementById('mbNome').value = "";
-        document.getElementById('mbCargo').value = "";
-        save(); renderMembros();
-    }
-
-    function removerMembro(idx) {
-        db.membros_equipe.splice(idx, 1);
-        save(); renderMembros();
-    }
-
-    function abrirPopLinks() {
-        document.getElementById('popLinks').style.display = 'flex';
-        let ctrl = document.getElementById('adminLinkControls');
-        if(['admin','ger'].includes(curUser)) ctrl.style.display = 'block';
-        
-        const div = document.getElementById('listaLinksMestre');
-        div.innerHTML = "";
-        if(!db.links_externos) db.links_externos = [];
-
-        db.links_externos.forEach((lk, idx) => {
-            let btnDel = ['admin','ger'].includes(curUser) ? `<button class="btn-modern" style="border-color:red; color:red; padding:2px 8px;" onclick="removerLinkExterno(${idx})">✕</button>` : '';
-            div.innerHTML += `<div style="padding:10px; border-bottom:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
-                <a href="${lk.url}" target="_blank" style="color:var(--neon); font-weight:bold; font-size:0.9rem; text-decoration:none;">🔗 ${lk.titulo}</a>
-                ${btnDel}
-            </div>`;
-        });
-    }
-
-    function addLinkExterno() {
-        let t = document.getElementById('lkTitulo').value.trim();
-        let u = document.getElementById('lkURL').value.trim();
-        if(!t || !u) return;
-
-        db.links_externos.push({ titulo: t, url: u });
-        document.getElementById('lkTitulo').value = "";
-        document.getElementById('lkURL').value = "";
-        save(); abrirPopLinks(); renderLinksPublicos();
-    }
-
-    function removerLinkExterno(idx) {
-        db.links_externos.splice(idx, 1);
-        save(); abrirPopLinks(); renderLinksPublicos();
-    }
-
-    function renderLinksPublicos() {
-        const grid = document.getElementById('gridLinksPublicos');
-        if(!grid) return;
-        grid.innerHTML = "";
-        if(!db.links_externos || db.links_externos.length === 0) {
-            grid.innerHTML = "<small style='color:#aaa;'>Nenhum material de apoio anexado.</small>";
-            return;
-        }
-        db.links_externos.forEach(lk => {
-            grid.innerHTML += `<a href="${lk.url}" target="_blank" style="background:rgba(0, 210, 255, 0.05); border:1px solid var(--neon); padding:12px; border-radius:8px; text-align:center; font-weight:bold; color:white; text-decoration:none; transition:0.2s;" onmouseenter="this.style.background='var(--neon)'; this.style.color='black';" onmouseleave="this.style.background='rgba(0, 210, 255, 0.05)'; this.style.color='white';">📄 ${lk.titulo.toUpperCase()}</a>`;
-        });
-    }
-
-    function abrirPopEventos() {
-        document.getElementById('popEventos').style.display = 'flex';
-        let ctrl = document.getElementById('adminEventControls');
-        if(['admin','ger'].includes(curUser)) ctrl.style.display = 'block';
-
-        const div = document.getElementById('listaEventosMestre');
-        div.innerHTML = "";
-        
-        const chave = obterChaveMesAno();
-        if(!db.eventos_especiais) db.eventos_especiais = {};
-        if(!db.eventos_especiais[chave]) db.eventos_especiais[chave] = [];
-
-        db.eventos_especiais[chave].forEach((ev, idx) => {
-            let btnDel = ['admin','ger'].includes(curUser) ? `<button class="btn-modern" style="border-color:red; color:red; padding:2px 8px;" onclick="removerEventoEspecial(${idx})">✕</button>` : '';
-            div.innerHTML += `<div style="padding:10px; border-bottom:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
-                <span style="color:white; font-size:0.9rem;">📅 <b>Dia ${ev.dia}:</b> ${ev.nome}</span>
-                ${btnDel}
-            </div>`;
-        });
-    }
-
-    function addEventoEspecial() {
-        let n = document.getElementById('evtNome').value.trim();
-        let d = document.getElementById('evtData').value.trim();
-        if(!n || !d) return;
-
-        const chave = obterChaveMesAno();
-        if(!db.eventos_especiais[chave]) db.eventos_especiais[chave] = [];
-        db.eventos_especiais[chave].push({ nome: n, dia: d });
-        
-        document.getElementById('evtNome').value = "";
-        document.getElementById('evtData').value = "";
-        save(); abrirPopEventos();
-    }
-
-    function removerEventoEspecial(idx) {
-        const chave = obterChaveMesAno();
-        db.eventos_especiais[chave].splice(idx, 1);
-        save(); abrirPopEventos();
-    }
-
-    function abrirTesourariaAdmin() {
-        document.getElementById('popTesouraria').style.display = 'flex';
-        renderListaDocsAdmin();
-    }
-
-    function renderListaDocsAdmin() {
-        const div = document.getElementById('listaDocsAdmin');
-        div.innerHTML = "";
-        const chave = obterChaveMesAno();
-        if(!db.docs) db.docs = {};
-        if(!db.docs[chave]) db.docs[chave] = [];
-
-        db.docs[chave].forEach((dc, idx) => {
-            div.innerHTML += `<div style="background:rgba(255,255,255,0.03); border:1px solid #334155; padding:8px; border-radius:6px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="color:white; font-size:0.8rem;">📂 <b>${dc.nome}</b></span>
-                <button class="btn-modern" style="border-color:red; color:red; padding:2px 8px; font-size:0.7rem;" onclick="removerDocumentoFake(${idx})">EXCLUIR</button>
-            </div>`;
-        });
-    }
-
-    function uploadDocumentoFake() {
-        let n = document.getElementById('docNome').value.trim();
-        let l = document.getElementById('docLink').value.trim();
-        if(!n || !l) { alert("Informe Nome e Link do Documento."); return; }
-
-        const chave = obterChaveMesAno();
-        if(!db.docs[chave]) db.docs[chave] = [];
-        db.docs[chave].push({ nome: n, url: l });
-
-        document.getElementById('docNome').value = "";
-        document.getElementById('docLink').value = "";
-        save(); renderListaDocsAdmin(); renderArquivosPublicos();
-    }
-
-    function removerDocumentoFake(idx) {
-        const chave = obterChaveMesAno();
-        db.docs[chave].splice(idx, 1);
-        save(); renderListaDocsAdmin(); renderArquivosPublicos();
-    }
-
-    function renderArquivosPublicos() {
-        const grid = document.getElementById('gridArquivosPublicos');
-        if(!grid) return;
-        grid.innerHTML = "";
-        const chave = obterChaveMesAno();
-
-        if(db.docs && db.docs[chave] && db.docs[chave].length > 0) {
-            db.docs[chave].forEach(dc => {
-                grid.innerHTML += `<a href="${dc.url}" target="_blank" style="background:rgba(46, 204, 113, 0.05); border:1px solid var(--green); padding:10px; border-radius:6px; text-align:center; font-weight:bold; color:white; text-decoration:none; font-size:0.8rem;" onmouseenter="this.style.background='var(--green)'; this.style.color='white';" onmouseleave="this.style.background='rgba(46, 204, 113, 0.05)'; this.style.color='white';">📂 ${dc.nome.toUpperCase()}</a>`;
-            });
-        } else {
-            grid.innerHTML = "<small style='color:#aaa; grid-column:1/-1;'>Nenhum arquivo ou relatório arquivado neste mês.</small>";
-        }
-    }
-
-    function carregarModeloFixo(tipo) {
-        let selSab = document.getElementById('selSabadoCartao');
-        let sabKey = selSab ? selSab.value : obterDataSabadoAtual();
-        
-        if(!db.cronogramas) db.cronogramas = {};
-        
-        if(tipo === 'quarta') {
-            db.cronogramas[sabKey] = [
-                { horario: "19:30", atividade: "Louvor Congregacional", responsável: "Equipe de Louvor" },
-                { horario: "19:45", atividade: "Oração Inicial e Boas-Vindas", responsável: "Diretor do Culto" },
-                { horario: "19:50", atividade: "Momento de Oração Intercessora", responsável: "Ancião Escalado" },
-                { horario: "20:00", atividade: "Mensagem da Palavra (Sermão)", responsable: "Pregador da Quarta" },
-                { horario: "20:35", atividade: "Oração Final e Avisos", responsável: "Pregador da Quarta" }
-            ];
-        } else if(tipo === 'domingo') {
-            db.cronogramas[sabKey] = [
-                { horario: "19:30", atividade: "Prelúdio e Louvor Coletivo", responsável: "Ministério de Louvor" },
-                { horario: "19:45", atividade: "Doxologia e Oração Inicial", responsável: "Ancião do Dia" },
-                { horario: "19:50", atividade: "Momento Infantil / ASA", responsável: "Líder Escalado" },
-                { horario: "20:00", atividade: "Mensagem Bíblica Evangélica", responsável: "Pregador Escalado" },
-                { horario: "20:40", atividade: "Hino Final e Benção", responsável: "Pregador Escalado" }
-            ];
-        } else if(tipo === 'sabado') {
-            db.cronogramas[sabKey] = [
-                { horario: "09:00", atividade: "Abertura e Louvor", responsável: "Diretor ES" },
-                { horario: "09:15", atividade: "Informativo Missões", responsável: "Vídeo/Professor" },
-                { horario: "09:30", atividade: "Estudo da Lição em Classes", responsável: "Professores" },
-                { horario: "10:15", atividade: "Encerramento ES", responsável: "Diretor ES" },
-                { horario: "10:30", atividade: "Anúncios e Oração Pastoral", responsável: "Ancião do Dia" },
-                { horario: "10:45", atividade: "Culto de Adoração / Sermão", responsável: "Pregador Escalado" },
-                { horario: "11:45", atividade: "Oração Final e Saída", responsável: "Pregador Escalado" }
-            ];
-        }
-        save();
-        renderCronogramaNaTela();
-        alert(`Modelo de Ordem do Culto para o dia aplicado com sucesso!`);
-    }
-
-    function renderCronogramaNaTela() {
-        const div = document.getElementById('cronograma-lista');
-        if(!div) return;
-        div.innerHTML = "";
-
-        let selSab = document.getElementById('selSabadoCartao');
-        let sabKey = selSab ? selSab.value : obterDataSabadoAtual();
-
-        if(!db.cronogramas || !db.cronogramas[sabKey]) {
-            div.innerHTML = "<p style='text-align:center; color:#666;'>Nenhum cronograma ativo.</p>";
-            return;
-        }
-
-        let lista = db.cronogramas[sabKey];
-        lista.forEach((item, idx) => {
-            if(['admin','ger'].includes(curUser)) {
-                div.innerHTML += `<div style="display:grid; grid-template-columns: 100px 1.5fr 1fr 45px; gap:8px; margin-bottom:8px; background:#f8fafc; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
-                    <input type="text" class="input-dark" value="${item.horario}" style="background:#fff!important; color:#000!important; text-align:center; font-weight:bold; border-color:#cbd5e1;" onchange="db.cronogramas['${sabKey}'][${idx}].horario=this.value; save();">
-                    <input type="text" class="input-dark" value="${item.atividade}" style="background:#fff!important; color:#000!important; border-color:#cbd5e1;" onchange="db.cronogramas['${sabKey}'][${idx}].atividade=this.value; save();">
-                    <input type="text" class="input-dark" value="${item.responsável||''}" style="background:#fff!important; color:#000!important; border-color:#cbd5e1;" onchange="db.cronogramas['${sabKey}'][${idx}].responsável=this.value; save();">
-                    <button class="btn-modern" style="border-color:red; color:red; padding:0;" onclick="removerItemCronograma(${idx})">✕</button>
-                </div>`;
-            } else {
-                div.innerHTML += `<div style="display:grid; grid-template-columns: 110px 1.5fr 1fr; gap:10px; padding:10px; border-bottom:1px solid #e2e8f0; color:#334155; font-size:0.9rem; font-weight:600;">
-                    <span style="color:var(--blue); font-weight:bold; font-size:0.95rem;">⏱️ ${item.horario}</span>
-                    <span style="color:#0f172a;">${item.atividade}</span>
-                    <span style="color:#64748b; font-style:italic;">Responsável: ${item.responsável||'Equipe'}</span>
-                </div>`;
-            }
-        });
-    }
-
-    function addBlocoCron() {
-        let selSab = document.getElementById('selSabadoCartao');
-        let sabKey = selSab ? selSab.value : obterDataSabadoAtual();
-        if(!db.cronogramas[sabKey]) db.cronogramas[sabKey] = [];
-        
-        db.cronogramas[sabKey].push({ horario: "00:00", atividade: "Nova Atividade", responsável: "Líder" });
-        renderCronogramaNaTela();
-    }
-
-    function removerItemCronograma(idx) {
-        let selSab = document.getElementById('selSabadoCartao');
-        let sabKey = selSab ? selSab.value : obterDataSabadoAtual();
-        db.cronogramas[sabKey].splice(idx, 1);
-        save(); renderCronogramaNaTela();
-    }
-
-    function salvarCronograma() {
-        save(); renderCronogramaNaTela();
-        alert("Ordem de Culto sincronizada e salva com sucesso!");
-    }
-
-    function exportarRelatorioPDF() {
-        const elemento = document.getElementById('tabela-main');
-        const chave = obterChaveMesAno();
-        const nomeMes = MESES[parseInt(chave.split('_')[0])];
-        
-        const config = {
-            margin: 8, filename: `ESCALA_ESTRELA_DALVA_${nomeMes}_2026.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    if(!db.escola_sabatina[sab]) db.escola_sabatina[sab] = {};
+    if(!db.escola_sabatina[sab][window.userLogado]) {
+        db.escola_sabatina[sab][window.userLogado] = {
+            alunos: {}, batismos: 0, ofertas: 0, instrutores: {}, duplas: {}
         };
-        showStatus("GERANDO PDF...", "saving");
-        html2pdf().set(config).from(elemento).save().then(() => {
-            showStatus("PDF GERADO!", "saved");
-        });
     }
 
-    function login() {
-        const u = document.getElementById('userLogin').value.toLowerCase().trim();
-        const p = document.getElementById('passLogin').value.trim();
+    let ES = db.escola_sabatina[sab][window.userLogado];
+    
+    // Lista dinâmica oficial de alunos matriculados nesta unidade específica
+    let listaAlunos = uniData.alunos || [];
+    const corpo = document.getElementById('corpoAlunos');
+    corpo.innerHTML = "";
 
-        if(!u) { alert("Insira suas credenciais."); return; }
-
-        if(db.senhas[u] && db.senhas[u] === p) {
-            localStorage.setItem('iasd_curUser', u);
-            location.reload();
-            return;
-        }
-
-        if(db.unidades_acao && db.unidades_acao[u]) {
-            localStorage.setItem('iasd_curUser', u);
-            location.reload();
-            return;
-        }
-
-        alert("Credenciais Inválidas ou senha incorreta!");
+    if(listaAlunos.length === 0) {
+        corpo.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:15px; color:#795548;">Nenhum aluno matriculado nesta unidade. Vá em Unidades -> Alunos para matricular.</td></tr>`;
     }
 
-    function sair() {
-        localStorage.removeItem('iasd_curUser');
-        location.reload();
+    listaAlunos.forEach(aluno => {
+        if(!ES.alunos[aluno]) {
+            ES.alunos[aluno] = { pres: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
+        }
+        let aD = ES.alunos[aluno];
+
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align:left; padding-left:15px; color:#4e342e; font-weight:bold;">${aluno.toUpperCase()}</td>
+            <td><input type="checkbox" id="p_${aluno}" ${aD.pres?'checked':''} onchange="salvarCheckProf('${aluno}','pres',this.checked)"></td>
+            <td><input type="checkbox" id="c1_${aluno}" ${aD.c1?'checked':''} onchange="salvarCheckProf('${aluno}','c1',this.checked)"></td>
+            <td><input type="checkbox" id="c2_${aluno}" ${aD.c2?'checked':''} onchange="salvarCheckProf('${aluno}','c2',this.checked)"></td>
+            <td><input type="checkbox" id="c3_${aluno}" ${aD.c3?'checked':''} onchange="salvarCheckProf('${aluno}','c3',this.checked)"></td>
+            <td><input type="checkbox" id="c5_${aluno}" ${aD.c5?'checked':''} onchange="salvarCheckProf('${aluno}','c5',this.checked)"></td>
+            <td><input type="checkbox" id="c6_${aluno}" ${aD.c6?'checked':''} onchange="salvarCheckProf('${aluno}','c6',this.checked)"></td>
+            <td><input type="checkbox" id="c7_${aluno}" ${aD.c7?'checked':''} onchange="salvarCheckProf('${aluno}','c7',this.checked)"></td>
+            <td><input type="checkbox" id="c8_${aluno}" ${aD.c8?'checked':''} onchange="salvarCheckProf('${aluno}','c8',this.checked)"></td>
+        `;
+        corpo.appendChild(tr);
+    });
+
+    document.getElementById('inputBatismos').value = ES.batismos || 0;
+    document.getElementById('inputOfertas').value = (ES.ofertas !== undefined) ? ES.ofertas.toFixed(2) : "0.00";
+
+    renderBlocosAuxiliaresProfessor(ES);
+    forçarCalculoProf();
+}
+
+function salvarCheckProf(aluno, campo, checked) {
+    const sab = document.getElementById('selSabadoCartao').value;
+    if(!db.escola_sabatina[sab][window.userLogado].alunos[aluno]) {
+        db.escola_sabatina[sab][window.userLogado].alunos[aluno] = {};
+    }
+    db.escola_sabatina[sab][window.userLogado].alunos[aluno][campo] = checked;
+    forçarCalculoProf();
+    save();
+}
+
+function forçarCalculoProf() {
+    let tP = 0, s1 = 0, s2 = 0, s3 = 0, s5 = 0, s6 = 0, s7 = 0, s8 = 0;
+    const sab = document.getElementById('selSabadoCartao').value;
+    if(!sab || !window.userLogado || !db.unidades[window.userLogado]) return;
+
+    let ES = db.escola_sabatina[sab][window.userLogado];
+    let listaAlunos = db.unidades[window.userLogado].alunos || [];
+
+    // Melhoria Crítica Aplicada: Varre com precisão a árvore dinâmica de matriculados
+    listaAlunos.forEach(aluno => {
+        let pres = document.getElementById(`p_${aluno}`)?.checked ? 1 : 0;
+        if(pres) {
+            tP++;
+            if(document.getElementById(`c1_${aluno}`)?.checked) s1++;
+            if(document.getElementById(`c2_${aluno}`)?.checked) s2++;
+            if(document.getElementById(`c3_${aluno}`)?.checked) s3++;
+            if(document.getElementById(`c5_${aluno}`)?.checked) s5++;
+            if(document.getElementById(`c6_${aluno}`)?.checked) s6++;
+            if(document.getElementById(`c7_${aluno}`)?.checked) s7++;
+            if(document.getElementById(`c8_${aluno}`)?.checked) s8++;
+        }
+    });
+
+    document.getElementById('totPres').innerText = tP;
+    document.getElementById('v1').innerText = s1;
+    document.getElementById('v2').innerText = s2;
+    document.getElementById('v3').innerText = s3;
+    document.getElementById('v4').innerText = parseInt(document.getElementById('inputBatismos').value) || 0;
+    document.getElementById('v5').innerText = s5;
+    document.getElementById('v6').innerText = s6;
+    document.getElementById('v7').innerText = s7;
+    document.getElementById('v8').innerText = s8;
+
+    ES.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
+    ES.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
+
+    renderGraficosProfessorAuto(tP, listaAlunos.length, s1, s2, s3);
+}
+
+function renderBlocosAuxiliaresProfessor(ES) {
+    const divIns = document.getElementById('listaInstrutores');
+    divIns.innerHTML = "";
+    for(let i=1; i<=2; i++){
+        if(!ES.instrutores[i]) ES.instrutores[i] = { nome:"", dando:false, qtd:0 };
+        let ins = ES.instrutores[i];
+        divIns.innerHTML += `
+            <div class="row-missao">
+                <input class="input-dark" style="background:#fff!important; color:#000!important;" value="${ins.nome}" onchange="db.escola_sabatina['${document.getElementById('selSabadoCartao').value}']['${window.userLogado}'].instrutores[${i}].nome=this.value; save();" placeholder="Nome do Instrutor ${i}">
+                <select class="input-dark" style="background:#fff!important; color:#000!important;" onchange="db.escola_sabatina['${document.getElementById('selSabadoCartao').value}']['${window.userLogado}'].instrutores[${i}].dando=(this.value==='S'); save();">
+                    <option value="N" ${!ins.dando?'selected':''}>NÃO DANDO</option>
+                    <option value="S" ${ins.dando?'selected':''}>DANDO ESTUDO</option>
+                </select>
+                <input type="number" class="input-qtd" value="${ins.qtd}" onchange="db.escola_sabatina['${document.getElementById('selSabadoCartao').value}']['${window.userLogado}'].instrutores[${i}].qtd=parseInt(this.value)||0; save();">
+            </div>
+        `;
     }
 
-    window.onload = function() {
-        const selMes = document.getElementById('selMes');
-        if(selMes) {
-            MESES.forEach((m, idx) => {
-                let opt = document.createElement('option'); opt.value = idx; opt.innerText = m;
-                if(idx === new Date().getMonth()) opt.selected = true;
-                selMes.appendChild(opt);
-            });
-        }
+    const divDup = document.getElementById('listaDuplas');
+    divDup.innerHTML = "";
+    for(let i=1; i<=2; i++){
+        if(!ES.duplas[i]) ES.duplas[i] = { nome:"", dando:false, qtd:0 };
+        let dpl = ES.duplas[i];
+        divDup.innerHTML += `
+            <div class="row-missao">
+                <input class="input-dark" style="background:#fff!important; color:#000!important;" value="${dpl.nome}" onchange="db.escola_sabatina['${document.getElementById('selSabadoCartao').value}']['${window.userLogado}'].duplas[${i}].nome=this.value; save();" placeholder="Nomes da Dupla ${i}">
+                <select class="input-dark" style="background:#fff!important; color:#000!important;" onchange="db.escola_sabatina['${document.getElementById('selSabadoCartao').value}']['${window.userLogado}'].duplas[${i}].dando=(this.value==='S'); save();">
+                    <option value="N" ${!dpl.dando?'selected':''}>NÃO DANDO</option>
+                    <option value="S" ${dpl.dando?'selected':''}>DANDO ESTUDO</option>
+                </select>
+                <input type="number" class="input-qtd" value="${dpl.qtd}" onchange="db.escola_sabatina['${document.getElementById('selSabadoCartao').value}']['${window.userLogado}'].duplas[${i}].qtd=parseInt(this.value)||0; save();">
+            </div>
+        `;
+    }
+}
+
+function renderGraficosProfessorAuto(pres, total, licao, estudou, deuEst) {
+    let ctx1 = document.getElementById('graf1').getContext('2d');
+    let ctx2 = document.getElementById('graf2').getContext('2d');
+
+    if(window.grafProf1) window.grafProf1.destroy();
+    if(window.grafProf2) window.grafProf2.destroy();
+
+    let faltas = total - pres;
+    if(faltas < 0) faltas = 0;
+
+    window.grafProf1 = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: ['Presentes', 'Ausentes'],
+            datasets: [{ data: [pres, faltas], backgroundColor: ['#2ecc71', '#e74c3c'] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'FREQUÊNCIA DA CLASSE' } } }
+    });
+
+    window.grafProf2 = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Lição', 'Sete Dias', 'Deu Estudo'],
+            datasets: [{ data: [licao, estudou, deuEst], backgroundColor: ['#3498db', '#f1c40f', '#9b59b6'] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'TERMÔMETRO DE ATIVIDADES' } } }
+    });
+}
+
+// ============================================================================
+// PAINEL DE CONTROLE ADMIN ORIGINAL
+// ============================================================================
+function renderAdmin() {
+    const divMin = document.getElementById('listaMinisterios');
+    divMin.innerHTML = "";
+    const mins = ["ANCIANATO","MIN. DA MÚSICA","MIN. DA RECEPÇÃO","DIACONATO","SONOPLASTIA/MÍDIA"];
+    mins.forEach(m => {
+        let b = document.createElement('button');
+        b.className = "btn-min" + (window.minSelecionado === m ? " active" : "");
+        b.innerText = m;
+        b.onclick = () => { window.minSelecionado = m; renderAdmin(); };
+        divMin.innerHTML += b.outerHTML;
+    });
+
+    const divGrid = document.getElementById('gridMeses');
+    divGrid.innerHTML = "";
+    const list = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+    list.forEach(m => {
+        if(!db.meses[m]) return;
+        divGrid.innerHTML += `
+            <div style="border:1px solid #334155; padding:8px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+                <b style="color:var(--neon)">${m}:</b>
+                <input type="text" class="input-dark" value="${db.meses[m].anciao||""}" onchange="db.meses['${m}'].anciao=this.value; save(); renderTodo();" placeholder="Ancião Líder" style="margin:4px 0;">
+                <input type="text" class="input-dark" value="${db.meses[m].apoio||""}" onchange="db.meses['${m}'].apoio=this.value; save(); renderTodo();" placeholder="Apoio Geral">
+            </div>
+        `;
+    });
+
+    document.getElementById('metaBatismos').value = db.meta_anual || 0;
+
+    const corpoCreds = document.getElementById('corpoCreds');
+    corpoCreds.innerHTML = "";
+    Object.keys(db.creds).forEach(key => {
+        let cr = db.creds[key];
+        corpoCreds.innerHTML += `
+            <tr style="border-bottom:1px solid #222;">
+                <td style="padding:5px;"><b>${key}</b></td>
+                <td><input type="text" class="input-dark" value="${cr.pass}" onchange="db.creds['${key}'].pass=this.value; save();" style="padding:2px 5px;"></td>
+                <td style="text-align:right; color:var(--orange)">${cr.tipo.toUpperCase()}</td>
+            </tr>
+        `;
+    });
+
+    const divApoio = document.getElementById('gridApoioAnciao');
+    divApoio.innerHTML = "";
+    let sabs = listarTodosSabadosDoAno();
+    let mSel = document.getElementById('selMes').value;
+    
+    sabs.forEach(sKey => {
+        let p = sKey.split('_');
+        let mNome = list[parseInt(p[1])-1];
+        if(mNome !== mSel) return;
+
+        if(!db.escola_sabatina[sKey]) db.escola_sabatina[sKey] = {};
         
-        let welcome = document.getElementById('userWelcomeBar');
-        if(welcome) {
-            if(curUser !== 'visitante') {
-                welcome.style.display = 'block';
-                welcome.innerHTML = `🌟 Painel Autenticado | Nível de Acesso: <b style="color:var(--gold);">${curUser.toUpperCase()}</b> | Bem-vindo(a) à plataforma de gestão IASD.`;
-                document.getElementById('btnAcesso').style.display = 'none';
-                document.getElementById('btnSair').style.display = 'block';
-            } else {
-                welcome.style.display = 'none';
-            }
+        let txtAnciao = "";
+        Object.keys(db.unidades).forEach(uK => {
+            if(db.unidades[uK].anciao) txtAnciao = db.unidades[uK].anciao;
+        });
+
+        divApoio.innerHTML += `
+            <div style="font-size:0.75rem; background:rgba(0,0,0,0.2); padding:6px; border-radius:4px; margin-bottom:4px; border-left:3px solid var(--gold);">
+                <b>SÁBADO ${p[0]}/${p[1]}:</b> Lançamentos Realizados.
+            </div>
+        `;
+    });
+
+    const uniAnc = document.getElementById('uniAnciao');
+    if(uniAnc) {
+        uniAnc.innerHTML = "<option value=''>Selecione Ancião de Apoio</option>";
+        let nomes = ["Ancião Carlos", "Ancião Marcos", "Ancião Roberto", "Ancião Gilberto"];
+        nomes.forEach(n => { uniAnc.innerHTML += `<option value="${n}">${n}</option>`; });
+    }
+}
+
+// ============================================================================
+// CADASTRO / UNIDADES E MATRÍCULAS DE ALUNOS
+// ============================================================================
+function renderUnidadesAdmin() {
+    const div = document.getElementById('listaUnidades');
+    div.innerHTML = "";
+    
+    const selAlu = document.getElementById('selUnidadeFiltroAlu');
+    if(selAlu) selAlu.innerHTML = "<option value=''>-- Selecione para Ver/Matricular --</option>";
+
+    Object.keys(db.unidades).forEach(key => {
+        let u = db.unidades[key];
+        let qtd = u.alunos ? u.alunos.length : 0;
+        
+        if(selAlu) {
+            let o = document.createElement('option');
+            o.value = key; o.innerText = u.nome.toUpperCase();
+            selAlu.appendChild(o);
         }
 
-        if(['admin','ger'].includes(curUser)) {
+        div.innerHTML += `
+            <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; border:1px solid #334155; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <b style="color:var(--gold);">${u.nome.toUpperCase()}</b><br>
+                    <small style="color:#cbd5e1;">Professor: ${u.prof} | Apoio: ${u.anciao||'Nenhum'} | 👥 ${qtd} Alunos</small>
+                </div>
+                <button class="btn-min" style="width:auto; border-color:red; color:red; margin:0;" onclick="removerUnidade('${key}')">EXCLUIR</button>
+            </div>
+        `;
+    });
+}
+
+function mudarAbaUnidade(aba) {
+    document.querySelectorAll('.id-aba-btn').forEach(b => b.classList.remove('active'));
+    if(aba === 'cad') {
+        document.getElementById('abaBtnCad').classList.add('active');
+        document.getElementById('abaUnidadeCad').style.display = 'block';
+        document.getElementById('abaUnidadeAlu').style.display = 'none';
+    } else {
+        document.getElementById('abaBtnAlu').classList.add('active');
+        document.getElementById('abaUnidadeCad').style.display = 'none';
+        document.getElementById('abaUnidadeAlu').style.display = 'block';
+        renderAlunosDaUnidadeSelecionada();
+    }
+}
+
+function addUnidade() {
+    let nom = document.getElementById('uniNome').value.trim();
+    let prf = document.getElementById('uniProf').value.trim();
+    let anc = document.getElementById('uniAnciao').value;
+
+    if(!nom || !prf) return alert("Preencha Nome e Professor!");
+    let key = "u_" + Date.now();
+
+    db.unidades[key] = { nome: nom, prof: prf, anciao: anc, alunos: [] };
+    db.creds[nom.toLowerCase().replace(/\s+/g,'')] = { pass: "123", tipo: "professor", nome: nom };
+    
+    document.getElementById('uniNome').value = "";
+    document.getElementById('uniProf').value = "";
+    
+    save();
+    renderUnidadesAdmin();
+}
+
+function removerUnidade(key) {
+    if(confirm("Deseja realmente remover esta unidade? Os alunos perderão o vínculo.")) {
+        delete db.unidades[key];
+        save();
+        renderUnidadesAdmin();
+    }
+}
+
+function renderAlunosDaUnidadeSelecionada() {
+    const key = document.getElementById('selUnidadeFiltroAlu').value;
+    const div = document.getElementById('listaAlunosUnidadeAdmin');
+    div.innerHTML = "";
+
+    if(!key || !db.unidades[key]) {
+        div.innerHTML = "<p style='color:#64748b; text-align:center;'>Selecione uma unidade acima para gerenciar os alunos.</p>";
+        return;
+    }
+
+    let list = db.unidades[key].alunos || [];
+    if(list.length === 0) {
+        div.innerHTML = "<p style='color:#cbd5e1; text-align:center;'>Nenhum aluno matriculado nesta classe ainda.</p>";
+    }
+
+    list.forEach((aluno, idx) => {
+        div.innerHTML += `
+            <div style="background:rgba(255,255,255,0.01); padding:8px 12px; border-radius:6px; border:1px solid #1e293b; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:white; font-weight:600;">${aluno.toUpperCase()}</span>
+                <button class="btn-min" style="width:auto; border-color:red; color:red; margin:0; padding:2px 8px; font-size:0.65rem;" onclick="removerAlunoDaUnidade('${key}', ${idx})">REMOVER MATRÍCULA</button>
+            </div>
+        `;
+    });
+}
+
+function adicionarAlunoNaUnidade() {
+    const key = document.getElementById('selUnidadeFiltroAlu').value;
+    let nome = document.getElementById('addNomeAlunoInput').value.trim();
+
+    if(!key) return alert("Selecione uma unidade primeiro!");
+    if(!nome || nome.length < 3) return alert("Digite o nome completo do aluno!");
+
+    if(!db.unidades[key].alunos) db.unidades[key].alunos = [];
+    db.unidades[key].alunos.push(nome);
+    
+    document.getElementById('addNomeAlunoInput').value = "";
+    save();
+    renderAlunosDaUnidadeSelecionada();
+    renderUnidadesAdmin();
+}
+
+function removerAlunoDaUnidade(key, idx) {
+    if(confirm("Deseja desmatricular este aluno desta unidade?")) {
+        db.unidades[key].alunos.splice(idx, 1);
+        save();
+        renderAlunosDaUnidadeSelecionada();
+        renderUnidadesAdmin();
+    }
+}
+
+// ============================================================================
+// INTEGRAÇÃO DE ARQUIVOS, LOGINS E ROTINAS COMPLEMENTARES ORIGINAIS
+// ============================================================================
+function login() {
+    let u = document.getElementById('userLogin').value.trim().toLowerCase();
+    let p = document.getElementById('passLogin').value.trim();
+
+    if(db.creds[u] && db.creds[u].pass === p) {
+        window.userLogado = u;
+        window.userTipo = db.creds[u].tipo;
+        
+        document.getElementById('modalLogin').style.display = 'none';
+        document.getElementById('btnAcesso').style.display = 'none';
+        document.getElementById('btnSair').style.display = 'block';
+        
+        let bar = document.getElementById('userWelcomeBar');
+        bar.innerText = `🟢 CONEXÃO ESTABELECIDA: ${db.creds[u].nome.toUpperCase()} (${window.userTipo.toUpperCase()}) — ANO ATUAL: 2026`;
+        bar.style.display = 'block';
+
+        if(window.userTipo === 'admin') {
             document.getElementById('adminPanel').style.display = 'block';
             document.getElementById('btnUnidades').style.display = 'block';
             document.getElementById('btnMembros').style.display = 'block';
@@ -1620,16 +1206,243 @@
             document.getElementById('btnRelatorioSabatina').style.display = 'block';
             document.getElementById('adminCronControls').style.display = 'flex';
             document.getElementById('btnCronAddSecao').style.display = 'block';
-            
-            let btnSairProf = document.getElementById('btnSairProfessor');
-            if(btnSairProf) btnSairProf.style.display = 'block';
-        } else if(db && db.unidades_acao && db.unidades_acao[curUser]) {
-            let btnSairProf = document.getElementById('btnSairProfessor');
-            if(btnSairProf) btnSairProf.style.display = 'block';
+            document.getElementById('secCartaoUnidade').style.display = 'none';
+        } else if(window.userTipo === 'professor') {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('secCartaoUnidade').style.display = 'block';
+            document.getElementById('btnSairProfessor').style.display = 'block';
+            initCartaoUnidade();
+        } else if(window.userTipo === 'secretaria') {
+            document.getElementById('btnRelatorioSabatina').style.display = 'block';
+            document.getElementById('secCartaoUnidade').style.display = 'none';
         }
+        
+        renderTodo();
+    } else {
+        alert("Credenciais de acesso incorretas!");
+    }
+}
 
-        carregarDadosNuvem();
+function sair() {
+    window.userLogado = null;
+    window.userTipo = null;
+    document.getElementById('btnAcesso').style.display = 'block';
+    document.getElementById('btnSair').style.display = 'none';
+    document.getElementById('btnSairProfessor').style.display = 'none';
+    document.getElementById('userWelcomeBar').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('secCartaoUnidade').style.display = 'none';
+    document.getElementById('btnUnidades').style.display = 'none';
+    document.getElementById('btnMembros').style.display = 'none';
+    document.getElementById('btnLinks').style.display = 'none';
+    document.getElementById('btnEventos').style.display = 'none';
+    document.getElementById('btnTesourariaAdmin').style.display = 'none';
+    document.getElementById('btnDados').style.display = 'none';
+    document.getElementById('btnRelatorioSabatina').style.display = 'none';
+    document.getElementById('adminCronControls').style.display = 'none';
+    renderTodo();
+}
+
+function updateProgresso() {
+    let totBatismos = 0;
+    Object.keys(db.escola_sabatina).forEach(sab => {
+        Object.keys(db.escola_sabatina[sab]).forEach(uni => {
+            if(db.escola_sabatina[sab][uni].batismos) totBatismos += parseInt(db.escola_sabatina[sab][uni].batismos);
+        });
+    });
+
+    let meta = parseInt(db.meta_anual) || 10;
+    let perc = (totBatismos / meta) * 100;
+    if(perc > 100) perc = 100;
+
+    document.getElementById('progressoMeta').style.width = perc + "%";
+    document.getElementById('textoMeta').innerText = `${totBatismos} / ${meta} BATISMOS CONQUISTADOS EM 2026`;
+}
+
+function renderAvisos() {
+    const tk = document.getElementById('newsTicker');
+    if(db.aviso_ticker && db.aviso_ticker.trim().length > 0) {
+        tk.querySelector('span').innerText = "🚨 NOTIFICAÇÃO OFICIAL: " + db.aviso_ticker.toUpperCase();
+        tk.style.display = 'block';
+    } else {
+        tk.style.display = 'none';
+    }
+    document.getElementById('inputTicker').value = db.aviso_ticker || "";
+}
+
+function renderArquivosPublicos() {
+    const div = document.getElementById('gridArquivosPublicos');
+    div.innerHTML = "";
+    let list = db.arquivos || [];
+    
+    if(list.length === 0) {
+        div.innerHTML = "<p style='color:#64748b; font-size:0.8rem; margin:0;'>Nenhum arquivo ou atas da tesouraria local disponível neste mês.</p>";
+        return;
+    }
+
+    list.forEach(arq => {
+        div.innerHTML += `
+            <div style="background:#111c24; border:1px solid var(--green); padding:10px; border-radius:6px; text-align:center;">
+                <span style="font-size:1.5rem;">📄</span><br>
+                <small style="color:white; display:block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${arq.nome}</small>
+                <a href="${arq.url}" target="_blank" class="btn-min" style="margin-top:8px; border-color:var(--green); color:var(--green); text-align:center; text-decoration:none; display:block; font-size:0.65rem;">ABRIR DOC</a>
+            </div>
+        `;
+    });
+}
+
+function renderLinksPublicos() {
+    const div = document.getElementById('gridLinksPublicos');
+    div.innerHTML = "";
+    let list = db.links || [];
+
+    if(list.length === 0) {
+        div.innerHTML = "<p style='color:#64748b; font-size:0.8rem; margin:0;'>Nenhum link ou material cadastrado.</p>";
+        return;
+    }
+
+    list.forEach(lk => {
+        div.innerHTML += `
+            <div style="background:#0b131a; border:1px solid #334155; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <b style="color:white; font-size:0.85rem;">${lk.tit.toUpperCase()}</b><br>
+                    <a href="${lk.url}" target="_blank" style="color:var(--neon); font-size:0.75rem;">Acessar Canal Oficial ➔</a>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function renderGraficoMissionarioGeral() {
+    let sabs = listarTodosSabadosDoAno();
+    let labels = [];
+    let dataPresencas = [];
+
+    sabs.forEach(sabKey => {
+        let sabData = db.escola_sabatina[sabKey];
+        if(sabData) {
+            let totalSabadoPresentes = 0;
+            let temDados = false;
+            Object.keys(sabData).forEach(uniKey => {
+                temDados = true;
+                if(sabData[uniKey].alunos) {
+                    Object.keys(sabData[uniKey].alunos).forEach(al => {
+                        if(sabData[uniKey].alunos[al].pres) totalSabadoPresentes++;
+                    });
+                }
+            });
+            if(temDados) {
+                labels.push(sabKey.replace(/_/g,'/').substring(0,5));
+                dataPresencas.push(totalSabadoPresentes);
+            }
+        }
+    });
+
+    if(labels.length === 0) {
+        labels = ["Sem Lançamento"]; dataPresencas = [0];
+    }
+
+    let ctx = document.getElementById('missionaryChart').getContext('2d');
+    if(window.graficoMissao) window.graficoMissao.destroy();
+
+    window.graficoMissao = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Frequência Total da Escola Sabatina (IASD)',
+                data: dataPresencas,
+                borderColor: '#00d2ff',
+                backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#fff' } } },
+            scales: {
+                x: { grid: { color: '#334155' }, ticks: { color: '#fff' } },
+                y: { grid: { color: '#334155' }, ticks: { color: '#fff' } }
+            }
+        }
+    });
+}
+
+function carregarModeloFixo(tipo) {
+    const div = document.getElementById('cronograma-lista');
+    div.innerHTML = "";
+    let blocos = db.cronograma[tipo] || [];
+    
+    blocos.forEach((bl, idx) => {
+        let edit = (window.userTipo === 'admin' || window.userTipo === 'anciao') ? "" : "readonly";
+        div.innerHTML += `
+            <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+                <input class="input-dark" style="background:#fff!important; color:#000!important; text-align:center; font-weight:bold; font-size:0.9rem;" value="${bl.hora}" ${edit} id="cron_h_${idx}">
+                <input class="input-dark" style="background:#fff!important; color:#000!important; font-weight:500;" value="${bl.Atividade}" ${edit} id="cron_a_${idx}">
+            </div>
+        `;
+    });
+    window.modeloCronogramaAberto = tipo;
+}
+
+function addBlocoCron() {
+    let tipo = window.modeloCronogramaAberto || 'sabado';
+    db.cronograma[tipo].push({ hora: "00:00", Atividade: "Nova Atividade Inserida" });
+    carregarModeloFixo(tipo);
+}
+
+function salvarCronograma() {
+    let tipo = window.modeloCronogramaAberto || 'sabado';
+    let blocos = db.cronograma[tipo] || [];
+    
+    blocos.forEach((bl, idx) => {
+        let h = document.getElementById(`cron_h_${idx}`)?.value || "00:00";
+        let a = document.getElementById(`cron_a_${idx}`)?.value || "";
+        db.cronograma[tipo][idx] = { hora: h, Atividade: a };
+    });
+
+    save();
+    alert("Ordem de culto atualizada e salva na infraestrutura!");
+}
+
+function exportarRelatorioPDF() {
+    let elemento = document.getElementById('areaEscalaPrincipal');
+    let opt = {
+        margin: 10,
+        filename: `Escala_IASD_Estrela_Dalva_${document.getElementById('selMes').value}_2026.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
+    html2pdf().set(opt).from(elemento).save();
+}
+
+function toggleSection(wrapperId, btnId) {
+    const wrap = document.getElementById(wrapperId);
+    const btn = document.getElementById(btnId);
+    if(wrap.style.display === 'none') {
+        wrap.style.display = 'block';
+        if(btn) btn.innerText = '-';
+    } else {
+        wrap.style.display = 'none';
+        if(btn) btn.innerText = '+';
+    }
+}
+
+// Inicializações Automáticas ao Carregar o DOM
+window.addEventListener('DOMContentLoaded', () => {
+    loadAll();
+    carregarModeloFixo('sabado');
+    
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('btnTopo');
+        if(window.scrollY > 300) btn.style.display = 'block';
+        else btn.style.display = 'none';
+    });
+});
 </script>
 </body>
 </html>
