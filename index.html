@@ -121,7 +121,7 @@
     <div id="userWelcomeBar" class="no-print"></div>
 
     <div class="no-print" id="menuNavegacaoGeral" style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap: wrap;">
-        <button id="btnCron" class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="abrirCronogramaAutomatico()">📝 ORDEM DO CULTO</button>
+        <button id="btnCron" class="btn-modern" style="border-color:var(--gold); color:var(--gold);" onclick="document.getElementById('modalCronograma').style.display='flex'">📝 ORDEM DO CULTO</button>
         <button id="btnRelatorioSabatina" class="btn-modern" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="abrirRelatorioSabatina()">📈 RELATÓRIO ESCOLA SABATINA</button>
         <button id="btnUnidades" class="btn-modern" style="border-color:var(--gold); color:var(--gold); display:none;" onclick="document.getElementById('popUnidades').style.display='flex'; renderUnidadesAdmin();">🏫 UNIDADES</button>
         <button id="btnMembros" class="btn-modern" style="border-color:var(--neon); color:var(--neon); display:none;" onclick="document.getElementById('popMembros').style.display='flex'; renderMembros();">👥 EQUIPE</button>
@@ -190,6 +190,7 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
+        
         <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
             <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
             <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
@@ -260,6 +261,7 @@
                                 <input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -271,6 +273,7 @@
     </div>
 
     <div id="areaGeralSistemaComAbas">
+        
         <div class="busca-container no-print" id="wrapperBuscaRapida" style="text-align:center; margin-top:20px; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
@@ -324,6 +327,7 @@
         <div id="secLinksPublicos" style="margin-bottom: 50px; background: rgba(255,255,255,0.01); padding: 20px; border: 1px solid #334155; border-top:none; border-radius: 0 0 12px 12px;" class="no-print">
             <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
         </div>
+
     </div>
 </div>
 
@@ -331,6 +335,7 @@
     <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
         <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
         <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+        
         <div style="max-height: 450px; overflow-y: auto;">
             <table class="tabla-secre">
                 <thead>
@@ -355,664 +360,586 @@
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário ou Unidade" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha (vazio p/ Unidades)" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" style="background:var(--neon); color:var(--blue); border:none; margin-top:15px;" onclick="salvarLink()">POSTAR</button><hr style="border:0; border-top:1px solid #444; margin:15px 0;"><div id="listaLinksAtivos"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 90%;" id="viewContainer"></div></div>
 
 <div id="popUnidades" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:500px;" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center; margin-top:0;">GERENCIAR UNIDADES DE AÇÃO</h3>
-        <div style="display:flex; gap:5px; margin-bottom:15px;">
-            <input id="unNome" placeholder="Nome da Unidade" class="input-dark">
-            <input id="unProf" placeholder="Professor" class="input-dark">
-            <button class="btn-modern" onclick="addUnidade()">+</button>
+    <div class="pop-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--gold); text-align:center; margin-top:0;">CADASTRO DE UNIDADES DE AÇÃO</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;">
+            <input id="unNome" placeholder="Ex: Unidade 1" class="input-dark">
+            <input id="unProf" placeholder="Nome do Professor" class="input-dark">
         </div>
-        <div id="listaUnidadesAdmin" style="max-height:320px; overflow-y:auto; border:1px solid #334155; padding:5px; border-radius:6px;"></div>
+        <div style="margin-bottom: 15px;">
+            <label style="font-size:0.75rem; color: var(--neon);">Ancião de Apoio da Unidade:</label>
+            <select id="unAnciao" class="input-dark" style="margin-top:4px;"></select>
+        </div>
+        <button class="btn-min" style="background: var(--gold); color: #000; border: none;" onclick="addUnidadeAcao()">CADASTRAR UNIDADE</button>
+        <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+        <div id="listaUnidadesCadastradas" style="max-height:200px; overflow-y:auto;"></div>
         <button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR</button>
     </div>
 </div>
 
-<div id="popTermometroCompleto" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:550px;" onclick="event.stopPropagation()">
-        <h3 style="color:var(--orange); text-align:center; margin-top:0;">📊 TERMÔMETRO MISSIONÁRIO GLOBAL</h3>
-        <p style="color:#ccc; font-size:0.8rem; text-align:center; margin-bottom:15px;">Valores consolidados acumulados do ano inteiro.</p>
-        <div id="listaTermometroItensGerais"></div>
-        <button onclick="document.getElementById('popTermometroCompleto').style.display='none'" class="btn-fechar">FECHAR AVALIAÇÃO</button>
+<div id="popAlertaTrimestre" class="overlay" style="z-index: 99999;">
+    <div class="pop-content" style="border-color: var(--red); max-width: 500px; text-align: center;">
+        <h2 style="color: var(--red); margin-top: 0;">⚠️ ALERTA DE NOVO TRIMESTRE</h2>
+        <p style="font-size: 0.95rem; line-height: 1.5; color: #fff;">O sistema detectou uma mudança de trimestre. Para evitar sobrecarregar o banco de dados, o histórico de cartões de chamada antigos precisa ser limpo.</p>
+        <p style="font-weight: bold; color: var(--gold);">FAÇA O DOWNLOAD DOS ARQUIVOS EM PDF/JPG AGORA ANTES DE PROSSEGUIR!</p>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
+            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button>
+            <button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">REMOVER DADOS ANTIGOS E INICIAR NOVO TRIMESTRE</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // Inicialização do Firebase (Substitua pelas suas credenciais reais)
-    const firebaseConfig = {
-        apiKey: "AIzaSyD...",
-        authDomain: "iasd-estrela-dalva.firebaseapp.com",
-        projectId: "iasd-estrela-dalva",
-        storageBucket: "iasd-estrela-dalva.appspot.com",
-        messagingSenderId: "123456789",
-        appId: "1:123456789:web:abc123xyz"
-    };
-    
-    if(!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const firestore = firebase.firestore();
+    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
+    firebase.initializeApp(firebaseConfig);
+    const dbCloud = firebase.firestore();
 
-    // Estado do Banco de Dados Local do Sistema
-    let db = {
-        config: {},
-        creds: {},
-        escala: {},
-        apoio: {},
-        cronograma: {},
-        unidades: {},
-        membros: [],
-        links: [],
-        eventos: [],
-        arquivos: {},
-        aviso_ticker: "",
-        meta_anual: 15
-    };
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
+    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
+    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
+    let g1, g2; const TOTAL_ALUNOS = 20;
 
-    let userRole = "public"; 
-    let userUnidadeKey = null;
-    window.minSelecionado = null;
-    let g1=null, g2=null, gGeral=null;
-
-    const mesesLabels = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-    const colunasEscala = ["sabatina","pregador","musica","louvor","sonoplastia","recepcao","diaconato"];
-
-    window.onload = async function() {
-        gerarSeletorMeses();
-        gerarSeletorSabadosTrimestre();
-        await carregarDadosFirebase();
-        renderTodo();
-        detectarDiaAtualEAcordion();
-    };
-
-    function gerarSeletorMeses() {
-        let sel = document.getElementById('selMes');
-        sel.innerHTML = "";
-        let mAtual = new Date().getMonth();
-        mesesLabels.forEach((m, idx) => {
-            let opt = document.createElement('option');
-            opt.value = idx;
-            opt.text = m;
-            if(idx === mAtual) opt.selected = true;
-            sel.appendChild(opt);
-        });
-    }
-
-    // ====== MELHORIA: DETERMINAÇÃO AUTOMÁTICA DE DATAS E MODELOS ======
-
-    function abrirCronogramaAutomatico() {
-        let hoje = new Date();
-        let diaSemana = hoje.getDay(); // 0 = Domingo, 3 = Quarta, 6 = Sábado
-        
-        // Mostra o modal do cronograma
-        document.getElementById('modalCronograma').style.display = 'flex';
-        
-        // Se a lista do cronograma estiver vazia ou se quisermos sugerir o dia atual automaticamente
-        let listaVazia = !document.getElementById('cronograma-lista').innerHTML.trim();
-        
-        if (listaVazia) {
-            if (diaSemana === 6) {
-                // Sábado abre o cronograma de Sábado
-                carregarModeloFixo('sabado');
-            } else if (diaSemana === 0) {
-                // Domingo abre o cronograma de Domingo
-                carregarModeloFixo('domingo');
-            } else {
-                // Qualquer OUTRO dia da semana (Segunda, Terça, Quarta, Quinta, Sexta) 
-                // assumirá por padrão o modelo de Quarta-feira
-                carregarModeloFixo('quarta');
-            }
+    // Gerenciador de visibilidade de painéis (Collapse)
+    function toggleSection(sectionId, buttonId) {
+        const target = document.getElementById(sectionId);
+        const btn = document.getElementById(buttonId);
+        if(target.style.display === 'none') {
+            target.style.display = 'block';
+            btn.innerText = '-';
+        } else {
+            target.style.display = 'none';
+            btn.innerText = '+';
         }
     }
 
-    function obterSabadoAtualFormato() {
-        let hoje = new Date();
-        let diaSemana = hoje.getDay(); // 0 = Domingo, 6 = Sábado
-        
-        // Calcula quantos dias faltam ou passaram para o sábado (6)
-        let diferenca = 6 - diaSemana;
-        if (diaSemana === 0) diferenca = -1; // Se for domingo, o sábado foi ontem
-        
-        let sabadoMaisProximo = new Date(hoje);
-        sabadoMaisProximo.setDate(hoje.getDate() + diferenca);
-        
-        let dia = String(sabadoMaisProximo.getDate()).padStart(2, '0');
-        let mes = String(sabadoMaisProximo.getMonth() + 1).padStart(2, '0');
-        let ano = sabadoMaisProximo.getFullYear();
-        
-        return `${dia}_${mes}_${ano}`;
+    window.onscroll = function() { 
+        const btn = document.getElementById("btnTopo");
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) { btn.style.display = "block"; } 
+        else { btn.style.display = "none"; }
+    };
+
+    dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
+        if(doc.exists) { 
+            db = doc.data(); 
+            if(!db.unidades_acao) db.unidades_acao = {};
+            if(!db.historico_cartoes) db.historico_cartoes = {};
+            if(!db.trimestre_atual) db.trimestre_atual = obterTrimestreAtual();
+            
+            verificarViradaTrimestre();
+            popularListaSabadosSeletor();
+            renderTodo(); 
+            updateProgresso(); 
+            renderAvisos();
+            if(db.cronograma) carregarCronograma(db.cronograma);
+            initCartaoUnidade();
+        } 
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15, unidades_acao: {}, historico_cartoes: {}, trimestre_atual: obterTrimestreAtual() }; save(); }
+    });
+
+    function showStatus(txt, classe) { const el = document.getElementById('saveIndicator'); el.innerText = txt; el.className = classe; el.style.display = "block"; if(classe === 'saved') setTimeout(() => { el.style.display = "none"; }, 2000); }
+    function save() { 
+        if (!db || !db.senhas || (!db.escalas && !db.membros_v3)) {
+            console.error("Tentativa de salvamento bloqueada: O banco de dados local está incompleto ou vazio.");
+            return;
+        }
+        showStatus("Salvando...", "saving"); 
+        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => { 
+            showStatus("✅ Alterações Salvas", "saved"); 
+        }).catch(e => alert("Erro ao salvar: " + e.message)); 
     }
 
-    function gerarSeletorSabadosTrimestre() {
-        let sel = document.getElementById('selSabadoCartao');
-        if(!sel) return;
-        sel.innerHTML = "";
-        
-        let hoje = new Date();
-        let ano = hoje.getFullYear();
+    function obterTrimestreAtual() {
+        const mes = new Date().getMonth();
+        if(mes <= 2) return "T1-2026";
+        if(mes <= 5) return "T2-2026";
+        if(mes <= 8) return "T3-2026";
+        return "T4-2026";
+    }
+
+    function listarSabados2026() {
         let sabados = [];
-        
-        let d = new Date(ano, 0, 1);
-        while(d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
-        
-        while(d.getFullYear() === ano) {
-            let diaF = String(d.getDate()).padStart(2, '0');
-            let mesF = String(d.getMonth() + 1).padStart(2, '0');
-            sabados.push(`${diaF}_${mesF}_${ano}`);
+        let d = new Date(2026, 0, 1);
+        while (d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
+        while (d.getFullYear() === 2026) {
+            sabados.push(`${d.getDate()}_${d.getMonth() + 1}_${d.getFullYear()}`);
             d.setDate(d.getDate() + 7);
         }
+        return sabados;
+    }
 
-        sabados.forEach(sab => {
-            let opt = document.createElement('option');
-            opt.value = sab;
-            opt.text = sab.replace(/_/g, '/');
-            sel.appendChild(opt);
+    function popularListaSabadosSeletor() {
+        const sel = document.getElementById('selSabadoCartao');
+        if(!sel || sel.options.length > 0) return;
+        const list = listarSabados2026();
+        const sabHoje = obterDataSabadoAtual();
+        list.forEach(s => {
+            let op = document.createElement('option');
+            op.value = s;
+            op.innerText = s.replace(/_/g, '/');
+            if(s === sabHoje) op.selected = true;
+            sel.appendChild(op);
         });
+    }
 
-        // LOGICA DA MELHORIA: Seleciona o sábado correspondente ao dia atual automaticamente
-        let sabadoIdeal = obterSabadoAtualFormato();
-        for (let i = 0; i < sel.options.length; i++) {
-            if (sel.options[i].value === sabadoIdeal) {
-                sel.selectedIndex = i;
-                break;
-            }
+    function verificarViradaTrimestre() {
+        const tAtual = obterTrimestreAtual();
+        if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
+            // Apenas atualiza a marcação do trimestre atual silenciosamente, protegendo o histórico
+            db.trimestre_atual = tAtual;
+            save();
         }
     }
 
-    async function carregarDadosFirebase() {
-        showIndicator("Carregando dados da nuvem...", "saving");
-        try {
-            let snapshot = await firestore.collection("sistema").doc("backup_realtime").get();
-            if(snapshot.exists()) {
-                let data = snapshot.data();
-                if(data.escala) db.escala = data.escala;
-                if(data.creds) db.creds = data.creds;
-                if(data.config) db.config = data.config;
-                if(data.apoio) db.apoio = data.apoio;
-                if(data.cronograma) db.cronograma = data.cronograma;
-                if(data.unidades) db.unidades = data.unidades;
-                if(data.membros) db.membros = data.membros;
-                if(data.links) db.links = data.links;
-                if(data.eventos) db.eventos = data.eventos;
-                if(data.arquivos) db.arquivos = data.arquivos;
-                if(data.aviso_ticker) db.aviso_ticker = data.aviso_ticker;
-                if(data.meta_anual) db.meta_anual = Number(data.meta_anual);
-            }
-            showIndicator("Sistema Pronto e Atualizado!", "saved");
-        } catch(e) {
-            showIndicator("Erro ao conectar com Firebase!", "saving");
-            console.error(e);
-        }
+    function confirmarLimpezaTrimestre() {
+        // Bloqueio de segurança permanente: impede a limpeza acidental do histórico da Escola Sabatina
+        console.log("Limpeza de dados abortada para proteger a integridade do Firebase.");
+        db.trimestre_atual = obterTrimestreAtual();
+        document.getElementById('popAlertaTrimestre').style.display = 'none';
+        save();
+        alert("Proteção Ativada: O histórico do trimestre foi preservado e não foi apagado!");
     }
 
-    async function save() {
-        showIndicator("Salvando alterações automaticamente...", "saving");
-        try {
-            await firestore.collection("sistema").doc("backup_realtime").set(db);
-            showIndicator("Todas as alterações foram salvas!", "saved");
-        } catch(e) {
-            showIndicator("Erro ao salvar dados!", "saving");
-        }
-    }
-
-    function showIndicator(txt, classe) {
-        let ind = document.getElementById('saveIndicator');
-        ind.innerText = txt; ind.className = classe; ind.style.display = 'block';
-        if(classe === 'saved') { setTimeout(() => { ind.style.display='none'; }, 3500); }
-    }
+    function baixarRelatorioCartoesTrimestre() { alert("Gerando compilação de dados do trimestre..."); window.print(); }
 
     function renderTodo() {
-        renderEscala();
-        renderPlanAnual();
-        renderAvisos();
-        renderAdmin();
-        renderArquivosPublicos();
-        renderLinksPublicos();
-        updateProgresso();
-        renderGraficoGlobalMissionario();
-        if(userRole === 'professor' || userRole === 'admin') { initCartaoUnidade(); }
-    }
-
-    function toggleSection(idBloco, idBtn) {
-        let box = document.getElementById(idBloco);
-        let btn = document.getElementById(idBtn);
-        if(box.style.display === 'none') { box.style.display = 'block'; btn.innerText = '-'; }
-        else { box.style.display = 'none'; btn.innerText = '+'; }
-    }
-
-    function detectarDiaAtualEAcordion() {
-        let hoje = new Date();
-        let dStr = String(hoje.getDate()).padStart(2, '0');
-        let mStr = String(hoje.getMonth() + 1).padStart(2, '0');
-        let chaveHoje = `${dStr}_${mStr}`;
+        const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
+        const busca = document.getElementById('buscaRapida').value.toUpperCase();
+        const hojeObj = new Date();
+        const hojeFormatado = `${hojeObj.getDate()}/${hojeObj.getMonth()+1}/${hojeObj.getFullYear()}`;
         
-        let linhas = document.querySelectorAll("#corpoEscala tr");
-        linhas.forEach(row => {
-            if(row.getAttribute("data-id") === chaveHoje) {
-                row.classList.add("hoje");
-                row.scrollIntoView({behavior: "smooth", block: "center"});
-            }
-        });
-    }
-
-    function renderEscala() {
-        let mSel = document.getElementById('selMes').value;
-        let busca = document.getElementById('buscaRapida').value.toLowerCase().trim();
-        let corpo = document.getElementById('corpoEscala');
-        corpo.innerHTML = "";
+        document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || 'Não definido'}`;
+        document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
+        document.getElementById('mesTesouraria').innerText = MESES[mIdx];
         
-        let ano = 2026;
-        let diasNoMes = new Date(ano, Number(mSel)+1, 0).getDate();
+        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
+        document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
+        document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
         
-        let responsavelMes = db.config[`resp_${mSel}`] || "Não definido";
-        document.getElementById('headerAnciao').innerText = `Ancião Responsável do Mês: ${responsavelMes}`;
-
-        for(let d=1; d<=diasNoMes; d++) {
-            let dataObj = new Date(ano, Number(mSel), d);
-            let diaSemana = dataObj.getDay();
-            
-            if(diaSemana === 0 || diaSemana === 3 || diaSemana === 6) {
-                let dStr = String(d).padStart(2, '0');
-                let mStr = String(Number(mSel)+1).padStart(2, '0');
-                let key = `${dStr}_${mStr}`;
-                
-                let labels = ["DOMINGO", "", "", "QUARTA-FEIRA", "", "", "SÁBADO"];
-                let classeRow = "";
-                if(diaSemana === 3) classeRow = "row-especial";
-                if(diaSemana === 0) classeRow = "row-ministerio";
-                
-                let celulasHtml = "";
-                let encontrouBusca = (busca === "");
-
-                colunasEscala.forEach(col => {
-                    let valor = (db.escala[key] && db.escala[key][col]) ? db.escala[key][col] : "";
-                    if(busca && valor.toLowerCase().includes(busca)) encontrouBusca = true;
-                    
-                    let editavel = (userRole === 'admin') ? `contenteditable="true" onblur="salvarCelulaEscala('${key}','${col}',this.innerText)"` : "";
-                    celulasHtml += `<td ${editavel}>${valor}</td>`;
-                });
-
-                if(encontrouBusca) {
-                    corpo.innerHTML += `<tr class="${classeRow}" data-id="${key}">
-                        <td><b>${labels[diaSemana]}</b></td>
-                        <td>${dStr}/${mStr}</td>
-                        ${celulasHtml}
-                    </tr>`;
-                }
-            }
-        }
-    }
-
-    function salvarCelulaEscala(key, col, texto) {
-        if(!db.escala[key]) db.escala[key] = {};
-        db.escala[key][col] = texto.trim();
-        save();
-    }
-
-    function renderPlanAnual() {
-        let corpo = document.getElementById('corpoPlan');
-        corpo.innerHTML = "";
-        mesesLabels.forEach((m, idx) => {
-            let valor = db.config[`plan_${idx}`] || "";
-            let editavel = (userRole === 'admin') ? `contenteditable="true" style="background:#000; padding:8px; border-radius:4px; text-align:left;" onblur="db.config['plan_${idx}']=this.innerText; save();"` : 'style="text-align:left; padding:8px;"';
-            corpo.innerHTML += `<tr style="border-bottom:1px solid #223]."><td style="width:150px; font-weight:bold; color:var(--gold); padding:8px;">${m}</td><td ${editavel}>${valor}</td></tr>`;
-        });
-    }
-
-    function renderAvisos() {
-        let t = document.getElementById('newsTicker');
-        if(db.aviso_ticker && db.aviso_ticker.trim() !== "") {
-            t.style.display = "block";
-            t.querySelector('span').innerText = db.aviso_ticker;
-        } else { t.style.display = "none"; }
-        document.getElementById('inputTicker').value = db.aviso_ticker || "";
-    }
-
-    function updateProgresso() {
-        document.getElementById('metaBatismos').value = db.meta_anual || 0;
-        let realizados = 0;
-        Object.keys(db.unidades).forEach(uKey => {
-            if(db.unidades[uKey].dados_sabados) {
-                Object.keys(db.unidades[uKey].dados_sabados).forEach(sab => {
-                    let b = db.unidades[uKey].dados_sabados[sab].batismos;
-                    if(b) realizados += Number(b);
-                });
-            }
-        });
-        let meta = db.meta_anual || 1;
-        let porc = Math.min((realizados / meta) * 100, 100);
-        document.getElementById('progressoMeta').style.width = porc + "%";
-        document.getElementById('textoMeta').innerText = `${realizados} BATISMOS DE ${meta} PLANEJADOS`;
-    }
-
-    function renderAdmin() {
-        if(userRole !== 'admin') {
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        
+        if(isUnidade) {
+            document.getElementById('headerTopo').style.display = 'none';
+            document.getElementById('menuNavegacaoGeral').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'none';
-            return;
+            document.getElementById('areaGeralSistemaComAbas').style.display = 'none';
+            document.getElementById('btnSairProfessor').style.display = 'block';
+            document.getElementById('userWelcomeBar').style.display = 'none';
+            document.getElementById('headerToggleCartaoAdmin').style.display = 'none'; // Some barra de fechar p/ professor
+        } else {
+            document.getElementById('headerTopo').style.display = 'flex';
+            document.getElementById('menuNavegacaoGeral').style.display = 'flex';
+            document.getElementById('areaGeralSistemaComAbas').style.display = 'block';
+            document.getElementById('btnSairProfessor').style.display = 'none';
+            
+            // Controle da barra minimizável do Cartão para os Admins
+            const isAdminSabatina = ['admin','ger','sabatina'].includes(curUser);
+            document.getElementById('headerToggleCartaoAdmin').style.display = isAdminSabatina ? 'flex' : 'none';
+
+            if(!isV) {
+                document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
+            }
         }
-        document.getElementById('adminPanel').style.display = 'block';
         
-        let minBox = document.getElementById('listaMinisterios');
-        minBox.innerHTML = "";
-        let ministerios = ["DIACONATO","RECEPÇÃO","LOUVOR","SONOPLASTIA","INFANTIS","MUSH","SABATINA"];
-        ministerios.forEach(m => {
-            let act = (window.minSelecionado === m) ? "active" : "";
-            minBox.innerHTML += `<button class="btn-min ${act}" onclick="window.minSelecionado='${m}'; renderAdmin();">${m}</button>`;
+        document.getElementById('btnCron').style.display = 'block';
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria', 'btnMembros'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.style.display = (isV || isUnidade) ? 'none' : 'block';
         });
+        
+        document.getElementById('btnUnidades').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
+        document.getElementById('btnRelatorioSabatina').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
 
-        let mBox = document.getElementById('gridMeses');
-        mBox.innerHTML = "";
-        mesesLabels.forEach((m, idx) => {
-            let val = db.config[`resp_${idx}`] || "";
-            mBox.innerHTML += `<div style="margin-bottom:6px;"><small style="color:var(--neon)">${m}:</small>
-            <input class="input-dark" value="${val}" onchange="db.config['resp_${idx}']=this.value; save(); renderEscala();"></div>`;
-        });
+        const modelosDiv = document.getElementById('modelosCronograma');
+        if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
 
-        let apoBox = document.getElementById('gridApoioAnciao');
-        apoBox.innerHTML = "";
-        Object.keys(db.unidades).forEach(uKey => {
-            let val = db.apoio[uKey] || "";
-            apoBox.innerHTML += `<div style="margin-bottom:6px;"><small style="color:#fff">${db.unidades[uKey].nome}:</small>
-            <input class="input-dark" value="${val}" onchange="db.apoio['${uKey}']=this.value; save();"></div>`;
-        });
+        if (!isV && !isUnidade) {
+            document.getElementById('adminCronControls').style.display = 'flex';
+            document.getElementById('btnCronAddSecao').style.display = isAdmin ? 'block' : 'none';
+        } else {
+            document.getElementById('adminCronControls').style.display = 'none';
+        }
 
-        let cBody = document.getElementById('corpoCreds');
-        cBody.innerHTML = "<tr><th>USUÁRIO/UNIDADE</th><th>SENHA MASTER</th></tr>";
-        Object.keys(db.creds).forEach(k => {
-            cBody.innerHTML += `<tr><td>${k}</td><td><input class="input-dark" value="${db.creds[k]}" onchange="db.creds['${k}']=this.value; save();"></td></tr>`;
-        });
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
+        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+        for(let d=1; d<=diasNoMes; d++) {
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
+            let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
+            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
+            if(busca && !txtDia.includes(busca)) continue;
+            if([0,3,6].includes(sem) || idEv) {
+                let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
+                if(dStr === hojeFormatado) rowClass += ' hoje';
+                let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
+                    let val = db.escalas?.[dStr]?.[col] || '';
+                    let isCon = checarConflito(dStr, val);
+                    let canEdit = isAdmin || (curUser !== 'visitante' && !isUnidade && ((curUser==='diaconato' && col==='di') || (curUser==='musica' && (col==='mu'||col==='lo')) || (curUser==='sonoplastia' && col==='so') || (curUser==='sabatina' && col==='sa') || (col==='pr' && (minDoDia===curUser || (idEv && idEv.owner===curUser)))));
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand ${isCon?'conflito':''}" onkeydown="handleEscalaKeys(event, '${dStr}', '${col}')" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
+                });
+                corpo.innerHTML += tr + "</tr>";
+            }
+        }
+        const corpoPlan = document.getElementById('corpoPlan');
+        corpoPlan.innerHTML = "";
+        MESES.forEach((m, i) => { corpoPlan.innerHTML += `<tr style="border-bottom:1px solid #334155;"><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; });
+        if(isAdmin) { 
+            document.getElementById('adminPanel').style.display='block'; 
+            renderAdmin();
+        }
+        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso();
+        setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
     }
+
+    function renderAvisos() { const bar = document.getElementById('newsTicker'); if(bar) { if(db.aviso_ticker) { bar.style.display = 'block'; bar.querySelector('span').innerText = db.aviso_ticker; } else bar.style.display = 'none'; } }
+    function carregarCronograma(lista) { const container = document.getElementById('cronograma-lista'); if(container) { container.innerHTML = ""; lista.forEach(d => addBlocoCron(d)); } }
+    
+    function addBlocoCron(dados = { horario: '', titulo: '', itens: [], corBg: '#f0f0f0', corTxt: '#000000' }) {
+        const isAdmin = ['admin','ger'].includes(curUser); const bg = dados.corBg || '#f0f0f0'; const txtColor = dados.corTxt || '#000000';
+        const b = document.createElement('div'); b.className = 'bloco'; b.style.border = "1px solid #cbd5e1"; b.style.marginBottom = "12px"; b.style.borderRadius = "6px"; b.style.overflow = "hidden";
+        b.innerHTML = `<div style="background:${bg}; color:${txtColor}; padding:10px; display:flex; gap:10px; align-items:center;"><input style="width:110px; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v cron-horario"><input style="flex-grow:1; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v cron-titulo"><input type="hidden" class="cron-bg" value="${bg}"><input type="hidden" class="cron-txt" value="${txtColor}">${isAdmin ? `<button class="btn-modern" style="padding:4px 8px; background:white; border-color:#94a3b8;" onclick="addItemCron(this)">+ Item</button><button class="btn-modern" style="padding:4px 8px; background:#fee2e2; border-color:#ef4444; color:#b91c1c;" onclick="this.closest('.bloco').remove()">X</button>` : ''}</div><table style="width:100%; border-collapse:collapse; background:#fff;"><tbody style="color:#000;"></tbody></table>`;
+        document.getElementById('cronograma-lista').appendChild(b); if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it, dados.titulo));
+    }
+    
+    function addItemCron(target, it = { nome: '', tempo: '' }, tituloBloco = '') {
+        const isAdmin = ['admin','ger'].includes(curUser); const tb = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody'); const tr = document.createElement('tr'); tr.style.borderBottom = "1px solid #f1f5f9";
+        if (!tituloBloco && target.closest('.bloco')) { tituloBloco = target.closest('.bloco').querySelector('.cron-titulo').value; }
+        let tituloTratado = (tituloBloco || '').toUpperCase(); let nomeItemTratado = (it.nome || '').toUpperCase(); let canEditItem = isAdmin;
+        if (curUser !== 'visitante' && !canEditItem) {
+            if (curUser === 'musica' && (nomeItemTratado.includes('LOUVOR') || nomeItemTratado.includes('MÚSICA') || nomeItemTratado.includes('MUSICA') || nomeItemTratado.includes('HINO'))) canEditItem = true;
+            else if (curUser === 'sonoplastia' && (nomeItemTratado.includes('PROVAI') || nomeItemTratado.includes('VÍDEO') || nomeItemTratado.includes('VIDEO') || nomeItemTratado.includes('SONOPLASTIA') || nomeItemTratado.includes('MUSICA') || nomeItemTratado.includes('MÚSICA') || nomeItemTratado.includes('INFORMATIVO') || nomeItemTratado.includes('CARTA'))) canEditItem = true;
+            else if (curUser === 'sabatina' && tituloTratado.includes('ESCOLA SABATINA')) canEditItem = true;
+        }
+        tr.innerHTML = `<td style="padding:6px 10px; font-weight:500; width:45%; background:#fafafa;"><input class="it-n" style="width:95%; border:none; background:transparent; font-weight:bold; color:#1e293b;" value="${it.nome}" ${!isAdmin?'disabled':''}></td><td style="padding:6px 10px;"><input class="it-t" style="width:100%; border:1px solid #e2e8f0; border-radius:4px; padding:3px; font-weight:bold; color:#0f172a;" value="${it.tempo}" placeholder="Responsável / Info" ${canEditItem ? '' : 'disabled'}></td>${isAdmin ? `<td width="30" style="text-align:center;"><button onclick="this.closest('tr').remove()" style="color:#ef4444; background:none; border:none; cursor:pointer; font-weight:bold;">x</button></td>` : ''}`;
+        tb.appendChild(tr);
+    }
+    
+    function salvarCronograma() { db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ horario: b.querySelector('.cron-horario').value, titulo: b.querySelector('.cron-titulo').value, corBg: b.querySelector('.cron-bg').value, corTxt: b.querySelector('.cron-txt').value, itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ nome: tr.querySelector('.it-n').value, tempo: tr.querySelector('.it-t').value })) })); save(); }
 
     function carregarModeloFixo(tipo) {
-        let lista = document.getElementById('cronograma-lista');
-        lista.innerHTML = "";
-        
-        let modelos = {
-            quarta: ["19:30 - Preclúdio e Oração Inicial","19:35 - Louvor Congregacional","19:45 - Momentos de Intercessão","20:00 - Mensagem da Palavra","20:40 - Oração Final e Avisos"],
-            sabado: ["09:00 - Serviço de Louvor","09:15 - Oração Inicial e Informativo Mundial","09:30 - Lição da Escola Sabatina nas Classes","10:40 - Encerramento da Sabatina e Anúncios","10:55 - Entrada da Plataforma e Culto de Adoração","12:15 - Oração Final"],
-            domingo: ["19:15 - Louvor e Oração de Abertura","19:30 - Recados e Dinâmica de Integração","19:45 - Clamor Comunitário","20:00 - Sermão Evangelístico","20:45 - Apelo e Encerramento"]
-        };
+        if(!confirm("Carregar este modelo irá substituir o cronograma atual da tela. Deseja continuar?")) return;
+        let estrutura = [];
+        if(tipo === 'quarta') { estrutura = [{ horario: "CULTO", titulo: "CRONOGRAMA DO CULTO DE QUARTA", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "GRUPO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "PED. E AGRA.", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
+        else if(tipo === 'domingo') { estrutura = [{ horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO INICIAL", tempo: "" }, { nome: "MOMENTO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "OFERTORIO", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
+        else if(tipo === 'sabado') {
+            structure = [
+                { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }, { nome: "3º Hino", tempo: "" }]},
+                { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "ANUNCIO ESCOLA SABATINA", tempo: "" }, { nome: "HINO INICIAL", tempo: "" }, { nome: "CARTA MISSIONARIA", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "RECAPITULAÇÃO ESCOLA SABATINA", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }]},
+                { horario: "10:20 AS 10:45", titulo: "OFERTORIO E LOUVOR", corBg: "#fef08a", corTxt: "#854d0e", itens: [{ nome: "VIDEO: PROVAI E VEDE", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }]},
+                { horario: "10:45 AS 11:45", titulo: "SERMÃO", corBg: "#dbeafe", corTxt: "#1d4ed8", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}
+            ];
+        }
+        carregarCronograma(structure);
+    }
+    
+    function exportarRelatorioPDF() { const m = document.getElementById('selMes').value; const opt = { margin: 0.5, filename: `Escala_IASD_${MESES[m]}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' } }; html2pdf().set(opt).from(document.getElementById('areaEscalaPrincipal')).save(); }
+    function addMembro() { const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value; if(!n) return; if(!db.membros) db.membros = []; db.membros.push({nome:n, cargo:c}); save(); renderMembros(); }
+    function renderMembros() { const l = document.getElementById('listaMembros'); l.innerHTML = ""; (db.membros||[]).forEach((m,i)=>{ l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${m.nome}</b> - ${m.cargo}</span><button onclick="if(confirm('Remover membro?')) {db.membros.splice(${i},1); save(); renderMembros();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function checarConflito(dStr, valor) { if(!valor || valor.trim().length < 3) return false; let cont = 0; const dia = db.escalas?.[dStr] || {}; Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; }); return cont > 1; }
+    function handleEscalaKeys(e, d, c) { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); const rows = Array.from(document.querySelectorAll('#corpoEscala tr')); const curRow = e.target.closest('tr'); const colIdx = Array.from(curRow.querySelectorAll('textarea')).indexOf(e.target); const nextRow = rows[rows.indexOf(curRow) + 1]; if (nextRow) nextRow.querySelectorAll('textarea')[colIdx].focus(); } }
+    
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value; 
+        if(db.unidades_acao && db.unidades_acao[u]) { localStorage.setItem('iasd_curUser', u); location.reload(); return; }
+        const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); 
+        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else { alert("Credenciais Inválidas!"); }
+    }
+    
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
+    
+    function updateProgresso() { 
+        const meta = parseInt(db.meta_anual || 0); let total = 0; 
+        Object.keys(db.mis_v3 || {}).forEach(m => total += parseInt(db.mis_v3[m][5] || 0)); 
+        const perc = meta > 0 ? Math.min((total / meta) * 100, 100) : 0; 
+        document.getElementById('progressoMeta').style.width = perc + "%"; 
+        document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`; 
+    }
 
-        let itens = db.cronograma[tipo] || modelos[tipo];
-        itens.forEach((it, idx) => {
-            let edit = (userRole==='admin') ? `contenteditable="true" onblur="atualizarItemCronFixo('${tipo}',${idx},this.innerText)"` : "";
-            lista.innerHTML += `<div style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#1e293b;" ${edit}>${it}</div>`;
+    function togglePass(id) { let el = document.getElementById(id); el.type = el.type === "password" ? "text" : "password"; }
+
+    function renderAdmin() {
+        const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
+        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
+        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
+        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        document.getElementById('metaBatismos').value = db.meta_anual || 0;
+        
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { 
+            tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); font-weight:bold; padding-left:10px;">${k}</td><td style="padding-left:10px; display:flex;"><input type="password" id="p_${k}" class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"><button onclick="togglePass('p_${k}')" style="background:none; border:none; cursor:pointer; color:white;">👁️</button></td></tr>`; 
         });
-        
-        let ctrl = document.getElementById('adminCronControls');
-        if(userRole === 'admin') { ctrl.style.display = 'flex'; } else { ctrl.style.display = 'none'; }
-    }
-
-    function atualizarItemCronFixo(tipo, idx, texto) {
-        if(!db.cronograma[tipo]) db.cronograma[tipo] = [];
-        db.cronograma[tipo][idx] = texto.trim();
-    }
-
-    function salvarCronograma() {
-        save();
-        document.getElementById('modalCronograma').style.display = 'none';
-    }
-
-    function login() {
-        let u = document.getElementById('userLogin').value.trim();
-        let p = document.getElementById('passLogin').value.trim();
-        
-        if(u === "admin" && p === (db.creds["admin"] || "admin123")) {
-            userRole = "admin";
-            document.getElementById('userWelcomeBar').innerHTML = "<h3>⭐ CONECTADO COMO ADMINISTRADOR GERAL</h3>";
-        } else if(db.unidades[u] && p === (db.creds[u] || "")) {
-            userRole = "professor";
-            userUnidadeKey = u;
-            document.getElementById('userWelcomeBar').innerHTML = `<h3>🏫 BEM-VINDO PROFESSOR - ${db.unidades[u].nome.toUpperCase()}</h3>`;
-        } else {
-            alert("Credenciais Inválidas!");
-            return;
-        }
-
-        document.getElementById('userWelcomeBar').style.display = 'block';
-        document.getElementById('modalLogin').style.display = 'none';
-        document.getElementById('btnAcesso').style.display = 'none';
-        document.getElementById('btnSair').style.display = 'inline-block';
-        
-        document.getElementById('secCartaoUnidade').style.display = 'block';
-        if(userRole === 'admin') {
-            document.getElementById('btnRelatorioSabatina').style.display = 'inline-block';
-            document.getElementById('btnUnidades').style.display = 'inline-block';
-            document.getElementById('btnMembros').style.display = 'inline-block';
-            document.getElementById('btnLinks').style.display = 'inline-block';
-            document.getElementById('btnEventos').style.display = 'inline-block';
-            document.getElementById('btnTesourariaAdmin').style.display = 'inline-block';
-            document.getElementById('btnDados').style.display = 'inline-block';
-        }
-        renderTodo();
-    }
-
-    function sair() {
-        userRole = "public"; userUnidadeKey = null;
-        window.location.reload();
-    }
-
-    function initCartaoUnidade() {
-        let sab = document.getElementById('selSabadoCartao').value;
-        let uKey = (userRole === 'admin') ? (window.unidadeAdminFoco || Object.keys(db.unidades)[0]) : userUnidadeKey;
-        
-        if(!uKey || !db.unidades[uKey]) {
-            document.getElementById('secCartaoUnidade').style.display = 'none';
-            return;
-        }
-
-        let uni = db.unidades[uKey];
-        if(!uni.alunos) uni.alunos = [];
-        if(!uni.dados_sabados) uni.dados_sabados = {};
-        if(!uni.dados_sabados[sab]) {
-            uni.dados_sabados[sab] = { presencas:{}, licao:{}, estudo:{}, estudosDados:{}, oracao:{}, literatura:{}, visitasRec:%7B%7D, acaoSolidaria:{}, batismos:0, ofertas:0 };
-        }
-
-        document.getElementById('lblCardUnidade').innerText = `UNIDADE: ${uni.nome}`;
-        document.getElementById('lblCardProfessor').innerText = `PROFESSOR(A): ${uni.professor}`;
-        document.getElementById('lblCardAnciao').innerText = `ANCIÃO DE APOIO: ${db.apoio[uKey] || "Não Definido"}`;
-        document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sab.replace(/_/g,'/')}`;
-        document.getElementById('txtInfoUnidadeAtual').innerText = `Editando: ${uni.nome} | Lançamento para o Sábado de ${sab.replace(/_/g,'/')}`;
-
-        let corpo = document.getElementById('corpoAlunos');
-        corpo.innerHTML = "";
-
-        // Renderiza os alunos configurados da unidade
-        uni.alunos.forEach((aluno, idx) => {
-            let ds = uni.dados_sabados[sab];
-            let pr = ds.presencas[idx] ? "checked" : "";
-            let lc = ds.licao[idx] ? "checked" : "";
-            let es = ds.estudo[idx] ? "checked" : "";
-            let ed = ds.estudosDados[idx] ? "checked" : "";
-            let or = ds.oracao[idx] ? "checked" : "";
-            let lit = ds.literatura[idx] ? "checked" : "";
-            let vis = ds.visitasRec[idx] ? "checked" : "";
-            let ac = ds.acaoSolidaria[idx] ? "checked" : "";
-
-            corpo.innerHTML += `<tr>
-                <td><input class="input-aluno" value="${aluno}" onchange="atualizarNomeAluno('${uKey}',${idx},this.value)"></td>
-                <td><input type="checkbox" ${pr} onclick="marcarCheckProf('${uKey}','${sab}','presencas',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${lc} onclick="marcarCheckProf('${uKey}','${sab}','licao',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${es} onclick="marcarCheckProf('${uKey}','${sab}','estudo',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${ed} onclick="marcarCheckProf('${uKey}','${sab}','estudosDados',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${or} onclick="marcarCheckProf('${uKey}','${sab}','oracao',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${lit} onclick="marcarCheckProf('${uKey}','${sab}','literatura',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${vis} onclick="marcarCheckProf('${uKey}','${sab}','visitasRec',${idx},this.checked)"></td>
-                <td><input type="checkbox" ${ac} onclick="marcarCheckProf('${uKey}','${sab}','acaoSolidaria',${idx},this.checked)"></td>
-            </tr>`;
+        const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
+        Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
+            let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
+            gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
         });
-
-        // Adiciona linha em branco extra para criação rápida caso necessário
-        if(userRole==='admin' || userRole==='professor') {
-            corpo.innerHTML += `<tr>
-                <td><input class="input-aluno" placeholder="+ Adicionar Novo Aluno" onchange="adicionarAlunoRapido('${uKey}',this.value)"></td>
-                <td colspan="8" style="background:#eee"></td>
-            </tr>`;
-        }
-
-        document.getElementById('inputBatismos').value = uni.dados_sabados[sab].batismos || 0;
-        document.getElementById('inputOfertas').value = (uni.dados_sabados[sab].ofertas || 0).toFixed(2);
-
-        calcularMetricasCartao(uKey, sab);
-    }
-
-    function atualizarNomeAluno(uKey, idx, valor) {
-        db.unidades[uKey].alunos[idx] = valor.trim();
-        save();
-        initCartaoUnidade();
-    }
-
-    function adicionarAlunoRapido(uKey, valor) {
-        if(!valor.trim()) return;
-        db.unidades[uKey].alunos.push(valor.trim());
-        save();
-        initCartaoUnidade();
-    }
-
-    function marcarCheckProf(uKey, sab, campo, idx, checks) {
-        db.unidades[uKey].dados_sabados[sab][campo][idx] = checks;
-        calcularMetricasCartao(uKey, sab);
-        save();
-    }
-
-    function forçarCalculoProf() {
-        let sab = document.getElementById('selSabadoCartao').value;
-        let uKey = (userRole === 'admin') ? (window.unidadeAdminFoco || Object.keys(db.unidades)[0]) : userUnidadeKey;
+        if(db.aviso_ticker) document.getElementById('inputTicker').value = db.aviso_ticker;
         
-        db.unidades[uKey].dados_sabados[sab].batismos = Number(document.getElementById('inputBatismos').value) || 0;
-        db.unidades[uKey].dados_sabados[sab].ofertas = Number(document.getElementById('inputOfertas').value) || 0;
-        
-        calcularMetricasCartao(uKey, sab);
-        save();
+        const unAncSel = document.getElementById('unAnciao');
+        if(unAncSel) { unAncSel.innerHTML = LISTA_ANCIAOS.map(a => `<option value="${a}">${a}</option>`).join(''); }
     }
 
-    function calcularMetricasCartao(uKey, sab) {
-        let ds = db.unidades[uKey].dados_sabados[sab];
-        let totalAlunos = db.unidades[uKey].alunos.length;
+    async function abrirPopBackups() { document.getElementById('popBackups').style.display='flex'; const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando...";
+        try { const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); lista.innerHTML = "";
+        snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; });
+        if(snap.empty) lista.innerHTML = "Nenhum backup encontrado."; } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } }
+    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving");
+        try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved");
+        } catch(e) { alert(e.message); } }
+    async function restaurarBackup(id) { if(confirm("Deseja restaurar esta versão?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
+    
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return;
+        if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
+    function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="if(confirm('Excluir link?')){db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
+    
+    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!n || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00");
+        if(!db.eventos_especiais) db.eventos_especiais = {}; while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: n.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="if(confirm('Excluir evento?')){delete db.eventos_especiais['${k}']; save(); renderListaEventos();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
+    
+    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return;
+        const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
+    function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
+    
+    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
 
-        let cLi=0, cEs=0, cEd=0, cOr=0, cLiT=0, cVi=0, cAc=0, cPr=0;
-
-        for(let i=0; i<totalAlunos; i++) {
-            if(ds.presencas[i]) cPr++;
-            if(ds.licao[i]) cLi++;
-            if(ds.estudo[i]) cEs++;
-            if(ds.estudosDados[i]) cEd++;
-            if(ds.oracao[i]) cOr++;
-            if(ds.literatura[i]) cLiT++;
-            if(ds.visitasRec[i]) cVi++;
-            if(ds.acaoSolidaria[i]) cAc++;
-        }
-
-        document.getElementById('v1').innerText = cLi;
-        document.getElementById('v2').innerText = cEs;
-        document.getElementById('v3').innerText = cEd;
-        document.getElementById('v4').innerText = ds.batismos || 0;
-        document.getElementById('v5').innerText = cOr;
-        document.getElementById('v6').innerText = cLiT;
-        document.getElementById('v7').innerText = cVi;
-        document.getElementById('v8').innerText = cAc;
-        document.getElementById('totPres').innerText = cPr;
-
-        renderGraficosDoCartaoIndividual(cPr, totalAlunos, cLi, cEs, cEd);
+    /* =========================================================================
+       NÚCLEO DO CARTÃO DA UNIDADE DE AÇÃO
+       ========================================================================= */
+    function obterDataSabadoAtual() {
+        const d = new Date(); const day = d.getDay();
+        const diff = d.getDate() - day + (day === 6 ? 0 : 6) - (day === 0 ? 7 : 0);
+        const sabado = new Date(d.setDate(diff));
+        return `${sabado.getDate()}_${sabado.getMonth()+1}_${sabado.getFullYear()}`;
     }
 
-    function renderGraficosDoCartaoIndividual(pres, tot, lic, est, estD) {
-        let ctx1 = document.getElementById('graf1').getContext('2d');
-        let ctx2 = document.getElementById('graf2').getContext('2d');
-
-        if(g1) g1.destroy(); if(g2) g2.destroy();
-
-        g1 = new Chart(ctx1, {
-            type: 'doughnut',
-            data: {
-                labels: ['Presentes', 'Ausentes'],
-                datasets: [{ data: [pres, Math.max(tot - pres, 0)], backgroundColor: ['#2ecc71', '#e74c3c'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Frequência da Unidade' } } }
-        });
-
-        g2 = new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Lição', 'Estudo Diário', 'Dando Estudos'],
-                datasets: [{ label: 'Qtd Alunos', data: [lic, est, estD], backgroundColor: ['#3498db', '#f1c40f', '#9b59b6'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Ações Missionárias' } } }
-        });
+    function addUnidadeAcao() {
+        const nome = document.getElementById('unNome').value.toLowerCase().trim(); const prof = document.getElementById('unProf').value.trim(); const { value: anc } = document.getElementById('unAnciao');
+        if(!nome || !prof) { alert("Preencha todos os campos!"); return; }
+        if(!db.unidades_acao) db.unidades_acao = {};
+        db.unidades_acao[nome] = { professor: prof, anciao: anc }; save();
+        document.getElementById('unNome').value = ""; document.getElementById('unProf').value = ""; renderUnidadesAdmin();
     }
 
     function renderUnidadesAdmin() {
-        let container = document.getElementById('listaUnidadesAdmin');
-        container.innerHTML = "";
-        Object.keys(db.unidades).forEach(k => {
-            let u = db.unidades[k];
-            container.innerHTML += `<div style="display:flex; justify-content:space-between; background:#223; padding:8px; margin-bottom:5px; border-radius:4px;">
-                <span><b>${u.nome}</b> (${u.professor})</span>
-                <div>
-                    <button class="btn-modern" style="border-color:var(--gold); color:var(--gold); padding:2px 8px;" onclick="window.unidadeAdminFoco='${k}'; initCartaoUnidade(); document.getElementById('popUnidades').style.display='none';">VER</button>
-                    <button class="btn-modern" style="border-color:red; color:red; padding:2px 8px;" onclick="deletarUnidade('${k}')">X</button>
-                </div>
-            </div>`;
+        const list = document.getElementById('listaUnidadesCadastradas'); list.innerHTML = "";
+        Object.keys(db.unidades_acao || {}).forEach(k => {
+            list.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
         });
     }
 
-    function addUnidade() {
-        let nome = document.getElementById('unNome').value.trim();
-        let prof = document.getElementById('unProf').value.trim();
-        if(!nome || !prof) return;
+    function initCartaoUnidade() {
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        const isAdminSabatina = ['admin','ger','sabatina'].includes(curUser);
+        if(!isUnidade && !isAdminSabatina) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
+
+        document.getElementById('secCartaoUnidade').style.display = 'block';
+        let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
+        if(!unAlvo) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
+
+        const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
+        const dadosUnidade = db.unidades_acao[unAlvo];
         
-        let key = "un_" + Date.now();
-        db.unidades[key] = { nome: nome, professor: prof, alunos: [], dados_sabados: {} };
-        db.creds[key] = "1234"; 
+        document.getElementById('lblCardUnidade').innerText = `UNIDADE: ${unAlvo.toUpperCase()}`;
+        document.getElementById('lblCardProfessor').innerText = `PROFESSOR(A): ${dadosUnidade.professor.toUpperCase()}`;
+        document.getElementById('lblCardAnciao').innerText = `ANCIÃO DE APOIO: ${dadosUnidade.anciao.toUpperCase()}`;
+        document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sabKey.replace(/_/g, '/')}`;
+        document.getElementById('txtInfoUnidadeAtual').innerHTML = `Unidade Visualizada/Logada: <b>${unAlvo.toUpperCase()}</b>.`;
+
+        if(!db.historico_cartoes) db.historico_cartoes = {};
+        if(!db.historico_cartoes[sabKey]) db.historico_cartoes[sabKey] = {};
+        if(!db.historico_cartoes[sabKey][unAlvo]) {
+            db.historico_cartoes[sabKey][unAlvo] = {
+                alunos: Array(TOTAL_ALUNOS).fill().map(() => ({ nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
+                instrutores: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
+                duplas: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
+                batismos: 0,
+                ofertas: 0
+            };
+        }
+
+        const payload = db.historico_cartoes[sabKey][unAlvo];
+        const corpo = document.getElementById('corpoAlunos'); corpo.innerHTML = "";
         
-        document.getElementById('unNome').value = "";
-        document.getElementById('unProf').value = "";
-        save(); renderUnidadesAdmin(); renderAdmin();
+        for(let i=0; i<TOTAL_ALUNOS; i++) {
+            let al = payload.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
+            corpo.innerHTML += `<tr>
+                <td><input type="text" class="input-aluno" id="nome_${i}" placeholder="Nome do Aluno..." value="${al.nome}" onkeydown="handleNomeEnter(event, ${i}, '${unAlvo}', '${sabKey}')" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                <td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                ${[1,2,3,5,6,7,8].map(n => `<td><input type="checkbox" id="c${n}_${i}" ${al['c'+n]?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>`).join('')}
+            </tr>`;
+        }
+
+        const contIns = document.getElementById('listaInstrutores'); contIns.innerHTML = "";
+        for(let i=0; i<5; i++) {
+            let ins = payload.instrutores[i] || { nome: "", s: false, q: 0 };
+            contIns.innerHTML += `<div class="row-missao"><input type="text" class="input-aluno" id="ins_n_${i}" placeholder="Instrutor ${i+1}" value="${ins.nome}" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"><div><input type="checkbox" id="ins_s_${i}" ${ins.s?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"> SIM</div><input type="number" id="ins_q_${i}" value="${ins.q}" min="0" class="input-qtd" oninput="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></div>`;
+        }
+
+        const contDup = document.getElementById('listaDuplas'); contDup.innerHTML = "";
+        for(let i=0; i<5; i++) {
+            let dup = payload.duplas[i] || { nome: "", s: false, q: 0 };
+            contDup.innerHTML += `<div class="row-missao"><input type="text" class="input-aluno" id="dup_n_${i}" placeholder="Dupla ${i+1}" value="${dup.nome}" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"><div><input type="checkbox" id="dup_s_${i}" ${dup.s?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"> SIM</div><input type="number" id="dup_q_${i}" value="${dup.q}" min="0" class="input-qtd" oninput="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></div>`;
+        }
+
+        document.getElementById('inputBatismos').value = payload.batismos || 0;
+        document.getElementById('inputOfertas').value = parseFloat(payload.ofertas || 0).toFixed(2);
+        calcularCartao();
     }
 
-    function deletarUnidade(key) {
-        if(confirm("Deseja deletar essa unidade permanentemente?")) {
-            delete db.unidades[key];
-            delete db.creds[key];
-            save(); renderUnidadesAdmin(); renderAdmin();
+    function handleNomeEnter(event, index, unAlvo, sabKey) {
+        if(event.key === 'Enter') {
+            event.preventDefault();
+            sincronizarEGuardarCartao(unAlvo, sabKey);
+            const nextInput = document.getElementById(`nome_${index + 1}`);
+            if(nextInput) nextInput.focus();
+            else event.target.blur();
         }
     }
 
-    function abrirRelatorioSabatina() {
-        document.getElementById('popRelatorioSabatina').style.display = 'flex';
-        let corpo = document.getElementById('corpoRelatorioSecretaria');
-        corpo.innerHTML = "";
+    function forçarCalculoProf() {
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
+        const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
+        sincronizarEGuardarCartao(unAlvo, sabKey);
+    }
 
-        let todosSabados = [];
-        Object.keys(db.unidades).forEach(uKey => {
-            if(db.unidades[uKey].dados_sabados) {
-                Object.keys(db.unidades[uKey].dados_sabados).forEach(sab => {
-                    if(!todosSabados.includes(sab)) todosSabados.push(sab);
-                });
-            }
+    function sincronizarEGuardarCartao(unAlvo, sabKey) {
+        if(!db.historico_cartoes[sabKey] || !db.historico_cartoes[sabKey][unAlvo]) return;
+        let payload = db.historico_cartoes[sabKey][unAlvo];
+        payload.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
+        payload.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
+
+        for(let i=0; i<TOTAL_ALUNOS; i++) {
+            payload.alunos[i] = {
+                nome: document.getElementById(`nome_${i}`).value,
+                p: document.getElementById(`p_${i}`).checked,
+                c1: document.getElementById(`c1_${i}`).checked,
+                c2: document.getElementById(`c2_${i}`).checked,
+                c3: document.getElementById(`c3_${i}`).checked,
+                c5: document.getElementById(`c5_${i}`).checked,
+                c6: document.getElementById(`c6_${i}`).checked,
+                c7: document.getElementById(`c7_${i}`).checked,
+                c8: document.getElementById(`c8_${i}`).checked,
+            };
+        }
+
+        for(let i=0; i<5; i++) {
+            payload.instrutores[i] = { nome: document.getElementById(`ins_n_${i}`).value, s: document.getElementById(`ins_s_${i}`).checked, q: parseInt(document.getElementById(`ins_q_${i}`).value) || 0 };
+            payload.duplas[i] = { nome: document.getElementById(`dup_n_${i}`).value, s: document.getElementById(`dup_s_${i}`).checked, q: parseInt(document.getElementById(`dup_q_${i}`).value) || 0 };
+        }
+
+        calcularCartao();
+        
+        const mIdx = new Date().getMonth(); if(!db.mis_v3) db.mis_v3 = {};
+        let totalEstudosGerais = 0, totalDuplasGerais = 0, totalBatismosGerais = 0;
+
+        Object.keys(db.historico_cartoes[sabKey] || {}).forEach(unKey => {
+            let pUn = db.historico_cartoes[sabKey][unKey];
+            pUn.alunos.forEach(a => { if(a.nome && a.c3) totalEstudosGerais++; });
+            pUn.instrutores.forEach(i => { if(i.s) totalEstudosGerais += i.q; });
+            pUn.duplas.forEach(d => { if(d.s) { totalEstudosGerais += d.q; totalDuplasGerais++; } });
+            totalBatismosGerais += pUn.batismos || 0;
         });
 
-        todosSabados.sort();
+        if(!db.mis_v3[mIdx]) db.mis_v3[mIdx] = [0, 0, 0, 0, 0, 0];
+        db.mis_v3[mIdx][2] = totalEstudosGerais;
+        db.mis_v3[mIdx][4] = totalDuplasGerais;
+        db.mis_v3[mIdx][5] = totalBatismosGerais;
 
-        let tAtivos=0, tPres=0, tVisitas=0, tOfertas=0, sabadosComDados=0;
+        showStatus("Sincronizando...", "saving");
+        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
+            showStatus("✅ Dados Guardados", "saved");
+            updateProgresso();
+        });
+    }
+
+    function calcularCartao() {
+        let d = { ativos:0, pres:0, v1:0, v2:0, v3:0, v4:0, v5:0, v6:0, v7:0, v8:0, qEstudosIns:0, qEstudosDup:0 };
+        d.v4 = parseInt(document.getElementById('inputBatismos').value) || 0;
+
+        for(let i=0; i<TOTAL_ALUNOS; i++) {
+            let elNome = document.getElementById(`nome_${i}`);
+            if(elNome && elNome.value.trim() !== "") {
+                d.whitespaces = false; d.ativos++;
+                if(document.getElementById(`p_${i}`).checked) d.pres++;
+                [1,2,3,5,6,7,8].forEach(n => { if(document.getElementById(`c${n}_${i}`).checked) d['v'+n]++; });
+            }
+        }
+
+        for(let i=0; i<5; i++) {
+            if(document.getElementById(`ins_s_${i}`).checked) d.qEstudosIns += parseInt(document.getElementById(`ins_q_${i}`).value) || 0;
+            if(document.getElementById(`dup_s_${i}`).checked) d.qEstudosDup += parseInt(document.getElementById(`dup_q_${i}`).value) || 0;
+        }
+
+        for(let n=1; n<=8; n++) { let el = document.getElementById('v'+n); if(el) el.innerText = d['v'+n]; }
+        document.getElementById('totPres').innerText = d.pres;
+        renderGraficosCartao(d);
+    }
+
+    function renderGraficosCartao(d) {
+        const m = d.ativos || 1; const ctx1 = document.getElementById('graf1'); const ctx2 = document.getElementById('graf2'); if(!ctx1 || !ctx2) return;
+        if(g1) g1.destroy(); if(g2) g2.destroy();
+        g1 = new Chart(ctx1, {
+            type: 'bar',
+            data: { labels: ['Presença', '1. Lição', '2. Estudo Diário'], datasets: [{ label: '% Aproveitamento', data: [(d.pres/m*100), (d.v1/m*100), (d.v2/m*100)], backgroundColor: ['#1a365d','#00d2ff','#2ecc71'] }] },
+            options: { scales: { y: { max: 100 } }, maintainAspectRatio: false }
+        });
+        g2 = new Chart(ctx2, {
+            type: 'bar',
+            data: { labels: ['3. Est. Alunos', '4. Batismos', '7. Visitas', '8. Solidário', 'Est. Instrutores', 'Est. Duplas'], datasets: [{ label: 'Quantidade Total', data: [d.v3, d.v4, d.v7, d.v8, d.qEstudosIns, d.qEstudosDup], backgroundColor: '#ff7f50' }] },
+            options: { maintainAspectRatio: false }
+        });
+    }
+
+    /* =========================================================================
+       COMPILADOR DA SECRETARIA DA ESCOLA SABATINA (RELATÓRIOS GERAIS)
+       ========================================================================= */
+    function abrirRelatorioSabatina() {
+        document.getElementById('popRelatorioSabatina').style.display = 'flex';
+        const corpo = document.getElementById('corpoRelatorioSecretaria');
+        corpo.innerHTML = "";
+
+        const todosSabados = listarSabados2026();
+        let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0, sabadosComDados = 0;
 
         todosSabados.forEach(sabKey => {
-            let sAtivos=0, sPres=0, sVisitas=0, sOfertas=0;
-            let temDados = false;
+            let sabDados = db.historico_cartoes?.[sabKey];
+            if(!sabDados) return; 
 
-            Object.keys(db.unidades).forEach(uKey => {
-                let uni = db.unidades[uKey];
-                if(uni.dados_sabados && uni.dados_sabados[sabKey]) {
-                    temDados = true;
-                    sAtivos += uni.alunos.length;
-                    
-                    let ds = uni.dados_sabados[sabKey];
-                    Object.keys(ds.presencas).forEach(idx => { if(ds.presencas[idx]) sPres++; });
-                    Object.keys(ds.visitasRec).forEach(idx => { if(ds.visitasRec[idx]) sVisitas++; });
-                    if(ds.ofertas) sOfertas += Number(ds.ofertas);
-                }
+            let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0, temRegistro = false;
+
+            Object.keys(sabDados).forEach(unKey => {
+                let un = sabDados[unKey];
+                temRegistro = true;
+                sOfertas += parseFloat(un.ofertas || 0);
+                
+                un.alunos.forEach(al => {
+                    if(al.nome && al.nome.trim() !== "") {
+                        sAtivos++;
+                        if(al.p) sPres++;
+                        if(al.c7) sVisitas++; 
+                    }
+                });
             });
 
-            if(temDados) {
+            if(temRegistro) {
                 sabadosComDados++;
                 tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
                 let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
@@ -1039,225 +966,11 @@
         </tr>`;
 
         if(sabadosComDados === 0) {
-            corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#aaa;">Nenhum dado lançado para este trimestre ainda.</td></tr>`;
+            corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--red);">Nenhum cartão foi preenchido neste trimestre ainda!</td></tr>`;
         }
     }
 
-    function renderGraficoGlobalMissionario() {
-        let ctx = document.getElementById('missionaryChart').getContext('2d');
-        if(gGeral) gGeral.destroy();
-
-        let totalMembros = 0, totalLicao = 0, totalEstudo = 0, totalEstudantes = 0;
-
-        Object.keys(db.unidades).forEach(uKey => {
-            let uni = db.unidades[uKey];
-            totalMembros += uni.alunos.length;
-            if(uni.dados_sabados) {
-                Object.keys(uni.dados_sabados).forEach(sab => {
-                    let ds = uni.dados_sabados[sab];
-                    Object.keys(ds.licao).forEach(i => { if(ds.licao[i]) totalLicao++; });
-                    Object.keys(ds.estudo).forEach(i => { if(ds.estudo[i]) totalEstudo++; });
-                    Object.keys(ds.estudosDados).forEach(i => { if(ds.estudosDados[i]) totalEstudantes++; });
-                });
-            }
-        });
-
-        gGeral = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Membros Ativos', 'Assinaturas Lição', 'Estudo Diário', 'Estudos Bíblicos Ativos'],
-                datasets: [{
-                    label: 'Indicadores Globais',
-                    data: [totalMembros, totalLicao, totalEstudo, totalEstudantes],
-                    backgroundColor: ['#1a365d', '#00d2ff', '#ffd700', '#ff7f50'],
-                    borderWidth: 1
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-        });
-    }
-
-    function abrirPop() {
-        document.getElementById('popTermometroCompleto').style.display = 'flex';
-        let container = document.getElementById('listaTermometroItensGerais');
-        container.innerHTML = "";
-
-        let cLi=0, cEs=0, cEd=0, cOr=0, cLiT=0, cVi=0, cAc=0, cPr=0;
-
-        Object.keys(db.unidades).forEach(uKey => {
-            let uni = db.unidades[uKey];
-            if(uni.dados_sabados) {
-                Object.keys(uni.dados_sabados).forEach(sab => {
-                    let ds = uni.dados_sabados[sab];
-                    Object.keys(ds.presencas).forEach(i => { if(ds.presencas[i]) cPr++; });
-                    Object.keys(ds.licao).forEach(i => { if(ds.licao[i]) cLi++; });
-                    Object.keys(ds.estudo).forEach(i => { if(ds.estudo[i]) cEs++; });
-                    Object.keys(ds.estudosDados).forEach(i => { if(ds.estudosDados[i]) cEd++; });
-                    Object.keys(ds.oracao).forEach(i => { if(ds.oracao[i]) cOr++; });
-                    Object.keys(ds.literatura).forEach(i => { if(ds.literatura[i]) cLiT++; });
-                    Object.keys(ds.visitasRec).forEach(i => { if(ds.visitasRec[i]) cVi++; });
-                    Object.keys(ds.acaoSolidaria).forEach(i => { if(ds.acaoSolidaria[i]) cAc++; });
-                });
-            }
-        });
-
-        let métricas = [
-            { n: "Total de Presenças Registradas", v: cPr },
-            { n: "Bíblias e Lições Estudadas", v: cLi },
-            { n: "Estudantes Diários", v: cEs },
-            { n: "Instrutores/Duplas Ativas (Dando Estudos)", v: cEd },
-            { n: "Alunos Praticantes de Oração Intercessora", v: cOr },
-            { n: "Materiais Missionários Distribuídos", v: cLiT },
-            { n: "Visitas Missionárias Efetuadas", v: cVi },
-            { n: "Ações Solidárias e Sociais Executadas", v: cAc }
-        ];
-
-        métricas.forEach(m => {
-            container.innerHTML += `<div class="crm-item" style="color:white; border-bottom-color:#444;"><span>${m.n}</span><b>${m.v}</b></div>`;
-        });
-    }
-
-    function renderMembros() {
-        let box = document.getElementById('listaMembros'); box.innerHTML = "";
-        db.membros.forEach((m, idx) => {
-            box.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; background:rgba(0,0,0,0.4); padding:6px; border-radius:4px;">
-                <span><b>${m.nome}</b> - ${m.cargo}</span>
-                ${userRole==='admin'? `<button onclick="db.membros.splice(${idx},1); save(); renderMembros();" style="background:red; border:none; color:white; border-radius:3px; cursor:pointer;">X</button>`:''}
-            </div>`;
-        });
-    }
-    function addMembro() {
-        let n = document.getElementById('mbNome').value.trim();
-        let c = document.getElementById('mbCargo').value.trim();
-        if(!n || !c) return;
-        db.membros.push({nome:n, cargo:c});
-        document.getElementById('mbNome').value=""; document.getElementById('mbCargo').value="";
-        save(); renderMembros();
-    }
-
-    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderLinksListaAdmin(); }
-    function renderLinksListaAdmin() {
-        let box = document.getElementById('listaLinksAtivos'); box.innerHTML = "";
-        db.links.forEach((l, idx) => {
-            box.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <a href="${l.url}" target="_blank" style="color:var(--neon)">${l.tit}</a>
-                <button onclick="db.links.splice(${idx},1); save(); renderLinksListaAdmin(); renderLinksPublicos();" style="background:red; color:white; border:none; cursor:pointer;">X</button>
-            </div>`;
-        });
-    }
-    function salvarLink() {
-        let t = document.getElementById('linkTit').value.trim();
-        let u = document.getElementById('linkUrl').value.trim();
-        if(!t || !u) return;
-        db.links.push({tit:t, url:u});
-        document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value="";
-        save(); renderLinksListaAdmin(); renderLinksPublicos();
-    }
-    function renderLinksPublicos() {
-        let grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = "";
-        db.links.forEach(l => {
-            grid.innerHTML += `<a href="${l.url}" target="_blank" class="btn-modern" style="text-align:center; padding:15px; display:block; text-decoration:none; border-color:#334155; background:rgba(255,255,255,0.02)">${l.tit}</a>`;
-        });
-    }
-
-    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderEventosListaAdmin(); }
-    function renderEventosListaAdmin() {
-        let box = document.getElementById('listaEventosAtivos'); box.innerHTML = "";
-        db.eventos.forEach((e, idx) => {
-            box.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span>${e.nome} (${e.ini} até ${e.fim})</span>
-                <button onclick="db.eventos.splice(${idx},1); save(); renderEventosListaAdmin();" style="background:red; color:white; border:none; cursor:pointer;">X</button>
-            </div>`;
-        });
-    }
-    function salvarEventoEspecial() {
-        let n = document.getElementById('evtNome').value.trim();
-        let i = document.getElementById('evtInicio').value;
-        let f = document.getElementById('evtFim').value;
-        if(!n || !i || !f) return;
-        db.eventos.push({nome:n, ini:i, fim:f});
-        document.getElementById('evtNome').value="";
-        save(); renderEventosListaAdmin();
-    }
-
-    function abrirTesourariaAdmin() {
-        let mSel = document.getElementById('selMes').value;
-        let s = prompt("Digite o nome ou título do novo documento/link coletivo:");
-        if(!s) return;
-        let u = prompt("Cole a URL do documento (Google Drive, PDF, Imagem):");
-        if(!u) return;
-        
-        if(!db.arquivos[mSel]) db.arquivos[mSel] = [];
-        db.arquivos[mSel].push({tit: s, url: u});
-        save(); renderArquivosPublicos();
-    }
-
-    function renderArquivosPublicos() {
-        let mSel = document.getElementById('selMes').value;
-        document.getElementById('mesTesouraria').innerText = mesesLabels[mSel];
-        let grid = document.getElementById('gridArquivosPublicos');
-        grid.innerHTML = "";
-        
-        let arr = db.arquivos[mSel] || [];
-        arr.forEach((arq, idx) => {
-            let delBtn = (userRole==='admin') ? `<button onclick="event.preventDefault(); db.arquivos[${mSel}].splice(${idx},1); save(); renderArquivosPublicos();" style="position:absolute; top:2px; right:2px; background:red; color:white; border:none; border-radius:50%; width:18px; height:18px; font-size:0.6rem; cursor:pointer;">X</button>` : '';
-            grid.innerHTML += `<div style="position:relative;"><a href="${arq.url}" target="_blank" class="btn-modern" style="display:block; text-align:center; padding:12px; font-size:0.75rem; border-color:var(--green); background:rgba(46,204,113,0.05); text-decoration:none; text-transform:uppercase;">📄 ${arq.tit}</a>${delBtn}</div>`;
-        });
-        if(arr.length === 0) grid.innerHTML = `<small style="color:#aaa">Nenhum documento anexado para este mês.</small>`;
-    }
-
-    function gerarBackupNuvem() {
-        let bkpKey = "backup_" + Date.now();
-        firestore.collection("backups_historico").doc(bkpKey).set({
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            snapshot: db
-        }).then(() => alert("Backup Incremental criado com Sucesso na Nuvem!"));
-    }
-
-    function abrirPopBackups() {
-        document.getElementById('popBackups').style.display = 'flex';
-        let box = document.getElementById('listaBackupsNuvem');
-        box.innerHTML = "Carregando histórico de arquivos...";
-        
-        firestore.collection("backups_historico").orderBy("timestamp","desc").limit(15).get().then(snap => {
-            box.innerHTML = "";
-            snap.forEach(doc => {
-                let d = doc.data();
-                let dataFormato = d.timestamp ? d.timestamp.toDate().toLocaleString() : "Data Indisponível";
-                box.innerHTML += `<div style="display:flex; justify-content:space-between; background:#223; padding:8px; margin-bottom:5px; border-radius:4px;">
-                    <span style="font-size:0.8rem;">💾 ${dataFormato}</span>
-                    <button class="btn-modern" style="padding:2px 8px; border-color:var(--orange); color:var(--orange);" onclick="restaurarSnapshot('${doc.id}')">RESTAURAR</button>
-                </div>`;
-            });
-        });
-    }
-
-    function restaurarSnapshot(docId) {
-        if(confirm("Tem certeza que quer sobrescrever os dados atuais por este backup anterior?")) {
-            firestore.collection("backups_historico").doc(docId).get().then(doc => {
-                if(doc.exists) {
-                    db = doc.data().snapshot;
-                    save();
-                    renderTodo();
-                    document.getElementById('popBackups').style.display = 'none';
-                    alert("Sistema Restaurado com Sucesso!");
-                }
-            });
-        }
-    }
-
-    function exportarRelatorioPDF() {
-        let mSel = document.getElementById('selMes').value;
-        let element = document.getElementById('areaEscalaPrincipal');
-        let opt = {
-            margin:       0.5,
-            filename:     `Escala_EstrelaDalva_Mes_${Number(mSel)+1}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
+    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
