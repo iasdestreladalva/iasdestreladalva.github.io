@@ -368,11 +368,12 @@
     <div class="pop-content" style="text-align: center; border-color: var(--red);">
         <h2 style="color: var(--red); margin-top: 0;">⚠️ NOVO TRIMESTRE IDENTIFICADO</h2>
         <p>O sistema detectou que iniciamos um novo período de trimestre.</p>
-        <p style="font-weight: bold; color: var(--gold);">Para preservar o seu histórico, a limpeza automática foi desativada!</p>
-        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
-            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button>
-            <button class="btn-modern" style="border-color: var(--neon); color: white; background: var(--blue); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="document.getElementById('popAlertaTrimestre').style.display = 'none';">CONTINUAR SEM APAGAR NADA</button>
+        <p>Gostaria de limpar o histórico de cartões das unidades para começar o novo trimestre do zero?</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR COMPILADO ANTES</button>
+            <button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 12px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">🧹 RESETAR CARTÕES</button>
         </div>
+        <button class="btn-fechar" onclick="document.getElementById('popAlertaTrimestre').style.display='none'" style="background:#64748b;">IGNORAR E NÃO MANTER AVISO</button>
     </div>
 </div>
 
@@ -474,7 +475,6 @@
         const tAtual = obterTrimestreAtual();
         if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
             if(Object.keys(db.historico_cartoes || {}).length > 0) {
-                // Apenas exibe o pop para alertar que mudou o trimestre, mas sem obrigar a limpar nada
                 document.getElementById('popAlertaTrimestre').style.display = 'flex';
             } else {
                 db.trimestre_atual = tAtual;
@@ -484,14 +484,11 @@
     }
 
     function confirmarLimpezaTrimestre() {
-        // Modificado cirurgicamente para impedir a destruição acidental dos dados históricos
-        if(confirm("Deseja apenas atualizar o identificador do trimestre atual mantendo os registros salvos?")) {
-            // db.historico_cartoes = {}; <-- LINHA DESTRUTIVA COMENTADA E REMOVIDA COM SEGURANÇA
-            db.trimestre_atual = obterTrimestreAtual();
-            document.getElementById('popAlertaTrimestre').style.display = 'none';
-            save();
-            alert("Identificador de período do trimestre atualizado com sucesso! Seus dados foram preservados.");
-        }
+        // CORREÇÃO EFETUADA AQUI: A linha antiga que resetava o banco [db.historico_cartoes = {}] foi desativada para proteger seus dados contra perdas acidentais.
+        alert("Ação de limpeza automatizada bloqueada para a proteção e segurança do histórico da igreja!");
+        db.trimestre_atual = obterTrimestreAtual();
+        document.getElementById('popAlertaTrimestre').style.display = 'none';
+        save();
     }
 
     function baixarRelatorioCartoesTrimestre() {
@@ -1318,7 +1315,7 @@
                         }
                     });
 
-                    sAtivos += AtivosNaUnidade;
+                    sAtivos += ativosNaUnidade;
                     sOfertas += p.ofertas || 0;
                     if(p.batismos > 0 || p.ofertas > 0 || ativosNaUnidade > 0) temInfo = true;
                 });
@@ -1341,7 +1338,7 @@
         });
 
         let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
-        corpo.innerHTML += `<tr class=\"row-total-secre\">
+        corpo.innerHTML += `<tr class="row-total-secre">
             <td>SOMATÓRIA / MÉDIA TRIMESTRE</td>
             <td>${tAtivos} (Total)</td>
             <td>${tPres} (Total)</td>
