@@ -167,7 +167,6 @@
                 <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
                 <button class="btn-min" onclick="exportarRelatorioPDF()" style="border-color:var(--green); color:var(--green)">📄 GERAR PDF MÊS</button>
                 <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
-                <button class="btn-min" onclick="document.getElementById('popAlertaTrimestre').style.display='flex'" style="border-color:var(--red); color:var(--red); font-weight:bold;">🚨 VIRADA DE TRIMESTRE</button>
             </div>
         </div>
     </div>
@@ -191,6 +190,7 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
+        
         <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
             <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
             <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
@@ -261,6 +261,7 @@
                                 <input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -272,6 +273,7 @@
     </div>
 
     <div id="areaGeralSistemaComAbas">
+        
         <div class="busca-container no-print" id="wrapperBuscaRapida" style="text-align:center; margin-top:20px; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
@@ -314,260 +316,125 @@
             <h3>📊 TERMÔMETRO E GRÁFICOS DO SISTEMA</h3>
             <button class="section-toggle-btn" id="btnToggleGrafGeral">-</button>
         </div>
-        <div id="wrapperGraficoGeral" class="chart-container no-print" style="height: 350px; background: rgba(255,255,255,0.05); padding: 20px; border-radius:0 0 12px 12px; border: 1px solid var(--orange); border-top:none;">
-            <div style="display:flex; justify-content:space-around; align-items:center; height:100%;">
-                <div style="width:45%; height:100%;"><canvas id="graficoMetaGlobal"></canvas></div>
-                <div style="width:45%; height:100%;"><canvas id="graficoAtividadesGlobal"></canvas></div>
+        <div id="wrapperGraficoGeral" class="chart-container no-print" style="height: 350px; background: rgba(255,255,255,0.05); padding: 20px; border-radius:0 0 12px 12px; border: 1px solid var(--orange); border-top:none; display:none; justify-content:center; position:relative;">
+            <div style="width:100%; max-width:500px; height:100%;"><canvas id="graficoTermometroGeral"></canvas></div>
+        </div>
+
+        <div class="section-header no-print" id="headerLinksPublicos" onclick="toggleSection('secLinksPublicos', 'btnToggleLinksPublicos')">
+            <h3>🔗 LINKS ÚTEIS E ACESSOS RÁPIDOS</h3>
+            <button class="section-toggle-btn" id="btnToggleLinksPublicos">-</button>
+        </div>
+        <div id="secLinksPublicos" style="background: rgba(255,255,255,0.02); padding: 15px; border-radius:0 0 12px 12px; border: 1px solid #334155; border-top:none;" class="no-print">
+            <div id="gridLinksPublicos" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
+        </div>
+    </div>
+
+    <div id="popUnidades" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR UNIDADES</h3><div style="display:grid; gap:5px; margin-bottom:10px;"><input id="unChave" placeholder="ID login (ex: u1)" class="input-dark"><input id="unNome" placeholder="Nome Exibição (ex: Unidade 1)" class="input-dark"><input id="unProf" placeholder="Professor" class="input-dark"><select id="unAnciao" class="input-dark"></select><button class="btn-modern" onclick="addUnidade()">ADICIONAR UNIDADE</button></div><div id="listaUnidadesAdmin" style="max-height:250px; overflow-y:auto;"></div><button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+    <div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="linkTit" placeholder="Título" class="input-dark"><input id="linkUrl" placeholder="URL completa" class="input-dark"><button class="btn-modern" onclick="salvarLink()">+</button></div><div id="listaLinksAdmin" style="max-height:250px; overflow-y:auto;"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+    <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EVENTOS ESPECIAIS (Destaque Vermelho)</h3><div style="display:grid; gap:5px; margin-bottom:10px;"><input type="date" id="evtData" class="input-dark"><input id="evtNome" placeholder="Nome do Evento" class="input-dark"><button class="btn-modern" onclick="salvarEvento()">CADASTRAR EVENTO</button></div><div id="listaEventosAdmin" style="max-height:250px; overflow-y:auto;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+    <div id="popTesourariaAdmin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green); text-align:center;">GERENCIADOR DE DOCUMENTOS</h3><div style="border:1px solid #334155; padding:15px; border-radius:8px; margin-bottom:15px; display:grid; gap:8px;"><input type="file" id="fileInput" class="input-dark"><select id="docDestinatario" class="input-dark"><option value="todos">Disponível para: TODOS OS USUÁRIOS</option><option value="admin">Apenas ADMIN / GERÊNCIA</option></select><button class="btn-modern" style="border-color:var(--green); color:var(--green)" onclick="uploadArquivo()">🚀 ENVIAR ARQUIVO</button></div><div id="listaAdminArquivos" style="max-height:200px; overflow-y:auto;"></div><button onclick="document.getElementById('popTesourariaAdmin').style.display='none'" class="btn-fechar">FECHAR PAINEL</button></div></div>
+    <div id="popView" class="overlay" onclick="this.style.display='none'"><div class="pop-content" style="max-width:90%; width:1000px;" onclick="event.stopPropagation()"><div id="viewContainer"></div><button onclick="document.getElementById('popView').style.display='none'" class="btn-fechar">FECHAR VISUALIZAÇÃO</button></div></div>
+    <div id="popDadosGerais" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange); text-align:center;">PAINEL AVANÇADO</h3><div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:8px; border:1px solid #334155;"><p style="font-size:0.8rem; margin-top:0; color:#94a3b8;">Área exclusiva para encerramento de ciclos e consolidação de relatórios do trimestre. Para evitar sobrecarregar o banco de dados, o histórico de cartões de chamada antigos precisa ser limpo.</p><p style="font-weight: bold; color: var(--gold);">FAÇA O DOWNLOAD DOS ARQUIVOS EM PDF/JPG AGORA ANTES DE PROSSEGUIR!</p><div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;"><button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button><button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">REMOVER DADOS ANTIGOS E INICIAR NOVO TRIMESTRE</button></div></div></div></div>
+
+    <div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
+        <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
+            <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
+            <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+            <div style="max-height: 450px; overflow-y: auto;">
+                <table class="tabla-secre">
+                    <thead>
+                        <tr>
+                            <th>SÁBADO</th>
+                            <th>MEMBROS ATIVOS</th>
+                            <th>PRESENTES</th>
+                            <th>% PRESENÇA</th>
+                            <th>VISITAS RECOLHIDAS (P7)</th>
+                            <th>OFERTAS DO DIA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoRelatorioSecretaria"></tbody>
+                </table>
             </div>
-        </div>
-
-        <div class="section-header no-print" id="headerLinksGerais" onclick="toggleSection('secLinksPublicos', 'btnToggleLinks')">
-            <h3>🔗 LINKS ÚTEIS E MATERIAIS DE APOIO</h3>
-            <button class="section-toggle-btn" id="btnToggleLinks">-</button>
-        </div>
-        <div id="secLinksPublicos" style="border:1px solid var(--neon); border-top:none; padding:15px; border-radius: 0 0 12px 12px;" class="no-print">
-            <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:12px;"></div>
+            <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
         </div>
     </div>
-</div>
 
-<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
-    <div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()">
-        <h3 style="color:var(--blue); margin-top:0; text-align:center;">LOGIN DO SISTEMA</h3>
-        <label style="color:#333; font-size:0.8rem; font-weight:bold;">USUÁRIO / DEPARTAMENTO:</label>
-        <input type="text" id="userLogin" class="input-dark" style="margin-bottom:12px; background:#f1f5f9 !important; color:#000 !important; border-color:#cbd5e1;" placeholder="Ex: admin, musica, unidade1...">
-        <label style="color:#333; font-size:0.8rem; font-weight:bold;">SENHA DE ACESSO:</label>
-        <input type="password" id="passLogin" class="input-dark" style="margin-bottom:15px; background:#f1f5f9 !important; color:#000 !important; border-color:#cbd5e1;" placeholder="******">
-        <button class="btn-modern" style="width:100%; background:var(--blue); color:white; border:none; padding:10px;" onclick="login()">ENTRAR</button>
-    </div>
-</div>
+    <div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="mbNome" placeholder="Nome" class="input-dark"><input id="mbCargo" placeholder="Cargo" class="input-dark"><button class="btn-modern" onclick="addMembro()">+</button></div><div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+    
+    <div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+    
+    <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0; text-align:center;">LOGIN DO SISTEMA</h3><label style="color:black; font-weight:bold; font-size:0.85rem;">USUÁRIO / CÓDIGO:</label><input type="text" id="userLogin" style="width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:6px; font-weight:bold; box-sizing:border-box;"><label style="color:black; font-weight:bold; font-size:0.85rem;">SENHA DE ACESSO:</label><input type="password" id="passLogin" style="width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:6px; font-weight:bold; box-sizing:border-box;"><button class="btn-modern" style="width:100%; background:var(--blue); color:white; border:none; padding:12px; font-size:1rem;" onclick="login()">ENTRAR</button></div></div>
 
-<div id="popEventos" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--red); text-align:center; margin-top:0;">📅 GERENCIAR EVENTOS ESPECIAIS</h3>
-        <div style="display:grid; grid-template-columns: 140px 1fr; gap:10px; margin-bottom:15px;">
-            <input type="date" id="evtData" class="input-dark">
-            <input type="text" id="evtNome" class="input-dark" placeholder="Nome do Evento Especial (Ex: JA, Santa Ceia...)">
-        </div>
-        <button class="btn-modern" style="width:100%; border-color:var(--red); color:var(--red); margin-bottom:15px;" onclick="salvarEvento()">➕ ADICIONAR EVENTO</button>
-        <div id="listaEventosAdmin" style="max-height:220px; overflow-y:auto; border-top:1px solid #334155; padding-top:10px;"></div>
-        <button class="btn-fechar" onclick="document.getElementById('popEventos').style.display='none'">FECHAR</button>
-    </div>
-</div>
-
-<div id="popDados" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--orange); text-align:center; margin-top:0;">📊 DADOS ANUAIS DO TERMÔMETRO</h3>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
-            <div>
-                <label style="font-size:0.8rem; color:var(--gold);">Membros Ativos (Alvo):</label>
-                <input type="number" id="tMembros" class="input-dark" onchange="db.termometro.membros=this.value; save(); updateProgresso();">
-            </div>
-            <div>
-                <label style="font-size:0.8rem; color:var(--gold);">Batismos Realizados:</label>
-                <input type="number" id="tBatismos" class="input-dark" onchange="db.termometro.batismos=this.value; save(); updateProgresso();">
-            </div>
-        </div>
-        <button class="btn-fechar" onclick="document.getElementById('popDados').style.display='none'">FECHAR</button>
-    </div>
-</div>
-
-<div id="popLinks" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center; margin-top:0;">🔗 PAINEL DE LINKS EXTERNOS</h3>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
-            <input id="linkTit" placeholder="Título do Link (Ex: Apostila JA)" class="input-dark">
-            <input id="linkUrl" placeholder="URL Completa (https://...)" class="input-dark">
-        </div>
-        <button class="btn-modern" style="width:100%; margin-bottom:15px;" onclick="salvarLink()">➕ INSERIR LINK</button>
-        <div id="listaLinksAdmin" style="max-height:200px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popTesourariaAdmin" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--green); text-align:center; margin-top:0;">⚙️ CENTRAL DE ARQUIVOS E DOCUMENTOS</h3>
-        <div style="background:rgba(255,255,255,0.03); border:1px solid #334155; padding:15px; border-radius:10px; margin-bottom:15px;">
-            <h4 style="margin-top:0; color:var(--gold)">📤 FAZER UPLOAD DE NOVO ARQUIVO</h4>
-            <input type="file" id="fileInput" class="input-dark" style="margin-bottom:10px;">
-            <div style="display:flex; gap:10px; align-items:center;">
-                <label style="font-size:0.8rem;">Visibilidade:</label>
-                <select id="docDestinatario" class="input-dark" style="width:150px;">
-                    <option value="todos">Todos (Público)</option>
-                    <option value="admin">Apenas Admin</option>
-                    <option value="diaconato">Diaconato</option>
-                    <option value="musica">Música</option>
-                    <option value="sabatina">Escola Sabatina</option>
-                </select>
-                <button class="btn-modern" style="border-color:var(--green); color:var(--green)" onclick="uploadArquivo()">SUBIR ARQUIVO</button>
-            </div>
-        </div>
-        <h4 style="color:white; border-bottom:1px solid #334155; padding-bottom:5px;">Lista de Arquivos do Mês Atual:</h4>
-        <div id="listaAdminArquivos" style="max-height:180px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popTesourariaAdmin').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popViewArquivo" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:90%; width:1000px;" onclick="event.stopPropagation()">
-        <div id="viewContainer" style="width:100%; background:white; border-radius:8px; overflow:hidden; text-align:center;"></div>
-        <button onclick="document.getElementById('popViewArquivo').style.display='none'" class="btn-fechar">FECHAR VISUALIZADOR</button>
-    </div>
-</div>
-
-<div id="popUnidades" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--gold); text-align:center; margin-top:0;">🏫 CADASTRAR UNIDADES DE AÇÃO</h3>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-bottom:10px;">
-            <input id="unChave" placeholder="ID (ex: unidade1)" class="input-dark">
-            <input id="unProf" placeholder="Professor(a)" class="input-dark">
-            <select id="unAnciao" class="input-dark"></select>
-        </div>
-        <button class="btn-modern" style="width:100%; border-color:var(--gold); color:var(--gold); margin-bottom:15px;" onclick="addUnidade()">➕ CADASTRAR UNIDADE</button>
-        <div id="listaUnidadesAdmin" style="max-height:220px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
-        <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
-        <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
-        <div style="max-height: 450px; overflow-y: auto;">
-            <table class="tabla-secre">
-                <thead>
-                    <tr>
-                        <th>SÁBADO</th>
-                        <th>MEMBROS ATIVOS</th>
-                        <th>PRESENTES</th>
-                        <th>% PRESENÇA</th>
-                        <th>VISITAS RECOLHIDAS (P7)</th>
-                        <th>OFERTAS DO DIA</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoRelatorioSecretaria"></tbody>
-            </table>
-        </div>
-        <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
-    </div>
-</div>
-
-<div id="popMembros" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3>
-        <div style="display:flex; gap:5px; margin-bottom:10px;">
-            <input id="mbNome" placeholder="Nome" class="input-dark">
-            <input id="mbCargo" placeholder="Cargo" class="input-dark">
-            <button class="btn-modern" onclick="addMembro()">+</button>
-        </div>
-        <div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popBackups" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3>
-        <div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div>
-        <button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button>
-    </div>
-</div>
-
-<div id="popAlertaTrimestre" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="border-color: var(--red); max-width: 500px;" onclick="event.stopPropagation()">
-        <h2 style="color: var(--red); text-align: center; margin-top:0;">⚠️ ATENÇÃO: VIRADA DE TRIMESTRE</h2>
-        <p style="text-align: justify; line-height: 1.4;">Você está prestes a inicializar um novo trimestre. Para evitar sobrecarregar o banco de dados, o histórico de cartões de chamada antigos precisa ser limpo.</p>
-        <p style="font-weight: bold; color: var(--gold);">FAÇA O DOWNLOAD DOS ARQUIVOS EM PDF/JPG AGORA ANTES DE PROSSEGUIR!</p>
-        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
-            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button>
-            <button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">REMOVER DADOS ANTIGOS E INICIAR NOVO TRIMESTRE</button>
-        </div>
-    </div>
 </div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
-    
-    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", jovem: "Jovens / JA", recepcao: "Recepção", infantil: "Ministério Infantil" };
-    const LISTA_ANCIAOS = ["Pr. Eleazar", "Anc. Cleonir", "Anc. Rogério", "Anc. Daniel", "Anc. Juca", "Anc. Ronis", "Anc. Nelson"];
-    const COLUNAS_ESCALA = ['sabatina', 'pregador', 'especial', 'louvor', 'sonoplastia', 'recepcao', 'diaconato'];
+
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "COUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", recepcao: "Recepção", jovem: "Jovens", criancas: "Ministério Infantil" };
+    const LISTA_ANCIAOS = ["Pr. Railson", "Anc. Cleiton", "Anc. Rogério", "Anc. Eliseu", "Anc. Fabiano", "Anc. Marcelo", "Anc. Ilson", "Anc. Douglas"];
     const TOTAL_ALUNOS = 16;
 
-    let db = {}, g1 = null, g2 = null, graficoMetaGlobal = null, graficoAtividadesGlobal = null;
+    let db = {};
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
+    let g1=null, g2=null, gTermometro=null;
 
-    window.onload = async function() {
-        initSeletorMeses();
-        await carregarBanco();
-        initCartaoUnidade();
-        popularListaSabadosSeletor();
-        window.addEventListener('scroll', () => { document.getElementById('btnTopo').style.display = window.scrollY > 300 ? 'block' : 'none'; });
-    };
-
-    function initSeletorMeses() {
-        const sel = document.getElementById('selMes');
-        let mAtual = new Date().getMonth();
-        MESES.forEach((m, i) => {
-            let op = document.createElement('option'); op.value = i; op.innerText = m;
-            if(i === mAtual) op.selected = true;
-            sel.appendChild(op);
-        });
-    }
-
-    async function carregarBanco() {
-        try {
-            let doc = await dbCloud.collection('dados').doc('estrela_v102').get();
-            if(doc.exists) {
-                db = doc.data();
-                if(!db.escalas) db.escalas = {};
-                if(!db.regras_manuais) db.regras_manuais = {};
-                if(!db.anciaos) db.anciaos = {};
-                if(!db.eventos_especiais) db.eventos_especiais = {};
-                if(!db.termometro) db.termometro = { membros: 140, batismos: 0 };
-                if(!db.unidades_acao) db.unidades_acao = {};
-                if(!db.historico_cartoes) db.historico_cartoes = {};
-                if(!db.apoio_anciao) db.apoio_anciao = {};
-                if(!db.membros) db.membros = [];
-                if(!db.links_externos) db.links_externos = [];
-                if(!db.docs) db.docs = {};
-                if(!db.senhas) db.senhas = {};
-                
-                verificarViradaTrimestre();
-                renderTodo();
-            } else {
-                alert("Banco de dados não encontrado no Firestore!");
-            }
-        } catch(e) {
-            alert("Erro crítico de conexão: " + e.message);
+    async function carregarSist() {
+        let doc = await dbCloud.collection('dados').doc('estrela_v102').get();
+        if(!doc.exists()) {
+            alert("Erro fatal: Banco de dados master não localizado!");
+            return;
         }
+        db = doc.data();
+        
+        if(!db.escalas) db.escalas = {};
+        if(!db.docs) db.docs = {};
+        if(!db.regras_manuais) db.regras_manuais = {};
+        if(!db.eventos_especiais) db.eventos_especiais = {};
+        if(!db.cronogramas) db.cronogramas = {};
+        if(!db.unidades_acao) db.unidades_acao = {};
+        if(!db.membros) db.membros = [];
+        if(!db.links_externos) db.links_externos = [];
+        if(!db.meta_anual) db.meta_anual = 0;
+        if(!db.batismos_realizados) db.batismos_realizados = 0;
+
+        verificarViradaTrimestre();
+        popularSeletoresIniciais();
+        popularListaSabadosSeletor();
+        initCartaoUnidade();
+        renderTodo();
+        setupAutoSaveListeners();
     }
 
     function save() {
-        if(!db || Object.keys(db).length === 0) { console.error("Abortando salvamento: Objeto local está incompleto ou vazio."); return; }
+        if(!db || Object.keys(db).length === 0) {
+            console.error("Tentativa de salvamento abortada: Objeto local está incompleto ou vazio.");
+            return;
+        }
         showStatus("Salvando...", "saving");
         dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
             showStatus("✅ Alterações Salvas", "saved");
         }).catch(e => alert("Erro ao salvar: " + e.message));
     }
 
-    function showStatus(text, className) {
-        const ind = document.getElementById('saveIndicator');
-        if(ind) { ind.innerText = text; ind.className = className; ind.style.display = 'block'; if(className === 'saved') setTimeout(() => ind.style.display='none', 2500); }
-    }
-
     function obterTrimestreAtual() {
         const mes = new Date().getMonth();
-        if(mes <= 2) return "T1-2026"; if(mes <= 5) return "T2-2026"; if(mes <= 8) return "T3-2026"; return "T4-2026";
+        if(mes <= 2) return "T1-2026";
+        if(mes <= 5) return "T2-2026";
+        if(mes <= 8) return "T3-2026";
+        return "T4-2026";
     }
 
     function listarSabados2026() {
-        let sabados = []; let d = new Date(2026, 0, 1);
+        let sabados = [];
+        let d = new Date(2026, 0, 1);
         while (d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
-        while (d.getFullYear() === 2026) { sabados.push(`${d.getDate()}_${d.getMonth() + 1}_${d.getFullYear()}`); d.setDate(d.getDate() + 7); }
+        while (d.getFullYear() === 2026) {
+            sabados.push(`${d.getDate()}_${d.getMonth() + 1}_${d.getFullYear()}`);
+            d.setDate(d.getDate() + 7);
+        }
         return sabados;
     }
 
@@ -577,7 +444,9 @@
         const list = listarSabados2026();
         const sabHoje = obterDataSabadoAtual();
         list.forEach(s => {
-            let op = document.createElement('option'); op.value = s; op.innerText = s.replace(/_/g, '/');
+            let op = document.createElement('option');
+            op.value = s;
+            op.innerText = s.replace(/_/g, '/');
             if(s === sabHoje) op.selected = true;
             sel.appendChild(op);
         });
@@ -594,175 +463,339 @@
     function confirmarLimpezaTrimestre() {
         console.log("Limpeza de dados abortada para proteger a integridade do Firebase.");
         db.trimestre_atual = obterTrimestreAtual();
-        document.getElementById('popAlertaTrimestre').style.display = 'none';
-        alert("Histórico preservado com sucesso!");
+        document.getElementById('popDadosGerais').style.display = 'none';
+        alert("Proteção Ativa: A limpeza estrutural direta foi desativada para segurança dos logs anuais.");
     }
 
-    function toggleSection(wrapperId, buttonId) {
-        const w = document.getElementById(wrapperId), b = document.getElementById(buttonId);
-        if(w && w.style.display === 'none') { w.style.display = 'block'; if(b) b.innerText = '-'; } else if(w) { w.style.display = 'none'; if(b) b.innerText = '+'; }
+    function popularSeletoresIniciais() {
+        const sel = document.getElementById('selMes');
+        if(sel.options.length === 0) {
+            let mAtual = new Date().getMonth();
+            MESES.forEach((m, i) => {
+                let op = document.createElement('option');
+                op.value = i;
+                op.innerText = m;
+                if(i === mAtual) op.selected = true;
+                sel.appendChild(op);
+            });
+        }
     }
 
     function renderTodo() {
-        const mIdx = parseInt(document.getElementById('selMes').value), busca = document.getElementById('buscaRapida').value.toUpperCase().trim();
-        const isAdmin = ['admin','ger'].includes(curUser), isV = curUser === 'visitante', isUnidade = db.unidades_acao && db.unidades_acao[curUser];
-        
-        document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
+        const mIdx = parseInt(document.getElementById('selMes').value);
+        const busca = document.getElementById('buscaRapida').value.toLowerCase().trim();
+        document.getElementById('mesTesouraria').innerText = MESES[mIdx];
+
+        const isAdmin = ['admin','ger'].includes(curUser);
+        const isV = curUser === 'visitante';
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = !isV ? 'block' : 'none';
         document.getElementById('btnSairProfessor').style.display = isUnidade ? 'block' : 'none';
-        document.getElementById('userWelcomeBar').style.display = !isV ? 'block' : 'none';
+        document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('menuNavegacaoGeral').style.display = isV ? 'none' : 'flex';
         
-        if(!isV) { document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`; }
-        
+        if(!isV) {
+            document.getElementById('userWelcomeBar').style.display = 'block';
+            if(isUnidade) {
+                document.getElementById('userWelcomeBar').innerHTML = `Olá Professor(a), você está logado na <b>${db.unidades_acao[curUser].nome.toUpperCase()}</b>`;
+            } else {
+                document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
+            }
+        } else {
+            document.getElementById('userWelcomeBar').style.display = 'none';
+        }
+
         document.getElementById('btnCron').style.display = 'block';
-        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria', 'btnMembros'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = (isV || isUnidade) ? 'none' : 'block'; });
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria', 'btnMembros'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.style.display = (isV || isUnidade) ? 'none' : 'block';
+        });
+
         document.getElementById('btnUnidades').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
         document.getElementById('btnRelatorioSabatina').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
-        
+
         const modelosDiv = document.getElementById('modelosCronograma');
-        if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
-        if (!isV && !isUnidade) { document.getElementById('adminCronControls').style.display = 'flex'; document.getElementById('btnCronAddSecao').style.display = isAdmin ? 'block' : 'none'; } else { document.getElementById('adminCronControls').style.display = 'none'; }
-        
-        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
+        if (modelosDiv) {
+            modelosDiv.style.display = isAdmin ? 'flex' : 'none';
+        }
+
+        if (!isV && !isUnidade) {
+            document.getElementById('adminCronControls').style.display = 'flex';
+            document.getElementById('btnCronAddSecao').style.display = isAdmin ? 'block' : 'none';
+        } else {
+            document.getElementById('adminCronControls').style.display = 'none';
+        }
+
+        const corpo = document.getElementById('corpoEscala');
+        corpo.innerHTML = "";
+
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
-        
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
             let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
             let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
-            if(busca && !txtDia.includes(busca)) continue;
             
+            if(busca && !txtDia.includes(busca)) continue;
+
             if([0,3,6].includes(sem) || idEv) {
-                let rClass = idEv ? "row-especial" : (minDoDia ? "row-ministerio" : "");
-                let hClass = dStr === obterDataHojeString() ? "hoje" : "";
-                let sNome = ["DOMINGO","SEGUNDA","TERÇA","QUARTA","QUINTA","SEXTA","SÁBADO"][sem];
-                let tr = `<tr class="${rClass} ${hClass}"><td>${sNome}<br><small style="color:#64748b">${idEv || (minDoDia ? MINS[minDoDia] : '')}</small></td><td>${d}</td>`;
+                let rCls = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
+                let semNome = ["DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO"][sem];
+                if(idEv) semNome = `🔥 ${db.eventos_especiais[dtF].toUpperCase()}`;
+                else if(minDoDia) semNome = `⚙️ ${minDoDia.toUpperCase()}`;
+
+                let hHoje = dStr === obterDataHojeBR() ? 'hoje' : '';
                 
-                COLUNAS_ESCALA.forEach(c => {
-                    let v = db.escalas?.[dStr]?.[c] || "", conf = checarConflito(dStr, v) ? "conflito" : "";
-                    let edit = (isAdmin || curUser === c || (c === 'sabatina' && curUser === 'sabatina')) ? true : false;
-                    tr += `<td><textarea class="auto-expand ${conf}" onchange="atuCel('${dStr}','${c}',this.value)" onkeydown="handleEscalaKeys(event,'${dStr}','${c}')" ${!edit?'disabled':''}>${v}</textarea></td>`;
+                let tr = document.createElement('tr');
+                tr.className = `${rCls} ${hHoje}`;
+                tr.style.cursor = isAdmin ? 'pointer' : 'default';
+                if(isAdmin) tr.onclick = () => cliqueDia(dStr);
+
+                let tdMeta = `<td><small>${semNome}</small></td><td><b>${d}/${mIdx+1}</b></td>`;
+                let colunas = ['sabatina','pregador','musica','louvor','sonoplastia','recepcao','diaconato'];
+                
+                colunas.forEach(c => {
+                    let val = db.escalas?.[dStr]?.[c] || "";
+                    let confCls = checarConflito(dStr, val) ? 'conflito' : '';
+                    let rOnly = (!isAdmin && curUser !== c) ? 'disabled' : '';
+                    if(curUser === 'admin' || curUser === 'ger') rOnly = '';
+
+                    tdMeta += `<td><textarea class="auto-expand ${confCls}" ${rOnly} onkeydown="handleEscalaKeys(event,'${dStr}','${c}')" onchange="atuCel('${dStr}','${c}',this.value)">${val}</textarea></td>`;
                 });
-                tr += `</tr>`; corpo.innerHTML += tr;
+
+                tr.innerHTML = tdMeta;
+                corpo.appendChild(tr);
             }
         }
-        
-        document.getElementById('headerAnciao').innerText = "Responsável / Ancião do Mês: " + (db.anciaos?.[mIdx] || "NÃO DEFINIDO");
-        document.getElementById('headerTitulo').innerText = `ESCALA DE ATIVIDADES - ${MESES[mIdx]} DE 2026`;
-        document.getElementById('mesTesouraria').innerText = MESES[mIdx];
-        
-        renderPlanAnual(); renderAvisos(); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso(); renderAdmin();
+
+        document.getElementById('headerAnciao').innerText = `Responsável Mês: ${db.anciao_mes?.[mIdx] || "Não definido"}`;
+
+        renderPlanAnual();
+        renderAdmin();
+        renderAvisos();
+        renderArquivosPublicos();
+        renderLinksPublicos();
+        updateProgresso();
+        ajustarTextareas();
+    }
+
+    function ajustarTextareas() {
+        document.querySelectorAll('.auto-expand').forEach(el => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        });
+    }
+
+    function setupAutoSaveListeners() {
+        document.addEventListener('change', (e) => {
+            if(e.target.classList.contains('auto-expand') || e.target.classList.contains('input-aluno') || e.target.classList.contains('input-qtd')) {
+                ajustarTextareas();
+            }
+        });
+    }
+
+    function renderAvisos() {
+        const tk = document.getElementById('newsTicker');
+        if(db.aviso_ticker && db.aviso_ticker.trim().length > 0) {
+            tk.style.display = 'block';
+            tk.querySelector('span').innerText = db.aviso_ticker.toUpperCase();
+        } else {
+            tk.style.display = 'none';
+        }
     }
 
     function renderAdmin() {
         if(!['admin','ger'].includes(curUser)) return;
         const mIdx = parseInt(document.getElementById('selMes').value);
-        
-        let hMin = document.getElementById('listaMinisterios'); hMin.innerHTML = "";
-        Object.keys(MINS).forEach(k => { if(k!=='admin'&&k!=='ger') hMin.innerHTML += `<button class="btn-min ${window.minSelecionado===k?'active':''}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS[k].toUpperCase()}</button>`; });
-        
-        let hMes = document.getElementById('gridMeses'); hMes.innerHTML = "";
-        MESES.forEach((m, i) => { hMes.innerHTML += `<div style="margin-bottom:8px;"><small>${m}:</small><select class="input-dark" onchange="db.anciaos[${i}]=this.value; save(); renderTodo();"><option value="">-- Selecione --</option>${LISTA_ANCIAOS.map(a=>`<option value="${a}" ${db.anciaos?.[i]===a?'selected':''}>${a}</option>`).join('')}</select></div>`; });
-        
-        let hApoio = document.getElementById('gridApoioAnciao'); hApoio.innerHTML = "";
-        Object.keys(MINS).forEach(k => { if(k!=='admin'&&k!=='ger') hApoio.innerHTML += `<div style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;"><small style="font-size:0.7rem;">${MINS[k]}:</small><select class="input-dark" style="width:110px; padding:3px;" onchange="db.apoio_anciao['${k}']=this.value; save(); renderTodo();"><option value="">--</option>${LISTA_ANCIAOS.map(a=>`<option value="${a}" ${db.apoio_anciao?.[k]===a?'selected':''}>${a}</option>`).join('')}</select></div>`; });
-        
-        let hCreds = document.getElementById('corpoCreds'); hCreds.innerHTML = "<tr><th>DEPT</th><th>SENHA</th></tr>";
-        Object.keys(MINS).forEach(k => { hCreds.innerHTML += `<tr><td>${MINS[k]}</td><td><input type="text" value="${db.senhas?.[k]||'123456'}" class="input-dark" style="padding:2px; text-align:center" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value; save();"></td></tr>`; });
-        if(db.unidades_acao) { Object.keys(db.unidades_acao).forEach(k => { hCreds.innerHTML += `<tr><td>UA: ${k.toUpperCase()}</td><td><input type="text" value="${db.unidades_acao[k].senha||'123'}" class="input-dark" style="padding:2px; text-align:center" onchange="db.unidades_acao['${k}'].senha=this.value; save();"></td></tr>`; }); }
-        
-        renderEventosAdmin(); renderListaLinksAdmin(); renderAdminDocs();
-    }
 
-    function renderCronogramaBlocos(listaBlocos) {
-        const container = document.getElementById('cronograma-lista'); container.innerHTML = "";
-        if (!listaBlocos || listaBlocos.length === 0) { container.innerHTML = "<p style='color:black; text-align:center;'>Nenhum cronograma definido para este dia.</p>"; return; }
-        
-        listaBlocos.forEach((dados, blocoIdx) => {
-            const isAdmin = ['admin','ger'].includes(curUser);
-            const bg = dados.corBg || '#f0f0f0'; const txtColor = dados.corTxt || '#000000';
-            const b = document.createElement('div'); b.className = 'bloco'; b.style.border = "1px solid #cbd5e1"; b.style.marginBottom = "12px"; b.style.borderRadius = "6px"; b.style.overflow = "hidden";
-            b.innerHTML = `<div style="background:${bg}; color:${txtColor}; padding:10px; display:flex; gap:10px; align-items:center;"><input style="width:110px; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v cron-horario"><input style="flex-grow:1; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v cron-titulo"><input type="hidden" class="cron-bg" value="${bg}"><input type="hidden" class="cron-txt" value="${txtColor}">${isAdmin ? `<button class="btn-modern" style="padding:4px 8px; background:white; border-color:#94a3b8;" onclick="addItemCron(this)">+ Item</button><button class="btn-modern" style="padding:4px 8px; background:#fee2e2; border-color:#ef4444; color:#b91c1c;" onclick="this.closest('.bloco').remove()">X</button>` : ''}</div>`;
-            
-            const subContainer = document.createElement('div'); subContainer.style.padding = "10px"; subContainer.style.background = "#fff"; subContainer.className = "lista-itens-cron";
-            (dados.itens || []).forEach(it => {
-                subContainer.innerHTML += `<div class="item-linha" style="display:flex; justify-content:space-between; margin-bottom:6px; border-bottom:1px dashed #e2e8f0; padding-bottom:4px;"><input style="flex-grow:1; border:none; background:transparent; color:#334155; font-weight:600;" value="${it.nome}" ${!isAdmin?'disabled':''} class="cron-i-nome"><input style="width:80px; border:none; background:transparent; text-align:right; color:#64748b; font-weight:bold;" value="${it.tempo}" ${!isAdmin?'disabled':''} placeholder="Responsável" class="cron-i-tempo">${isAdmin ? `<button onclick="this.parentNode.remove()" style="border:none; background:none; color:red; cursor:pointer; margin-left:10px; font-weight:bold;">X</button>` : ''}</div>`;
-            });
-            b.appendChild(subContainer); container.appendChild(b);
+        let dMin = document.getElementById('listaMinisterios');
+        dMin.innerHTML = "";
+        Object.keys(MINS).forEach(k => {
+            if(k==='admin'||k==='ger') return;
+            let act = window.minSelecionado === k ? 'active' : '';
+            dMin.innerHTML += `<button class="btn-min ${act}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS[k].toUpperCase()}</button>`;
         });
-    }
 
-    function carregarModeloFixo(tipo) {
-        if(!confirm("Substituir o cronograma atual pelo modelo de " + tipo.toUpperCase() + "?")) return;
-        let estrutura = [];
-        if(tipo === 'quarta') {
-            estrutura = [{ horario: "19:30 AS 19:40", titulo: "MOMENTO DE LOUVOR", corBg: "#e0f2fe", corTxt: "#0369a1", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }, { nome: "3º Hino", tempo: "" }]}, { horario: "19:40 AS 20:30", titulo: "CULTO DE ORAÇÃO", corBg: "#f1f5f9", corTxt: "#334155", itens: [{ nome: "BOAS VINDAS / ANÚNCIOS", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "PED. E AGRA.", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}];
-        } else if(tipo === 'domingo') {
-            estrutura = [{ horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO INICIAL", tempo: "" }, { nome: "MOMENTO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "OFERTORIO", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}];
-        } else if(tipo === 'sabado') {
-            estrutura = [ { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }, { nome: "3º Hino", tempo: "" }]}, { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "ANUNCIO ESCOLA SABATINA", tempo: "" }, { nome: "HINO INICIAL", tempo: "" }, { nome: "CARTA MISSIONARIA", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "RECAPITULAÇÃO ESCOLA SABATINA", tempo: "" }, { nome: "ORAÇÃO FINAL", tempo: "" }]}];
+        let dMes = document.getElementById('gridMeses');
+        dMes.innerHTML = "";
+        let ancSel = db.anciao_mes?.[mIdx] || "";
+        LISTA_ANCIAOS.forEach(a => {
+            let chk = ancSel === a ? 'checked' : '';
+            dMes.innerHTML += `<label style="display:block; font-size:0.8rem; margin-bottom:4px;"><input type="radio" name="ancMes" ${chk} onchange="db.anciao_mes[${mIdx}]='${a}'; save(); renderTodo();"> ${a}</label>`;
+        });
+
+        let dApoio = document.getElementById('gridApoioAnciao');
+        dApoio.innerHTML = "";
+        if(!db.apoio_anciao) db.apoio_anciao = {};
+        Object.keys(MINS).forEach(mK => {
+            if(['admin','ger','visitante'].includes(mK)) return;
+            let currentAnc = db.apoio_anciao[mK] || "Pastor";
+            let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${currentAnc===anc?'selected':''}>${anc}</option>`).join('');
+            dApoio.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; align-items:center;"><span style="font-size:0.75rem;">${MINS[mK]}</span><select class="input-dark" style="width:110px; padding:3px;" onchange="db.apoio_anciao['${mK}']=this.value; save();">${options}</select></div>`;
+        });
+
+        let cCreds = document.getElementById('corpoCreds');
+        cCreds.innerHTML = "";
+        Object.keys(db.senhas || {}).forEach(u => {
+            cCreds.innerHTML += `<tr><td style="padding:4px;"><b>${u.toUpperCase()}</b></td><td><input type="text" class="input-dark" style="padding:2px; font-size:0.7rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save();"></td></tr>`;
+        });
+
+        if(db.aviso_ticker) document.getElementById('inputTicker').value = db.aviso_ticker;
+        const unAncSel = document.getElementById('unAnciao');
+        if(unAncSel) {
+            unAncSel.innerHTML = LISTA_ANCIAOS.map(a => `<option value="${a}">${a}</option>`).join('');
         }
-        renderCronogramaBlocos(estrutura);
     }
 
-    function addBlocoCron() {
-        let h = prompt("Horário (Ex: 09:00 as 10:00):"), t = prompt("Título do Bloco:"); if(!t) return;
-        renderCronogramaBlocos([...coletarCronogramaForm(), { horario: h||"", titulo: t.toUpperCase(), corBg:"#f1f5f9", corTxt:"#334155", itens:[] }]);
+    async function abrirPopBackups() {
+        document.getElementById('popBackups').style.display='flex';
+        const lista = document.getElementById('listaBackupsNuvem');
+        lista.innerHTML = "Buscando...";
+        try {
+            const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get();
+            lista.innerHTML = "";
+            snap.forEach(doc => {
+                const b = doc.data();
+                lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`;
+            });
+            if(snap.empty) lista.innerHTML = "Nenhum backup encontrado.";
+        } catch(e) {
+            lista.innerHTML = "Erro ao buscar: " + e.message;
+        }
     }
 
-    function addItemCron(btn) {
-        const c = btn.closest('.bloco').querySelector('.lista-itens-cron');
-        const d = document.createElement('div'); d.className = "item-linha"; d.style = "display:flex; justify-content:space-between; margin-bottom:6px; border-bottom:1px dashed #e2e8f0; padding-bottom:4px;";
-        d.innerHTML = `<input style="flex-grow:1; border:none; background:transparent; color:#334155; font-weight:600;" value="Novo Item" class="cron-i-nome"><input style="width:80px; border:none; background:transparent; text-align:right; color:#64748b; font-weight:bold;" placeholder="Responsável" class="cron-i-tempo"><button onclick="this.parentNode.remove()" style="border:none; background:none; color:red; cursor:pointer; margin-left:10px; font-weight:bold;">X</button>`;
-        c.appendChild(d);
+    async function gerarBackupNuvem() {
+        const nome = prompt("Nome do backup:");
+        if(!nome) return;
+        showStatus("Gerando...", "saving");
+        try {
+            await dbCloud.collection('backups_seguros').add({
+                identificador: nome.toUpperCase(),
+                data: new Date().toLocaleString(),
+                conteudo: JSON.parse(JSON.stringify(db)),
+                criadoEm: Date.now()
+            });
+            showStatus("✅ OK", "saved");
+        } catch(e) {
+            alert(e.message);
+        }
     }
 
-    function coletarCronogramaForm() {
-        let estrutura = [];
-        document.querySelectorAll('#cronograma-lista .bloco').forEach(b => {
-            let bloco = { horario: b.querySelector('.cron-horario').value, titulo: b.querySelector('.cron-titulo').value, corBg: b.querySelector('.cron-bg').value, corTxt: b.querySelector('.cron-txt').value, itens: [] };
-            b.querySelectorAll('.item-linha').forEach(l => { bloco.itens.push({ nome: l.querySelector('.cron-i-nome').value, tempo: l.querySelector('.cron-i-tempo').value }); });
-            estrutura.push(bloco);
+    async function restaurarBackup(id) {
+        if(confirm("Deseja restaurar esta versão?")) {
+            try {
+                const doc = await dbCloud.collection('backups_seguros').doc(id).get();
+                if(doc.exists()) {
+                    db = doc.data().conteudo;
+                    save();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert("Backup não encontrado!");
+                }
+            } catch(e) {
+                alert("Erro ao restaurar: " + e.message);
+            }
+        }
+    }
+
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function salvarLink() {
+        const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value;
+        if(!t || !u) return;
+        if(!db.links_externos) db.links_externos = [];
+        db.links_externos.push({ titulo: t, url: u });
+        save(); renderTodo(); renderListaLinksAdmin();
+        document.getElementById('linkTit').value=''; document.getElementById('linkUrl').value='';
+    }
+    function renderListaLinksAdmin() {
+        const l = document.getElementById('listaLinksAdmin'); l.innerHTML = "";
+        (db.links_externos||[]).forEach((lk,i)=>{
+            l.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${lk.titulo}</span><button onclick="db.links_externos.splice(${i},1); save(); renderTodo(); renderListaLinksAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
         });
-        return estrutura;
     }
-
-    function salvarCronograma() {
-        const mes = document.getElementById('selMes').value;
-        if(!db.cronogramas) db.cronogramas = {};
-        db.cronogramas[mes] = coletarCronogramaForm();
-        save();
-        alert("Ordem de culto salva com sucesso para o mês de referência!");
-    }
-
-    function renderPlanAnual() {
-        const corpo = document.getElementById('corpoPlan'); corpo.innerHTML = "";
-        MESES.forEach((m, i) => {
-            let v = db.regras_manuais?.[`M_${i}_2026`] || "", edit = ['admin','ger'].includes(curUser);
-            corpo.innerHTML += `<tr><td style="width:130px; background:var(--blue); font-size:0.8rem; font-weight:bold; padding:8px; border:1px solid #334155;">${m}</td><td style="border:1px solid #334155;"><textarea class="auto-expand" style="color:white; text-align:left; font-size:0.85rem;" onchange="if(!db.regras_manuais)db.regras_manuais={}; db.regras_manuais['M_${i}_2026']=this.value.toUpperCase(); save();" ${!edit?'disabled':''}>${v}</textarea></td></tr>`;
+    function renderLinksPublicos() {
+        const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = "";
+        (db.links_externos || []).forEach(lk => {
+            grid.innerHTML += `<a href="${lk.url}" target="_blank" class="btn-modern" style="text-decoration:none; text-align:center; min-width:130px;">🔗 ${lk.titulo.toUpperCase()}</a>`;
         });
+    }
+
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventosAdmin(); }
+    function salvarEvento() {
+        const d = document.getElementById('evtData').value, n = document.getElementById('evtNome').value;
+        if(!d || !n) return;
+        db.eventos_especiais[d] = n; save(); renderTodo(); renderListaEventosAdmin();
+    }
+    function renderListaEventosAdmin() {
+        const l = document.getElementById('listaEventosAdmin'); l.innerHTML = "";
+        Object.keys(db.eventos_especiais || {}).sort().forEach(k => {
+            l.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span><b>${k}</b>: ${db.eventos_especiais[k]}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderTodo(); renderListaEventosAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
+        });
+    }
+
+    function abrirTesourariaAdmin() { document.getElementById('popTesourariaAdmin').style.display='flex'; renderAdminDocs(); }
+    function uploadArquivo() {
+        const file = document.getElementById('fileInput').files[0];
+        const dest = document.getElementById('docDestinatario').value;
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const m = document.getElementById('selMes').value;
+            if(!db.docs[m]) db.docs[m]=[];
+            db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() });
+            save(); renderAdminDocs();
+        };
+        reader.readAsDataURL(file);
+    }
+    function renderAdminDocs() {
+        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = "";
+        (db.docs?.[m] || []).forEach((doc, i) => {
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
+        });
+    }
+    function renderArquivosPublicos() {
+        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
+        (db.docs?.[m] || []).forEach(doc => {
+            if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser))
+                grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`;
+        });
+    }
+    function verArquivo(src, ext, nome) {
+        if(['ppt','pptx'].includes(ext)) {
+            const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return;
+        }
+        const c = document.getElementById('viewContainer');
+        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`;
+        document.getElementById('popView').style.display = 'flex';
+    }
+
+    function renderUnidadesAdmin() {
+        const l = document.getElementById('listaUnidadesAdmin'); l.innerHTML = "";
+        Object.keys(db.unidades_acao || {}).forEach(k => {
+            l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
+        });
+    }
+    function addUnidade() {
+        const c = document.getElementById('unChave').value.toLowerCase().trim(), n = document.getElementById('unNome').value, p = document.getElementById('unProf').value, a = document.getElementById('unAnciao').value;
+        if(!c || !n) return; if(!db.unidades_acao) db.unidades_acao={};
+        db.unidades_acao[c] = { nome: n, professor: p, anciao: a }; save(); renderUnidadesAdmin(); renderTodo();
     }
 
     function renderMembros() {
-        let l = document.getElementById('listaMembros'); l.innerHTML = "";
-        (db.membros||[]).forEach((m,i)=>{
-            l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${m.nome}</b> - ${m.cargo}</span><button onclick="if(confirm('Remover membro?')) {db.membros.splice(${i},1); save(); renderMembros();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
-        });
+        const l = document.getElementById('listaMembros'); l.innerHTML = "";
+        (db.membros||[]).forEach((m,i)=>{ l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${m.nome}</b> - ${m.cargo}</span><button onclick="if(confirm('Remover membro?')) {db.membros.splice(${i},1); save(); renderMembros();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; });
     }
-
     function addMembro() {
-        let n = document.getElementById('mbNome').value.toUpperCase(), c = document.getElementById('mbCargo').value.toUpperCase();
-        if(!n || !c) return; db.membros.push({nome:n, cargo:c}); save(); renderMembros(); document.getElementById('mbNome').value=""; document.getElementById('mbCargo').value="";
+        const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value; if(!n) return;
+        db.membros.push({nome:n, cargo:c}); save(); renderMembros();
     }
 
     function checarConflito(dStr, valor) {
         if(!valor || valor.trim().length < 3) return false;
         let cont = 0; const dia = db.escalas?.[dStr] || {};
-        Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; });
-        return cont > 1;
+        Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; }); return cont > 1;
     }
-
     function handleEscalaKeys(e, d, c) {
         if (e.key === 'Enter') {
             e.preventDefault(); e.target.blur();
@@ -778,137 +811,77 @@
         const u = document.getElementById('userLogin').value.toLowerCase().trim();
         const p = document.getElementById('passLogin').value;
         if(db.unidades_acao && db.unidades_acao[u]) {
-            if(db.unidades_acao[u].senha === p || p === '123') { localStorage.setItem('iasd_curUser', u); location.reload(); return; }
+            localStorage.setItem('iasd_curUser', u); location.reload(); return;
         }
         const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
         if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else { alert("Credenciais Inválidas!"); }
     }
-
     function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
     function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
-    
+
     function cliqueDia(dStr) {
-        if(['admin','ger'].includes(curUser)) {
-            if(!window.minSelecionado) return;
-            if(db.regras_manuais[dStr] === window.minSelecionado) delete db.regras_manuais[dStr]; else db.regras_manuais[dStr] = window.minSelecionado;
-            save(); renderTodo();
+        if(['admin','ger'].includes(curUser) && window.minSelecionado) {
+            if(!db.regras_manuais) db.regras_manuais = {};
+            db.regras_manuais[dStr] = window.minSelecionado; save(); renderTodo();
         }
     }
 
-    function renderAvisos() {
-        const tk = document.getElementById('newsTicker');
-        if(db.aviso_ticker && db.aviso_ticker.trim().length > 0) { tk.style.display = 'block'; tk.querySelector('span').innerText = db.aviso_ticker.toUpperCase(); } else { tk.style.display = 'none'; }
-        if(db.aviso_ticker) document.getElementById('inputTicker').value = db.aviso_ticker;
-        const unAncSel = document.getElementById('unAnciao'); if(unAncSel) { unAncSel.innerHTML = LISTA_ANCIAOS.map(a => `<option value="${a}">${a}</option>`).join(''); }
-    }
-
-    async function abrirPopBackups() {
-        document.getElementById('popBackups').style.display='flex';
-        const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando...";
-        try {
-            const snap = await dbCloud.collection('backups_seguros').orderBy('criatedEm', 'desc').limit(15).get();
-            lista.innerHTML = "";
-            snap.forEach(doc => {
-                const b = doc.data();
-                lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`;
-            });
-            if(snap.empty) lista.innerHTML = "Nenhum backup encontrado.";
-        } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; }
-    }
-
-    async function gerarBackupNuvem() {
-        const nome = prompt("Nome do backup:"); if(!nome) return;
-        showStatus("Gerando...", "saving");
-        try {
-            await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criatedEm: Date.now() });
-            showStatus("✅ OK", "saved");
-        } catch(e) { alert(e.message); }
-    }
-
-    async function restaurarBackup(id) {
-        if(confirm("Deseja restaurar esta versão?")) {
-            const doc = await dbCloud.collection('backups_seguros').doc(id).get();
-            db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000);
-        }
-    }
-
-    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
-    function salvarLink() {
-        const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return;
-        if(!db.links_externos) db.links_externos = [];
-        db.links_externos.push({ titulo: t.toUpperCase(), url: u }); save(); renderAdmin(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value="";
-    }
-    function renderListaLinksAdmin() {
-        let l = document.getElementById('listaLinksAdmin'); l.innerHTML = "";
-        (db.links_externos||[]).forEach((lk, i) => { l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:6px; margin-bottom:4px;"><small>${lk.titulo}</small><button onclick="db.links_externos.splice(${i},1); save(); renderAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; });
-    }
-    function renderLinksPublicos() {
-        let g = document.getElementById('gridLinksPublicos'); g.innerHTML = "";
-        (db.links_externos||[]).forEach(lk => { g.innerHTML += `<a href="${lk.url}" target="_blank" style="text-decoration:none;"><div style="background:#0f172a; padding:12px; border:1px solid #334155; border-radius:8px; color:var(--neon); font-weight:bold; text-align:center; font-size:0.85rem;">🔗 ${lk.titulo}</div></a>`; });
-    }
-
-    function uploadArquivo() {
-        const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return;
-        const reader = new FileReader(); reader.onload = function(e) {
-            const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[];
-            db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs();
-        }; reader.readAsDataURL(file);
-    }
-    function renderAdminDocs() {
-        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = "";
-        (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; });
-    }
-    function renderArquivosPublicos() {
-        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
-        (db.docs?.[m] || []).forEach(doc => {
-            if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`;
+    function renderPlanAnual() {
+        const corpo = document.getElementById('corpoPlan'); corpo.innerHTML = "";
+        if(!db.planejamento_anual) db.planejamento_anual = {};
+        const isAdmin = ['admin','ger'].includes(curUser);
+        
+        MESES.forEach((m, mI) => {
+            let tr = document.createElement('tr');
+            let txtVal = db.planejamento_anual[mI] || "";
+            let rOnly = !isAdmin ? 'disabled' : '';
+            tr.innerHTML = `<td style="width:130px; border:1px solid #334155; background:rgba(0,0,0,0.3); padding:8px;"><b>${m}</b></td><td style="border:1px solid #334155; padding:2px;"><textarea class="auto-expand" ${rOnly} style="color:var(--gold); text-align:left; font-size:0.9rem; padding:5px;" onchange="db.planejamento_anual[${mI}]=this.value.toUpperCase(); save();">${txtVal}</textarea></td>`;
+            corpo.appendChild(tr);
         });
-    }
-    function verArquivo(src, ext, nome) {
-        if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; }
-        const c = document.getElementById('viewContainer');
-        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`;
-        document.getElementById('popViewArquivo').style.display='flex';
     }
 
     function updateProgresso() {
-        let m = parseInt(db.termometro?.membros) || 1, b = parseInt(db.termometro?.batismos) || 0;
-        let p = Math.min(((b / m) * 100), 100).toFixed(0);
-        const pb = document.getElementById('progressoMeta'), pt = document.getElementById('textoMeta');
-        if(pb) pb.style.width = p + "%"; if(pt) pt.innerText = `${b} / ${m} Batismos (${p}%)`;
-        renderGraficosGlobaisDashboard(b, m);
+        let meta = parseInt(db.meta_anual) || 0;
+        let realizado = parseInt(db.batismos_realizados) || 0;
+        document.getElementById('metaBatismos').value = meta;
+        let porc = meta > 0 ? Math.min((realizado / meta) * 100, 100) : 0;
+        document.getElementById('progressoMeta').style.width = porc + "%";
+        document.getElementById('textoMeta').innerText = `${realized}/${meta} BATISMOS`;
+        renderGraficoTermometroGeral(realizado, meta);
     }
 
-    function renderGraficosGlobaisDashboard(batismos, meta) {
-        if(!['admin','ger'].includes(curUser)) return;
-        const ctx1 = document.getElementById('graficoMetaGlobal'), ctx2 = document.getElementById('graficoAtividadesGlobal');
-        if(!ctx1 || !ctx2) return;
-        
-        if(graficoMetaGlobal) graficoMetaGlobal.destroy(); if(graficoAtividadesGlobal) graficoAtividadesGlobal.destroy();
-        
-        let tPres = 0, tAtivos = 0, tVisitas = 0, tOfertas = 0;
-        if(db.historico_cartoes) {
-            Object.values(db.historico_cartoes).forEach(sab => {
-                Object.values(sab).forEach(un => {
-                    tOfertas += parseFloat(un.ofertas || 0);
-                    tVisitas += parseInt(un.batismos || 0);
-                    (un.alunos || []).forEach(a => { if(a.nome && a.nome.trim().length > 0) { tAtivos++; if(a.p) tPres++; } });
-                });
-            });
-        }
-        
-        graficoMetaGlobal = new Chart(ctx1, { type: 'doughnut', data: { labels: ['Realizados', 'Restante Meta'], datasets: [{ data: [batismos, Math.max(0, meta - batismos)], backgroundColor: ['#ffd700', '#16213e'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-        graficoAtividadesGlobal = new Chart(ctx2, { type: 'bar', data: { labels: ['Presenças', 'Inscrições', 'Ofertas (R$)'], datasets: [{ label: 'Estatísticas Gerais', data: [tPres, tAtivos, tOfertas], backgroundColor: '#00d2ff' }] }, options: { responsive: true, maintainAspectRatio: false } });
+    function renderGraficoTermometroGeral(realizado, meta) {
+        const ctx = document.getElementById('graficoTermometroGeral');
+        if(!ctx) return;
+        if(gTermometro) gTermometro.destroy();
+        let restante = Math.max(meta - realizado, 0);
+        gTermometro = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Batismos Realizados', 'Restante para Meta'],
+                datasets: [{ data: [realizado, restante], backgroundColor: ['#2ecc71', '#334155'], borderHighlightColor: 'transparent', borderWidth: 0 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: 'white', font: { weight: 'bold' } } } }
+            }
+        });
     }
 
-    function addUnidade() {
-        let c = document.getElementById('unChave').value.toLowerCase().trim(), p = document.getElementById('unProf').value.toUpperCase(), a = document.getElementById('unAnciao').value;
-        if(!c || !p || !a) return; if(!db.unidades_acao) db.unidades_acao = {};
-        db.unidades_acao[c] = { professor: p, anciao: a, senha: "123" }; save(); renderAdmin();
+    function abrirPop() { document.getElementById('popDadosGerais').style.display='flex'; }
+    function showStatus(txt, cls) {
+        let ind = document.getElementById('saveIndicator'); if(!ind) return;
+        ind.className = cls; ind.innerText = txt; ind.style.display = 'block';
+        if(cls==='saved') setTimeout(() => ind.style.display='none', 3000);
     }
-    function renderUnidadesAdmin() {
-        let l = document.getElementById('listaUnidadesAdmin'); l.innerHTML = "";
-        Object.keys(db.unidades_acao||{}).forEach(k => { l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`; });
+    function obterDataHojeBR() {
+        let d = new Date(); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+    }
+    function obterDataSabadoAtual() {
+        let d = new Date();
+        while(d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
+        return `${d.getDate()}_${d.getMonth()+1}_${d.getFullYear()}`;
     }
 
     function initCartaoUnidade() {
@@ -919,7 +892,7 @@
         document.getElementById('secCartaoUnidade').style.display = 'block';
         let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
         if(!unAlvo) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
-        
+
         const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
         const dadosUnidade = db.unidades_acao[unAlvo];
         
@@ -928,41 +901,59 @@
         document.getElementById('lblCardAnciao').innerText = `ANCIÃO DE APOIO: ${dadosUnidade.anciao.toUpperCase()}`;
         document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sabKey.replace(/_/g, '/')}`;
         document.getElementById('txtInfoUnidadeAtual').innerHTML = `Unidade Visualizada/Logada: <b>${unAlvo.toUpperCase()}</b>.`;
-        
+
         if(!db.historico_cartoes) db.historico_cartoes = {};
         if(!db.historico_cartoes[sabKey]) db.historico_cartoes[sabKey] = {};
         if(!db.historico_cartoes[sabKey][unAlvo]) {
             db.historico_cartoes[sabKey][unAlvo] = {
                 alunos: Array(TOTAL_ALUNOS).fill().map(() => ({ nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
-                instrutores: Array(5).fill().map(() => ({ nome: "", dando: false, qtd: 0 })),
-                duplas: Array(5).fill().map(() => ({ nome: "", dando: false, qtd: 0 })),
+                instrutores: Array(5).fill().map(() => ({ nome: "", dandoEstudo: false, qtd: 0 })),
+                duplas: Array(5).fill().map(() => ({ nome: "", dandoEstudo: false, qtd: 0 })),
                 batismos: 0, ofertas: 0
             };
         }
-        
-        let payload = db.historico_cartoes[sabKey][unAlvo];
-        document.getElementById('inputBatismos').value = payload.batismos || 0;
-        document.getElementById('inputOfertas').value = (payload.ofertas || 0).toFixed(2);
-        
-        let hAlu = document.getElementById('corpoAlunos'); hAlu.innerHTML = "";
+
+        const src = db.historico_cartoes[sabKey][unAlvo];
+        document.getElementById('inputBatismos').value = src.batismos || 0;
+        document.getElementById('inputOfertas').value = (src.ofertas || 0).toFixed(2);
+
+        const cAlunos = document.getElementById('corpoAlunos'); cAlunos.innerHTML = "";
         for(let i=0; i<TOTAL_ALUNOS; i++) {
-            let al = payload.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
-            hAlu.innerHTML += `<tr><td><input type="text" id="nome_${i}" class="input-aluno" value="${al.nome}" onchange="forçarCalculoProf()" placeholder="Nome do Aluno"></td><td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c1_${i}" ${al.c1?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c2_${i}" ${al.c2?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c3_${i}" ${al.c3?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c5_${i}" ${al.c5?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c6_${i}" ${al.c6?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c7_${i}" ${al.c7?'checked':''} onchange="forçarCalculoProf()"></td><td><input type="checkbox" id="c8_${i}" ${al.c8?'checked':''} onchange="forçarCalculoProf()"></td></tr>`;
+            let al = src.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
+            cAlunos.innerHTML += `<tr>
+                <td><input type="text" id="nome_${i}" class="input-aluno" value="${al.nome||''}" onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c1_${i}" ${al.c1?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c2_${i}" ${al.c2?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c3_${i}" ${al.c3?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c5_${i}" ${al.c5?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c6_${i}" ${al.c6?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c7_${i}" ${al.c7?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c8_${i}" ${al.c8?'checked':''} onchange="forçarCalculoProf()"></td>
+            </tr>`;
         }
-        
-        let hIns = document.getElementById('listaInstrutores'); hIns.innerHTML = "";
+
+        const cIns = document.getElementById('listaInstrutores'); cIns.innerHTML = "";
         for(let i=0; i<5; i++) {
-            let ins = payload.instrutores[i] || { nome: "", dando: false, qtd: 0 };
-            hIns.innerHTML += `<div class="row-missao"><input type="text" id="ins_n_${i}" value="${ins.nome}" placeholder="Instrutor" class="input-aluno" onchange="forçarCalculoProf()"><select id="ins_d_${i}" onchange="forçarCalculoProf()" class="input-dark" style="padding:4px;"><option value="false" ${!ins.dando?'selected':''}>NÃO</option><option value="true" ${ins.dando?'selected':''}>SIM</option></select><input type="number" id="ins_q_${i}" value="${ins.qtd}" class="input-qtd" oninput="forçarCalculoProf()"></div>`;
+            let ins = src.instrutores?.[i] || { nome: "", dandoEstudo: false, qtd: 0 };
+            cIns.innerHTML += `<div class="row-missao">
+                <input type="text" id="ins_nome_${i}" class="input-dark" value="${ins.nome||''}" onchange="forçarCalculoProf()" style="padding:4px;">
+                <label style="font-size:0.65rem; font-weight:bold;"><input type="checkbox" id="ins_chk_${i}" ${ins.dandoEstudo?'checked':''} onchange="forçarCalculoProf()"> DANDO ESTUDO</label>
+                <input type="number" id="ins_qtd_${i}" class="input-qtd" value="${ins.qtd||0}" onchange="forçarCalculoProf()">
+            </div>`;
         }
-        
-        let hDup = document.getElementById('listaDuplas'); hDup.innerHTML = "";
+
+        const cDup = document.getElementById('listaDuplas'); cDup.innerHTML = "";
         for(let i=0; i<5; i++) {
-            let dup = payload.duplas[i] || { nome: "", dando: false, qtd: 0 };
-            hDup.innerHTML += `<div class="row-missao"><input type="text" id="dup_n_${i}" value="${dup.nome}" placeholder="Dupla" class="input-aluno" onchange="forçarCalculoProf()"><select id="dup_d_${i}" onchange="forçarCalculoProf()" class="input-dark" style="padding:4px;"><option value="false" ${!dup.dando?'selected':''}>NÃO</option><option value="true" ${dup.dando?'selected':''}>SIM</option></select><input type="number" id="dup_q_${i}" value="${dup.qtd}" class="input-qtd" oninput="forçarCalculoProf()"></div>`;
+            let dp = src.duplas?.[i] || { nome: "", dandoEstudo: false, qtd: 0 };
+            cDup.innerHTML += `<div class="row-missao">
+                <input type="text" id="dup_nome_${i}" class="input-dark" value="${dp.nome||''}" onchange="forçarCalculoProf()" style="padding:4px;">
+                <label style="font-size:0.65rem; font-weight:bold;"><input type="checkbox" id="dup_chk_${i}" ${dp.dandoEstudo?'checked':''} onchange="forçarCalculoProf()"> DANDO ESTUDO</label>
+                <input type="number" id="dup_qtd_${i}" class="input-qtd" value="${dp.qtd||0}" onchange="forçarCalculoProf()">
+            </div>`;
         }
-        
-        calcularTotaisERenderGraficosProf(payload);
+
+        calcularIndicadoresCartao(src);
     }
 
     function forçarCalculoProf() {
@@ -978,7 +969,7 @@
         
         payload.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
         payload.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
-        
+
         for(let i=0; i<TOTAL_ALUNOS; i++) {
             payload.alunos[i] = {
                 nome: document.getElementById(`nome_${i}`).value,
@@ -992,94 +983,138 @@
                 c8: document.getElementById(`c8_${i}`).checked,
             };
         }
-        
+
         for(let i=0; i<5; i++) {
-            payload.instrutores[i] = { nome: document.getElementById(`ins_n_${i}`).value, dando: document.getElementById(`ins_d_${i}`).value==='true', qtd: parseInt(document.getElementById(`img_q_${i}`)?.value)||0 };
-            payload.duplas[i] = { nome: document.getElementById(`dup_n_${i}`).value, dando: document.getElementById(`dup_d_${i}`).value==='true', qtd: parseInt(document.getElementById(`dup_q_${i}`).value)||0 };
+            payload.instrutores[i] = {
+                nome: document.getElementById(`ins_nome_${i}`).value,
+                dandoEstudo: document.getElementById(`ins_chk_${i}`).checked,
+                qtd: parseInt(document.getElementById(`ins_qtd_${i}`).value) || 0
+            };
+            payload.duplas[i] = {
+                nome: document.getElementById(`dup_nome_${i}`).value,
+                dandoEstudo: document.getElementById(`dup_chk_${i}`).checked,
+                qtd: parseInt(document.getElementById(`dup_qtd_${i}`).value) || 0
+            };
         }
-        
+
+        calcularIndicadoresCartao(payload);
         save();
-        calcularTotaisERenderGraficosProf(payload);
     }
 
-    function calcularTotaisERenderGraficosProf(p) {
-        let d = { v1:0, v2:0, v3:0, v4:p.batismos||0, v5:0, v6:0, v7:0, v8:0, totPres:0, qEstudosIns:0, qEstudosDup:0 };
+    function calcularIndicadoresCartao(payload) {
+        let d = { v1:0, v2:0, v3:0, v4:payload.batismos||0, v5:0, v6:0, v7:0, v8:0, totPres:0, qEstudosIns:0, qEstudosDup:0, tAtivos:0 };
         
-        (p.alunos||[]).forEach(a => {
-            if(a.nome && a.nome.trim().length > 0) {
-                if(a.p) d.totPres++; if(a.c1) d.v1++; if(a.c2) d.v2++; if(a.c3) d.v3++; if(a.c5) d.v5++; if(a.c6) d.v6++; if(a.c7) d.v7++; if(a.c8) d.v8++;
-            }
+        payload.alunos.forEach(a => {
+            if(a.nome && a.nome.trim().length > 0) d.tAtivos++;
+            if(a.p) d.totPres++;
+            if(a.c1) d.v1++; if(a.c2) d.v2++; if(a.c3) d.v3++;
+            if(a.c5) d.v5++; if(a.c6) d.v6++; if(a.c7) d.v7++; if(a.c8) d.v8++;
         });
-        
-        (p.instrutores||[]).forEach(i => { if(i.nome && i.dando) d.qEstudosIns += (i.qtd||0); });
-        (p.duplas||[]).forEach(dp => { if(dp.nome && dp.dando) d.qEstudosDup += (dp.qtd||0); });
-        
-        ['v1','v2','v3','v4','v5','v6','v7','v8','totPres'].forEach(id => { document.getElementById(id).innerText = d[id]; });
-        
-        const ctx1 = document.getElementById('graf1').getContext('2d'), ctx2 = document.getElementById('graf2').getContext('2d');
+
+        (payload.instrutores||[]).forEach(i => { if(i.nome && i.dandoEstudo) d.qEstudosIns += (i.qtd || 0); });
+        (payload.duplas||[]).forEach(dp => { if(dp.nome && dp.dandoEstudo) d.qEstudosDup += (dp.qtd || 0); });
+
+        document.getElementById('v1').innerText = d.v1; document.getElementById('v2').innerText = d.v2;
+        document.getElementById('v3').innerText = d.v3; document.getElementById('v4').innerText = d.v4;
+        document.getElementById('v5').innerText = d.v5; document.getElementById('v6').innerText = d.v6;
+        document.getElementById('v7').innerText = d.v7; document.getElementById('v8').innerText = d.v8;
+        document.getElementById('totPres').innerText = `${d.totPres} / ${d.tAtivos}`;
+
+        renderGraficosCartaoUnidade(d);
+    }
+
+    function renderGraficosCartaoUnidade(d) {
+        let ctx1 = document.getElementById('graf1'), ctx2 = document.getElementById('graf2');
+        if(!ctx1 || !ctx2) return;
         if(g1) g1.destroy(); if(g2) g2.destroy();
-        
-        g1 = new Chart(ctx1, { type: 'doughnut', data: { labels: ['Presentes', 'Ausentes (Alvo)'], datasets: [{ data: [d.totPres, Math.max(0, TOTAL_ALUNOS - d.totPres)], backgroundColor: ['#2ecc71', '#e74c3c'] }] }, options: { maintainAspectRatio: false } });
-        g2 = new Chart(ctx2, { type: 'bar', data: { labels: ['3. Est. Alunos', '4. Batismos', '7. Visitas', '8. Solidário', 'Est. Instrutores', 'Est. Duplas'], datasets: [{ label: 'Quantidade Total', data: [d.v3, d.v4, d.v7, d.v8, d.qEstudosIns, d.qEstudosDup], backgroundColor: '#ff7f50' }] }, options: { maintainAspectRatio: false } });
+
+        g1 = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['1. Com Lição', '2. Est. Diário', '5. Oração', '6. Literatura'],
+                datasets: [{ label: 'Alunos Praticantes', data: [d.v1, d.v2, d.v5, d.v6], backgroundColor: '#795548' }]
+            },
+            options: { maintainAspectRatio: false }
+        });
+
+        g2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['3. Est. Alunos', '4. Batismos', '7. Visitas', '8. Solidário', 'Est. Instrutores', 'Est. Duplas'],
+                datasets: [{ label: 'Quantidade Total', data: [d.v3, d.v4, d.v7, d.v8, d.qEstudosIns, d.qEstudosDup], backgroundColor: '#ff7f50' }]
+            },
+            options: { maintainAspectRatio: false }
+        });
     }
 
     function abrirRelatorioSabatina() {
         document.getElementById('popRelatorioSabatina').style.display = 'flex';
-        const corpo = document.getElementById('corpoRelatorioSecretaria'); corpo.innerHTML = "";
-        const listSab = listarSabados2026();
-        let sabadosComDados = 0, tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0;
-        
-        listSab.forEach(sabKey => {
-            if(db.historico_cartoes?.[sabKey]) {
-                sabadosComDados++;
+        const corpo = document.getElementById('corpoRelatorioSecretaria');
+        corpo.innerHTML = "";
+
+        const todosSabados = listarSabados2026();
+        let sabadosComDados = 0;
+        let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0;
+
+        todosSabados.forEach(sabKey => {
+            if(db.historico_cartoes && db.historico_cartoes[sabKey]) {
                 let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0;
-                Object.values(db.historico_cartoes[sabKey]).forEach(un => {
-                    sOfertas += parseFloat(un.ofertas || 0);
-                    sVisitas += parseInt(un.batismos || 0);
-                    (un.alunos || []).forEach(a => { if(a.nome && a.nome.trim().length > 0) { sAtivos++; if(a.p) sPres++; } });
-                });
+                let blocoSab = db.historico_cartoes[sabKey];
                 
+                Object.keys(blocoSab).forEach(unKey => {
+                    let unData = blocoSab[unKey];
+                    sOfertas += (unData.ofertas || 0);
+                    (unData.alunos || []).forEach(al => {
+                        if(al.nome && al.nome.trim().length > 0) sAtivos++;
+                        if(al.p) sPres++;
+                        if(al.c7) sVisitas++;
+                    });
+                });
+
+                if(sAtivos === 0 && sOfertas === 0) return;
+                sabadosComDados++;
                 tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
                 let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
-                
-                corpo.innerHTML += `<tr><td><b>${sabKey.replace(/_/g, '/')}</b></td><td>${sAtivos}</td><td>${sPres}</td><td style="color:var(--neon)">${percPres}%</td><td>${sVisitas}</td><td style="color:var(--green); font-weight:bold;">R$ ${sOfertas.toFixed(2)}</td></tr>`;
+
+                corpo.innerHTML += `<tr>
+                    <td><b>${sabKey.replace(/_/g, '/')}</b></td>
+                    <td>${sAtivos}</td>
+                    <td>${sPres}</td>
+                    <td style="color:var(--neon)">${percPres}%</td>
+                    <td>${sVisitas}</td>
+                    <td style="color:var(--green); font-weight:bold;">R$ ${sOfertas.toFixed(2)}</td>
+                </tr>`;
             }
         });
-        
+
         let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
-        corpo.innerHTML += `<tr class="row-total-secre"><td>SOMATÓRIA / MÉDIA TRIMESTRE</td><td>${tAtivos} (Total)</td><td>${tPres} (Total)</td><td>Média: ${percGeral}%</td><td>${tVisitas} Visitas</td><td>Total: R$ ${tOfertas.toFixed(2)}</td></tr>`;
-        if(sabadosComDados === 0) { corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Nenhum dado lançado neste trimestre.</td></tr>`; }
+        corpo.innerHTML += `<tr class=\"row-total-secre\">
+            <td>SOMATÓRIA / MÉDIA TRIMESTRE</td>
+            <td>${tAtivos} (Total)</td>
+            <td>${tPres} (Total)</td>
+            <td>Média: ${percGeral}%</td>
+            <td>${tVisitas} Visitas</td>
+            <td>Total: R$ ${tOfertas.toFixed(2)}</td>
+        </tr>`;
+
+        if(sabadosComDados === 0) {
+            corpo.innerHTML = `<tr><td colspan=\"6\" style=\"text-align:center; padding:20px;\">Nenhum dado lançado no trimestre vigente.</td></tr>`;
+        }
     }
 
-    function renderEventosAdmin() {
-        let d = document.getElementById('listaEventosAdmin'); d.innerHTML = "";
-        Object.keys(db.eventos_especiais||{}).sort().forEach(k => { d.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:6px; margin-bottom:4px;"><small><b>${k.split('-').reverse().join('/')}</b> - ${db.eventos_especiais[k]}</small><button onclick="delete db.eventos_especiais['${k}']; save(); renderTodo();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; });
-    }
-    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderEventosAdmin(); }
-    function salvarEvento() {
-        let dat = document.getElementById('evtData').value, nom = document.getElementById('evtNome').value.toUpperCase(); if(!dat || !nom) return;
-        if(!db.eventos_especiais) db.eventos_especiais = {}; db.eventos_especiais[dat] = nom; save(); renderTodo();
-        document.getElementById('evtNome').value = "";
+    function toggleSection(idWrapper, idBtn) {
+        let w = document.getElementById(idWrapper), b = document.getElementById(idBtn);
+        if(!w) return;
+        if(w.style.display === 'none') { w.style.display = 'block'; if(b) b.innerText = '-'; }
+        else { w.style.display = 'none'; if(b) b.innerText = '+'; }
+        ajustarTextareas();
     }
 
-    function obterDataHojeString() { let d = new Date(); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
-    function obterDataSabadoAtual() {
-        let d = new Date(); while(d.getDay() !== 6) { d.setDate(d.getDate() - 1); }
-        return `${d.getDate()}_${d.getMonth()+1}_${d.getFullYear()}`;
-    }
-
-    function exportarRelatorioPDF() {
-        const elemento = document.getElementById('areaEscalaPrincipal');
-        const opt = { margin: 5, filename: `escala_estrela_dalva.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
-        html2pdf().set(opt).from(elemento).save();
-    }
-
-    function baixarRelatorioCartoesTrimestre() {
-        const printArea = document.getElementById('printAreaCartao');
-        if(!printArea) return;
-        const opt = { margin: 10, filename: `Cartoes_Chamada_Trimestre_${obterTrimestreAtual()}.pdf`, image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 1.5 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-        html2pdf().set(opt).from(printArea).save();
-    }
+    window.onload = carregarSist;
+    window.addEventListener('scroll', () => {
+        let btn = document.getElementById('btnTopo');
+        if(btn) btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+    });
 </script>
 </body>
 </html>
