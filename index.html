@@ -190,7 +190,6 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
-        
         <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
             <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
             <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
@@ -273,7 +272,6 @@
     </div>
 
     <div id="areaGeralSistemaComAbas">
-        
         <div class="busca-container no-print" id="wrapperBuscaRapida" style="text-align:center; margin-top:20px; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
@@ -300,117 +298,205 @@
             <button class="section-toggle-btn" id="btnTogglePlan">-</button>
         </div>
         <div id="secPlan" style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 0 0 15px 15px; border: 1px solid #334155; border-top:none;" class="no-print">
-            <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
+            <table style="width:100%; border-collapse: collapse; color:white;">
+                <tbody id="corpoPlanAnual"></tbody>
+            </table>
         </div>
 
-        <div class="section-header no-print" id="headerTesouraria" onclick="toggleSection('secTesouraria', 'btnToggleDocs')">
-            <h3>💰 DOCUMENTOS COLETIVOS</h3>
-            <button class="section-toggle-btn" id="btnToggleDocs">-</button>
-        </div>
-        <div id="secTesouraria" style="border:1px solid var(--green); border-top:none; padding:15px; border-radius: 0 0 12px 12px;" class="no-print">
-            <h4 style="color:var(--green); margin-top:0;">ARQUIVOS DE <span id="mesTesouraria"></span></h4>
-            <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px;"></div>
-        </div>
-
-        <div class="section-header no-print" id="headerGraficosGerais" onclick="toggleSection('wrapperGraficoGeral', 'btnToggleGrafGeral')">
-            <h3>📊 TERMÔMETRO E GRÁFICOS DO SISTEMA</h3>
-            <button class="section-toggle-btn" id="btnToggleGrafGeral">-</button>
-        </div>
-        <div id="wrapperGraficoGeral" class="chart-container no-print" style="height: 350px; background: rgba(255,255,255,0.05); padding: 20px; border-radius:0 0 12px 12px; border: 1px solid var(--orange); border-top:none; display:none; justify-content:center; position:relative;">
-            <div style="width:100%; max-width:500px; height:100%;"><canvas id="graficoTermometroGeral"></canvas></div>
-        </div>
-
-        <div class="section-header no-print" id="headerLinksPublicos" onclick="toggleSection('secLinksPublicos', 'btnToggleLinksPublicos')">
-            <h3>🔗 LINKS ÚTEIS E ACESSOS RÁPIDOS</h3>
+        <div class="section-header no-print" onclick="toggleSection('secLinksPublicos', 'btnToggleLinksPublicos')">
+            <h3>🔗 LINKS ÚTEIS E MATERIAIS</h3>
             <button class="section-toggle-btn" id="btnToggleLinksPublicos">-</button>
         </div>
-        <div id="secLinksPublicos" style="background: rgba(255,255,255,0.02); padding: 15px; border-radius:0 0 12px 12px; border: 1px solid #334155; border-top:none;" class="no-print">
-            <div id="gridLinksPublicos" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
+        <div id="secLinksPublicos" style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 0 0 15px 15px; border: 1px solid #334155; border-top:none;" class="no-print">
+            <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:15px;"></div>
         </div>
-    </div>
 
-    <div id="popUnidades" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR UNIDADES</h3><div style="display:grid; gap:5px; margin-bottom:10px;"><input id="unChave" placeholder="ID login (ex: u1)" class="input-dark"><input id="unNome" placeholder="Nome Exibição (ex: Unidade 1)" class="input-dark"><input id="unProf" placeholder="Professor" class="input-dark"><select id="unAnciao" class="input-dark"></select><button class="btn-modern" onclick="addUnidade()">ADICIONAR UNIDADE</button></div><div id="listaUnidadesAdmin" style="max-height:250px; overflow-y:auto;"></div><button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-    <div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="linkTit" placeholder="Título" class="input-dark"><input id="linkUrl" placeholder="URL completa" class="input-dark"><button class="btn-modern" onclick="salvarLink()">+</button></div><div id="listaLinksAdmin" style="max-height:250px; overflow-y:auto;"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-    <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EVENTOS ESPECIAIS (Destaque Vermelho)</h3><div style="display:grid; gap:5px; margin-bottom:10px;"><input type="date" id="evtData" class="input-dark"><input id="evtNome" placeholder="Nome do Evento" class="input-dark"><button class="btn-modern" onclick="salvarEvento()">CADASTRAR EVENTO</button></div><div id="listaEventosAdmin" style="max-height:250px; overflow-y:auto;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-    <div id="popTesourariaAdmin" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green); text-align:center;">GERENCIADOR DE DOCUMENTOS</h3><div style="border:1px solid #334155; padding:15px; border-radius:8px; margin-bottom:15px; display:grid; gap:8px;"><input type="file" id="fileInput" class="input-dark"><select id="docDestinatario" class="input-dark"><option value="todos">Disponível para: TODOS OS USUÁRIOS</option><option value="admin">Apenas ADMIN / GERÊNCIA</option></select><button class="btn-modern" style="border-color:var(--green); color:var(--green)" onclick="uploadArquivo()">🚀 ENVIAR ARQUIVO</button></div><div id="listaAdminArquivos" style="max-height:200px; overflow-y:auto;"></div><button onclick="document.getElementById('popTesourariaAdmin').style.display='none'" class="btn-fechar">FECHAR PAINEL</button></div></div>
-    <div id="popView" class="overlay" onclick="this.style.display='none'"><div class="pop-content" style="max-width:90%; width:1000px;" onclick="event.stopPropagation()"><div id="viewContainer"></div><button onclick="document.getElementById('popView').style.display='none'" class="btn-fechar">FECHAR VISUALIZAÇÃO</button></div></div>
-    <div id="popDadosGerais" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange); text-align:center;">PAINEL AVANÇADO</h3><div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:8px; border:1px solid #334155;"><p style="font-size:0.8rem; margin-top:0; color:#94a3b8;">Área exclusiva para encerramento de ciclos e consolidação de relatórios do trimestre. Para evitar sobrecarregar o banco de dados, o histórico de cartões de chamada antigos precisa ser limpo.</p><p style="font-weight: bold; color: var(--gold);">FAÇA O DOWNLOAD DOS ARQUIVOS EM PDF/JPG AGORA ANTES DE PROSSEGUIR!</p><div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;"><button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button><button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">REMOVER DADOS ANTIGOS E INICIAR NOVO TRIMESTRE</button></div></div></div></div>
-
-    <div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
-        <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
-            <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
-            <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
-            <div style="max-height: 450px; overflow-y: auto;">
-                <table class="tabla-secre">
-                    <thead>
-                        <tr>
-                            <th>SÁBADO</th>
-                            <th>MEMBROS ATIVOS</th>
-                            <th>PRESENTES</th>
-                            <th>% PRESENÇA</th>
-                            <th>VISITAS RECOLHIDAS (P7)</th>
-                            <th>OFERTAS DO DIA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpoRelatorioSecretaria"></tbody>
-                </table>
+        <div class="section-header no-print" onclick="toggleSection('secTesouraria', 'btnToggleTesouraria')">
+            <h3>📂 ARQUIVOS, ATAS E DOCUMENTOS</h3>
+            <button class="section-toggle-btn" id="btnToggleTesouraria">-</button>
+        </div>
+        <div id="secTesouraria" style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 0 0 15px 15px; border: 1px solid #334155; border-top:none;" class="no-print">
+            <div id="areaUploadAdmin" style="display:none; background:#0f172a; padding:15px; border-radius:8px; border:1px solid var(--green); margin-bottom:15px;">
+                <h5>ENVIAR NOVO DOCUMENTO:</h5>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <input type="file" id="fileInput" class="input-dark" style="width:250px;">
+                    <select id="docDestinatario" class="input-dark" style="width:150px;">
+                        <option value="todos">Todos (Público)</option>
+                        <option value="anciao">Anciãos</option>
+                        <option value="sabatina">Escola Sabatina</option>
+                    </select>
+                    <button class="btn-modern" style="border-color:var(--green); color:var(--green);" onclick="uploadArquivo()">UPLOAD</button>
+                </div>
+                <div id="listaAdminArquivos" style="margin-top:10px;"></div>
             </div>
-            <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
+            <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:15px;"></div>
+            <div id="viewContainer" style="margin-top:20px;"></div>
         </div>
     </div>
+</div>
 
-    <div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="mbNome" placeholder="Nome" class="input-dark"><input id="mbCargo" placeholder="Cargo" class="input-dark"><button class="btn-modern" onclick="addMembro()">+</button></div><div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-    
-    <div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-    
-    <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><h3 style="color:black; margin-top:0; text-align:center;">LOGIN DO SISTEMA</h3><label style="color:black; font-weight:bold; font-size:0.85rem;">USUÁRIO / CÓDIGO:</label><input type="text" id="userLogin" style="width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:6px; font-weight:bold; box-sizing:border-box;"><label style="color:black; font-weight:bold; font-size:0.85rem;">SENHA DE ACESSO:</label><input type="password" id="passLogin" style="width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:6px; font-weight:bold; box-sizing:border-box;"><button class="btn-modern" style="width:100%; background:var(--blue); color:white; border:none; padding:12px; font-size:1rem;" onclick="login()">ENTRAR</button></div></div>
+<div id="popLinks" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3>
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <input id="linkTit" placeholder="Título" class="input-dark">
+            <input id="linkUrl" placeholder="URL (https://...)" class="input-dark">
+            <button class="btn-modern" onclick="salvarLink()">+</button>
+        </div>
+        <div id="listaLinksAdmin" style="max-height:250px; overflow-y:auto;"></div>
+        <button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button>
+    </div>
+</div>
 
+<div id="popEventos" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--neon); text-align:center;">EVENTOS ESPECIAIS</h3>
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <input type="date" id="evtData" class="input-dark">
+            <input id="evtNome" placeholder="Nome do Evento" class="input-dark">
+            <button class="btn-modern" onclick="addEvento()">+</button>
+        </div>
+        <div id="listaEventos" style="max-height:250px; overflow-y:auto;"></div>
+        <button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button>
+    </div>
+</div>
+
+<div id="popUnidades" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--neon); text-align:center;">UNIDADES DE AÇÃO</h3>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px; border:1px solid #334155; padding:10px; border-radius:8px;">
+            <input id="unChave" placeholder="Identificador/Login (Ex: u1)" class="input-dark">
+            <input id="unProf" placeholder="Nome do Professor" class="input-dark">
+            <select id="unAnciao" class="input-dark"></select>
+            <button class="btn-modern" style="width:100%" onclick="addUnidade()">CADASTRAR UNIDADE</button>
+        </div>
+        <div id="listaUnidadesAdmin" style="max-height:250px; overflow-y:auto;"></div>
+        
+        <div style="margin-top: 15px; border-top: 2px dashed #334155; padding-top: 15px;">
+            <button class="btn-modern" style="border-color: var(--orange); color: var(--orange); width: 100%; font-weight: bold;" onclick="abrirPainelLimpezaTrimestre()">🚨 FECHAMENTO / REINÍCIO TRIMESTRAL</button>
+        </div>
+        
+        <button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR</button>
+    </div>
+</div>
+
+<div id="popLimpezaTrimestre" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" style="border-color: var(--red); max-width: 500px;" onclick="event.stopPropagation()">
+        <h3 style="color: var(--red); text-align: center; margin-top: 0;">⚠️ AVISO DE FECHAMENTO TRIMESTRAL</h3>
+        <p style="font-size: 0.9rem; color: #e6f1ff; line-height: 1.5;">Esta ação consolida as médias e encerra o trimestre corrente. Para evitar sobrecarregar o banco de dados, o histórico de cartões de chamada antigos precisa ser limpo.</p>
+        <p style="font-weight: bold; color: var(--gold);">FAÇA O DOWNLOAD DOS ARQUIVOS EM PDF/JPG AGORA ANTES DE PROSSEGUIR!</p>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
+            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button>
+            <button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">REMOVER DADOS ANTIGOS E INICIAR NOVO TRIMESTRE</button>
+        </div>
+    </div>
+</div>
+
+<div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
+        <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
+        <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+        <div style="max-height: 450px; overflow-y: auto;">
+            <table class="tabla-secre">
+                <thead>
+                    <tr>
+                        <th>SÁBADO</th>
+                        <th>MEMBROS ATIVOS</th>
+                        <th>PRESENTES</th>
+                        <th>% PRESENÇA</th>
+                        <th>VISITAS RECOLHIDAS (P7)</th>
+                        <th>OFERTAS DO DIA</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoRelatorioSecretaria"></tbody>
+            </table>
+        </div>
+        <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
+    </div>
+</div>
+
+<div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="mbNome" placeholder="Nome" class="input-dark"><input id="mbCargo" placeholder="Cargo" class="input-dark"><button class="btn-modern" onclick="addMembro()">+</button></div><div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+
+<div id="modalLogin" class="overlay" onclick="this.style.display='none'">
+    <div style="background:white; padding:30px; border-radius:12px; width:90%; max-width:320px; color:black; text-align:center;" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; color:var(--blue)">🔐 IDENTIFICAÇÃO</h3>
+        <input type="text" id="userLogin" placeholder="Usuário / Unidade" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; font-weight:bold;">
+        <input type="password" id="passLogin" placeholder="Senha" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+        <button class="btn-modern" style="background:var(--blue); color:white; width:100%; padding:10px; border:none;" onclick="login()">ENTRAR</button>
+    </div>
 </div>
 
 <script>
-    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
+    const firebaseConfig = {
+        apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik",
+        authDomain: "unidades-de-acao.firebaseapp.com",
+        projectId: "unidades-de-acao",
+        appId: "1:1088355029870:web:7bb98d3115e7b7767f677f"
+    };
     firebase.initializeApp(firebaseConfig);
     const dbCloud = firebase.firestore();
 
-    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "COUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", recepcao: "Recepção", jovem: "Jovens", criancas: "Ministério Infantil" };
-    const LISTA_ANCIAOS = ["Pr. Railson", "Anc. Cleiton", "Anc. Rogério", "Anc. Eliseu", "Anc. Fabiano", "Anc. Marcelo", "Anc. Ilson", "Anc. Douglas"];
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", recepcao: "Recepção", jovem: "Jovens", sabatina: "Sec. Escola Sabatina" };
+    const LISTA_ANCIAOS = ["Pr. Roberto", "Marcio", "Vanderlei", "William", "Renato", "Leonidas", "Elias"];
     const TOTAL_ALUNOS = 16;
-
     let db = {};
     let curUser = localStorage.getItem('iasd_curUser') || 'visitante';
-    let g1=null, g2=null, gTermometro=null;
+    let g1=null, g2=null;
 
-    async function carregarSist() {
-        let doc = await dbCloud.collection('dados').doc('estrela_v102').get();
-        if(!doc.exists()) {
-            alert("Erro fatal: Banco de dados master não localizado!");
-            return;
-        }
-        db = doc.data();
+    window.onload = async function() {
+        definirMesAtualSeletor();
+        window.minSelecionado = null;
         
+        window.addEventListener('scroll', () => {
+            document.getElementById('btnTopo').style.display = window.scrollY > 300 ? 'block' : 'none';
+        });
+
+        // Monitoramento em tempo real do Firestore para colaboração síncrona
+        dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
+            if(doc.exists) {
+                db = doc.data();
+                validarEstruturaDb();
+                verificarViradaTrimestre();
+                popularListaSabadosSeletor();
+                renderTodo();
+            } else {
+                alert("Erro crítico: Banco de dados não encontrado no Firestore.");
+            }
+        }, err => console.error("Erro Snapshot:", err));
+    };
+
+    function definirMesAtualSeletor() {
+        const sel = document.getElementById('selMes');
+        sel.innerHTML = "";
+        const mAtual = new Date().getMonth();
+        MESES.forEach((m, i) => {
+            let op = document.createElement('option');
+            op.value = i;
+            op.innerText = m;
+            if(i === mAtual) op.selected = true;
+            sel.appendChild(op);
+        });
+    }
+
+    function validarEstruturaDb() {
         if(!db.escalas) db.escalas = {};
-        if(!db.docs) db.docs = {};
+        if(!db.senhas) db.senhas = {};
         if(!db.regras_manuais) db.regras_manuais = {};
         if(!db.eventos_especiais) db.eventos_especiais = {};
-        if(!db.cronogramas) db.cronogramas = {};
-        if(!db.unidades_acao) db.unidades_acao = {};
+        if(!db.apoio_anciao) db.apoio_anciao = {};
         if(!db.membros) db.membros = [];
-        if(!db.links_externos) db.links_externos = [];
-        if(!db.meta_anual) db.meta_anual = 0;
-        if(!db.batismos_realizados) db.batismos_realizados = 0;
-
-        verificarViradaTrimestre();
-        popularSeletoresIniciais();
-        popularListaSabadosSeletor();
-        initCartaoUnidade();
-        renderTodo();
-        setupAutoSaveListeners();
+        if(!db.links) db.links = [];
+        if(!db.docs) db.docs = {};
+        if(!db.unidades_acao) db.unidades_acao = {};
+        if(!db.historico_cartoes) db.historico_cartoes = {};
+        if(!db.planejamento_anual) db.planejamento_anual = {};
     }
 
     function save() {
         if(!db || Object.keys(db).length === 0) {
-            console.error("Tentativa de salvamento abortada: Objeto local está incompleto ou vazio.");
+            console.error("Abortado: Objeto db local está incompleto ou vazio.");
             return;
         }
         showStatus("Salvando...", "saving");
@@ -455,56 +541,42 @@
     function verificarViradaTrimestre() {
         const tAtual = obterTrimestreAtual();
         if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
+            // Apenas atualiza a marcação do trimestre atual silenciosamente, protegendo o histórico
             db.trimestre_atual = tAtual;
             save();
         }
     }
 
     function confirmarLimpezaTrimestre() {
+        // Bloqueio de segurança permanente: impede a limpeza acidental do histórico da Escola Sabatina
         console.log("Limpeza de dados abortada para proteger a integridade do Firebase.");
-        db.trimestre_atual = obterTrimestreAtual();
-        document.getElementById('popDadosGerais').style.display = 'none';
-        alert("Proteção Ativa: A limpeza estrutural direta foi desativada para segurança dos logs anuais.");
+        alert("Operação desativada por segurança para preservar os dados. Contate o desenvolvedor.");
+        document.getElementById('popLimpezaTrimestre').style.display = 'none';
     }
 
-    function popularSeletoresIniciais() {
-        const sel = document.getElementById('selMes');
-        if(sel.options.length === 0) {
-            let mAtual = new Date().getMonth();
-            MESES.forEach((m, i) => {
-                let op = document.createElement('option');
-                op.value = i;
-                op.innerText = m;
-                if(i === mAtual) op.selected = true;
-                sel.appendChild(op);
-            });
-        }
+    function obterDataSabadoAtual() {
+        let d = new Date();
+        let s = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        while(s.getDay() !== 6) { s.setDate(s.getDate() - 1); }
+        return `${s.getDate()}_${s.getMonth() + 1}_${s.getFullYear()}`;
     }
 
     function renderTodo() {
         const mIdx = parseInt(document.getElementById('selMes').value);
-        const busca = document.getElementById('buscaRapida').value.toLowerCase().trim();
-        document.getElementById('mesTesouraria').innerText = MESES[mIdx];
-
+        const busca = document.getElementById('buscaRapida').value.toUpperCase().trim();
         const isAdmin = ['admin','ger'].includes(curUser);
-        const isV = curUser === 'visitante';
         const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        const isV = curUser === 'visitante';
 
         document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
         document.getElementById('btnSair').style.display = !isV ? 'block' : 'none';
         document.getElementById('btnSairProfessor').style.display = isUnidade ? 'block' : 'none';
         document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('menuNavegacaoGeral').style.display = isV ? 'none' : 'flex';
-        
+        document.getElementById('areaUploadAdmin').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
+
         if(!isV) {
-            document.getElementById('userWelcomeBar').style.display = 'block';
-            if(isUnidade) {
-                document.getElementById('userWelcomeBar').innerHTML = `Olá Professor(a), você está logado na <b>${db.unidades_acao[curUser].nome.toUpperCase()}</b>`;
-            } else {
-                document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
-            }
-        } else {
-            document.getElementById('userWelcomeBar').style.display = 'none';
+            document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
         }
 
         document.getElementById('btnCron').style.display = 'block';
@@ -515,11 +587,9 @@
 
         document.getElementById('btnUnidades').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
         document.getElementById('btnRelatorioSabatina').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
-
+        
         const modelosDiv = document.getElementById('modelosCronograma');
-        if (modelosDiv) {
-            modelosDiv.style.display = isAdmin ? 'flex' : 'none';
-        }
+        if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
 
         if (!isV && !isUnidade) {
             document.getElementById('adminCronControls').style.display = 'flex';
@@ -530,122 +600,225 @@
 
         const corpo = document.getElementById('corpoEscala');
         corpo.innerHTML = "";
-
+        
         const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
         for(let d=1; d<=diasNoMes; d++) {
             let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
             let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
-            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
             
+            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
             if(busca && !txtDia.includes(busca)) continue;
 
-            if([0,3,6].includes(sem) || idEv) {
-                let rCls = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
-                let semNome = ["DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO"][sem];
-                if(idEv) semNome = `🔥 ${db.eventos_especiais[dtF].toUpperCase()}`;
-                else if(minDoDia) semNome = `⚙️ ${minDoDia.toUpperCase()}`;
+            let arrSem = ["DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO"];
+            let rClas = idEv ? "row-especial" : (minDoDia ? "row-ministerio" : "");
+            
+            let dHoje = new Date();
+            let isHoje = (dHoje.getDate()===d && dHoje.getMonth()===mIdx && dHoje.getFullYear()===2026) ? "hoje" : "";
 
-                let hHoje = dStr === obterDataHojeBR() ? 'hoje' : '';
-                
-                let tr = document.createElement('tr');
-                tr.className = `${rCls} ${hHoje}`;
-                tr.style.cursor = isAdmin ? 'pointer' : 'default';
-                if(isAdmin) tr.onclick = () => cliqueDia(dStr);
+            if(sem===0 || sem===3 || sem===6) {
+                let rHtml = `<tr class="${rClas} ${isHoje}">
+                    <td style="color:#2c3e50; font-size:0.75rem; text-align:left; padding-left:10px;">
+                        <b>${arrSem[sem]}</b>${idEv ? `<br><span style="color:var(--red); font-size:0.65rem;">🔥 ${idEv}</span>` : ""}
+                        ${minDoDia ? `<br><span style="color:#0284c7; font-size:0.65rem;">⚙️ ${MINS[minDoDia]||minDoDia}</span>` : ""}
+                    </td>
+                    <td style="background:#f8fafc; font-size:1.1rem; color:#1e293b;">${d}</td>`;
 
-                let tdMeta = `<td><small>${semNome}</small></td><td><b>${d}/${mIdx+1}</b></td>`;
-                let colunas = ['sabatina','pregador','musica','louvor','sonoplastia','recepcao','diaconato'];
-                
-                colunas.forEach(c => {
+                let cols = ['sabatina','pregador','especial','louvor','sonoplastia','recepcao','diaconato'];
+                cols.forEach(c => {
                     let val = db.escalas?.[dStr]?.[c] || "";
-                    let confCls = checarConflito(dStr, val) ? 'conflito' : '';
-                    let rOnly = (!isAdmin && curUser !== c) ? 'disabled' : '';
-                    if(curUser === 'admin' || curUser === 'ger') rOnly = '';
-
-                    tdMeta += `<td><textarea class="auto-expand ${confCls}" ${rOnly} onkeydown="handleEscalaKeys(event,'${dStr}','${c}')" onchange="atuCel('${dStr}','${c}',this.value)">${val}</textarea></td>`;
+                    let isC = checarConflito(dStr, val) ? "conflito" : "";
+                    let edit = (!isV && (isAdmin || curUser === c || (minDoDia && curUser === minDoDia))) ? "" : "disabled";
+                    
+                    rHtml += `<td style="padding:0; position:relative;">
+                        <textarea class="auto-expand ${isC}" ${edit} onchange="atuCel('${dStr}','${c}',this.value)" oninput="autoAncorarTextarea(this)" onkeydown="handleEscalaKeys(event,'${dStr}','${c}')">${val}</textarea>
+                    </td>`;
                 });
-
-                tr.innerHTML = tdMeta;
-                corpo.appendChild(tr);
+                rHtml += `</tr>`;
+                corpo.innerHTML += rHtml;
             }
         }
-
-        document.getElementById('headerAnciao').innerText = `Responsável Mês: ${db.anciao_mes?.[mIdx] || "Não definido"}`;
-
-        renderPlanAnual();
-        renderAdmin();
+        
+        document.querySelectorAll('.auto-expand').forEach(autoAncorarTextarea);
+        
+        if(isAdmin) renderAdmin();
         renderAvisos();
         renderArquivosPublicos();
         renderLinksPublicos();
-        updateProgresso();
-        ajustarTextareas();
+        renderPlanejamentoAnual();
+        initCartaoUnidade();
     }
 
-    function ajustarTextareas() {
-        document.querySelectorAll('.auto-expand').forEach(el => {
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-        });
+    function autoAncorarTextarea(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
     }
 
-    function setupAutoSaveListeners() {
-        document.addEventListener('change', (e) => {
-            if(e.target.classList.contains('auto-expand') || e.target.classList.contains('input-aluno') || e.target.classList.contains('input-qtd')) {
-                ajustarTextareas();
-            }
-        });
-    }
-
-    function renderAvisos() {
-        const tk = document.getElementById('newsTicker');
-        if(db.aviso_ticker && db.aviso_ticker.trim().length > 0) {
-            tk.style.display = 'block';
-            tk.querySelector('span').innerText = db.aviso_ticker.toUpperCase();
-        } else {
-            tk.style.display = 'none';
+    function handleEscalaKeys(e, d, c) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.target.blur();
+            const rows = Array.from(document.querySelectorAll('#corpoEscala tr'));
+            const curRow = e.target.closest('tr');
+            const colIdx = Array.from(curRow.querySelectorAll('textarea')).indexOf(e.target);
+            const nextRow = rows[rows.indexOf(curRow) + 1];
+            if (nextRow) nextRow.querySelectorAll('textarea')[colIdx].focus();
         }
     }
 
-    function renderAdmin() {
-        if(!['admin','ger'].includes(curUser)) return;
-        const mIdx = parseInt(document.getElementById('selMes').value);
-
-        let dMin = document.getElementById('listaMinisterios');
-        dMin.innerHTML = "";
-        Object.keys(MINS).forEach(k => {
-            if(k==='admin'||k==='ger') return;
-            let act = window.minSelecionado === k ? 'active' : '';
-            dMin.innerHTML += `<button class="btn-min ${act}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS[k].toUpperCase()}</button>`;
+    function checarConflito(dStr, valor) {
+        if(!valor || valor.trim().length < 3) return false;
+        let cont = 0;
+        const dia = db.escalas?.[dStr] || {};
+        Object.values(dia).forEach(v => {
+            if(v.trim() === valor.trim()) cont++;
         });
+        return cont > 1;
+    }
 
-        let dMes = document.getElementById('gridMeses');
-        dMes.innerHTML = "";
-        let ancSel = db.anciao_mes?.[mIdx] || "";
-        LISTA_ANCIAOS.forEach(a => {
-            let chk = ancSel === a ? 'checked' : '';
-            dMes.innerHTML += `<label style="display:block; font-size:0.8rem; margin-bottom:4px;"><input type="radio" name="ancMes" ${chk} onchange="db.anciao_mes[${mIdx}]='${a}'; save(); renderTodo();"> ${a}</label>`;
-        });
+    function atuCel(d, c, v) {
+        if(!db.escalas[d]) db.escalas[d]={};
+        db.escalas[d][c] = v;
+        save();
+    }
 
-        let dApoio = document.getElementById('gridApoioAnciao');
-        dApoio.innerHTML = "";
-        if(!db.apoio_anciao) db.apoio_anciao = {};
-        Object.keys(MINS).forEach(mK => {
-            if(['admin','ger','visitante'].includes(mK)) return;
-            let currentAnc = db.apoio_anciao[mK] || "Pastor";
-            let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${currentAnc===anc?'selected':''}>${anc}</option>`).join('');
-            dApoio.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; align-items:center;"><span style="font-size:0.75rem;">${MINS[mK]}</span><select class="input-dark" style="width:110px; padding:3px;" onchange="db.apoio_anciao['${mK}']=this.value; save();">${options}</select></div>`;
-        });
-
-        let cCreds = document.getElementById('corpoCreds');
-        cCreds.innerHTML = "";
-        Object.keys(db.senhas || {}).forEach(u => {
-            cCreds.innerHTML += `<tr><td style="padding:4px;"><b>${u.toUpperCase()}</b></td><td><input type="text" class="input-dark" style="padding:2px; font-size:0.7rem;" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save();"></td></tr>`;
-        });
-
+    function renderAvisos() {
+        const tick = document.getElementById('newsTicker');
+        if(db.aviso_ticker && db.aviso_ticker.trim().length > 0) {
+            tick.style.display = 'block';
+            tick.querySelector('span').innerText = db.aviso_ticker;
+        } else {
+            tick.style.display = 'none';
+        }
         if(db.aviso_ticker) document.getElementById('inputTicker').value = db.aviso_ticker;
         const unAncSel = document.getElementById('unAnciao');
         if(unAncSel) {
             unAncSel.innerHTML = LISTA_ANCIAOS.map(a => `<option value="${a}">${a}</option>`).join('');
         }
+    }
+
+    function renderAdmin() {
+        const lMin = document.getElementById('listaMinisterios');
+        lMin.innerHTML = "";
+        Object.keys(MINS).forEach(k => {
+            let act = window.minSelecionado === k ? "active" : "";
+            lMin.innerHTML += `<button class="btn-min ${act}" onclick="window.minSelecionado='${k}'; renderAdmin();">${MINS[k].toUpperCase()}</button>`;
+        });
+
+        const mIdx = parseInt(document.getElementById('selMes').value);
+        const gMeses = document.getElementById('gridMeses');
+        gMeses.innerHTML = `<div><small style="color:var(--neon)">ANCIÃO DO MÊS:</small>
+            <select class="input-dark" onchange="db.anciao_mes['m_${mIdx}']=this.value; save(); renderTodo();" style="font-size:0.9rem; margin-top:5px; border-color:var(--neon)">
+                <option value="">-- Selecione --</option>
+                ${LISTA_ANCIAOS.map(a => `<option value="${a}" ${(db.anciao_mes?.['m_'+mIdx]===a)?'selected':''}>${a}</option>`).join('')}
+            </select></div>`;
+
+        const corpoCreds = document.getElementById('corpoCreds');
+        corpoCreds.innerHTML = "";
+        Object.keys(db.senhas || {}).forEach(u => {
+            corpoCreds.innerHTML += `<tr>
+                <td style="padding:4px; text-align:left;"><b>${u.toUpperCase()}</b></td>
+                <td><input type="text" class="input-dark" value="${db.senhas[u]}" onchange="db.senhas['${u}']=this.value; save();" style="padding:2px 5px;"></td>
+                <td><button onclick="delete db.senhas['${u}']; save(); renderTodo();" style="color:red; background:none; border:none; cursor:pointer;">X</button></td>
+            </tr>`;
+        });
+
+        const gApoio = document.getElementById('gridApoioAnciao');
+        gApoio.innerHTML = "";
+        Object.keys(MINS).forEach(mKey => {
+            if(mKey === 'admin' || mKey === 'ger') return;
+            let valAnc = db.apoio_anciao?.[mKey] || "";
+            gApoio.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:4px;">
+                <span style="font-weight:bold;">${MINS[mKey]}:</span>
+                <select class="input-dark" style="width:110px; padding:2px;" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();">
+                    <option value="">-</option>
+                    ${LISTA_ANCIAOS.map(a => `<option value="${a}" ${valAnc===a?'selected':''}>${a}</option>`).join('')}
+                </select>
+            </div>`;
+        });
+
+        if(db.meta_anual) document.getElementById('metaBatismos').value = db.meta_anual;
+        updateProgresso();
+    }
+
+    function updateProgresso() {
+        let contB = 0;
+        if(db.historico_cartoes) {
+            Object.values(db.historico_cartoes).forEach(sab => {
+                Object.values(sab).forEach(un => {
+                    if(un.batismos) contB += parseInt(un.batismos);
+                });
+            });
+        }
+        let meta = parseInt(db.meta_anual) || 0;
+        let perc = meta > 0 ? Math.min((contB / meta) * 100, 100) : 0;
+        let pBar = document.getElementById('progressoMeta');
+        if(pBar) {
+            pBar.style.width = perc + "%";
+            document.getElementById('textoMeta').innerText = `${contB} / ${meta} BATISMOS`;
+        }
+    }
+
+    function toggleSection(idW, idB) {
+        const w = document.getElementById(idW);
+        const b = document.getElementById(idB);
+        if(w.style.display === 'none') { w.style.display='block'; b.innerText='-'; }
+        else { w.style.display='none'; b.innerText='+'; }
+    }
+
+    function carregarModeloFixo(tipo) {
+        if(!confirm("Substituir o cronograma atual pelo modelo fixo de " + tipo.toUpperCase() + "?")) return;
+        let estrutura = [];
+        if(tipo === 'quarta') {
+            estrutura = [{ horario: "19:30 AS 19:40", titulo: "MOMENTO DE LOUVOR", corBg: "#e0f2fe", corTxt: "#0369a1", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }] }, { horario: "19:40 AS 20:30", titulo: "CULTO DE ORAÇÃO", corBg: "#f1f5f9", corTxt: "#334155", itens: [{ nome: "BOAS VINDAS", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "PED. E AGRA.", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }] }];
+        } else if(tipo === 'domingo') {
+            estrutura = [{ horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO INICIAL", tempo: "" }, { nome: "MOMENTO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "OFERTORIO", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }] }];
+        } else if(tipo === 'sabado') {
+            estrutura = [ { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }, { nome: "3º Hino", tempo: "" }] }, { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "ANUNCIO ESCOLA SABATINA", tempo: "" }, { nome: "HINO INICIAL", tempo: "" }, { nome: "CARTA MISSIONARIA", tempo: "" }, { nome: "INFORMATIVO MUNDIAL", tempo: "" }, { nome: "RECOLHIMENTO DA OFERTA", tempo: "" }, { nome: "ORAÇÃO DA OFERTA", tempo: "" }, { nome: "DIVISÃO DAS CLASSES", tempo: "" }, { nome: "ESTUDO DA LIÇÃO", tempo: "" }] }, { horario: "10:20 AS 10:30", titulo: "ANÚNCIOS DA IGREJA", corBg: "#e0f2fe", corTxt: "#0369a1", itens: [{ nome: "VÍDEO / COMENTÁRIOS", tempo: "" }] }, { horario: "10:30 AS 12:00", titulo: "CULTO DIVINO", corBg: "#f0fdf4", corTxt: "#15803d", itens: [{ nome: "ENTRADA DOS OFICIAIS", tempo: "" }, { nome: "DOXOLOGIA", tempo: "" }, { nome: "ORAÇÃO DE JOELHOS", tempo: "" }, { nome: "LEITURA BIBLICA", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "MOMENTO INFANTIL", tempo: "" }, { nome: "ADORAÇÃO INTEGRAL (DÍZIMOS)", tempo: "" }, { nome: "ORAÇÃO DOS DIZIMOS", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "HINO FINAL", tempo: "" }, { nome: "ORAÇÃO FINAL", tempo: "" }, { nome: "SAÍDA COMPASSO CORRIDO", tempo: "" }] } ];
+        }
+        
+        const mIdx = parseInt(document.getElementById('selMes').value);
+        if(!db.cronogramas) db.cronogramas = {};
+        db.cronogramas[`m_${mIdx}`] = estrutura;
+        save();
+        alert("Modelo carregado com sucesso!");
+    }
+
+    function renderMembros() {
+        const l = document.getElementById('listaMembros');
+        l.innerHTML = "";
+        (db.membros||[]).forEach((m,i)=>{
+            l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${m.nome}</b> - ${m.cargo}</span><button onclick="if(confirm('Remover membro?')) {db.membros.splice(${i},1); save(); renderMembros();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
+        });
+    }
+
+    function addMembro() {
+        const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value;
+        if(!n || !c) return;
+        db.membros.push({nome:n, cargo:c});
+        save(); renderMembros();
+        document.getElementById('mbNome').value=""; document.getElementById('mbCargo').value="";
+    }
+
+    function login() {
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value;
+        if(db.unidades_acao && db.unidades_acao[u]) {
+            localStorage.setItem('iasd_curUser', u);
+            location.reload();
+            return;
+        }
+        const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
+        if(sDb === p) {
+            localStorage.setItem('iasd_curUser', u);
+            location.reload();
+        } else {
+            alert("Credenciais Inválidas!");
+        }
+    }
+
+    function sair() {
+        localStorage.removeItem('iasd_curUser');
+        location.reload();
     }
 
     async function abrirPopBackups() {
@@ -684,57 +857,62 @@
 
     async function restaurarBackup(id) {
         if(confirm("Deseja restaurar esta versão?")) {
-            try {
-                const doc = await dbCloud.collection('backups_seguros').doc(id).get();
-                if(doc.exists()) {
-                    db = doc.data().conteudo;
-                    save();
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    alert("Backup não encontrado!");
-                }
-            } catch(e) {
-                alert("Erro ao restaurar: " + e.message);
-            }
+            const doc = await dbCloud.collection('backups_seguros').doc(id).get();
+            db = doc.data().conteudo;
+            save();
+            setTimeout(() => location.reload(), 1000);
         }
     }
 
-    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function abrirPopLinks() {
+        document.getElementById('popLinks').style.display='flex';
+        renderListaLinksAdmin();
+    }
+
     function salvarLink() {
         const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value;
         if(!t || !u) return;
-        if(!db.links_externos) db.links_externos = [];
-        db.links_externos.push({ titulo: t, url: u });
-        save(); renderTodo(); renderListaLinksAdmin();
-        document.getElementById('linkTit').value=''; document.getElementById('linkUrl').value='';
+        db.links.push({titulo: t, url: u});
+        save(); renderListaLinksAdmin(); renderLinksPublicos();
+        document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value="";
     }
+
     function renderListaLinksAdmin() {
-        const l = document.getElementById('listaLinksAdmin'); l.innerHTML = "";
-        (db.links_externos||[]).forEach((lk,i)=>{
-            l.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${lk.titulo}</span><button onclick="db.links_externos.splice(${i},1); save(); renderTodo(); renderListaLinksAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
-        });
-    }
-    function renderLinksPublicos() {
-        const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = "";
-        (db.links_externos || []).forEach(lk => {
-            grid.innerHTML += `<a href="${lk.url}" target="_blank" class="btn-modern" style="text-decoration:none; text-align:center; min-width:130px;">🔗 ${lk.titulo.toUpperCase()}</a>`;
+        const container = document.getElementById('listaLinksAdmin');
+        container.innerHTML = "";
+        (db.links || []).forEach((l, i) => {
+            container.innerHTML += `<div style="display:flex; justify-content:space-between; background:#1e293b; padding:8px; border-radius:6px; margin-bottom:5px;"><small>${l.titulo}</small><button onclick="db.links.splice(${i},1); save(); renderListaLinksAdmin(); renderLinksPublicos();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
         });
     }
 
-    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventosAdmin(); }
-    function salvarEvento() {
+    function renderLinksPublicos() {
+        const grid = document.getElementById('gridLinksPublicos');
+        grid.innerHTML = "";
+        (db.links || []).forEach(l => {
+            grid.innerHTML += `<button class="btn-modern" style="padding:15px; text-align:center;" onclick="window.open('${l.url}','_blank')">🔗<br>${l.titulo.toUpperCase()}</button>`;
+        });
+    }
+
+    function abrirPopEventos() {
+        document.getElementById('popEventos').style.display='flex';
+        renderListaEventos();
+    }
+
+    function addEvento() {
         const d = document.getElementById('evtData').value, n = document.getElementById('evtNome').value;
         if(!d || !n) return;
-        db.eventos_especiais[d] = n; save(); renderTodo(); renderListaEventosAdmin();
+        db.eventos_especiais[d] = n;
+        save(); renderListaEventos(); renderTodo();
     }
-    function renderListaEventosAdmin() {
-        const l = document.getElementById('listaEventosAdmin'); l.innerHTML = "";
+
+    function renderListaEventos() {
+        const container = document.getElementById('listaEventos');
+        container.innerHTML = "";
         Object.keys(db.eventos_especiais || {}).sort().forEach(k => {
-            l.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span><b>${k}</b>: ${db.eventos_especiais[k]}</span><button onclick="delete db.eventos_especiais['${k}']; save(); renderTodo(); renderListaEventosAdmin();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
+            container.innerHTML += `<div style="display:flex; justify-content:space-between; background:#1e293b; padding:8px; border-radius:6px; margin-bottom:5px;"><small><b>${k.split('-').reverse().join('/')}</b> - ${db.eventos_especiais[k]}</small><button onclick="delete db.eventos_especiais['${k}']; save(); renderListaEventos(); renderTodo();" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
         });
     }
 
-    function abrirTesourariaAdmin() { document.getElementById('popTesourariaAdmin').style.display='flex'; renderAdminDocs(); }
     function uploadArquivo() {
         const file = document.getElementById('fileInput').files[0];
         const dest = document.getElementById('docDestinatario').value;
@@ -743,155 +921,99 @@
         reader.onload = function(e) {
             const m = document.getElementById('selMes').value;
             if(!db.docs[m]) db.docs[m]=[];
-            db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() });
-            save(); renderAdminDocs();
+            db.docs[m].push({
+                nome: file.name,
+                data: e.target.result,
+                para: dest,
+                ext: file.name.split('.').pop().toLowerCase()
+            });
+            save();
+            renderAdminDocs();
         };
         reader.readAsDataURL(file);
     }
+
     function renderAdminDocs() {
-        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = "";
+        const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos');
+        lista.innerHTML = "";
         (db.docs?.[m] || []).forEach((doc, i) => {
             lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`;
         });
     }
+
     function renderArquivosPublicos() {
-        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = "";
+        const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos');
+        grid.innerHTML = "";
         (db.docs?.[m] || []).forEach(doc => {
             if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser))
                 grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`;
         });
     }
+
     function verArquivo(src, ext, nome) {
         if(['ppt','pptx'].includes(ext)) {
-            const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return;
+            const a = document.createElement('a');
+            a.href = src;
+            a.download = nome;
+            a.click();
+            return;
         }
         const c = document.getElementById('viewContainer');
-        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`;
-        document.getElementById('popView').style.display = 'flex';
+        c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:600px; border:none;"></iframe>` : `<img src="${src}" style="width:100%; max-width:500px; border-radius:8px;">`;
+    }
+
+    function renderPlanejamentoAnual() {
+        const c = document.getElementById('corpoPlanAnual');
+        c.innerHTML = "";
+        const isAdmin = ['admin','ger'].includes(curUser);
+        MESES.forEach((m, idx) => {
+            let val = db.planejamento_anual?.[`m_${idx}`] || "";
+            let edit = isAdmin ? "" : "disabled";
+            c.innerHTML += `<tr>
+                <td style="border:1px solid #334155; padding:8px; background:#0f172a; color:var(--neon); width:150px; text-align:left; font-weight:bold;">${m}</td>
+                <td style="border:1px solid #334155; padding:0;">
+                    <textarea class="auto-expand" ${edit} onchange="if(!db.planejamento_anual)db.planejamento_anual={}; db.planejamento_anual['m_${idx}']=this.value; save();" style="text-align:left; padding:8px; color:white; font-size:0.9rem; font-weight:normal;">${val}</textarea>
+                </td>
+            </tr>`;
+        });
     }
 
     function renderUnidadesAdmin() {
-        const l = document.getElementById('listaUnidadesAdmin'); l.innerHTML = "";
+        const dest = document.getElementById('listaUnidadesAdmin');
+        dest.innerHTML = "";
         Object.keys(db.unidades_acao || {}).forEach(k => {
-            l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
+            dest.innerHTML += `<div style="display:flex; justify-content:space-between; background:#1e293b; padding:8px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
         });
     }
+
     function addUnidade() {
-        const c = document.getElementById('unChave').value.toLowerCase().trim(), n = document.getElementById('unNome').value, p = document.getElementById('unProf').value, a = document.getElementById('unAnciao').value;
-        if(!c || !n) return; if(!db.unidades_acao) db.unidades_acao={};
-        db.unidades_acao[c] = { nome: n, professor: p, anciao: a }; save(); renderUnidadesAdmin(); renderTodo();
+        const ch = document.getElementById('unChave').value.toLowerCase().trim();
+        const pr = document.getElementById('unProf').value;
+        const anc = document.getElementById('unAnciao').value;
+        if(!ch || !pr || !anc) return;
+        db.unidades_acao[ch] = { professor: pr, anciao: anc };
+        save(); renderUnidadesAdmin();
+        document.getElementById('unChave').value=""; document.getElementById('unProf').value="";
     }
 
-    function renderMembros() {
-        const l = document.getElementById('listaMembros'); l.innerHTML = "";
-        (db.membros||[]).forEach((m,i)=>{ l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${m.nome}</b> - ${m.cargo}</span><button onclick="if(confirm('Remover membro?')) {db.membros.splice(${i},1); save(); renderMembros();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; });
-    }
-    function addMembro() {
-        const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value; if(!n) return;
-        db.membros.push({nome:n, cargo:c}); save(); renderMembros();
-    }
-
-    function checarConflito(dStr, valor) {
-        if(!valor || valor.trim().length < 3) return false;
-        let cont = 0; const dia = db.escalas?.[dStr] || {};
-        Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; }); return cont > 1;
-    }
-    function handleEscalaKeys(e, d, c) {
-        if (e.key === 'Enter') {
-            e.preventDefault(); e.target.blur();
-            const rows = Array.from(document.querySelectorAll('#corpoEscala tr'));
-            const curRow = e.target.closest('tr');
-            const colIdx = Array.from(curRow.querySelectorAll('textarea')).indexOf(e.target);
-            const nextRow = rows[rows.indexOf(curRow) + 1];
-            if (nextRow) nextRow.querySelectorAll('textarea')[colIdx].focus();
-        }
-    }
-
-    function login() {
-        const u = document.getElementById('userLogin').value.toLowerCase().trim();
-        const p = document.getElementById('passLogin').value;
-        if(db.unidades_acao && db.unidades_acao[u]) {
-            localStorage.setItem('iasd_curUser', u); location.reload(); return;
-        }
-        const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null);
-        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else { alert("Credenciais Inválidas!"); }
-    }
-    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
-    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
-
-    function cliqueDia(dStr) {
-        if(['admin','ger'].includes(curUser) && window.minSelecionado) {
-            if(!db.regras_manuais) db.regras_manuais = {};
-            db.regras_manuais[dStr] = window.minSelecionado; save(); renderTodo();
-        }
-    }
-
-    function renderPlanAnual() {
-        const corpo = document.getElementById('corpoPlan'); corpo.innerHTML = "";
-        if(!db.planejamento_anual) db.planejamento_anual = {};
-        const isAdmin = ['admin','ger'].includes(curUser);
-        
-        MESES.forEach((m, mI) => {
-            let tr = document.createElement('tr');
-            let txtVal = db.planejamento_anual[mI] || "";
-            let rOnly = !isAdmin ? 'disabled' : '';
-            tr.innerHTML = `<td style="width:130px; border:1px solid #334155; background:rgba(0,0,0,0.3); padding:8px;"><b>${m}</b></td><td style="border:1px solid #334155; padding:2px;"><textarea class="auto-expand" ${rOnly} style="color:var(--gold); text-align:left; font-size:0.9rem; padding:5px;" onchange="db.planejamento_anual[${mI}]=this.value.toUpperCase(); save();">${txtVal}</textarea></td>`;
-            corpo.appendChild(tr);
-        });
-    }
-
-    function updateProgresso() {
-        let meta = parseInt(db.meta_anual) || 0;
-        let realizado = parseInt(db.batismos_realizados) || 0;
-        document.getElementById('metaBatismos').value = meta;
-        let porc = meta > 0 ? Math.min((realizado / meta) * 100, 100) : 0;
-        document.getElementById('progressoMeta').style.width = porc + "%";
-        document.getElementById('textoMeta').innerText = `${realized}/${meta} BATISMOS`;
-        renderGraficoTermometroGeral(realizado, meta);
-    }
-
-    function renderGraficoTermometroGeral(realizado, meta) {
-        const ctx = document.getElementById('graficoTermometroGeral');
-        if(!ctx) return;
-        if(gTermometro) gTermometro.destroy();
-        let restante = Math.max(meta - realizado, 0);
-        gTermometro = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Batismos Realizados', 'Restante para Meta'],
-                datasets: [{ data: [realizado, restante], backgroundColor: ['#2ecc71', '#334155'], borderHighlightColor: 'transparent', borderWidth: 0 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: 'white', font: { weight: 'bold' } } } }
-            }
-        });
-    }
-
-    function abrirPop() { document.getElementById('popDadosGerais').style.display='flex'; }
-    function showStatus(txt, cls) {
-        let ind = document.getElementById('saveIndicator'); if(!ind) return;
-        ind.className = cls; ind.innerText = txt; ind.style.display = 'block';
-        if(cls==='saved') setTimeout(() => ind.style.display='none', 3000);
-    }
-    function obterDataHojeBR() {
-        let d = new Date(); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-    }
-    function obterDataSabadoAtual() {
-        let d = new Date();
-        while(d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
-        return `${d.getDate()}_${d.getMonth()+1}_${d.getFullYear()}`;
+    function abrirPainelLimpezaTrimestre() {
+        document.getElementById('popUnidades').style.display = 'none';
+        document.getElementById('popLimpezaTrimestre').style.display = 'flex';
     }
 
     function initCartaoUnidade() {
         const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
         const isAdminSabatina = ['admin','ger','sabatina'].includes(curUser);
-        if(!isUnidade && !isAdminSabatina) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
-        
+        if(!isUnidade && !isAdminSabatina) {
+            document.getElementById('secCartaoUnidade').style.display = 'none';
+            return;
+        }
         document.getElementById('secCartaoUnidade').style.display = 'block';
         let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
-        if(!unAlvo) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
+        if(!unAlvo) {
+            document.getElementById('secCartaoUnidade').style.display = 'none';
+            return;
+        }
 
         const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
         const dadosUnidade = db.unidades_acao[unAlvo];
@@ -907,53 +1029,64 @@
         if(!db.historico_cartoes[sabKey][unAlvo]) {
             db.historico_cartoes[sabKey][unAlvo] = {
                 alunos: Array(TOTAL_ALUNOS).fill().map(() => ({ nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
-                instrutores: Array(5).fill().map(() => ({ nome: "", dandoEstudo: false, qtd: 0 })),
-                duplas: Array(5).fill().map(() => ({ nome: "", dandoEstudo: false, qtd: 0 })),
+                instrutores: Array(3).fill().map(() => ({ nome: "", dando: false, qtd: 0 })),
+                duplas: Array(3).fill().map(() => ({ nome: "", dando: false, qtd: 0 })),
                 batismos: 0, ofertas: 0
             };
         }
 
-        const src = db.historico_cartoes[sabKey][unAlvo];
-        document.getElementById('inputBatismos').value = src.batismos || 0;
-        document.getElementById('inputOfertas').value = (src.ofertas || 0).toFixed(2);
-
-        const cAlunos = document.getElementById('corpoAlunos'); cAlunos.innerHTML = "";
+        const payload = db.historico_cartoes[sabKey][unAlvo];
+        const cAlunos = document.getElementById('corpoAlunos');
+        cAlunos.innerHTML = "";
+        
         for(let i=0; i<TOTAL_ALUNOS; i++) {
-            let al = src.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
+            let a = payload.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
             cAlunos.innerHTML += `<tr>
-                <td><input type="text" id="nome_${i}" class="input-aluno" value="${al.nome||''}" onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c1_${i}" ${al.c1?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c2_${i}" ${al.c2?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c3_${i}" ${al.c3?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c5_${i}" ${al.c5?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c6_${i}" ${al.c6?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c7_${i}" ${al.c7?'checked':''} onchange="forçarCalculoProf()"></td>
-                <td><input type="checkbox" id="c8_${i}" ${al.c8?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td style="padding:0;"><input type="text" id="nome_${i}" class="input-aluno" value="${a.nome||''}" onchange="forçarCalculoProf()" onkeydown="handleCardKeys(event, ${i}, 0)"></td>
+                <td><input type="checkbox" id="p_${i}" ${a.p?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c1_${i}" ${a.c1?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c2_${i}" ${a.c2?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c3_${i}" ${a.c3?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c5_${i}" ${a.c5?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c6_${i}" ${a.c6?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c7_${i}" ${a.c7?'checked':''} onchange="forçarCalculoProf()"></td>
+                <td><input type="checkbox" id="c8_${i}" ${a.c8?'checked':''} onchange="forçarCalculoProf()"></td>
             </tr>`;
         }
 
         const cIns = document.getElementById('listaInstrutores'); cIns.innerHTML = "";
-        for(let i=0; i<5; i++) {
-            let ins = src.instrutores?.[i] || { nome: "", dandoEstudo: false, qtd: 0 };
+        for(let i=0; i<3; i++) {
+            let ins = payload.instrutores?.[i] || { nome: "", dando: false, qtd: 0 };
             cIns.innerHTML += `<div class="row-missao">
-                <input type="text" id="ins_nome_${i}" class="input-dark" value="${ins.nome||''}" onchange="forçarCalculoProf()" style="padding:4px;">
-                <label style="font-size:0.65rem; font-weight:bold;"><input type="checkbox" id="ins_chk_${i}" ${ins.dandoEstudo?'checked':''} onchange="forçarCalculoProf()"> DANDO ESTUDO</label>
-                <input type="number" id="ins_qtd_${i}" class="input-qtd" value="${ins.qtd||0}" onchange="forçarCalculoProf()">
+                <input type="text" id="ins_nome_${i}" value="${ins.nome||''}" placeholder="Nome" class="input-aluno" style="padding:4px;" onchange="forçarCalculoProf()">
+                <label style="font-size:0.65rem; font-weight:bold; color:#5d4037;"><input type="checkbox" id="ins_dando_${i}" ${ins.dando?'checked':''} onchange="forçarCalculoProf()"> SIM</label>
+                <input type="number" id="ins_qtd_${i}" value="${ins.qtd||0}" min="0" class="input-qtd" onchange="forçarCalculoProf()">
             </div>`;
         }
 
         const cDup = document.getElementById('listaDuplas'); cDup.innerHTML = "";
-        for(let i=0; i<5; i++) {
-            let dp = src.duplas?.[i] || { nome: "", dandoEstudo: false, qtd: 0 };
+        for(let i=0; i<3; i++) {
+            let dup = payload.duplas?.[i] || { nome: "", dando: false, qtd: 0 };
             cDup.innerHTML += `<div class="row-missao">
-                <input type="text" id="dup_nome_${i}" class="input-dark" value="${dp.nome||''}" onchange="forçarCalculoProf()" style="padding:4px;">
-                <label style="font-size:0.65rem; font-weight:bold;"><input type="checkbox" id="dup_chk_${i}" ${dp.dandoEstudo?'checked':''} onchange="forçarCalculoProf()"> DANDO ESTUDO</label>
-                <input type="number" id="dup_qtd_${i}" class="input-qtd" value="${dp.qtd||0}" onchange="forçarCalculoProf()">
+                <input type="text" id="dup_nome_${i}" value="${dup.nome||''}" placeholder="Nomes" class="input-aluno" style="padding:4px;" onchange="forçarCalculoProf()">
+                <label style="font-size:0.65rem; font-weight:bold; color:#5d4037;"><input type="checkbox" id="dup_dando_${i}" ${dup.dando?'checked':''} onchange="forçarCalculoProf()"> SIM</label>
+                <input type="number" id="dup_qtd_${i}" value="${dup.qtd||0}" min="0" class="input-qtd" onchange="forçarCalculoProf()">
             </div>`;
         }
 
-        calcularIndicadoresCartao(src);
+        document.getElementById('inputBatismos').value = payload.batismos || 0;
+        document.getElementById('inputOfertas').value = (payload.ofertas || 0).toFixed(2);
+
+        calcularMetricasEAtualizarLayout(payload);
+    }
+
+    function handleCardKeys(event, row, col) {
+        if(event.key === 'Enter') {
+            event.preventDefault();
+            let nextInput = document.getElementById(`nome_${row + 1}`);
+            if(nextInput) nextInput.focus();
+            else event.target.blur();
+        }
     }
 
     function forçarCalculoProf() {
@@ -984,55 +1117,68 @@
             };
         }
 
-        for(let i=0; i<5; i++) {
+        for(let i=0; i<3; i++) {
             payload.instrutores[i] = {
                 nome: document.getElementById(`ins_nome_${i}`).value,
-                dandoEstudo: document.getElementById(`ins_chk_${i}`).checked,
+                dando: document.getElementById(`ins_dando_${i}`).checked,
                 qtd: parseInt(document.getElementById(`ins_qtd_${i}`).value) || 0
             };
             payload.duplas[i] = {
                 nome: document.getElementById(`dup_nome_${i}`).value,
-                dandoEstudo: document.getElementById(`dup_chk_${i}`).checked,
+                dando: document.getElementById(`dup_dando_${i}`).checked,
                 qtd: parseInt(document.getElementById(`dup_qtd_${i}`).value) || 0
             };
         }
 
-        calcularIndicadoresCartao(payload);
+        db.historico_cartoes[sabKey][unAlvo] = payload;
         save();
+        calcularMetricasEAtualizarLayout(payload);
+        updateProgresso();
     }
 
-    function calcularIndicadoresCartao(payload) {
-        let d = { v1:0, v2:0, v3:0, v4:payload.batismos||0, v5:0, v6:0, v7:0, v8:0, totPres:0, qEstudosIns:0, qEstudosDup:0, tAtivos:0 };
+    function calcularMetricasEAtualizarLayout(p) {
+        let d = { v1:0, v2:0, v3:0, v4:p.batismos||0, v5:0, v6:0, v7:0, v8:0, totPres:0, qEstudosIns:0, qEstudosDup:0, ativos:0 };
         
-        payload.alunos.forEach(a => {
-            if(a.nome && a.nome.trim().length > 0) d.tAtivos++;
-            if(a.p) d.totPres++;
-            if(a.c1) d.v1++; if(a.c2) d.v2++; if(a.c3) d.v3++;
-            if(a.c5) d.v5++; if(a.c6) d.v6++; if(a.c7) d.v7++; if(a.c8) d.v8++;
+        (p.alunos||[]).forEach(a => {
+            if(a.nome && a.nome.trim().length > 0) {
+                d.ativos++;
+                if(a.p) d.totPres++;
+                if(a.c1) d.v1++;
+                if(a.c2) d.v2++;
+                if(a.c3) d.v3++;
+                if(a.c5) d.v5++;
+                if(a.c6) d.v6++;
+                if(a.c7) d.v7++;
+                if(a.c8) d.v8++;
+            }
         });
 
-        (payload.instrutores||[]).forEach(i => { if(i.nome && i.dandoEstudo) d.qEstudosIns += (i.qtd || 0); });
-        (payload.duplas||[]).forEach(dp => { if(dp.nome && dp.dandoEstudo) d.qEstudosDup += (dp.qtd || 0); });
+        (p.instrutores||[]).forEach(i => { if(i.nome && i.dando) d.qEstudosIns += (i.qtd||0); });
+        (p.duplas||[]).forEach(du => { if(du.nome && du.dando) d.qEstudosDup += (du.qtd||0); });
 
-        document.getElementById('v1').innerText = d.v1; document.getElementById('v2').innerText = d.v2;
-        document.getElementById('v3').innerText = d.v3; document.getElementById('v4').innerText = d.v4;
-        document.getElementById('v5').innerText = d.v5; document.getElementById('v6').innerText = d.v6;
-        document.getElementById('v7').innerText = d.v7; document.getElementById('v8').innerText = d.v8;
-        document.getElementById('totPres').innerText = `${d.totPres} / ${d.tAtivos}`;
+        document.getElementById('v1').innerText = d.v1;
+        document.getElementById('v2').innerText = d.v2;
+        document.getElementById('v3').innerText = d.v3;
+        document.getElementById('v4').innerText = d.v4;
+        document.getElementById('v5').innerText = d.v5;
+        document.getElementById('v6').innerText = d.v6;
+        document.getElementById('v7').innerText = d.v7;
+        document.getElementById('v8').innerText = d.v8;
+        document.getElementById('totPres').innerText = `${d.totPres} / ${d.ativos} ativos`;
 
-        renderGraficosCartaoUnidade(d);
-    }
+        let faltas = d.ativos - d.totPres;
+        
+        if(g1) g1.destroy();
+        if(g2) g2.destroy();
 
-    function renderGraficosCartaoUnidade(d) {
-        let ctx1 = document.getElementById('graf1'), ctx2 = document.getElementById('graf2');
-        if(!ctx1 || !ctx2) return;
-        if(g1) g1.destroy(); if(g2) g2.destroy();
+        let ctx1 = document.getElementById('graf1').getContext('2d');
+        let ctx2 = document.getElementById('graf2').getContext('2d');
 
         g1 = new Chart(ctx1, {
-            type: 'bar',
+            type: 'pie',
             data: {
-                labels: ['1. Com Lição', '2. Est. Diário', '5. Oração', '6. Literatura'],
-                datasets: [{ label: 'Alunos Praticantes', data: [d.v1, d.v2, d.v5, d.v6], backgroundColor: '#795548' }]
+                labels: ['Presentes', 'Ausentes'],
+                datasets: [{ data: [d.totPres, faltas], backgroundColor: ['#2ecc71', '#ff4757'] }]
             },
             options: { maintainAspectRatio: false }
         });
@@ -1053,25 +1199,30 @@
         corpo.innerHTML = "";
 
         const todosSabados = listarSabados2026();
+        let tAtivos=0, tPres=0, tVisitas=0, tOfertas=0;
         let sabadosComDados = 0;
-        let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0;
 
         todosSabados.forEach(sabKey => {
-            if(db.historico_cartoes && db.historico_cartoes[sabKey]) {
-                let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0;
-                let blocoSab = db.historico_cartoes[sabKey];
-                
-                Object.keys(blocoSab).forEach(unKey => {
-                    let unData = blocoSab[unKey];
-                    sOfertas += (unData.ofertas || 0);
-                    (unData.alunos || []).forEach(al => {
-                        if(al.nome && al.nome.trim().length > 0) sAtivos++;
-                        if(al.p) sPres++;
-                        if(al.c7) sVisitas++;
+            let sAtivos=0, sPres=0, sVisitas=0, sOfertas=0;
+            let temDadoNoSabado = false;
+
+            if(db.historico_cartoes?.[sabKey]) {
+                Object.keys(db.historico_cartoes[sabKey]).forEach(unKey => {
+                    let p = db.historico_cartoes[sabKey][unKey];
+                    sOfertas += parseFloat(p.ofertas) || 0;
+                    
+                    (p.alunos||[]).forEach(a => {
+                        if(a.nome && a.nome.trim().length > 0) {
+                            sAtivos++;
+                            temDadoNoSabado = true;
+                            if(a.p) sPres++;
+                            if(a.c7) sVisitas++; // P7: Recebeu visita de alguém
+                        }
                     });
                 });
+            }
 
-                if(sAtivos === 0 && sOfertas === 0) return;
+            if(temDadoNoSabado) {
                 sabadosComDados++;
                 tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
                 let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
@@ -1098,23 +1249,20 @@
         </tr>`;
 
         if(sabadosComDados === 0) {
-            corpo.innerHTML = `<tr><td colspan=\"6\" style=\"text-align:center; padding:20px;\">Nenhum dado lançado no trimestre vigente.</td></tr>`;
+            corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--orange)">Nenhum registro lançado até o momento.</td></tr>`;
         }
     }
 
-    function toggleSection(idWrapper, idBtn) {
-        let w = document.getElementById(idWrapper), b = document.getElementById(idBtn);
-        if(!w) return;
-        if(w.style.display === 'none') { w.style.display = 'block'; if(b) b.innerText = '-'; }
-        else { w.style.display = 'none'; if(b) b.innerText = '+'; }
-        ajustarTextareas();
+    function showStatus(text, className) {
+        const indicator = document.getElementById('saveIndicator');
+        if(!indicator) return;
+        indicator.innerText = text;
+        indicator.className = className;
+        indicator.style.display = 'block';
+        if(className === 'saved') {
+            setTimeout(() => { indicator.style.display = 'none'; }, 2000);
+        }
     }
-
-    window.onload = carregarSist;
-    window.addEventListener('scroll', () => {
-        let btn = document.getElementById('btnTopo');
-        if(btn) btn.style.display = window.scrollY > 300 ? 'block' : 'none';
-    });
 </script>
 </body>
 </html>
