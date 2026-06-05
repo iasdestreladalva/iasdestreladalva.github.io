@@ -171,9 +171,9 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
-        <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
+        <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartaoES')">
             <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
-            <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
+            <button class="section-toggle-btn" id="btnToggleCartaoES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
         </div>
 
         <div id="wrapperBlocoCartaoCompleto">
@@ -310,7 +310,7 @@
 </div>
 
 <script>
-const firebaseConfig = { apiKey: "AIzaSyAs760M - H6jGvPl1YfN8r93WpzoJmI", authDomain: "iasd - estrela - dalva.firebaseapp.com", projectId: "iasd - estrela - dalva", storageBucket: "iasd - estrela - dalva.appspot.com", messagingSenderId: "557812903556", appId: "1:557812903556:web:7f6a6b5c4d3e2f10" };
+const firebaseConfig = { apiKey: "AIzaSyAs760M-H6jGvPl1YfN8r93WpzoJmI", authDomain: "iasd-estrela-dalva.firebaseapp.com", projectId: "iasd-estrela-dalva", storageBucket: "iasd-estrela-dalva.appspot.com", messagingSenderId: "557812903556", appId: "1:557812903556:web:7f6a6b5c4d3e2f10" };
 firebase.initializeApp(firebaseConfig); const fs = firebase.firestore();
 let db = {}, credenciais = [], chartGeral = null, g1 = null, g2 = null, userLogged = null;
 
@@ -339,7 +339,7 @@ window.onload = async () => {
 
 function initFiltrosMeses() {
     const s = document.getElementById("selMes"), mNomes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-    const atual = new Date(), cMes = atual.getMonth(), cAno = atual.getFullYear(); s.innerHTML = "";
+    const atual = new Date(), cMes = atual.getMonth(), cAno = mtual.getFullYear(); s.innerHTML = "";
     for(let i = -2; i <= 6; i++) {
         let d = new Date(cAno, cMes + i, 1), m = d.getMonth(), y = d.getFullYear(), val = `${String(m+1).padStart(2,'0')}_${y}`;
         let opt = new Option(`${mNomes[m]} de ${y}`, val); if(m===cMes && y===cAno) opt.selected = true; s.add(opt);
@@ -642,7 +642,9 @@ function renderChartsGerais() {
                 if(db.cartaoUnidade && db.cartaoUnidade[u.nome] && db.cartaoUnidade[u.nome].chamadas && db.cartaoUnidade[u.nome].chamadas[sabKey]) {
                     let ch = db.cartaoUnidade[u.nome].chamadas[sabKey];
                     Object.keys(ch).forEach(alId => {
-                        if(ch[alId].p) sPres++; if(ch[alId].q1) sLiçao++; if(ch[alId].q2) sEstudo++;
+                        if(!isNaN(alId)) {
+                            if(ch[alId].p) sPres++; if(ch[alId].q1) sLiçao++; if(ch[alId].q2) sEstudo++;
+                        }
                     });
                 }
             });
@@ -674,7 +676,7 @@ function renderChartsGerais() {
                 labels: labels,
                 datasets: [
                     { label: 'Presença', data: dPres, backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: '#2ecc71', borderWidth: 1 },
-                    { label: 'Estudo Diário (Setas)', data: dEstudo, backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: '#f1c40f', borderWidth: 1 }
+                    { label: 'Estudo Diário', data: dEstudo, backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: '#f1c40f', borderWidth: 1 }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } }, plugins: { legend: { labels: { color: '#fff' } } } }
@@ -721,7 +723,7 @@ function login() {
         } else if(userLogged.role === "professor") {
             document.getElementById("btnSairProfessor").style.display = "block"; document.getElementById("secCartaoUnidade").style.display = "block";
             document.getElementById("headerToggleCartaoAdmin").onclick = null; document.getElementById("headerToggleCartaoAdmin").style.cursor = "default";
-            document.getElementById("btnToggleCartao ES").style.display = "none";
+            document.getElementById("btnToggleCartaoES").style.display = "none";
         }
         renderTodo();
     } else alert("Acesso negado. Verifique os dados inseridos.");
@@ -894,7 +896,7 @@ function renderMissionariaLateral(uSel, sabAct) {
         let vCheck = ch.instrutores && ch.instrutores[idx] ? ch.instrutores[idx].ativo : false;
         let vQtd = ch.instrutores && ch.instrutores[idx] ? ch.instrutores[idx].qtd : 0;
         hIns += `<div class="row-missao">
-            <input type='text' class='input-dark' style='background:#white!important; color:#000!important;' value="${vNome}" onchange="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'nome',this.value)">
+            <input type='text' class='input-dark' style='background:#fff!important; color:#000!important;' value="${vNome}" onchange="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'nome',this.value)">
             <label style='font-size:0.65rem; font-weight:700; color:#5d4037;'><input type='checkbox' ${vCheck?'checked':''} onclick="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'ativo',this.checked)"> DANDO ESTUDO</label>
             <input type='number' class='input-qtd' value="${vQtd}" min="0" oninput="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'qtd',parseInt(this.value)||0)">
         </div>`;
@@ -908,7 +910,7 @@ function renderMissionariaLateral(uSel, sabAct) {
         let vCheck = ch.duplas && ch.duplas[idx] ? ch.duplas[idx].ativo : false;
         let vQtd = ch.duplas && ch.duplas[idx] ? ch.duplas[idx].qtd : 0;
         hDup += `<div class="row-missao">
-            <input type='text' class='input-dark' style='background:#white!important; color:#000!important;' value="${vNome}" onchange="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'nome',this.value)">
+            <input type='text' class='input-dark' style='background:#fff!important; color:#000!important;' value="${vNome}" onchange="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'nome',this.value)">
             <label style='font-size:0.65rem; font-weight:700; color:#5d4037;'><input type='checkbox' ${vCheck?'checked':''} onclick="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'ativo',this.checked)"> DANDO ESTUDO</label>
             <input type='number' class='input-qtd' value="${vQtd}" min="0" oninput="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'qtd',parseInt(this.value)||0)">
         </div>`;
@@ -1026,7 +1028,7 @@ function baixarRelatorioGeralTrimestrePDF() {
 function removerCred(idx) { credenciais.splice(idx,1); fs.collection("igreja").doc("credenciais").set({lista:credenciais}); renderAdmin(); }
 
 // ========================================================
-// NOVAS FUNÇÕES DE BACKUP INDEPENDENTE E EXCLUSÃO (LIXEIRA)
+// FUNÇÕES DE BACKUP SEPARADO E EXCLUSÃO DEFINITIVA
 // ========================================================
 
 async function gerarBackupNuvemGeral() {
@@ -1058,13 +1060,13 @@ async function abrirPopBackups(tipo) {
     document.getElementById('tituloPopBackups').innerText = titulo;
     
     let lista = document.getElementById("listaBackupsNuvem");
-    lista.innerHTML = "<p style='color:white; text-align:center;'>Carregando...</p>";
+    lista.innerHTML = "<p style='color:white; text-align:center;'>Carregando arquivos de backup...</p>";
     document.getElementById('popBackups').style.display = 'flex';
 
     try {
         let snap = await fs.collection("backups_sistema").where("tipo", "==", tipo).orderBy("timestamp", "desc").limit(15).get();
         lista.innerHTML = "";
-        if(snap.empty) { lista.innerHTML = "<p style='color:gray; text-align:center;'>Nenhum backup encontrado.</p>"; return; }
+        if(snap.empty) { lista.innerHTML = "<p style='color:gray; text-align:center;'>Nenhum histórico encontrado para este módulo.</p>"; return; }
 
         snap.forEach(doc => {
             let data = doc.data();
@@ -1102,7 +1104,7 @@ async function restaurarBackupSeparado(id, tipo) {
 }
 
 async function deletarBackupNuvem(id, tipo) {
-    if (!confirm("⚠️ Tem certeza ABSOLUTA que deseja apagar permanentemente este registro de backup da nuvem? Esta ação não pode ser desfeita!")) return;
+    if (!confirm("⚠️ Deseja apagar definitivamente este registro de backup da nuvem?")) return;
     mostrarIndicador("Excluindo backup...", "saving");
     try {
         await fs.collection("backups_sistema").doc(id).delete();
