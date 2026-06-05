@@ -11,41 +11,57 @@
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
         body { background: var(--bg); color: #e6f1ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         .container { max-width: 1580px; margin: auto; }
+        
         #saveIndicator { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); padding: 8px 25px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; z-index: 20000; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saving { background: var(--orange); color: white; border: 2px solid white; }
         .saved { background: var(--green); color: white; border: 2px solid white; }
+
         .btn-modern { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8rem; }
         .btn-modern:hover { background: var(--neon); color: var(--blue); box-shadow: 0 0 10px var(--neon); }
+
         #userWelcomeBar { display: none; background: rgba(0, 210, 255, 0.1); border: 1px solid var(--neon); padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #fff; text-align: center; }
         .admin-box { display: none; background: #0f172a; border: 2px solid var(--orange); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .admin-grid { display: grid; grid-template-columns: 200px 1.2fr 2fr 1.2fr; gap: 15px; align-items: start; } 
         .admin-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #334155; height: auto; min-height: 520px; }
+        
         .input-dark { width: 100%; background: #000 !important; color: #fff !important; border: 1px solid #444; font-size: 0.8rem; padding: 8px; border-radius: 6px; box-sizing: border-box; outline: none; }
         .btn-min { display: block; width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: 1px solid var(--neon); color: var(--neon); cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 0.7rem; transition: 0.2s; }
         .btn-min.active { background: var(--neon) !important; color: var(--blue) !important; }
+        
         #areaEscalaPrincipal { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 10px 10px 0 0; }
+        
         table#tabela-main { width: 100%; border-collapse: collapse; background: white; color: black; min-width: 1000px; }
         #tabela-main th { background: #f1f5f9; padding: 10px; border: 1px solid #cbd5e1; color: var(--blue); font-size: 0.9rem; }
         #tabela-main td { border: 1px solid #cbd5e1; padding: 4px; text-align: center; font-weight: bold; }
+        
         .hoje { outline: 3px solid var(--gold) !important; position: relative; z-index: 5; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+
         .auto-expand { width: 100%; background: transparent !important; border: none !important; resize: none; overflow: hidden; text-align: center; font-family: inherit; font-weight: bold; font-size: 1rem; display: block; padding: 8px 0; outline: none; min-width: 120px; white-space: pre-wrap; }
         .conflito { color: var(--red) !important; text-decoration: underline; font-weight: 900 !important; }
+        
         .progress-container { background: #000; border-radius: 10px; height: 25px; width: 100%; margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--gold); }
         .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.6s; width: 0%; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; line-height: 25px; color: white; text-shadow: 1px 1px 2px black; z-index: 1; }
+
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
         .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+
         .row-especial { background-color: #fff4e6 !important; }
         .row-especial td { border-color: #ffd8a8 !important; }
         .row-ministerio { background-color: #e3f2fd !important; }
         .row-ministerio td { border-color: #bbdefb !important; }
+
         #newsTicker { background: var(--red); color: white; padding: 8px; font-weight: bold; overflow: hidden; white-space: nowrap; border-radius: 5px; margin-bottom: 10px; display: none; }
         #newsTicker span { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
         @keyframes ticker { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        
         .cron-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20000; align-items: center; justify-content: center; padding: 20px; }
         .cron-container { background: white; color: black; padding: 25px; border-radius: 15px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5); position: relative; }
+
         #btnTopo { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--neon); color: var(--blue); border: none; font-weight: bold; font-size: 1.5rem; cursor: pointer; display: none; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        /* Estilos do Cartão da Unidade */
         .card-bege { background: #fdf5e6; color: #5d4037; padding: 25px; border-radius: 12px; width: 100%; box-sizing: border-box; border: 2px solid #d7ccc8; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 15px; }
         .card-bege table { width: 100%; border-collapse: collapse; background: white; color: #333; margin-bottom: 20px; }
         .card-bege th { background: #efebe9; padding: 10px; border: 1px solid #d7ccc8; font-size: 0.65rem; color: #5d4037; text-transform: uppercase; }
@@ -59,13 +75,18 @@
         .input-qtd { width: 100%; padding: 6px; text-align: center; border: 1px solid #795548; border-radius: 4px; font-weight: bold; }
         .dashboard-cartao { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
         .chart-box-cartao { background: white; padding: 20px; border-radius: 12px; height: 320px; }
+
+        /* Estilo dos cabeçalhos minimizáveis */
         .section-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 8px; margin-top: 25px; border: 1px solid #334155; cursor: pointer; user-select: none; }
         .section-header h3 { margin: 0; font-size: 1.1rem; }
         .section-toggle-btn { background: transparent; border: 1px solid var(--neon); color: var(--neon); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* Tabela de Relatórios Secretarias */
         .tabla-secre { width: 100%; border-collapse: collapse; margin-top: 15px; color: white; font-size: 0.85rem; }
         .tabla-secre th { background: var(--blue); color: var(--neon); border: 1px solid #334155; padding: 8px; }
         .tabla-secre td { border: 1px solid #334155; padding: 8px; text-align: center; }
         .row-total-secre { background: rgba(0, 210, 255, 0.15); font-weight: bold; color: var(--gold); }
+
         @media (min-width: 1200px) { table#tabela-main { min-width: 100%; } }
         @media print { 
             .no-print, #adminPanel, #userWelcomeBar, #secPlan, #secTesouraria, #secLinksPublicos, .chart-container, .pop-content, button, select, #headerTopo, #saveIndicator, .busca-container, #newsTicker, .cron-overlay, #btnTopo, .card-bege, .dashboard-cartao, .section-header { display: none !important; }
@@ -143,11 +164,9 @@
                 <div id="gridApoioAnciao"></div>
                 <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
                 <h4 style="color:var(--gold)">5. NUVEM / PDF / BACKUP</h4>
-                <button class="btn-min" onclick="gerarBackupNuvemGeral()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR BACKUP GERAL</button>
-                <button class="btn-min" onclick="gerarBackupNuvemCartoes()" style="border-color:var(--orange); color:var(--orange)">💾 SALVAR BACKUP CARTÕES</button>
+                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
                 <button class="btn-min" onclick="exportarRelatorioPDF()" style="border-color:var(--green); color:var(--green)">📄 GERAR PDF MÊS</button>
-                <button class="btn-min" onclick="abrirPopBackups('geral')" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS GERAIS</button>
-                <button class="btn-min" onclick="abrirPopBackups('cartoes')" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS CARTÕES</button>
+                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
             </div>
         </div>
     </div>
@@ -171,30 +190,39 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
-        <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartaoES')">
+        
+        <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
             <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
-            <button class="section-toggle-btn" id="btnToggleCartaoES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
+            <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
         </div>
 
         <div id="wrapperBlocoCartaoCompleto">
             <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;">
-                <div style="text-align: left;"><span id="txtInfoUnidadeAtual" style="font-size: 1rem; color: #fff;"></span></div>
+                <div style="text-align: left;">
+                    <span id="txtInfoUnidadeAtual" style="font-size: 1rem; color: #fff;"></span>
+                </div>
+                
                 <div style="display:flex; align-items:center; gap:8px;">
                     <label style="color:var(--neon); font-weight:bold; font-size:0.9rem;">📅 VER OUTRO SÁBADO:</label>
                     <select id="selSabadoCartao" class="input-dark" style="width:160px; border-color:var(--gold); font-size:0.9rem;" onchange="initCartaoUnidade()"></select>
                 </div>
+
                 <button id="btnSairProfessor" class="btn-modern" style="border-color:red; color:red; display:none;" onclick="sair()">🚪 SAIR DO SISTEMA</button>
             </div>
             
             <div class="card-bege" id="printAreaCartao">
                 <h1 style="text-align:center; margin:0 0 25px 0; font-weight: 900; letter-spacing: 2px;">CARTÃO DA UNIDADE DE AÇÃO</h1>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 15px; background: #efebe9; padding: 10px; border-radius: 6px; color: #5d4037; font-weight: bold; font-size: 0.9rem; border: 1px solid #d7ccc8;">
-                    <span id="lblCardUnidade">UNIDADE: -</span><span id="lblCardProfessor">PROFESSOR(A): -</span><span id="lblCardAnciao">ANCIÃO DE APOIO: -</span><span id="lblCardSabado">SÁBADO: -</span>
+                    <span id="lblCardUnidade">UNIDADE: -</span>
+                    <span id="lblCardProfessor">PROFESSOR(A): -</span>
+                    <span id="lblCardAnciao">ANCIÃO DE APOIO: -</span>
+                    <span id="lblCardSabado">SÁBADO: -</span>
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:250px">ALUNOS DA UNIDADE</th><th>PRESENTE</th><th>1. TEM LIÇÃO DA ESCOLA SABATINA?</th><th>2. ESTUDOU TODOS DIAS?</th><th>3. DEU ESTUDOS BÍBLICOS?</th><th>5. OROU POR ALGUM ESTUDANTE?</th><th>6. DISTRIBUIU LITERATURA?</th><th>7. RECEBEU VISITA DE ALGUÉM?</th><th>8. FEZ AÇÃO SOLIDÁRIA?</th>
+                            <th style="width:250px">ALUNOS DA UNIDADE</th>
+                            <th>PRESENTE</th><th>1. TEM LIÇÃO DA ESCOLA SABATINA?</th><th>2. ESTUDOU TODOS DIAS?</th><th>3. DEU ESTUDOS BÍBLICOS?</th><th>5. OROU POR ALGUM ESTUDANTE?</th><th>6. DISTRIBUIU LITERATURA?</th><th>7. RECEBEU VISITA DE ALGUÉM?</th><th>8. FEZ AÇÃO SOLIDÁRIA?</th>
                         </tr>
                     </thead>
                     <tbody id="corpoAlunos"></tbody>
@@ -214,16 +242,26 @@
                         <div class="crm-item" style="background: #d7ccc8; font-weight: 800; margin-top: 5px;"><span>TOTAL PRESENTES</span><b id="totPres">0</b></div>
                     </div>
                     <div>
-                        <div class="area-missao"><h4 style="margin:0 0 8px 0; text-align: center; font-size: 0.75rem;">INSTRUTORES (Nome | Dando Estudo? | Qtd)</h4><div id="listaInstrutores"></div></div>
-                        <div class="area-missao"><h4 style="margin:0 0 8px 0; text-align: center; font-size: 0.75rem;">DUPLAS (Nomes | Dando Estudo? | Qtd)</h4><div id="listaDuplas"></div></div>
+                        <div class="area-missao">
+                            <h4 style="margin:0 0 8px 0; text-align: center; font-size: 0.75rem;">INSTRUTORES (Nome | Dando Estudo? | Qtd)</h4>
+                            <div id="listaInstrutores"></div>
+                        </div>
+                        <div class="area-missao">
+                            <h4 style="margin:0 0 8px 0; text-align: center; font-size: 0.75rem;">DUPLAS (Nomes | Dando Estudo? | Qtd)</h4>
+                            <div id="listaDuplas"></div>
+                        </div>
+                        
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
                             <div class="area-missao" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-top:0;">
-                                <label style="font-weight: bold; font-size: 0.75rem; color: #4e342e;">4. BATISMOS:</label><input type="number" id="inputBatismos" value="0" min="0" oninput="forçarCalculoProf()" style="width: 50px; padding: 4px; text-align: center;">
+                                <label style="font-weight: bold; font-size: 0.75rem; color: #4e342e;">4. BATISMOS:</label>
+                                <input type="number" id="inputBatismos" value="0" min="0" oninput="forçarCalculoProf()" style="width: 50px; padding: 4px; text-align: center;">
                             </div>
                             <div class="area-missao" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-top:0; border-color:var(--green)">
-                                <label style="font-weight: bold; font-size: 0.75rem; color: #1b5e20;">💰 OFERTAS (R$):</label><input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
+                                <label style="font-weight: bold; font-size: 0.75rem; color: #1b5e20;">💰 OFERTAS (R$):</label>
+                                <input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -235,10 +273,15 @@
     </div>
 
     <div id="areaGeralSistemaComAbas">
+        
         <div class="busca-container no-print" id="wrapperBuscaRapida" style="text-align:center; margin-top:20px; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
-        <div class="section-header no-print" onclick="toggleSection('wrapperEscala', 'btnToggleEscala')"><h3>📅 QUADRO DE ESCALAS PRINCIPAL</h3><button class="section-toggle-btn" id="btnToggleEscala">-</button></div>
+
+        <div class="section-header no-print" onclick="toggleSection('wrapperEscala', 'btnToggleEscala')">
+            <h3>📅 QUADRO DE ESCALAS PRINCIPAL</h3>
+            <button class="section-toggle-btn" id="btnToggleEscala">-</button>
+        </div>
         <div id="wrapperEscala">
             <div id="areaEscalaPrincipal">
                 <table id="tabela-main">
@@ -251,866 +294,678 @@
                 </table>
             </div>
         </div>
-        <div class="section-header no-print" onclick="toggleSection('secPlan', 'btnTogglePlan')"><h3>🗓️ PLANEJAMENTO ANUAL 2026</h3><button class="section-toggle-btn" id="btnTogglePlan">-</button></div>
+
+        <div class="section-header no-print" onclick="toggleSection('secPlan', 'btnTogglePlan')">
+            <h3>🗓️ PLANEJAMENTO ANUAL 2026</h3>
+            <button class="section-toggle-btn" id="btnTogglePlan">-</button>
+        </div>
         <div id="secPlan" style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 0 0 15px 15px; border: 1px solid #334155; border-top:none;" class="no-print">
             <table style="width:100%; border-collapse: collapse; color:white;"><tbody id="corpoPlan"></tbody></table>
         </div>
-        <div class="section-header no-print" id="headerTesouraria" onclick="toggleSection('secTesouraria', 'btnToggleDocs')"><h3>💰 DOCUMENTOS COLETIVOS</h3><button class="section-toggle-btn" id="btnToggleDocs">-</button></div>
+
+        <div class="section-header no-print" id="headerTesouraria" onclick="toggleSection('secTesouraria', 'btnToggleDocs')">
+            <h3>💰 DOCUMENTOS COLETIVOS</h3>
+            <button class="section-toggle-btn" id="btnToggleDocs">-</button>
+        </div>
         <div id="secTesouraria" style="border:1px solid var(--green); border-top:none; padding:15px; border-radius: 0 0 12px 12px;" class="no-print">
             <h4 style="color:var(--green); margin-top:0;">ARQUIVOS DE <span id="mesTesouraria"></span></h4>
             <div id="gridArquivosPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px;"></div>
         </div>
-        <div class="section-header no-print" id="headerGraficosGerais" onclick="toggleSection('wrapperGraficoGeral', 'btnToggleGrafGeral')"><h3>📊 TERMÔMETRO E GRÁFICOS DO SISTEMA</h3><button class="section-toggle-btn" id="btnToggleGrafGeral">-</button></div>
+
+        <div class="section-header no-print" id="headerGraficosGerais" onclick="toggleSection('wrapperGraficoGeral', 'btnToggleGrafGeral')">
+            <h3>📊 TERMÔMETRO E GRÁFICOS DO SISTEMA</h3>
+            <button class="section-toggle-btn" id="btnToggleGrafGeral">-</button>
+        </div>
         <div id="wrapperGraficoGeral" class="chart-container no-print" style="height: 350px; background: rgba(255,255,255,0.05); padding: 20px; border-radius:0 0 12px 12px; border: 1px solid var(--orange); border-top:none;">
             <div style="height: 280px;"><canvas id="missionaryChart"></canvas></div>
         </div>
-        <div class="section-header no-print" onclick="toggleSection('secLinksPublicos', 'btnToggleLinks')"><h3>🔗 LINKS ÚTEIS E MATERIAIS</h3><button class="section-toggle-btn" id="btnToggleLinks">-</button></div>
+
+        <div class="section-header no-print" onclick="toggleSection('secLinksPublicos', 'btnToggleLinks')">
+            <h3>🔗 LINKS ÚTEIS E MATERIAIS</h3>
+            <button class="section-toggle-btn" id="btnToggleLinks">-</button>
+        </div>
         <div id="secLinksPublicos" style="margin-bottom: 50px; background: rgba(255,255,255,0.01); padding: 20px; border: 1px solid #334155; border-top:none; border-radius: 0 0 12px 12px;" class="no-print">
             <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
         </div>
+
     </div>
 </div>
 
 <div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
         <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
-        <div style="max-height: 450px; overflow-y: auto;"><table class="tabla-secre"><thead><tr><th>SÁBADO</th><th>MEMBROS ATIVOS</th><th>PRESENTES</th><th>% PRESENÇA</th><th>VISITAS RECOLHIDAS (P7)</th><th>OFERTAS DO DIA</th></tr></thead><tbody id="corpoRelatorioSecretaria"></tbody></table></div>
+        <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+        
+        <div style="max-height: 450px; overflow-y: auto;">
+            <table class="tabla-secre">
+                <thead>
+                    <tr>
+                        <th>SÁBADO</th>
+                        <th>MEMBROS ATIVOS</th>
+                        <th>PRESENTES</th>
+                        <th>% PRESENÇA</th>
+                        <th>VISITAS RECOLHIDAS (P7)</th>
+                        <th>OFERTAS DO DIA</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoRelatorioSecretaria"></tbody>
+            </table>
+        </div>
         <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
     </div>
 </div>
 
 <div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="mbNome" placeholder="Nome" class="input-dark"><input id="mbCargo" placeholder="Cargo" class="input-dark"><button class="btn-modern" onclick="addMembro()">+</button></div><div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;" id="tituloPopBackups">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário ou Unidade" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha (vazio p/ Unidades)" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" style="background:var(--neon); color:var(--blue); border:none; margin-top:15px;" onclick="salvarLink()">POSTAR</button><hr style="border:0; border-top:1px solid #444; margin:15px 0;"><div id="listaLinksAtivos"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
 <div id="popViewImg" class="overlay" onclick="this.style.display='none'"><div style="text-align:center; width: 90%;" id="viewContainer"></div></div>
+
 <div id="popUnidades" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" onclick="event.stopPropagation()">
         <h3 style="color:var(--gold); text-align:center; margin-top:0;">CADASTRO DE UNIDADES DE AÇÃO</h3>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;"><input id="unNome" placeholder="Ex: Unidade 1" class="input-dark"><input id="unProf" placeholder="Nome do Professor" class="input-dark"></div>
-        <div style="margin-bottom: 15px;"><label style="font-size:0.75rem; color: var(--neon);">Ancião de Apoio da Unidade:</label><select id="unAnciao" class="input-dark" style="margin-top:4px;"></select></div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;">
+            <input id="unNome" placeholder="Ex: Unidade 1" class="input-dark">
+            <input id="unProf" placeholder="Nome do Professor" class="input-dark">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="font-size:0.75rem; color: var(--neon);">Ancião de Apoio da Unidade:</label>
+            <select id="unAnciao" class="input-dark" style="margin-top:4px;"></select>
+        </div>
         <button class="btn-min" style="background: var(--gold); color: #000; border: none;" onclick="addUnidadeAcao()">CADASTRAR UNIDADE</button>
-        <hr style="border:0; border-top:1px solid #334155; margin:15px 0;"><div id="listaUnidadesCadastradas" style="max-height:200px; overflow-y:auto;"></div>
+        <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+        <div id="listaUnidadesCadastradas" style="max-height:200px; overflow-y:auto;"></div>
         <button onclick="document.getElementById('popUnidades').style.display='none'" class="btn-fechar">FECHAR</button>
     </div>
 </div>
+
 <div id="popAlertaTrimestre" class="overlay" style="z-index: 99999;">
     <div class="pop-content" style="border-color: var(--red); max-width: 500px; text-align: center;">
         <h2 style="color: var(--red); margin-top: 0;">⚠️ ALERTA DE NOVO TRIMESTRE</h2>
         <p style="font-size: 0.95rem; line-height: 1.5; color: #fff;">O sistema detectou uma mudança de trimestre. Para evitar sobrecarregar o banco de dados, o histórico de cartões de chamada antigos precisa ser limpo.</p>
         <p style="font-weight: bold; color: var(--gold);">FAÇA O DOWNLOAD DOS ARQUIVOS EM PDF/JPG AGORA ANTES DE PROSSEGUIR!</p>
         <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
-            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioGeralTrimestrePDF()">📄 DOWNLOAD RELATÓRIO TRIMESTRAL (PDF)</button>
-            <button class="btn-modern" style="border-color: var(--red); background: var(--red); color: white; padding: 12px; font-weight: 900;" onclick="confirmarLimpezaTrimestre()">🚨 CONCORDO, LIMPAR BANCO DE DADOS E INICIAR NOVO TRIMESTRE</button>
+            <button class="btn-modern" style="border-color: var(--green); color: var(--green); padding: 12px;" onclick="baixarRelatorioCartoesTrimestre()">📄 EXPORTAR TODOS OS CARTÕES (PDF)</button>
+            <button class="btn-modern" style="border-color: var(--red); color: white; background: var(--red); padding: 10px; margin-top: 15px; font-weight: bold;" onclick="confirmarLimpezaTrimestre()">REMOVER DADOS ANTIGOS E INICIAR NOVO TRIMESTRE</button>
         </div>
     </div>
 </div>
 
 <script>
-const firebaseConfig = { apiKey: "AIzaSyAs760M-H6jGvPl1YfN8r93WpzoJmI", authDomain: "iasd-estrela-dalva.firebaseapp.com", projectId: "iasd-estrela-dalva", storageBucket: "iasd-estrela-dalva.appspot.com", messagingSenderId: "557812903556", appId: "1:557812903556:web:7f6a6b5c4d3e2f10" };
-firebase.initializeApp(firebaseConfig); const fs = firebase.firestore();
-let db = {}, credenciais = [], chartGeral = null, g1 = null, g2 = null, userLogged = null;
+    const firebaseConfig = { apiKey: "AIzaSyD1GdgX6BfEmmX4P_tP2g72UdTh-4U89ik", authDomain: "unidades-de-acao.firebaseapp.com", projectId: "unidades-de-acao", appId: "1:1088355029870:web:7bb98d3115e7b7767f677f" };
+    firebase.initializeApp(firebaseConfig);
+    const dbCloud = firebase.firestore();
 
-const colunasEscala = ["sabatina","pregador","musica","louvor","sonoplastia","recepcao","diaconato"];
-const itensCronDefault = [
-    {h:"08:45", t:"Encontro de Oração", s:false},{h:"09:00", t:"Diretoria da Escola Sabatina", s:false},{h:"09:15", t:"Início do Louvor Congregacional", s:false},
-    {h:"09:30", t:"Abertura Oficial da Escola Sabatina", s:true},{h:"09:40", t:"Lançamento da Lição em Classes", s:true},{h:"10:40", t:"Encerramento e Anúncios", s:false},
-    {h:"10:50", t:"Início do Culto Divino / Entrada dos Oficiais", s:true},{h:"11:00", t:"Doxologia e Oração Inicial", s:false},{h:"11:10", t:"Adoração Infantil", s:true},
-    {h:"11:20", t:"Momento de Gratidão / Dízimos e Ofertas", s:true},{h:"11:30", t:"Mensagem Musical Especial", s:true},{h:"11:35", t:"Pregador / Sermão da Palavra", s:true},
-    {h:"12:15", t:"Hino Final e Oração de Despedida", s:false}
-];
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
+    const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
+    let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
+    let g1, g2; const TOTAL_ALUNOS = 20;
 
-function mostrarIndicador(t, c) { const el = document.getElementById("saveIndicator"); el.innerText = t; el.className = c; el.style.display = "block"; if(c === "saved") setTimeout(() => el.style.display="none", 3000); }
-async function save() { mostrarIndicador("Gravando alterações locais...", "saving"); try { await fs.collection("igreja").doc("dados").set(db); mostrarIndicador("Alterações gravadas com sucesso!", "saved"); } catch(e) { console.error(e); alert("Erro ao salvar dados."); } }
-
-window.onload = async () => {
-    mostrarIndicador("Carregando informações do servidor...", "saving");
-    try {
-        let doc = await fs.collection("igreja").doc("dados").get(); if(doc.exists) db = doc.data(); else db = { meses:{}, membros:[], links:[], eventos:[], arquivos:[], meta_anual:0, aviso_ticker:"", cronogramas:{}, cartaoUnidade:{}, unidadesAcao:[] };
-        let cDoc = await fs.collection("igreja").doc("credenciais").get(); if(cDoc.exists) credenciais = cDoc.data().lista || [];
-        initFiltrosMeses(); renderTodo(); checarAlertaTrimestre();
-        window.addEventListener("scroll", () => { document.getElementById("btnTopo").style.display = window.scrollY > 300 ? "block" : "none"; });
-        mostrarIndicador("Concluído!", "saved");
-    } catch(e) { console.error(e); }
-};
-
-function initFiltrosMeses() {
-    const s = document.getElementById("selMes"), mNomes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-    const atual = new Date(), cMes = atual.getMonth(), cAno = atual.getFullYear(); s.innerHTML = "";
-    for(let i = -2; i <= 6; i++) {
-        let d = new Date(cAno, cMes + i, 1), m = d.getMonth(), y = d.getFullYear(), val = `${String(m+1).padStart(2,'0')}_${y}`;
-        let opt = new Option(`${mNomes[m]} de ${y}`, val); if(m===cMes && y===cAno) opt.selected = true; s.add(opt);
-    }
-}
-
-function getMesSelecionado() { return document.getElementById("selMes").value; }
-
-function getSabadosMes(mesAnoStr) {
-    let parts = mesAnoStr.split("_"), m = parseInt(parts[0]) - 1, y = parseInt(parts[1]), arr = [], d = new Date(y, m, 1);
-    while(d.getMonth() === m) { if(d.getDay() === 6) arr.push(new Date(d)); d.setDate(d.getDate() + 1); } return arr;
-}
-
-function toggleSection(id, btnId) {
-    const el = document.getElementById(id), btn = document.getElementById(btnId);
-    if(el.style.display === "none") { el.style.display = "block"; btn.innerText = "-"; } else { el.style.display = "none"; btn.innerText = "+"; }
-}
-
-function renderTodo() {
-    const mSel = getMesSelecionado(); if(!db.meses[mSel]) db.meses[mSel] = { anciao:"", escala:{}, plan:Array(31).fill("") };
-    renderAvisos(); renderAdmin(); renderEscalaPublica(); renderPlanPublico(); renderLinksPublicos(); renderArquivosPublicos(); updateProgresso(); initCartaoUnidade();
-}
-
-function renderAvisos() {
-    const tk = document.getElementById("newsTicker");
-    if(db.aviso_ticker) { tk.style.display = "block"; tk.querySelector("span").innerText = db.aviso_ticker; } else tk.style.display = "none";
-}
-
-function renderAdmin() {
-    if(!userLogged || userLogged.role !== "admin") { document.getElementById("adminPanel").style.display = "none"; return; }
-    document.getElementById("adminPanel").style.display = "block";
-    document.getElementById("inputTicker").value = db.aviso_ticker || "";
-    document.getElementById("metaBatismos").value = db.meta_anual || 0;
-    
-    let htmlMin = "";
-    ["Sabatina","Ancião / Pregador","Música Especial","Louvor","Sonoplastia","Recepção","Diaconato"].forEach(m => {
-        let act = window.minSelecionado === m ? "active" : "";
-        htmlMin += `<button class="btn-min ${act}" onclick="window.minSelecionado='${m}'; renderAdmin();">🎯 ${m.toUpperCase()}</button>`;
-    });
-    document.getElementById("listaMinisterios").innerHTML = htmlMin;
-
-    let htmlMes = "", mNomes = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
-    Object.keys(db.meses).sort().forEach(k => {
-        let p = k.split("_"), n = mNomes[parseInt(p[0])-1] + "/" + p[1].substring(2);
-        htmlMes += `<div style="margin-bottom:8px;"><small style="color:var(--neon); font-weight:bold;">${n} - RESPONSÁVEL:</small>
-        <input type="text" class="input-dark" value="${db.meses[k].anciao || ''}" onchange="db.meses['${k}'].anciao=this.value; save(); document.getElementById('headerAnciao').innerText='Responsável: '+this.value;"></div>`;
-    });
-    document.getElementById("gridMeses").innerHTML = htmlMes;
-
-    let htmlCred = "";
-    credenciais.forEach((c, idx) => {
-        htmlCred += `<tr style="border-bottom:1px solid #222"><td>👤 ${c.user}</td><td>🔑 ${c.pass}</td><td>🏷️ ${c.role}</td>
-        <td style="text-align:right"><button onclick="removerCred(${idx})" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">X</button></td></tr>`;
-    });
-    document.getElementById("corpoCreds").innerHTML = htmlCred;
-    document.getElementById("adminCronControls").style.display = "flex";
-}
-
-function renderEscalaPublica() {
-    const mSel = getMesSelecionado(), sabados = getSabadosMes(mSel), corpo = document.getElementById("corpoEscala");
-    corpo.innerHTML = "";
-    document.getElementById("headerAnciao").innerText = "Responsável: " + (db.meses[mSel].anciao || "Não definido");
-    document.getElementById("headerTitulo").innerText = "ESCALA - " + document.getElementById("selMes").options[document.getElementById("selMes").selectedIndex].text.toUpperCase();
-    
-    const hoje = new Date(); hoje.setHours(0,0,0,0);
-    const termoBusca = document.getElementById("buscaRapida").value.toLowerCase().trim();
-
-    sabados.forEach(sab => {
-        let dKey = String(sab.getDate()).padStart(2,'0'), sKey = `${dKey}_${mSel}`;
-        if(!db.meses[mSel].escala[sKey]) db.meses[mSel].escala[sKey] = {};
-        let esc = db.meses[mSel].escala[sKey];
-        
-        let matchBusca = false;
-        if(termoBusca === "") matchBusca = true;
-        else { colunasEscala.forEach(c => { if(esc[c] && esc[c].toLowerCase().includes(termoBusca)) matchBusca = true; }); }
-        if(!matchBusca) return;
-
-        let sabTime = new Date(sab); sabTime.setHours(0,0,0,0);
-        let clsHoje = sabTime.getTime() === hoje.getTime() ? "hoje" : "";
-
-        let rEspecial = (esc["pregador"] && (esc["pregador"].toLowerCase().includes("distrital") || esc["pregador"].toLowerCase().includes("missão") || esc["pregador"].toLowerCase().includes("jovem") || esc["pregador"].toLowerCase().includes("mulher"))) ? "row-especial" : "";
-
-        let tr = document.createElement("tr"); if(clsHoje) tr.className = clsHoje; if(rEspecial && !clsHoje) tr.className = rEspecial;
-        
-        let tdDia = document.createElement("td"); tdDia.innerText = "SÁBADO"; tr.appendChild(tdDia);
-        let tdData = document.createElement("td"); tdData.innerText = dKey; tr.appendChild(tdData);
-
-        colunasEscala.forEach(col => {
-            let td = document.createElement("td");
-            let txt = esc[col] || "";
-            
-            if(userLogged && userLogged.role === "admin") {
-                let ta = document.createElement("textarea"); ta.className = "auto-expand"; ta.value = txt;
-                ta.onchange = (e) => { esc[col] = e.target.value; checarConflitosGerais(); save(); };
-                ta.oninput = () => autoGrow(ta);
-                td.appendChild(ta); setTimeout(() => autoGrow(ta), 50);
-            } else {
-                td.style.whiteSpace = "pre-wrap"; td.innerText = txt || "-";
-            }
-            tr.appendChild(td);
-        });
-        corpo.appendChild(tr);
-    });
-    checarConflitosGerais();
-}
-
-function autoGrow(element) { element.style.height = "5px"; element.style.height = (element.scrollHeight) + "px"; }
-
-function checarConflitosGerais() {
-    const tas = document.querySelectorAll(".auto-expand"); tas.forEach(t => t.classList.remove("conflito"));
-    const mSel = getMesSelecionado(); if(!db.meses[mSel] || !db.meses[mSel].escala) return;
-    let esc = db.meses[mSel].escala;
-    Object.keys(esc).forEach(sKey => {
-        let s = esc[sKey], nomesOcupados = {};
-        colunasEscala.forEach(col => {
-            let txt = s[col] || "";
-            let linhas = txt.split("\n");
-            linhas.forEach(l => {
-                let n = l.trim().toLowerCase();
-                if(n.length > 3 && !n.includes("equipe") && !n.includes("todos") && !n.includes("diáconos") && !n.includes("diaconisas")) {
-                    if(!nomesOcupados[n]) nomesOcupados[n] = []; nomesOcupados[n].push(col);
-                }
-            });
-        });
-        Object.keys(nomesOcupados).forEach(n => {
-            if(nomesOcupados[n].length > 1) {
-                tas.forEach(t => {
-                    let parentTd = t.parentElement; if(!parentTd) return;
-                    let parentTr = parentTd.parentElement; if(!parentTr) return;
-                    let dataTd = parentTr.cells[1]; if(!dataTd) return;
-                    let dKey = dataTd.innerText.trim();
-                    if(sKey.startsWith(dKey) && t.value.toLowerCase().includes(n)) t.classList.add("conflito");
-                });
-            }
-        });
-    });
-}
-
-function renderPlanPublico() {
-    const mSel = getMesSelecionado(), parts = mSel.split("_"), m = parseInt(parts[0]), y = parseInt(parts[1]);
-    const totalDias = new Date(y, m, 0).getDate(), corpo = document.getElementById("corpoPlan");
-    corpo.innerHTML = "";
-    
-    let dNomes = ["DOM","SEG","TER","QUA","QUI","SEX","SÁB"];
-    let tr = null;
-    for(let i = 1; i <= totalDias; i++) {
-        if((i-1)%3 === 0) { tr = document.createElement("tr"); corpo.appendChild(tr); }
-        let wd = dNomes[new Date(y, m - 1, i).getDay()];
-        let txt = db.meses[mSel].plan[i] || "";
-        
-        let td = document.createElement("td"); td.style.width = "33.3%"; td.style.border = "1px solid #334155"; td.style.padding = "8px";
-        let lbl = document.createElement("div"); lbl.style.color = wd === "SÁB" ? "var(--gold)" : "#94a3b8"; lbl.style.fontSize = "0.75rem"; lbl.style.fontWeight = "bold";
-        lbl.innerText = `${String(i).padStart(2,'0')}/${String(m).padStart(2,'0')} - ${wd}`; td.appendChild(lbl);
-        
-        if(userLogged && userLogged.role === "admin") {
-            let inp = document.createElement("input"); inp.className = "input-dark"; inp.style.marginTop = "4px"; inp.value = txt;
-            inp.onchange = (e) => { db.meses[mSel].plan[i] = e.target.value; save(); }; td.appendChild(inp);
+    // Gerenciador de visibilidade de painéis (Collapse)
+    function toggleSection(sectionId, buttonId) {
+        const target = document.getElementById(sectionId);
+        const btn = document.getElementById(buttonId);
+        if(target.style.display === 'none') {
+            target.style.display = 'block';
+            btn.innerText = '-';
         } else {
-            let div = document.createElement("div"); div.style.padding = "4px 0"; div.style.fontSize = "0.9rem"; div.style.fontWeight = "bold"; div.innerText = txt || "-";
-            if(txt) div.style.color = "var(--neon)"; td.appendChild(div);
+            target.style.display = 'none';
+            btn.innerText = '+';
         }
-        tr.appendChild(td);
     }
-}
 
-function updateProgresso() {
-    let batismosContados = 0;
-    if(db.meses) {
-        Object.keys(db.meses).forEach(mKey => {
-            if(db.meses[mKey].plan) {
-                db.meses[mKey].plan.forEach(pText => {
-                    if(pText && pText.toLowerCase().includes("batismo")) {
-                        let matches = pText.match(/\d+/); if(matches) batismosContados += parseInt(matches[0]); else batismosContados++;
+    window.onscroll = function() { 
+        const btn = document.getElementById("btnTopo");
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) { btn.style.display = "block"; } 
+        else { btn.style.display = "none"; }
+    };
+
+    dbCloud.collection('dados').doc('estrela_v102').onSnapshot(doc => {
+        if(doc.exists) { 
+            db = doc.data(); 
+            if(!db.unidades_acao) db.unidades_acao = {};
+            if(!db.historico_cartoes) db.historico_cartoes = {};
+            if(!db.trimestre_atual) db.trimestre_atual = obterTrimestreAtual();
+            
+            verificarViradaTrimestre();
+            popularListaSabadosSeletor();
+            renderTodo(); 
+            updateProgresso(); 
+            renderAvisos();
+            if(db.cronograma) carregarCronograma(db.cronograma);
+            initCartaoUnidade();
+        } 
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15, unidades_acao: {}, historico_cartoes: {}, trimestre_atual: obterTrimestreAtual() }; save(); }
+    });
+
+    function showStatus(txt, classe) { const el = document.getElementById('saveIndicator'); el.innerText = txt; el.className = classe; el.style.display = "block"; if(classe === 'saved') setTimeout(() => { el.style.display = "none"; }, 2000); }
+    function save() { showStatus("Salvando...", "saving"); dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => { showStatus("✅ Alterações Salvas", "saved"); }).catch(e => alert("Erro ao salvar: " + e.message)); }
+
+    function obterTrimestreAtual() {
+        const mes = new Date().getMonth();
+        if(mes <= 2) return "T1-2026";
+        if(mes <= 5) return "T2-2026";
+        if(mes <= 8) return "T3-2026";
+        return "T4-2026";
+    }
+
+    function listarSabados2026() {
+        let sabados = [];
+        let d = new Date(2026, 0, 1);
+        while (d.getDay() !== 6) { d.setDate(d.getDate() + 1); }
+        while (d.getFullYear() === 2026) {
+            sabados.push(`${d.getDate()}_${d.getMonth() + 1}_${d.getFullYear()}`);
+            d.setDate(d.getDate() + 7);
+        }
+        return sabados;
+    }
+
+    function popularListaSabadosSeletor() {
+        const sel = document.getElementById('selSabadoCartao');
+        if(!sel || sel.options.length > 0) return;
+        const list = listarSabados2026();
+        const sabHoje = obterDataSabadoAtual();
+        list.forEach(s => {
+            let op = document.createElement('option');
+            op.value = s;
+            op.innerText = s.replace(/_/g, '/');
+            if(s === sabHoje) op.selected = true;
+            sel.appendChild(op);
+        });
+    }
+
+    function verificarViradaTrimestre() {
+        const tAtual = obterTrimestreAtual();
+        if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
+            if(Object.keys(db.historico_cartoes || {}).length > 0) {
+                document.getElementById('popAlertaTrimestre').style.display = 'flex';
+            } else {
+                db.trimestre_atual = tAtual;
+                save();
+            }
+        }
+    }
+
+    function confirmarLimpezaTrimestre() {
+        if(confirm("Você confirma que já baixou os PDFs e deseja APAGAR os cartões deste trimestre?")) {
+            db.historico_cartoes = {};
+            db.trimestre_atual = obterTrimestreAtual();
+            document.getElementById('popAlertaTrimestre').style.display = 'none';
+            save();
+            alert("Banco de dados liberado e limpo com sucesso para o novo trimestre!");
+        }
+    }
+
+    function baixarRelatorioCartoesTrimestre() { alert("Gerando compilação de dados do trimestre..."); window.print(); }
+
+    function renderTodo() {
+        const mIdx = parseInt(document.getElementById('selMes').value || new Date().getMonth());
+        const busca = document.getElementById('buscaRapida').value.toUpperCase();
+        const hojeObj = new Date();
+        const hojeFormatado = `${hojeObj.getDate()}/${hojeObj.getMonth()+1}/${hojeObj.getFullYear()}`;
+        
+        document.getElementById('headerAnciao').innerText = `Responsável: ${db.anciaos?.[mIdx] || 'Não definido'}`;
+        document.getElementById('headerTitulo').innerText = `ESCALA - ${MESES[mIdx]} 2026`;
+        document.getElementById('mesTesouraria').innerText = MESES[mIdx];
+        
+        const isV = curUser === 'visitante', isAdmin = ['admin','ger'].includes(curUser);
+        document.getElementById('btnAcesso').style.display = isV ? 'block' : 'none';
+        document.getElementById('btnSair').style.display = isV ? 'none' : 'block';
+        document.getElementById('userWelcomeBar').style.display = isV ? 'none' : 'block';
+        
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        
+        if(isUnidade) {
+            document.getElementById('headerTopo').style.display = 'none';
+            document.getElementById('menuNavegacaoGeral').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('areaGeralSistemaComAbas').style.display = 'none';
+            document.getElementById('btnSairProfessor').style.display = 'block';
+            document.getElementById('userWelcomeBar').style.display = 'none';
+            document.getElementById('headerToggleCartaoAdmin').style.display = 'none'; // Some barra de fechar p/ professor
+        } else {
+            document.getElementById('headerTopo').style.display = 'flex';
+            document.getElementById('menuNavegacaoGeral').style.display = 'flex';
+            document.getElementById('areaGeralSistemaComAbas').style.display = 'block';
+            document.getElementById('btnSairProfessor').style.display = 'none';
+            
+            // Controle da barra minimizável do Cartão para os Admins
+            const isAdminSabatina = ['admin','ger','sabatina'].includes(curUser);
+            document.getElementById('headerToggleCartaoAdmin').style.display = isAdminSabatina ? 'flex' : 'none';
+
+            if(!isV) {
+                document.getElementById('userWelcomeBar').innerHTML = `Olá, <b>${MINS[curUser] || curUser}</b>! Apoio: <b>${db.apoio_anciao?.[curUser] || "Pastor"}</b>`;
+            }
+        }
+        
+        document.getElementById('btnCron').style.display = 'block';
+        ['btnEventos','btnLinks','btnDados','btnTesourariaAdmin','secTesouraria', 'btnMembros'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.style.display = (isV || isUnidade) ? 'none' : 'block';
+        });
+        
+        document.getElementById('btnUnidades').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
+        document.getElementById('btnRelatorioSabatina').style.display = (isAdmin || curUser === 'sabatina') ? 'block' : 'none';
+
+        const modelosDiv = document.getElementById('modelosCronograma');
+        if (modelosDiv) { modelosDiv.style.display = isAdmin ? 'flex' : 'none'; }
+
+        if (!isV && !isUnidade) {
+            document.getElementById('adminCronControls').style.display = 'flex';
+            document.getElementById('btnCronAddSecao').style.display = isAdmin ? 'block' : 'none';
+        } else {
+            document.getElementById('adminCronControls').style.display = 'none';
+        }
+
+        const corpo = document.getElementById('corpoEscala'); corpo.innerHTML = "";
+        const diasNoMes = new Date(2026, mIdx + 1, 0).getDate();
+        for(let d=1; d<=diasNoMes; d++) {
+            let dt = new Date(2026, mIdx, d), dStr = `${d}/${mIdx+1}/2026`, sem = dt.getDay(), dtF = dt.toISOString().split('T')[0];
+            let idEv = db.eventos_especiais?.[dtF], minDoDia = db.regras_manuais?.[dStr] || null;
+            let txtDia = JSON.stringify(db.escalas?.[dStr] || "").toUpperCase();
+            if(busca && !txtDia.includes(busca)) continue;
+            if([0,3,6].includes(sem) || idEv) {
+                let rowClass = idEv ? 'row-especial' : (minDoDia ? 'row-ministerio' : '');
+                if(dStr === hojeFormatado) rowClass += ' hoje';
+                let tr = `<tr class="${rowClass}"><td onclick="cliqueDia('${dStr}')" style="cursor:pointer;"><b>${["DOM","SEG","TER","QUA","QUI","SEX","SAB"][sem]}</b><br><small>${idEv?.nome || (MINS[minDoDia] || '')}</small></td><td>${d}/${mIdx+1}</td>`;
+                ['sa','pr','mu','lo','so','re','di'].forEach(col => { 
+                    let val = db.escalas?.[dStr]?.[col] || '';
+                    let isCon = checarConflito(dStr, val);
+                    let canEdit = isAdmin || (curUser !== 'visitante' && !isUnidade && ((curUser==='diaconato' && col==='di') || (curUser==='musica' && (col==='mu'||col==='lo')) || (curUser==='sonoplastia' && col==='so') || (curUser==='sabatina' && col==='sa') || (col==='pr' && (minDoDia===curUser || (idEv && idEv.owner===curUser)))));
+                    tr += `<td><textarea ${canEdit?'':'disabled'} class="auto-expand ${isCon?'conflito':''}" onkeydown="handleEscalaKeys(event, '${dStr}', '${col}')" onchange="atuCel('${dStr}','${col}',this.value)" oninput="autoResize(this)">${val}</textarea></td>`;
+                });
+                corpo.innerHTML += tr + "</tr>";
+            }
+        }
+        const corpoPlan = document.getElementById('corpoPlan');
+        corpoPlan.innerHTML = "";
+        MESES.forEach((m, i) => { corpoPlan.innerHTML += `<tr style="border-bottom:1px solid #334155;"><td style="width:120px; color:var(--gold); padding:10px;"><b>${m}</b></td><td><textarea ${!isAdmin?'disabled':''} style="background:transparent; color:white; border:none; width:100%;" onchange="if(!db.plan_anual)db.plan_anual={}; db.plan_anual[${i}]=this.value; save();" oninput="autoResize(this)">${db.plan_anual?.[i] || ''}</textarea></td></tr>`; });
+        if(isAdmin) { 
+            document.getElementById('adminPanel').style.display='block'; 
+            renderAdmin();
+        }
+        updateChart(mIdx); renderArquivosPublicos(); renderLinksPublicos(); updateProgresso();
+        setTimeout(() => { document.querySelectorAll('textarea').forEach(el => autoResize(el)); }, 200);
+    }
+
+    function renderAvisos() { const bar = document.getElementById('newsTicker'); if(bar) { if(db.aviso_ticker) { bar.style.display = 'block'; bar.querySelector('span').innerText = db.aviso_ticker; } else bar.style.display = 'none'; } }
+    function carregarCronograma(lista) { const container = document.getElementById('cronograma-lista'); if(container) { container.innerHTML = ""; lista.forEach(d => addBlocoCron(d)); } }
+    
+    function addBlocoCron(dados = { horario: '', titulo: '', itens: [], corBg: '#f0f0f0', corTxt: '#000000' }) {
+        const isAdmin = ['admin','ger'].includes(curUser); const bg = dados.corBg || '#f0f0f0'; const txtColor = dados.corTxt || '#000000';
+        const b = document.createElement('div'); b.className = 'bloco'; b.style.border = "1px solid #cbd5e1"; b.style.marginBottom = "12px"; b.style.borderRadius = "6px"; b.style.overflow = "hidden";
+        b.innerHTML = `<div style="background:${bg}; color:${txtColor}; padding:10px; display:flex; gap:10px; align-items:center;"><input style="width:110px; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.horario}" ${!isAdmin?'disabled':''} class="cron-v cron-horario"><input style="flex-grow:1; font-weight:bold; background:rgba(255,255,255,0.7); border:1px solid #94a3b8; border-radius:4px; padding:3px;" value="${dados.titulo}" ${!isAdmin?'disabled':''} class="cron-v cron-titulo"><input type="hidden" class="cron-bg" value="${bg}"><input type="hidden" class="cron-txt" value="${txtColor}">${isAdmin ? `<button class="btn-modern" style="padding:4px 8px; background:white; border-color:#94a3b8;" onclick="addItemCron(this)">+ Item</button><button class="btn-modern" style="padding:4px 8px; background:#fee2e2; border-color:#ef4444; color:#b91c1c;" onclick="this.closest('.bloco').remove()">X</button>` : ''}</div><table style="width:100%; border-collapse:collapse; background:#fff;"><tbody style="color:#000;"></tbody></table>`;
+        document.getElementById('cronograma-lista').appendChild(b); if(dados.itens) dados.itens.forEach(it => addItemCron(b.querySelector('table'), it, dados.titulo));
+    }
+    
+    function addItemCron(target, it = { nome: '', tempo: '' }, tituloBloco = '') {
+        const isAdmin = ['admin','ger'].includes(curUser); const tb = target.tagName === 'TABLE' ? target.querySelector('tbody') : target.closest('.bloco').querySelector('tbody'); const tr = document.createElement('tr'); tr.style.borderBottom = "1px solid #f1f5f9";
+        if (!tituloBloco && target.closest('.bloco')) { tituloBloco = target.closest('.bloco').querySelector('.cron-titulo').value; }
+        let tituloTratado = (tituloBloco || '').toUpperCase(); let nomeItemTratado = (it.nome || '').toUpperCase(); let canEditItem = isAdmin;
+        if (curUser !== 'visitante' && !canEditItem) {
+            if (curUser === 'musica' && (nomeItemTratado.includes('LOUVOR') || nomeItemTratado.includes('MÚSICA') || nomeItemTratado.includes('MUSICA') || nomeItemTratado.includes('HINO'))) canEditItem = true;
+            else if (curUser === 'sonoplastia' && (nomeItemTratado.includes('PROVAI') || nomeItemTratado.includes('VÍDEO') || nomeItemTratado.includes('VIDEO') || nomeItemTratado.includes('SONOPLASTIA') || nomeItemTratado.includes('MUSICA') || nomeItemTratado.includes('MÚSICA') || nomeItemTratado.includes('INFORMATIVO') || nomeItemTratado.includes('CARTA'))) canEditItem = true;
+            else if (curUser === 'sabatina' && tituloTratado.includes('ESCOLA SABATINA')) canEditItem = true;
+        }
+        tr.innerHTML = `<td style="padding:6px 10px; font-weight:500; width:45%; background:#fafafa;"><input class="it-n" style="width:95%; border:none; background:transparent; font-weight:bold; color:#1e293b;" value="${it.nome}" ${!isAdmin?'disabled':''}></td><td style="padding:6px 10px;"><input class="it-t" style="width:100%; border:1px solid #e2e8f0; border-radius:4px; padding:3px; font-weight:bold; color:#0f172a;" value="${it.tempo}" placeholder="Responsável / Info" ${canEditItem ? '' : 'disabled'}></td>${isAdmin ? `<td width="30" style="text-align:center;"><button onclick="this.closest('tr').remove()" style="color:#ef4444; background:none; border:none; cursor:pointer; font-weight:bold;">x</button></td>` : ''}`;
+        tb.appendChild(tr);
+    }
+    
+    function salvarCronograma() { db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ horario: b.querySelector('.cron-horario').value, titulo: b.querySelector('.cron-titulo').value, corBg: b.querySelector('.cron-bg').value, corTxt: b.querySelector('.cron-txt').value, itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ nome: tr.querySelector('.it-n').value, tempo: tr.querySelector('.it-t').value })) })); save(); }
+
+    function carregarModeloFixo(tipo) {
+        if(!confirm("Carregar este modelo irá substituir o cronograma atual da tela. Deseja continuar?")) return;
+        let estrutura = [];
+        if(tipo === 'quarta') { estrutura = [{ horario: "CULTO", titulo: "CRONOGRAMA DO CULTO DE QUARTA", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "GRUPO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "PED. E AGRA.", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
+        else if(tipo === 'domingo') { estrutura = [{ horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO INICIAL", tempo: "" }, { nome: "MOMENTO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "OFERTORIO", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
+        else if(tipo === 'sabado') {
+            structure = [
+                { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }, { nome: "3º Hino", tempo: "" }]},
+                { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "ANUNCIO ESCOLA SABATINA", tempo: "" }, { nome: "HINO INICIAL", tempo: "" }, { nome: "CARTA MISSIONARIA", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "RECAPITULAÇÃO ESCOLA SABATINA", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }]},
+                { horario: "10:20 AS 10:45", titulo: "OFERTORIO E LOUVOR", corBg: "#fef08a", corTxt: "#854d0e", itens: [{ nome: "VIDEO: PROVAI E VEDE", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }]},
+                { horario: "10:45 AS 11:45", titulo: "SERMÃO", corBg: "#dbeafe", corTxt: "#1d4ed8", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}
+            ];
+        }
+        carregarCronograma(structure);
+    }
+    
+    function exportarRelatorioPDF() { const m = document.getElementById('selMes').value; const opt = { margin: 0.5, filename: `Escala_IASD_${MESES[m]}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' } }; html2pdf().set(opt).from(document.getElementById('areaEscalaPrincipal')).save(); }
+    function addMembro() { const n = document.getElementById('mbNome').value, c = document.getElementById('mbCargo').value; if(!n) return; if(!db.membros) db.membros = []; db.membros.push({nome:n, cargo:c}); save(); renderMembros(); }
+    function renderMembros() { const l = document.getElementById('listaMembros'); l.innerHTML = ""; (db.membros||[]).forEach((m,i)=>{ l.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px;"><span><b>${m.nome}</b> - ${m.cargo}</span><button onclick="if(confirm('Remover membro?')) {db.membros.splice(${i},1); save(); renderMembros();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function checarConflito(dStr, valor) { if(!valor || valor.trim().length < 3) return false; let cont = 0; const dia = db.escalas?.[dStr] || {}; Object.values(dia).forEach(v => { if(v.trim() === valor.trim()) cont++; }); return cont > 1; }
+    function handleEscalaKeys(e, d, c) { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); const rows = Array.from(document.querySelectorAll('#corpoEscala tr')); const curRow = e.target.closest('tr'); const colIdx = Array.from(curRow.querySelectorAll('textarea')).indexOf(e.target); const nextRow = rows[rows.indexOf(curRow) + 1]; if (nextRow) nextRow.querySelectorAll('textarea')[colIdx].focus(); } }
+    
+    function login() { 
+        const u = document.getElementById('userLogin').value.toLowerCase().trim();
+        const p = document.getElementById('passLogin').value; 
+        if(db.unidades_acao && db.unidades_acao[u]) { localStorage.setItem('iasd_curUser', u); location.reload(); return; }
+        const sDb = db.senhas?.[u] || (u === 'admin' ? '123456' : null); 
+        if(sDb === p) { localStorage.setItem('iasd_curUser', u); location.reload(); } else { alert("Credenciais Inválidas!"); }
+    }
+    
+    function sair() { localStorage.removeItem('iasd_curUser'); location.reload(); }
+    function atuCel(d, c, v) { if(!db.escalas[d]) db.escalas[d]={}; db.escalas[d][c]=v.toUpperCase(); save(); renderTodo(); }
+    function cliqueDia(dStr) { if(['admin','ger'].includes(curUser)) { window.minSelecionado ? (db.regras_manuais[dStr]=window.minSelecionado) : (delete db.regras_manuais[dStr]); save(); renderTodo(); } }
+    
+    function updateProgresso() { 
+        const meta = parseInt(db.meta_anual || 0); let total = 0; 
+        Object.keys(db.mis_v3 || {}).forEach(m => total += parseInt(db.mis_v3[m][5] || 0)); 
+        const perc = meta > 0 ? Math.min((total / meta) * 100, 100) : 0; 
+        document.getElementById('progressoMeta').style.width = perc + "%"; 
+        document.getElementById('textoMeta').innerText = `${total} de ${meta} Batismos`; 
+    }
+
+    function togglePass(id) { let el = document.getElementById(id); el.type = el.type === "password" ? "text" : "password"; }
+
+    function renderAdmin() {
+        const lista = document.getElementById('listaMinisterios'); lista.innerHTML = "";
+        Object.keys(MINS).filter(m => !['admin','ger'].includes(m)).forEach(m => { lista.innerHTML += `<button class="btn-min ${window.minSelecionado===m?'active':''}" onclick="window.minSelecionado='${m}'; renderAdmin();">${MINS[m]}</button>`; });
+        const gM = document.getElementById('gridMeses'); gM.innerHTML = "";
+        MESES.forEach((m, i) => { gM.innerHTML += `<div style="margin-bottom:3px;"><small>${m}</small><input class="input-dark" value="${db.anciaos?.[i]||''}" onchange="if(!db.anciaos)db.anciaos={}; db.anciaos[${i}]=this.value; save();"></div>`; });
+        document.getElementById('metaBatismos').value = db.meta_anual || 0;
+        
+        const tC = document.getElementById('corpoCreds'); tC.innerHTML = "";
+        Object.keys(MINS).filter(k => k !== 'pastor').forEach(k => { 
+            tC.innerHTML += `<tr><td style="padding:4px 0;">${MINS[k]}</td><td style="color:var(--neon); font-weight:bold; padding-left:10px;">${k}</td><td style="padding-left:10px; display:flex;"><input type="password" id="p_${k}" class="input-dark" value="${db.senhas?.[k]||''}" onchange="if(!db.senhas)db.senhas={}; db.senhas['${k}']=this.value;save();"><button onclick="togglePass('p_${k}')" style="background:none; border:none; cursor:pointer; color:white;">👁️</button></td></tr>`; 
+        });
+        const gA = document.getElementById('gridApoioAnciao'); gA.innerHTML = "";
+        Object.keys(MINS).filter(k => !['admin','ger','pastor'].includes(k)).forEach(mKey => {
+            let options = LISTA_ANCIAOS.map(anc => `<option value="${anc}" ${db.apoio_anciao?.[mKey] === anc ? 'selected' : ''}>${anc}</option>`).join('');
+            gA.innerHTML += `<div style="margin-bottom:6px;"><small>${MINS[mKey]}</small><select class="input-dark" onchange="if(!db.apoio_anciao)db.apoio_anciao={}; db.apoio_anciao['${mKey}']=this.value; save();"><option value="">--</option>${options}</select></div>`;
+        });
+        if(db.aviso_ticker) document.getElementById('inputTicker').value = db.aviso_ticker;
+        
+        const unAncSel = document.getElementById('unAnciao');
+        if(unAncSel) { unAncSel.innerHTML = LISTA_ANCIAOS.map(a => `<option value="${a}">${a}</option>`).join(''); }
+    }
+
+    async function abrirPopBackups() { document.getElementById('popBackups').style.display='flex'; const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando...";
+        try { const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); lista.innerHTML = "";
+        snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; });
+        if(snap.empty) lista.innerHTML = "Nenhum backup encontrado."; } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } }
+    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving");
+        try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved");
+        } catch(e) { alert(e.message); } }
+    async function restaurarBackup(id) { if(confirm("Deseja restaurar esta versão?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
+    
+    function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
+    function salvarLink() { const t = document.getElementById('linkTit').value, u = document.getElementById('linkUrl').value; if(!t || !u) return;
+        if(!db.links_externos) db.links_externos = []; db.links_externos.push({titulo:t.toUpperCase(), url:u}); save(); document.getElementById('linkTit').value=""; document.getElementById('linkUrl').value=""; renderListaLinksAdmin(); }
+    function renderListaLinksAdmin() { const lista = document.getElementById('listaLinksAtivos'); lista.innerHTML = ""; (db.links_externos || []).forEach((l, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:5px;"><small>${l.titulo}</small><button onclick="if(confirm('Excluir link?')){db.links_externos.splice(${i},1); save(); renderListaLinksAdmin();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderLinksPublicos() { const grid = document.getElementById('gridLinksPublicos'); grid.innerHTML = ""; (db.links_externos || []).forEach(l => { grid.innerHTML += `<a href="${l.url}" target="_blank" style="background:rgba(0, 210, 255, 0.1); border:1px solid var(--neon); padding:15px; border-radius:8px; text-decoration:none; color:white; text-align:center;">${l.titulo}</a>`; }); }
+    
+    function salvarEventoEspecial() { const n = document.getElementById('evtNome').value, ini = document.getElementById('evtInicio').value, fim = document.getElementById('evtFim').value || ini; if(!n || !ini) return; let dIn = new Date(ini + "T00:00:00"), dFim = new Date(fim + "T00:00:00");
+        if(!db.eventos_especiais) db.eventos_especiais = {}; while(dIn <= dFim) { db.eventos_especiais[dIn.toISOString().split('T')[0]] = { nome: n.toUpperCase(), owner: curUser }; dIn.setDate(dIn.getDate()+1); } save(); document.getElementById('evtNome').value = ""; renderListaEventos(); }
+    function renderListaEventos() { const lista = document.getElementById('listaEventosAtivos'); lista.innerHTML = ""; Object.keys(db.eventos_especiais || {}).sort().forEach(k => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #444;"><span>${k} - ${db.eventos_especiais[k].nome}</span><button onclick="if(confirm('Excluir evento?')){delete db.eventos_especiais['${k}']; save(); renderListaEventos();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderListaEventos(); }
+    
+    function abrirTesourariaAdmin() { document.getElementById('popTesouraria').style.display='flex'; const sel = document.getElementById('docDestinatario'); sel.innerHTML = '<option value="todos">🌍 TODOS</option>'; Object.keys(MINS).forEach(k => { sel.innerHTML += `<option value="${k}">${MINS[k].toUpperCase()}</option>`; }); renderAdminDocs(); }
+    function uploadArquivo() { const file = document.getElementById('fileInput').files[0]; const dest = document.getElementById('docDestinatario').value; if(!file) return;
+        const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
+    function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
+    function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
+    function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
+    
+    function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
+    function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
+    function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
+    function autoResize(t) { t.style.height='auto'; t.style.height=t.scrollHeight+'px'; }
+
+    /* =========================================================================
+       NÚCLEO DO CARTÃO DA UNIDADE DE AÇÃO
+       ========================================================================= */
+    function obterDataSabadoAtual() {
+        const d = new Date(); const day = d.getDay();
+        const diff = d.getDate() - day + (day === 6 ? 0 : 6) - (day === 0 ? 7 : 0);
+        const sabado = new Date(d.setDate(diff));
+        return `${sabado.getDate()}_${sabado.getMonth()+1}_${sabado.getFullYear()}`;
+    }
+
+    function addUnidadeAcao() {
+        const nome = document.getElementById('unNome').value.toLowerCase().trim(); const prof = document.getElementById('unProf').value.trim(); const { value: anc } = document.getElementById('unAnciao');
+        if(!nome || !prof) { alert("Preencha todos os campos!"); return; }
+        if(!db.unidades_acao) db.unidades_acao = {};
+        db.unidades_acao[nome] = { professor: prof, anciao: anc }; save();
+        document.getElementById('unNome').value = ""; document.getElementById('unProf').value = ""; renderUnidadesAdmin();
+    }
+
+    function renderUnidadesAdmin() {
+        const list = document.getElementById('listaUnidadesCadastradas'); list.innerHTML = "";
+        Object.keys(db.unidades_acao || {}).forEach(k => {
+            list.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
+        });
+    }
+
+    function initCartaoUnidade() {
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        const isAdminSabatina = ['admin','ger','sabatina'].includes(curUser);
+        if(!isUnidade && !isAdminSabatina) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
+
+        document.getElementById('secCartaoUnidade').style.display = 'block';
+        let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
+        if(!unAlvo) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
+
+        const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
+        const dadosUnidade = db.unidades_acao[unAlvo];
+        
+        document.getElementById('lblCardUnidade').innerText = `UNIDADE: ${unAlvo.toUpperCase()}`;
+        document.getElementById('lblCardProfessor').innerText = `PROFESSOR(A): ${dadosUnidade.professor.toUpperCase()}`;
+        document.getElementById('lblCardAnciao').innerText = `ANCIÃO DE APOIO: ${dadosUnidade.anciao.toUpperCase()}`;
+        document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sabKey.replace(/_/g, '/')}`;
+        document.getElementById('txtInfoUnidadeAtual').innerHTML = `Unidade Visualizada/Logada: <b>${unAlvo.toUpperCase()}</b>.`;
+
+        if(!db.historico_cartoes) db.historico_cartoes = {};
+        if(!db.historico_cartoes[sabKey]) db.historico_cartoes[sabKey] = {};
+        if(!db.historico_cartoes[sabKey][unAlvo]) {
+            db.historico_cartoes[sabKey][unAlvo] = {
+                alunos: Array(TOTAL_ALUNOS).fill().map(() => ({ nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
+                instrutores: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
+                duplas: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
+                batismos: 0,
+                ofertas: 0
+            };
+        }
+
+        const payload = db.historico_cartoes[sabKey][unAlvo];
+        const corpo = document.getElementById('corpoAlunos'); corpo.innerHTML = "";
+        
+        for(let i=0; i<TOTAL_ALUNOS; i++) {
+            let al = payload.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
+            corpo.innerHTML += `<tr>
+                <td><input type="text" class="input-aluno" id="nome_${i}" placeholder="Nome do Aluno..." value="${al.nome}" onkeydown="handleNomeEnter(event, ${i}, '${unAlvo}', '${sabKey}')" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                <td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                ${[1,2,3,5,6,7,8].map(n => `<td><input type="checkbox" id="c${n}_${i}" ${al['c'+n]?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>`).join('')}
+            </tr>`;
+        }
+
+        const contIns = document.getElementById('listaInstrutores'); contIns.innerHTML = "";
+        for(let i=0; i<5; i++) {
+            let ins = payload.instrutores[i] || { nome: "", s: false, q: 0 };
+            contIns.innerHTML += `<div class="row-missao"><input type="text" class="input-aluno" id="ins_n_${i}" placeholder="Instrutor ${i+1}" value="${ins.nome}" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"><div><input type="checkbox" id="ins_s_${i}" ${ins.s?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"> SIM</div><input type="number" id="ins_q_${i}" value="${ins.q}" min="0" class="input-qtd" oninput="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></div>`;
+        }
+
+        const contDup = document.getElementById('listaDuplas'); contDup.innerHTML = "";
+        for(let i=0; i<5; i++) {
+            let dup = payload.duplas[i] || { nome: "", s: false, q: 0 };
+            contDup.innerHTML += `<div class="row-missao"><input type="text" class="input-aluno" id="dup_n_${i}" placeholder="Dupla ${i+1}" value="${dup.nome}" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"><div><input type="checkbox" id="dup_s_${i}" ${dup.s?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"> SIM</div><input type="number" id="dup_q_${i}" value="${dup.q}" min="0" class="input-qtd" oninput="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></div>`;
+        }
+
+        document.getElementById('inputBatismos').value = payload.batismos || 0;
+        document.getElementById('inputOfertas').value = parseFloat(payload.ofertas || 0).toFixed(2);
+        calcularCartao();
+    }
+
+    function handleNomeEnter(event, index, unAlvo, sabKey) {
+        if(event.key === 'Enter') {
+            event.preventDefault();
+            sincronizarEGuardarCartao(unAlvo, sabKey);
+            const nextInput = document.getElementById(`nome_${index + 1}`);
+            if(nextInput) nextInput.focus();
+            else event.target.blur();
+        }
+    }
+
+    function forçarCalculoProf() {
+        const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
+        let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
+        const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
+        sincronizarEGuardarCartao(unAlvo, sabKey);
+    }
+
+    function sincronizarEGuardarCartao(unAlvo, sabKey) {
+        if(!db.historico_cartoes[sabKey] || !db.historico_cartoes[sabKey][unAlvo]) return;
+        let payload = db.historico_cartoes[sabKey][unAlvo];
+        payload.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
+        payload.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
+
+        for(let i=0; i<TOTAL_ALUNOS; i++) {
+            payload.alunos[i] = {
+                nome: document.getElementById(`nome_${i}`).value,
+                p: document.getElementById(`p_${i}`).checked,
+                c1: document.getElementById(`c1_${i}`).checked,
+                c2: document.getElementById(`c2_${i}`).checked,
+                c3: document.getElementById(`c3_${i}`).checked,
+                c5: document.getElementById(`c5_${i}`).checked,
+                c6: document.getElementById(`c6_${i}`).checked,
+                c7: document.getElementById(`c7_${i}`).checked,
+                c8: document.getElementById(`c8_${i}`).checked,
+            };
+        }
+
+        for(let i=0; i<5; i++) {
+            payload.instrutores[i] = { nome: document.getElementById(`ins_n_${i}`).value, s: document.getElementById(`ins_s_${i}`).checked, q: parseInt(document.getElementById(`ins_q_${i}`).value) || 0 };
+            payload.duplas[i] = { nome: document.getElementById(`dup_n_${i}`).value, s: document.getElementById(`dup_s_${i}`).checked, q: parseInt(document.getElementById(`dup_q_${i}`).value) || 0 };
+        }
+
+        calcularCartao();
+        
+        const mIdx = new Date().getMonth(); if(!db.mis_v3) db.mis_v3 = {};
+        let totalEstudosGerais = 0, totalDuplasGerais = 0, totalBatismosGerais = 0;
+
+        Object.keys(db.historico_cartoes[sabKey] || {}).forEach(unKey => {
+            let pUn = db.historico_cartoes[sabKey][unKey];
+            pUn.alunos.forEach(a => { if(a.nome && a.c3) totalEstudosGerais++; });
+            pUn.instrutores.forEach(i => { if(i.s) totalEstudosGerais += i.q; });
+            pUn.duplas.forEach(d => { if(d.s) { totalEstudosGerais += d.q; totalDuplasGerais++; } });
+            totalBatismosGerais += pUn.batismos || 0;
+        });
+
+        if(!db.mis_v3[mIdx]) db.mis_v3[mIdx] = [0, 0, 0, 0, 0, 0];
+        db.mis_v3[mIdx][2] = totalEstudosGerais;
+        db.mis_v3[mIdx][4] = totalDuplasGerais;
+        db.mis_v3[mIdx][5] = totalBatismosGerais;
+
+        showStatus("Sincronizando...", "saving");
+        dbCloud.collection('dados').doc('estrela_v102').set(db).then(() => {
+            showStatus("✅ Dados Guardados", "saved");
+            updateProgresso();
+        });
+    }
+
+    function calcularCartao() {
+        let d = { ativos:0, pres:0, v1:0, v2:0, v3:0, v4:0, v5:0, v6:0, v7:0, v8:0, qEstudosIns:0, qEstudosDup:0 };
+        d.v4 = parseInt(document.getElementById('inputBatismos').value) || 0;
+
+        for(let i=0; i<TOTAL_ALUNOS; i++) {
+            let elNome = document.getElementById(`nome_${i}`);
+            if(elNome && elNome.value.trim() !== "") {
+                d.whitespaces = false; d.ativos++;
+                if(document.getElementById(`p_${i}`).checked) d.pres++;
+                [1,2,3,5,6,7,8].forEach(n => { if(document.getElementById(`c${n}_${i}`).checked) d['v'+n]++; });
+            }
+        }
+
+        for(let i=0; i<5; i++) {
+            if(document.getElementById(`ins_s_${i}`).checked) d.qEstudosIns += parseInt(document.getElementById(`ins_q_${i}`).value) || 0;
+            if(document.getElementById(`dup_s_${i}`).checked) d.qEstudosDup += parseInt(document.getElementById(`dup_q_${i}`).value) || 0;
+        }
+
+        for(let n=1; n<=8; n++) { let el = document.getElementById('v'+n); if(el) el.innerText = d['v'+n]; }
+        document.getElementById('totPres').innerText = d.pres;
+        renderGraficosCartao(d);
+    }
+
+    function renderGraficosCartao(d) {
+        const m = d.ativos || 1; const ctx1 = document.getElementById('graf1'); const ctx2 = document.getElementById('graf2'); if(!ctx1 || !ctx2) return;
+        if(g1) g1.destroy(); if(g2) g2.destroy();
+        g1 = new Chart(ctx1, {
+            type: 'bar',
+            data: { labels: ['Presença', '1. Lição', '2. Estudo Diário'], datasets: [{ label: '% Aproveitamento', data: [(d.pres/m*100), (d.v1/m*100), (d.v2/m*100)], backgroundColor: ['#1a365d','#00d2ff','#2ecc71'] }] },
+            options: { scales: { y: { max: 100 } }, maintainAspectRatio: false }
+        });
+        g2 = new Chart(ctx2, {
+            type: 'bar',
+            data: { labels: ['3. Est. Alunos', '4. Batismos', '7. Visitas', '8. Solidário', 'Est. Instrutores', 'Est. Duplas'], datasets: [{ label: 'Quantidade Total', data: [d.v3, d.v4, d.v7, d.v8, d.qEstudosIns, d.qEstudosDup], backgroundColor: '#ff7f50' }] },
+            options: { maintainAspectRatio: false }
+        });
+    }
+
+    /* =========================================================================
+       COMPILADOR DA SECRETARIA DA ESCOLA SABATINA (RELATÓRIOS GERAIS)
+       ========================================================================= */
+    function abrirRelatorioSabatina() {
+        document.getElementById('popRelatorioSabatina').style.display = 'flex';
+        const corpo = document.getElementById('corpoRelatorioSecretaria');
+        corpo.innerHTML = "";
+
+        const todosSabados = listarSabados2026();
+        let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0, sabadosComDados = 0;
+
+        todosSabados.forEach(sabKey => {
+            let sabDados = db.historico_cartoes?.[sabKey];
+            if(!sabDados) return; 
+
+            let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0, temRegistro = false;
+
+            Object.keys(sabDados).forEach(unKey => {
+                let un = sabDados[unKey];
+                temRegistro = true;
+                sOfertas += parseFloat(un.ofertas || 0);
+                
+                un.alunos.forEach(al => {
+                    if(al.nome && al.nome.trim() !== "") {
+                        sAtivos++;
+                        if(al.p) sPres++;
+                        if(al.c7) sVisitas++; 
                     }
                 });
+            });
+
+            if(temRegistro) {
+                sabadosComDados++;
+                tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
+                let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
+
+                corpo.innerHTML += `<tr>
+                    <td><b>${sabKey.replace(/_/g, '/')}</b></td>
+                    <td>${sAtivos}</td>
+                    <td>${sPres}</td>
+                    <td style="color:var(--neon)">${percPres}%</td>
+                    <td>${sVisitas}</td>
+                    <td style="color:var(--green); font-weight:bold;">R$ ${sOfertas.toFixed(2)}</td>
+                </tr>`;
             }
         });
-    }
-    let mAnual = parseInt(db.meta_anual) || 0; document.getElementById("textoMeta").innerText = `${batismosContados} / ${mAnual} BATISMOS`;
-    let pct = mAnual > 0 ? Math.min((batismosContados / mAnual) * 100, 100) : 0; document.getElementById("progressoMeta").style.width = pct + "%";
-}
 
-function renderMembros() {
-    let html = ""; if(!db.membros) db.membros = [];
-    db.membros.forEach((m, idx) => {
-        html += `<div style="background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-        <div><b style="color:var(--neon)">${m.nome}</b> <span style="color:gray; font-size:0.8rem;">(${m.cargo})</span></div>`;
-        if(userLogged && userLogged.role === "admin") html += `<button onclick="removeMembro(${idx})" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">X</button>`;
-        html += `</div>`;
-    });
-    document.getElementById("listaMembros").innerHTML = html || "<p style='color:gray; text-align:center;'>Nenhum cadastrado</p>";
-}
-function addMembro() {
-    let n = document.getElementById("mbNome").value.trim(), c = document.getElementById("mbCargo").value.trim();
-    if(!n || !c) return; db.membros.push({nome:n, cargo:c}); document.getElementById("mbNome").value=""; document.getElementById("mbCargo").value=""; renderMembros(); save();
-}
-function removeMembro(idx) { db.membros.splice(idx,1); renderMembros(); save(); }
+        let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
+        corpo.innerHTML += `<tr class="row-total-secre">
+            <td>SOMATÓRIA / MÉDIA TRIMESTRE</td>
+            <td>${tAtivos} (Total)</td>
+            <td>${tPres} (Total)</td>
+            <td>Média: ${percGeral}%</td>
+            <td>${tVisitas} Visitas</td>
+            <td>Total: R$ ${tOfertas.toFixed(2)}</td>
+        </tr>`;
 
-function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderLinksAdmin(); }
-function renderLinksAdmin() {
-    let html = ""; if(!db.links) db.links = [];
-    db.links.forEach((l, idx) => {
-        html += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; background:rgba(0,0,0,0.2); padding:6px; border-radius:4px;">
-        <a href="${l.url}" target="_blank" style="color:var(--neon); font-size:0.85rem; font-weight:bold;">${l.tit}</a>
-        <button onclick="removeLink(${idx})" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">X</button></div>`;
-    });
-    document.getElementById("listaLinksAtivos").innerHTML = html || "<p style='color:gray'>Nenhum link ativo</p>";
-}
-function salvarLink() {
-    let t = document.getElementById("linkTit").value.trim(), u = document.getElementById("linkUrl").value.trim(); if(!t || !u) return;
-    if(!u.startsWith("http")) u = "https://" + u; db.links.push({tit:t, url:u}); document.getElementById("linkTit").value=""; document.getElementById("linkUrl").value=""; renderLinksAdmin(); renderLinksPublicos(); save();
-}
-function removeLink(idx) { db.links.splice(idx,1); renderLinksAdmin(); renderLinksPublicos(); save(); }
-function renderLinksPublicos() {
-    let html = ""; if(!db.links) db.links = [];
-    db.links.forEach(l => {
-        html += `<a href="${l.url}" target="_blank" style="text-decoration:none;"><div style="background:rgba(255,255,255,0.03); border:1px solid #334155; padding:15px; border-radius:8px; text-align:center; font-weight:bold; color:white; transition:0.2s;" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='#334155'"><span style="font-size:1.4rem; display:block; margin-bottom:5px;">🔗</span>${l.tit}</div></a>`;
-    });
-    document.getElementById("gridLinksPublicos").innerHTML = html || "<p style='color:gray; text-align:center; width:100%'>Nenhum link útil disponível.</p>";
-}
-
-function abrirPopEventos() { document.getElementById('popEventos').style.display='flex'; renderEventosAdmin(); }
-function renderEventosAdmin() {
-    let html = ""; if(!db.eventos) db.eventos = [];
-    db.eventos.forEach((e, idx) => {
-        html += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; background:rgba(255,0,0,0.05); padding:6px; border-radius:4px; font-size:0.8rem;">
-        <div><b style="color:var(--red)">${e.nome}</b> <span style="color:gray">(${e.ini} até ${e.fim})</span></div>
-        <button onclick="removeEvento(${idx})" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">X</button></div>`;
-    });
-    document.getElementById("listaEventosAtivos").innerHTML = html || "<p style='color:gray'>Nenhum evento agendado</p>";
-}
-function salvarEventoEspecial() {
-    let n = document.getElementById("evtNome").value.trim(), i = document.getElementById("evtInicio").value, f = document.getElementById("evtFim").value;
-    if(!n || !i || !f) return; db.eventos.push({nome:n, ini:i, fim:f}); document.getElementById("evtNome").value=""; renderEventosAdmin(); save();
-}
-function removeEvento(idx) { db.eventos.splice(idx,1); renderEventosAdmin(); save(); }
-
-function abrirTesourariaAdmin() {
-    document.getElementById('popTesouraria').style.display='flex';
-    let sel = document.getElementById("docDestinatario"); sel.innerHTML = "<option value='publico'>PÚBLICO (TODOS MEMBROS)</option>";
-    if(!db.unidadesAcao) db.unidadesAcao = [];
-    db.unidadesAcao.forEach(u => { sel.innerHTML += `<option value="classe_${u.nome.toLowerCase().replace(/\s+/g,'')}">PROF: ${u.prof.toUpperCase()} (${u.nome.toUpperCase()})</option>`; });
-    renderAdminArquivos();
-}
-function renderAdminArquivos() {
-    let html = ""; if(!db.arquivos) db.arquivos = [];
-    db.arquivos.forEach((f, idx) => {
-        html += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:6px; margin-bottom:4px; border-radius:4px; font-size:0.75rem;">
-        <span style="color:white; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:240px;">📄 ${f.nome} [${f.dest}]</span>
-        <button onclick="removeArquivo(${idx})" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">X</button></div>`;
-    });
-    document.getElementById("listaAdminArquivos").innerHTML = html || "<p style='color:gray; text-align:center;'>Nenhum arquivo enviado</p>";
-}
-function uploadArquivo() {
-    let fin = document.getElementById("fileInput"), dest = document.getElementById("docDestinatario").value; if(!fin.files[0]) return;
-    let file = fin.files[0], reader = new FileReader();
-    reader.onloadend = function() {
-        if(!db.arquivos) db.arquivos = [];
-        db.arquivos.push({ nome: file.name, dest: dest, b64: reader.result, mes: getMesSelecionado() });
-        fin.value = ""; renderAdminArquivos(); renderArquivosPublicos(); save();
-    };
-    reader.readAsDataURL(file);
-}
-function removeArquivo(idx) { db.arquivos.splice(idx,1); renderAdminArquivos(); renderArquivosPublicos(); save(); }
-function renderArquivosPublicos() {
-    let html = "", mSel = getMesSelecionado(); if(!db.arquivos) db.arquivos = [];
-    let filtrados = db.arquivos.filter(f => f.mes === mSel && (f.dest === "publico" || (userLogged && f.dest === "classe_" + userLogged.user.toLowerCase().replace(/\s+/g,''))));
-    
-    document.getElementById("mesTesouraria").innerText = document.getElementById("selMes").options[document.getElementById("selMes").selectedIndex].text.toUpperCase();
-    
-    filtrados.forEach(f => {
-        html += `<div style="background:rgba(255,255,255,0.03); border:1px solid var(--green); padding:12px; border-radius:8px; text-align:center; font-weight:bold; cursor:pointer;" onclick="visualizarArquivo('${f.b64}')">
-        <span style="font-size:1.5rem; display:block; margin-bottom:5px;">📄</span>
-        <span style="color:white; font-size:0.75rem; word-break:break-all; display:block; height:32px; overflow:hidden;">${f.nome}</span></div>`;
-    });
-    document.getElementById("gridArquivosPublicos").innerHTML = html || "<p style='color:gray; text-align:center; width:100%'>Nenhum documento disponível para este mês.</p>";
-}
-function visualizarArquivo(b64) {
-    let vc = document.getElementById("viewContainer"); vc.innerHTML = "";
-    if(b64.startsWith("data:image")) { vc.innerHTML = `<img src="${b64}" style="max-width:100%; max-height:80vh; border-radius:8px;">`; }
-    else { vc.innerHTML = `<iframe src="${b64}" style="width:100%; height:80vh; border:none; background:white;"></iframe>`; }
-    document.getElementById("popViewImg").style.display = "flex";
-}
-
-function abrirPop() { document.getElementById('popOverlay').style.display='flex'; renderChartsGerais(); }
-function fecharPop() { document.getElementById('popOverlay').style.display='none'; }
-
-function renderChartsGerais() {
-    const mSel = getMesSelecionado(), sabados = getSabadosMes(mSel);
-    let labels = [], dLição = [], dEstudo = [], dPres = [];
-    
-    let totalMembrosAtivosDoMes = 0;
-    if(db.unidadesAcao) { db.unidadesAcao.forEach(u => { if(db.cartaoUnidade && db.cartaoUnidade[u.nome]) { totalMembrosAtivosDoMes += (db.cartaoUnidade[u.nome].alunos || []).length; } }); }
-
-    sabados.forEach(sab => {
-        let sabKey = `${String(sab.getDate()).padStart(2,'0')}_${mSel}`; labels.push(sabKey.replace(/_/g,'/'));
-        let sLiçao = 0, sEstudo = 0, sPres = 0;
-        if(db.unidadesAcao) {
-            db.unidadesAcao.forEach(u => {
-                if(db.cartaoUnidade && db.cartaoUnidade[u.nome] && db.cartaoUnidade[u.nome].chamadas && db.cartaoUnidade[u.nome].chamadas[sabKey]) {
-                    let ch = db.cartaoUnidade[u.nome].chamadas[sabKey];
-                    Object.keys(ch).forEach(alId => {
-                        if(!isNaN(alId)) {
-                            if(ch[alId].p) sPres++; if(ch[alId].q1) sLiçao++; if(ch[alId].q2) sEstudo++;
-                        }
-                    });
-                }
-            });
-        }
-        dPres.push(sPres); dLição.push(sLiçao); dEstudo.push(sEstudo);
-    });
-
-    let htmlTermometro = `
-        <div style="background:#111; padding:15px; border-radius:8px; border:1px solid var(--orange); margin-bottom:15px; text-align:center;">
-            <h4 style="color:var(--orange); margin:0 0 10px 0; font-size:0.8rem;">RELAÇÃO PRESENÇA VS ESTUDO DIÁRIO DO MÊS</h4>
-            <div style="display:flex; justify-content:space-around; align-items:center; color:white; font-weight:bold;">
-                <div><small style="display:block; color:var(--neon);">Membros Cadastrados:</small><span style="font-size:1.4rem;">${totalMembrosAtivosDoMes}</span></div>
-                <div style="border-left:1px solid #334155; height:30px;"></div>
-                <div><small style="display:block; color:var(--green);">Média Presença:</small><span style="font-size:1.4rem;">${labels.length ? (dPres.reduce((a,b)=>a+b,0)/labels.length).toFixed(1) : 0}</span></div>
-                <div style="border-left:1px solid #334155; height:30px;"></div>
-                <div><small style="display:block; color:var(--gold);">Estudo Diário:</small><span style="font-size:1.4rem;">${labels.length ? (dEstudo.reduce((a,b)=>a+b,0)/labels.length).toFixed(1) : 0}</span></div>
-            </div>
-        </div>
-        <div style="height:220px;"><canvas id="graficoPopTermometro"></canvas></div>
-    `;
-    document.getElementById("camposMissionarios").innerHTML = htmlTermometro;
-
-    setTimeout(() => {
-        let ctx = document.getElementById("graficoPopTermometro").getContext("2d");
-        if(window.chartPopTermometroInstance) window.chartPopTermometroInstance.destroy();
-        window.chartPopTermometroInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'Presença', data: dPres, backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: '#2ecc71', borderWidth: 1 },
-                    { label: 'Estudo Diário', data: dEstudo, backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: '#f1c40f', borderWidth: 1 }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } }, plugins: { legend: { labels: { color: '#fff' } } } }
-        });
-    }, 100);
-
-    let ctxGeral = document.getElementById("missionaryChart").getContext("2d");
-    if(chartGeral) chartGeral.destroy();
-    chartGeral = new Chart(ctxGeral, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                { label: 'Presença', data: dPres, borderColor: '#00d2ff', backgroundColor: 'rgba(0,210,255,0.1)', tension: 0.2, fill: true },
-                { label: 'Lição', data: dLição, borderColor: '#ffd700', backgroundColor: 'transparent', tension: 0.2 },
-                { label: 'Estudo Diário', data: dEstudo, borderColor: '#ff7f50', backgroundColor: 'transparent', tension: 0.2 }
-            ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff', font: { size: 10 } } } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 9 } } }, x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 9 } } } } }
-    });
-}
-
-function login() {
-    let u = document.getElementById("userLogin").value.trim(), p = document.getElementById("passLogin").value.trim();
-    if(!u) return;
-    let encontrado = credenciais.find(c => c.user.toLowerCase() === u.toLowerCase() && c.pass === p);
-    if(!encontrado && p === "") {
-        if(!db.unidadesAcao) db.unidadesAcao = [];
-        let existeClasse = db.unidadesAcao.find(un => un.nome.toLowerCase() === u.toLowerCase());
-        if(existeClasse) encontrado = { user: existeClasse.nome, role: "professor" };
-    }
-    if(encontrado) {
-        userLogged = encontrado; document.getElementById("modalLogin").style.display = "none";
-        document.getElementById("btnAcesso").style.display = "none"; document.getElementById("btnSair").style.display = "block";
-        document.getElementById("userWelcomeBar").style.display = "block";
-        document.getElementById("userWelcomeBar").innerHTML = `<b>Painel Ativo:</b> Nível [${userLogged.role.toUpperCase()}] | Logado como: <b>${userLogged.user.toUpperCase()}</b>`;
-        
-        if(userLogged.role === "admin") {
-            document.getElementById("btnRelatorioSabatina").style.display = "block";
-            document.getElementById("btnUnidades").style.display = "block"; document.getElementById("btnMembros").style.display = "block";
-            document.getElementById("btnLinks").style.display = "block"; document.getElementById("btnEventos").style.display = "block";
-            document.getElementById("btnTesourariaAdmin").style.display = "block"; document.getElementById("btnDados").style.display = "block";
-            document.getElementById("secCartaoUnidade").style.display = "block";
-        } else if(userLogged.role === "professor") {
-            document.getElementById("btnSairProfessor").style.display = "block"; document.getElementById("secCartaoUnidade").style.display = "block";
-            document.getElementById("headerToggleCartaoAdmin").onclick = null; document.getElementById("headerToggleCartaoAdmin").style.cursor = "default";
-            document.getElementById("btnToggleCartaoES").style.display = "none";
-        }
-        renderTodo();
-    } else alert("Acesso negado. Verifique os dados inseridos.");
-}
-
-function sair() { userLogged = null; location.reload(); }
-
-function carregarModeloFixo(tipo) {
-    let html = "";
-    if(tipo === 'quarta') {
-        let arr = [{h:"19:30",t:"Abertura e Oração"},{h:"19:35",t:"Momento de Louvor"},{h:"19:45",t:"Início do Culto / Oração Intercessora"},{h:"19:55",t:"Mensagem / Reflexão da Palavra"},{h:"20:25",t:"Oração Final e Despedida"}];
-        arr.forEach((item,i)=> html += gerarLinhaCronFixo(i, item.h, item.t, false));
-    } else if(tipo === 'domingo') {
-        let arr = [{h:"19:30",t:"Louvor Inicial"},{h:"19:45",t:"Abertura Oficial / Oração"},{h:"19:50",t:"Momento de Oração Intercessora"},{h:"20:00",t:"Sermão / Mensagem do Culto"},{h:"20:30",t:"Oração Final e Despedida"}];
-        arr.forEach((item,i)=> html += gerarLinhaCronFixo(i, item.h, item.t, false));
-    } else {
-        itensCronDefault.forEach((item,i)=> html += gerarLinhaCronFixo(i, item.h, item.t, item.s));
-    }
-    document.getElementById("cronograma-lista").innerHTML = html;
-}
-function gerarLinhaCronFixo(i, h, t, s) {
-    let checked = s ? "checked" : "", editavel = (userLogged && userLogged.role === 'admin'), disabled = editavel ? "" : "disabled";
-    return `<div class="cron-row" style="display:grid; grid-template-columns: 80px 1fr 110px 40px; gap:10px; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #e2e8f0; align-items:center;">
-    <input type="text" class="input-dark" style="background:#fff!important; color:#000!important; text-align:center;" value="${h}" ${disabled} id="crH_${i}">
-    <input type="text" class="input-dark" style="background:#fff!important; color:#000!important;" value="${t}" ${disabled} id="crT_${i}">
-    <div style="text-align:center;"><label style="font-size:0.65rem; font-weight:bold; color:#64748b; display:block;">DESTAQUE</label><input type="checkbox" ${checked} ${disabled} id="crS_${i}"></div>
-    <div>${editavel ? `<button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">X</button>` : ''}</div></div>`;
-}
-function addBlocoCron() {
-    let container = document.getElementById("cronograma-lista"), i = container.children.length;
-    let div = document.createElement("div"); div.className = "cron-row"; div.style = "display:grid; grid-template-columns: 80px 1fr 110px 40px; gap:10px; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #e2e8f0; align-items:center;";
-    div.innerHTML = `<input type="text" class="input-dark" style="background:#fff!important; color:#000!important; text-align:center;" placeholder="00:00" id="crH_${i}">
-    <input type="text" class="input-dark" style="background:#fff!important; color:#000!important;" placeholder="Nova seção..." id="crT_${i}">
-    <div style="text-align:center;"><label style="font-size:0.65rem; font-weight:bold; color:#64748b; display:block;">DESTAQUE</label><input type="checkbox" id="crS_${i}"></div>
-    <div><button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">X</button></div>`;
-    container.appendChild(div);
-}
-function salvarCronograma() {
-    let mSel = getMesSelecionado(); if(!db.cronogramas) db.cronogramas = {};
-    let rows = document.querySelectorAll(".cron-row"), arr = [];
-    rows.forEach((r, idx) => {
-        let h = r.querySelector(`[id^="crH_"]`).value, t = r.querySelector(`[id^="crT_"]`).value, s = r.querySelector(`[id^="crS_"]`).checked;
-        if(h || t) arr.push({h:h, t:t, s:s});
-    });
-    db.cronogramas[mSel] = arr; save(); renderCronogramaPublico(); alert("Ordem do culto gravada!");
-}
-function renderCronogramaPublico() {
-    let mSel = getMesSelecionado(); if(!db.cronogramas) db.cronogramas = {};
-    let lista = db.cronogramas[mSel] || [];
-    if(lista.length === 0) {
-        let html = ""; itensCronDefault.forEach((item,i)=> html += gerarLinhaCronFixo(i, item.h, item.t, item.s));
-        document.getElementById("cronograma-lista").innerHTML = html;
-    } else {
-        let html = ""; lista.forEach((item,i)=> html += gerarLinhaCronFixo(i, item.h, item.t, item.s));
-        document.getElementById("cronograma-lista").innerHTML = html;
-    }
-}
-document.getElementById("btnCron").addEventListener("click", () => { if(userLogged && userLogged.role === 'admin') document.getElementById("btnCronAddSecao").style.display="block"; else document.getElementById("btnCronAddSecao").style.display="none"; renderCronogramaPublico(); });
-
-function renderUnidadesAdmin() {
-    let html = ""; if(!db.unidadesAcao) db.unidadesAcao = [];
-    let selAnciao = document.getElementById("unAnciao"); selAnciao.innerHTML = "<option value=''>NENHUM</option>";
-    if(db.membros) { db.membros.forEach(m => { if(m.cargo.toLowerCase().includes("anc") || m.cargo.toLowerCase().includes("dir")) selAnciao.innerHTML += `<option value="${m.nome}">${m.nome.toUpperCase()}</option>`; }); }
-    
-    db.unidadesAcao.forEach((u, idx) => {
-        html += `<div style="background:rgba(255,255,255,0.03); padding:10px; margin-bottom:8px; border-radius:6px; border:1px solid #444; display:grid; grid-template-columns:1fr 1fr 1fr 40px; gap:10px; align-items:center;">
-        <span style="color:var(--gold); font-weight:bold;">${u.nome.toUpperCase()}</span><span style="color:white; font-size:0.8rem;">Prof: ${u.prof}</span><span style="color:var(--neon); font-size:0.75rem;">Apoio: ${u.anciao || 'Sem Ancião'}</span>
-        <button onclick="removeUnidadeAcao(${idx})" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; text-align:right;">X</button></div>`;
-    });
-    document.getElementById("listaUnidadesCadastradas").innerHTML = html || "<p style='color:gray; text-align:center;'>Nenhuma unidade cadastrada.</p>";
-}
-function addUnidadeAcao() {
-    let n = document.getElementById("unNome").value.trim(), p = document.getElementById("unProf").value.trim(), a = document.getElementById("unAnciao").value;
-    if(!n || !p) return; if(!db.unidadesAcao) db.unidadesAcao = [];
-    if(db.unidadesAcao.find(u => u.nome.toLowerCase() === n.toLowerCase())) { alert("Esta unidade já existe."); return; }
-    db.unidadesAcao.push({nome:n, prof:p, anciao:a}); document.getElementById("unNome").value=""; document.getElementById("unProf").value=""; renderUnidadesAdmin(); initCartaoUnidade(); save();
-}
-function removeUnidadeAcao(idx) { if(confirm("Deseja deletar esta unidade e todos os seus alunos?")) { let u = db.unidadesAcao[idx]; if(db.cartaoUnidade) delete db.cartaoUnidade[u.nome]; db.unidadesAcao.splice(idx,1); renderUnidadesAdmin(); initCartaoUnidade(); save(); } }
-
-function initCartaoUnidade() {
-    let uSel = null; if(!db.unidadesAcao) db.unidadesAcao = [];
-    if(userLogged && userLogged.role === 'professor') uSel = userLogged.user;
-    else {
-        let admDiv = document.getElementById("txtInfoUnidadeAtual"); if(!admDiv) return;
-        if(db.unidadesAcao.length === 0) { admDiv.innerHTML = "<span style='color:red;'>Nenhuma unidade cadastrada no sistema. Vá em EQUIPE/UNIDADES.</span>"; return; }
-        if(!window.classeAdminSelecionada) window.classeAdminSelecionada = db.unidadesAcao[0].nome;
-        let htmlSel = `<select class='input-dark' style='width:220px; border-color:var(--gold); font-size:0.95rem; font-weight:bold; color:var(--gold);' onchange='window.classeAdminSelecionada=this.value; initCartaoUnidade();'>`;
-        db.unidadesAcao.forEach(un => { let s = window.classeAdminSelecionada === un.nome ? "selected" : ""; htmlSel += `<option value="${un.nome}" ${s}>CLASSE: ${un.nome.toUpperCase()}</option>`; });
-        htmlSel += `</select>`; admDiv.innerHTML = htmlSel; uSel = window.classeAdminSelecionada;
-    }
-    
-    let unObj = db.unidadesAcao.find(un => un.nome === uSel); if(!unObj) return;
-    if(!db.cartaoUnidade) db.cartaoUnidade = {}; if(!db.cartaoUnidade[uSel]) db.cartaoUnidade[uSel] = { alunos:[], chamadas:{}, instrutores:[], duplas:[] };
-    let c = db.cartaoUnidade[uSel];
-    
-    let mSel = getMesSelecionado(), sabados = getSabadosMes(mSel), selSab = document.getElementById("selSabadoCartao");
-    let oldVal = selSab.value; selSab.innerHTML = "";
-    sabados.forEach(sab => { let sk = `${String(sab.getDate()).padStart(2,'0')}_${mSel}`; selSab.innerHTML += `<option value="${sk}">Sábado, ${String(sab.getDate()).padStart(2,'0')}/${mSel.replace('_','/')}</option>`; });
-    if(oldVal && selSab.querySelector(`option[value="${oldVal}"]`)) selSab.value = oldVal;
-    let sabAct = selSab.value; if(!sabAct) return;
-    
-    document.getElementById("lblCardUnidade").innerText = "UNIDADE: " + unObj.nome.toUpperCase();
-    document.getElementById("lblCardProfessor").innerText = "PROFESSOR(A): " + unObj.prof.toUpperCase();
-    document.getElementById("lblCardAnciao").innerText = "ANCIÃO DE APOIO: " + (unObj.anciao ? unObj.anciao.toUpperCase() : "SEM ANCIÃO");
-    document.getElementById("lblCardSabado").innerText = "SÁBADO: " + sabAct.replace(/_/g,'/');
-    
-    if(!c.chamadas[sabAct]) c.chamadas[sabAct] = {};
-    if(!c.chamadas[sabAct].instrutores) c.chamadas[sabAct].instrutores = [];
-    if(!c.chamadas[sabAct].duplas) c.chamadas[sabAct].duplas = [];
-    if(c.chamadas[sabAct].batismos === undefined) c.chamadas[sabAct].batismos = 0;
-    if(c.chamadas[sabAct].ofertas === undefined) c.chamadas[sabAct].ofertas = 0;
-    
-    document.getElementById("inputBatismos").value = c.chamadas[sabAct].batismos;
-    document.getElementById("inputOfertas").value = (c.chamadas[sabAct].ofertas || 0).toFixed(2);
-    
-    let corpo = document.getElementById("corpoAlunos"); corpo.innerHTML = "";
-    (c.alunos || []).forEach((al, alId) => {
-        if(!c.chamadas[sabAct][alId]) c.chamadas[sabAct][alId] = { p:false, q1:false, q2:false, q3:false, q5:false, q6:false, q7:false, q8:false };
-        let ch = c.chamadas[sabAct][alId];
-        let tr = document.createElement("tr");
-        tr.innerHTML = `<td><input type="text" class="input-dark" style="background:transparent!important; color:#000!important; font-weight:bold; border:none;" value="${al}" onchange="db.cartaoUnidade['${uSel}'].alunos[${alId}]=this.value; save();"></td>
-        <td><input type="checkbox" ${ch.p?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'p',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q1?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q1',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q2?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q2',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q3?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q3',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q5?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q5',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q6?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q6',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q7?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q7',this.checked)"></td>
-        <td><input type="checkbox" ${ch.q8?'checked':''} onclick="chProf('${uSel}','${sabAct}',${alId},'q8',this.checked)"></td>`;
-        if(userLogged && userLogged.role === 'admin') {
-            let tdDel = document.createElement("td"); tdDel.innerHTML = `<button onclick="removeAlunoClasse('${uSel}', ${alId})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button>`;
-            tr.appendChild(tdDel);
-        }
-        corpo.appendChild(tr);
-    });
-    
-    if(userLogged && userLogged.role === 'admin') {
-        let trAdd = document.createElement("tr");
-        trAdd.innerHTML = `<td colspan="9"><button class="btn-modern" style="border-color:var(--blue); color:var(--blue); padding:4px 12px;" onclick="addAlunoClasse('${uSel}')">+ ADICIONAR NOVO ALUNO NESTA CLASSE</button></td>`;
-        corpo.appendChild(trAdd);
-    }
-    
-    renderMissionariaLateral(uSel, sabAct); calcularSomatoriosCRM(uSel, sabAct);
-}
-
-function addAlunoClasse(uSel) { let n = prompt("Nome do aluno:"); if(n) { db.cartaoUnidade[uSel].alunos.push(n); initCartaoUnidade(); save(); } }
-function removeAlunoClasse(uSel, alId) { if(confirm("Remover aluno?")) { db.cartaoUnidade[uSel].alunos.splice(alId,1); initCartaoUnidade(); save(); } }
-
-function chProf(uSel, sabAct, alId, campo, val) { db.cartaoUnidade[uSel].chamadas[sabAct][alId][campo] = val; calcularSomatoriosCRM(uSel, sabAct); save(); }
-
-function forçarCalculoProf() {
-    let uSel = (userLogged && userLogged.role === 'professor') ? userLogged.user : window.classeAdminSelecionada;
-    let sabAct = document.getElementById("selSabadoCartao").value; if(!uSel || !sabAct) return;
-    db.cartaoUnidade[uSel].chamadas[sabAct].batismos = parseInt(document.getElementById("inputBatismos").value) || 0;
-    db.cartaoUnidade[uSel].chamadas[sabAct].ofertas = parseFloat(document.getElementById("inputOfertas").value) || 0;
-    calcularSomatoriosCRM(uSel, sabAct); save();
-}
-
-function renderMissionariaLateral(uSel, sabAct) {
-    let c = db.cartaoUnidade[uSel];
-    if(!c.instrutores) c.instrutores = []; if(!c.duplas) c.duplas = [];
-    if(c.instrutores.length === 0) { c.instrutores = ["Instrutor 1","Instrutor 2"]; }
-    if(c.duplas.length === 0) { c.duplas = ["Dupla 1","Dupla 2"]; }
-    
-    let ch = c.chamadas[sabAct];
-    
-    let hIns = "";
-    c.instrutores.forEach((ins, idx) => {
-        let vNome = ch.instrutores && ch.instrutores[idx] ? ch.instrutores[idx].nome : ins;
-        let vCheck = ch.instrutores && ch.instrutores[idx] ? ch.instrutores[idx].ativo : false;
-        let vQtd = ch.instrutores && ch.instrutores[idx] ? ch.instrutores[idx].qtd : 0;
-        hIns += `<div class="row-missao">
-            <input type='text' class='input-dark' style='background:#fff!important; color:#000!important;' value="${vNome}" onchange="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'nome',this.value)">
-            <label style='font-size:0.65rem; font-weight:700; color:#5d4037;'><input type='checkbox' ${vCheck?'checked':''} onclick="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'ativo',this.checked)"> DANDO ESTUDO</label>
-            <input type='number' class='input-qtd' value="${vQtd}" min="0" oninput="salvarMisLinha('${uSel}','${sabAct}','instrutores',${idx},'qtd',parseInt(this.value)||0)">
-        </div>`;
-    });
-    if(userLogged && userLogged.role === 'admin') hIns += `<button class='btn-modern' style='font-size:0.65rem; padding:2px 8px; margin-top:4px;' onclick="db.cartaoUnidade['${uSel}'].instrutores.push('Novo'); initCartaoUnidade(); save();">+ ADICIONAR INSTRUTOR</button>`;
-    document.getElementById("listaInstrutores").innerHTML = hIns;
-
-    let hDup = "";
-    c.duplas.forEach((dup, idx) => {
-        let vNome = ch.duplas && ch.duplas[idx] ? ch.duplas[idx].nome : dup;
-        let vCheck = ch.duplas && ch.duplas[idx] ? ch.duplas[idx].ativo : false;
-        let vQtd = ch.duplas && ch.duplas[idx] ? ch.duplas[idx].qtd : 0;
-        hDup += `<div class="row-missao">
-            <input type='text' class='input-dark' style='background:#fff!important; color:#000!important;' value="${vNome}" onchange="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'nome',this.value)">
-            <label style='font-size:0.65rem; font-weight:700; color:#5d4037;'><input type='checkbox' ${vCheck?'checked':''} onclick="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'ativo',this.checked)"> DANDO ESTUDO</label>
-            <input type='number' class='input-qtd' value="${vQtd}" min="0" oninput="salvarMisLinha('${uSel}','${sabAct}','duplas',${idx},'qtd',parseInt(this.value)||0)">
-        </div>`;
-    });
-    if(userLogged && userLogged.role === 'admin') hDup += `<button class='btn-modern' style='font-size:0.65rem; padding:2px 8px; margin-top:4px;' onclick="db.cartaoUnidade['${uSel}'].duplas.push('Nova Dupla'); initCartaoUnidade(); save();">+ ADICIONAR DUPLA</button>`;
-    document.getElementById("listaDuplas").innerHTML = hDup;
-}
-
-function salvarMisLinha(uSel, sabAct, arrayName, idx, campo, val) {
-    let ch = db.cartaoUnidade[uSel].chamadas[sabAct];
-    if(!ch[arrayName]) ch[arrayName] = [];
-    if(!ch[arrayName][idx]) {
-        let baseNome = db.cartaoUnidade[uSel][arrayName][idx] || "";
-        ch[arrayName][idx] = { nome: baseNome, ativo: false, qtd: 0 };
-    }
-    ch[arrayName][idx][campo] = val; calcularSomatoriosCRM(uSel, sabAct); save();
-}
-
-function calcularSomatoriosCRM(uSel, sabAct) {
-    let ch = db.cartaoUnidade[uSel].chamadas[sabAct], s1=0, s2=0, s3=0, s4=ch.batismos||0, s5=0, s6=0, s7=0, s8=0, totP=0;
-    Object.keys(ch).forEach(k => {
-        if(!isNaN(k)) {
-            let item = ch[k]; if(item.p) totP++; if(item.q1) s1++; if(item.q2) s2++; if(item.q3) s3++; if(item.q5) s5++; if(item.q6) s6++; if(item.q7) s7++; if(item.q8) s8++;
-        }
-    });
-    
-    document.getElementById("v1").innerText = s1; document.getElementById("v2").innerText = s2; document.getElementById("v3").innerText = s3;
-    document.getElementById("v4").innerText = s4; document.getElementById("v5").innerText = s5; document.getElementById("v6").innerText = s6;
-    document.getElementById("v7").innerText = s7; document.getElementById("v8").innerText = s8; document.getElementById("totPres").innerText = totP;
-    
-    let labels = ["Lição","Estudo","Estudos Bíblicos","Oraram","Literatura","Visitas","Solidário"];
-    let valoresTotais = [s1, s2, s3, s5, s6, s7, s8];
-    
-    let ctx1 = document.getElementById("graf1").getContext("2d");
-    if(g1) g1.destroy();
-    g1 = new Chart(ctx1, {
-        type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Indicadores de Ação', data: valoresTotais, backgroundColor: '#795548' }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-    });
-
-    let ctx2 = document.getElementById("graf2").getContext("2d");
-    if(g2) g2.destroy();
-    g2 = new Chart(ctx2, {
-        type: 'doughnut',
-        data: { labels: ["Presentes","Ausentes"], datasets: [{ data: [totP, Math.max(0, (db.cartaoUnidade[uSel].alunos||[]).length - totP)], backgroundColor: ["#2ecc71","#ff4757"] }] },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
-}
-
-function abrirRelatorioSabatina() { document.getElementById("popRelatorioSabatina").style.display = "flex"; renderRelatorioSecretaria(); }
-function renderRelatorioSecretaria() {
-    const mSel = getMesSelecionado(), sabados = getSabadosMes(mSel), corpo = document.getElementById("corpoRelatorioSecretaria");
-    corpo.innerHTML = "";
-    
-    let tAtivos = 0, tPres = 0, tVisitas = 0, tOfertas = 0, sabadosComDados = 0;
-
-    sabados.forEach(sab => {
-        let sabKey = `${String(sab.getDate()).padStart(2,'0')}_${mSel}`;
-        let sAtivos = 0, sPres = 0, sVisitas = 0, sOfertas = 0, teveLancamento = false;
-
-        if(db.unidadesAcao) {
-            db.unidadesAcao.forEach(u => {
-                if(db.cartaoUnidade && db.cartaoUnidade[u.nome]) {
-                    sAtivos += (db.cartaoUnidade[u.nome].alunos || []).length;
-                    if(db.cartaoUnidade[u.nome].chamadas && db.cartaoUnidade[u.nome].chamadas[sabKey]) {
-                        teveLancamento = true; let ch = db.cartaoUnidade[u.nome].chamadas[sabKey];
-                        Object.keys(ch).forEach(k => { if(!isNaN(k)) { if(ch[k].p) sPres++; if(ch[k].q7) sVisitas++; } });
-                        sOfertas += parseFloat(ch.ofertas) || 0;
-                    }
-                }
-            });
-        }
-
-        if(teveLancamento) {
-            sabadosComDados++; tAtivos += sAtivos; tPres += sPres; tVisitas += sVisitas; tOfertas += sOfertas;
-            let percPres = sAtivos > 0 ? ((sPres / sAtivos) * 100).toFixed(1) : "0.0";
-            corpo.innerHTML += `<tr><td><b>${sabKey.replace(/_/g,'/')}</b></td><td>${sAtivos}</td><td>${sPres}</td><td style="color:var(--neon)">${percPres}%</td><td>${sVisitas}</td><td style="color:var(--green); font-weight:bold;">R$ ${sOfertas.toFixed(2)}</td></tr>`;
-        }
-    });
-
-    let percGeral = tAtivos > 0 ? ((tPres / tAtivos) * 100).toFixed(1) : "0.0";
-    corpo.innerHTML += `<tr class="row-total-secre"><td>SOMATÓRIA / MÉDIA</td><td>${tAtivos} (Total)</td><td>${tPres} (Total)</td><td>Média: ${percGeral}%</td><td>${tVisitas} Visitas</td><td>Total: R$ ${tOfertas.toFixed(2)}</td></tr>`;
-    if(sabadosComDados === 0) corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:gray;">Nenhum cartão preenchido pelas classes neste mês até o momento.</td></tr>`;
-}
-
-function checarAlertaTrimestre() {
-    const atual = new Date(), m = atual.getMonth() + 1;
-    const dInicioTrimestre = [1, 4, 7, 10];
-    if(dInicioTrimestre.includes(m) && atual.getDate() <= 7) {
-        if(localStorage.getItem("trimestre_limpo_id") !== `${m}_${atual.getFullYear()}`) {
-            document.getElementById("popAlertaTrimestre").style.display = "flex";
+        if(sabadosComDados === 0) {
+            corpo.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--red);">Nenhum cartão foi preenchido neste trimestre ainda!</td></tr>`;
         }
     }
-}
-function confirmarLimpezaTrimestre() {
-    if(confirm("ATENÇÃO: Isto apagará todos os dados atuais de chamadas e alunos dos Cartões para iniciar o novo período. As escalas da igreja NÃO serão apagadas. Deseja prosseguir?")) {
-        if(!db.cartaoUnidade) db.cartaoUnidade = {};
-        if(db.unidadesAcao) { db.unidadesAcao.forEach(u => { db.cartaoUnidade[u.nome] = { alunos:[], chamadas:{}, instrutores:[], duplas:[] }; }); }
-        const atual = new Date(); localStorage.setItem("trimestre_limpo_id", `${atual.getMonth()+1}_${atual.getFullYear()}`);
-        document.getElementById("popAlertaTrimestre").style.display = "none"; save(); setTimeout(() => location.reload(), 1000);
-    }
-}
 
-function exportarRelatorioPDF() {
-    let opt = { margin: 10, filename: `IASD_EstrelaDalva_Relatorio_${getMesSelecionado()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
-    let element = document.getElementById("areaEscalaPrincipal"); html2pdf().set(opt).from(element).save();
-}
-
-function baixarRelatorioGeralTrimestrePDF() {
-    let opt = { margin: 10, filename: `RELATORIO_SECRETARIA_ESCOLA_SABATINA.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-    renderRelatorioSecretaria(); let element = document.getElementById("popRelatorioSabatina").querySelector(".pop-content"); html2pdf().set(opt).from(element).save();
-}
-
-function removerCred(idx) { credenciais.splice(idx,1); fs.collection("igreja").doc("credenciais").set({lista:credenciais}); renderAdmin(); }
-
-// ========================================================
-// FUNÇÕES DE BACKUP SEPARADO E EXCLUSÃO DEFINITIVA
-// ========================================================
-
-async function gerarBackupNuvemGeral() {
-    mostrarIndicador("Gerando backup geral...", "saving");
-    try {
-        let bkp = {
-            tipo: "geral", timestamp: new Date().toISOString(), data_formatada: new Date().toLocaleString('pt-BR'),
-            config: db.config || {}, meses: db.meses || {}, membros: db.membros || [], links: db.links || [],
-            eventos: db.eventos || [], arquivos: db.arquivos || [], meta_anual: db.meta_anual || 0, aviso_ticker: db.aviso_ticker || ""
-        };
-        await fs.collection("backups_sistema").add(bkp); mostrarIndicador("Backup Geral salvo com sucesso!", "saved");
-    } catch(e) { console.error(e); alert("Erro ao salvar backup geral."); }
-}
-
-async function gerarBackupNuvemCartoes() {
-    mostrarIndicador("Gerando backup dos cartões...", "saving");
-    try {
-        let bkp = {
-            tipo: "cartoes", timestamp: new Date().toISOString(), data_formatada: new Date().toLocaleString('pt-BR'),
-            cartaoUnidade: db.cartaoUnidade || {}, unidadesAcao: db.unidadesAcao || []
-        };
-        await fs.collection("backups_sistema").add(bkp); mostrarIndicador("Backup dos Cartões salvo com sucesso!", "saved");
-    } catch(e) { console.error(e); alert("Erro ao salvar backup dos cartões."); }
-}
-
-async function abrirPopBackups(tipo) {
-    if(!tipo) tipo = "geral";
-    let titulo = tipo === 'cartoes' ? "RESTAURAR BACKUP CARTÕES" : "RESTAURAR BACKUP GERAL";
-    document.getElementById('tituloPopBackups').innerText = titulo;
-    
-    let lista = document.getElementById("listaBackupsNuvem");
-    lista.innerHTML = "<p style='color:white; text-align:center;'>Carregando arquivos de backup...</p>";
-    document.getElementById('popBackups').style.display = 'flex';
-
-    try {
-        let snap = await fs.collection("backups_sistema").where("tipo", "==", tipo).orderBy("timestamp", "desc").limit(15).get();
-        lista.innerHTML = "";
-        if(snap.empty) { lista.innerHTML = "<p style='color:gray; text-align:center;'>Nenhum histórico encontrado para este módulo.</p>"; return; }
-
-        snap.forEach(doc => {
-            let data = doc.data();
-            lista.innerHTML += `
-                <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                    <span style="color:white; font-size:0.85rem;">📅 ${data.data_formatada}</span>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-modern" style="border-color:var(--green); color:var(--green); padding:4px 10px; font-size:0.75rem;" onclick="restaurarBackupSeparado('${doc.id}', '${tipo}')">Restaurar</button>
-                        <button class="btn-modern" style="border-color:var(--red); color:var(--red); padding:4px 10px; font-size:0.75rem;" onclick="deletarBackupNuvem('${doc.id}', '${tipo}')">🗑️ Apagar</button>
-                    </div>
-                </div>`;
-        });
-    } catch(e) { console.error(e); lista.innerHTML = "<p style='color:red; text-align:center;'>Erro ao carregar backups.</p>"; }
-}
-
-async function restaurarBackupSeparado(id, tipo) {
-    if(!confirm("Tem certeza que deseja restaurar este backup? Os dados atuais deste módulo serão substituídos!")) return;
-    mostrarIndicador("Restaurando dados...", "saving");
-    try {
-        let doc = await fs.collection("backups_sistema").doc(id).get();
-        if(!doc.exists) { alert("Backup não encontrado."); return; }
-        let backupData = doc.data();
-
-        if (tipo === 'cartoes') {
-            db.cartaoUnidade = backupData.cartaoUnidade || {}; db.unidadesAcao = backupData.unidadesAcao || [];
-        } else if (tipo === 'geral') {
-            db.config = backupData.config || {}; db.meses = backupData.meses || {}; db.membros = backupData.membros || [];
-            db.links = backupData.links || []; db.eventos = backupData.eventos || []; db.arquivos = backupData.arquivos || [];
-            db.meta_anual = backupData.meta_anual || 0; db.aviso_ticker = backupData.aviso_ticker || "";
-        }
-
-        await fs.collection("igreja").doc("dados").set(db);
-        mostrarIndicador("Restauração concluída!", "saved"); setTimeout(() => { location.reload(); }, 1500);
-    } catch(e) { console.error(e); alert("Erro crítico ao restaurar."); }
-}
-
-async function deletarBackupNuvem(id, tipo) {
-    if (!confirm("⚠️ Deseja apagar definitivamente este registro de backup da nuvem?")) return;
-    mostrarIndicador("Excluindo backup...", "saving");
-    try {
-        await fs.collection("backups_sistema").doc(id).delete();
-        mostrarIndicador("Backup excluído com sucesso!", "saved"); abrirPopBackups(tipo);
-    } catch (e) { console.error("Erro ao deletar: ", e); alert("Erro ao apagar o backup da nuvem."); }
-}
+    const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
 </script>
 </body>
 </html>
