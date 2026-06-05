@@ -684,11 +684,52 @@
 
     async function abrirPopBackups() { document.getElementById('popBackups').style.display='flex'; const lista = document.getElementById('listaBackupsNuvem'); lista.innerHTML = "Buscando...";
         try { const snap = await dbCloud.collection('backups_seguros').orderBy('criadoEm', 'desc').limit(15).get(); lista.innerHTML = "";
-        snap.forEach(doc => { const b = doc.data(); lista.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#16213e; padding:10px; margin-bottom:5px; border-radius:5px;"><div><b>${b.identificador}</b><br><small>${b.data}</small></div><button onclick="restaurarBackup('${doc.id}')" class="btn-modern">RESTAURAR</button></div>`; });
+        // COLE ESTE NO LUGAR (Adiciona o botão de excluir ao lado do de restaurar):
+snap.forEach(doc => {
+    let data = doc.data();
+    lista.innerHTML += `
+        <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <span style="color:white; font-size:0.85rem;">📅 ${data.data_formatada}</span>
+            <div style="display:flex; gap:6px;">
+                <button class="btn-modern" style="border-color:var(--green); color:var(--green); padding:4px 10px; font-size:0.75rem;" onclick="restaurarBackupSeparado('${doc.id}', '${tipo}')">Restaurar</button>
+                <button class="btn-modern" style="border-color:var(--red); color:var(--red); padding:4px 10px; font-size:0.75rem;" onclick="deletarBackupNuvem('${doc.id}', '${tipo}')">🗑️ Apagar</button>
+            </div>
+        </div>
+    `;
+});
         if(snap.empty) lista.innerHTML = "Nenhum backup encontrado."; } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } }
     async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving");
         try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved");
         } catch(e) { alert(e.message); } }
+// COLE ESTA NOVA FUNÇÃO EM QUALQUER LUGAR VAGO DENTRO DAS TAGS <script>
+
+async function deletarBackupNuvem(id, tipo) {
+    // 1. Pede confirmação de segurança para evitar cliques acidentais
+    if (!confirm("⚠️ Tem certeza ABSOLUTA que deseja apagar permanentemente este registro de backup da nuvem? Esta ação não pode ser desfeita!")) {
+        return;
+    }
+
+    mostrarIndicador("Excluindo backup...", "saving");
+
+    try {
+        // 2. Acessa a coleção de backups e deleta o documento pelo ID único dele
+        await fs.collection("backups_sistema").doc(id).delete();
+        
+        mostrarIndicador("Backup excluído com sucesso!", "saved");
+        
+        // 3. Atualiza a lista do pop-up automaticamente para sumir com o item deletado
+        if (typeof tipo !== 'undefined') {
+            abrirPopBackups(tipo);
+        } else {
+            // Caso use o sistema de backup antigo de botão único
+            let lista = document.getElementById("listaBackupsNuvem");
+            if (lista) abrirPopBackups(); 
+        }
+    } catch (e) {
+        console.error("Erro ao deletar o backup: ", e);
+        alert("Erro crítico: Não foi possível apagar o backup da nuvem. Verifique suas permissões.");
+    }
+}
     async function restaurarBackup(id) { if(confirm("Deseja restaurar esta versão?")) { const doc = await dbCloud.collection('backups_seguros').doc(id).get(); db = doc.data().conteudo; save(); setTimeout(() => location.reload(), 1000); } }
     
     function abrirPopLinks() { document.getElementById('popLinks').style.display='flex'; renderListaLinksAdmin(); }
