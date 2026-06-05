@@ -339,7 +339,7 @@ window.onload = async () => {
 
 function initFiltrosMeses() {
     const s = document.getElementById("selMes"), mNomes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-    const atual = new Date(), cMes = atual.getMonth(), cAno = mtual.getFullYear(); s.innerHTML = "";
+    const atual = new Date(), cMes = atual.getMonth(), cAno = atual.getFullYear(); s.innerHTML = "";
     for(let i = -2; i <= 6; i++) {
         let d = new Date(cAno, cMes + i, 1), m = d.getMonth(), y = d.getFullYear(), val = `${String(m+1).padStart(2,'0')}_${y}`;
         let opt = new Option(`${mNomes[m]} de ${y}`, val); if(m===cMes && y===cAno) opt.selected = true; s.add(opt);
