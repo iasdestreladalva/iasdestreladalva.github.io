@@ -164,9 +164,11 @@
                 <div id="gridApoioAnciao"></div>
                 <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
                 <h4 style="color:var(--gold)">5. NUVEM / PDF / BACKUP</h4>
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
+                <button class="btn-min" onclick="gerarBackupNuvemGeral()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR BACKUP GERAL</button>
+                <button class="btn-min" onclick="gerarBackupNuvemCartoes()" style="border-color:var(--orange); color:var(--orange)">💾 SALVAR BACKUP CARTÕES (ES)</button>
                 <button class="btn-min" onclick="exportarRelatorioPDF()" style="border-color:var(--green); color:var(--green)">📄 GERAR PDF MÊS</button>
-                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
+                <button class="btn-min" onclick="abrirPopBackups('geral')" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS GERAIS</button>
+                <button class="btn-min" onclick="abrirPopBackups('cartoes')" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS CARTÕES</button>
             </div>
         </div>
     </div>
@@ -356,7 +358,7 @@
 </div>
 
 <div id="popMembros" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">EQUIPE / CONTATOS</h3><div style="display:flex; gap:5px; margin-bottom:10px;"><input id="mbNome" placeholder="Nome" class="input-dark"><input id="mbCargo" placeholder="Cargo" class="input-dark"><button class="btn-modern" onclick="addMembro()">+</button></div><div id="listaMembros" style="max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popMembros').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
-<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
+<div id="popBackups" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;" id="tituloPopBackups">RESTAURAR DA NUVEM</h3><div id="listaBackupsNuvem" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div><button onclick="document.getElementById('popBackups').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="modalLogin" class="overlay" onclick="this.style.display='none'"><div style="background:white; padding:30px; border-radius:15px; width:260px;" onclick="event.stopPropagation()"><input type="text" id="userLogin" placeholder="Usuário ou Unidade" class="input-dark" style="background:#eee!important; color:#000!important; margin-bottom:10px;"><input type="password" id="passLogin" placeholder="Senha (vazio p/ Unidades)" class="input-dark" style="background:#eee!important; color:#000!important;"><button class="input-dark" style="background:var(--blue); color:white; width:100%; margin-top:15px;" onclick="login()">ENTRAR</button></div></div>
 <div id="popLinks" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--neon); text-align:center;">GERENCIAR LINKS</h3><input type="text" id="linkTit" class="input-dark" placeholder="Título"><input type="text" id="linkUrl" class="input-dark" placeholder="URL" style="margin-top:10px;"><button class="btn-min" style="background:var(--neon); color:var(--blue); border:none; margin-top:15px;" onclick="salvarLink()">POSTAR</button><hr style="border:0; border-top:1px solid #444; margin:15px 0;"><div id="listaLinksAtivos"></div><button onclick="document.getElementById('popLinks').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
@@ -698,19 +700,143 @@ snap.forEach(doc => {
     `;
 });
         if(snap.empty) lista.innerHTML = "Nenhum backup encontrado."; } catch(e) { lista.innerHTML = "Erro ao buscar: " + e.message; } }
-    async function gerarBackupNuvem() { const nome = prompt("Nome do backup:"); if(!nome) return; showStatus("Gerando...", "saving");
-        try { await dbCloud.collection('backups_seguros').add({ identificador: nome.toUpperCase(), data: new Date().toLocaleString(), conteudo: JSON.parse(JSON.stringify(db)), criadoEm: Date.now() }); showStatus("✅ OK", "saved");
-        } catch(e) { alert(e.message); } }
-// COLE ESTA NOVA FUNÇÃO EM QUALQUER LUGAR VAGO DENTRO DAS TAGS <script>
+    // ==========================================
+// NOVAS FUNÇÕES DE BACKUP FRACIONADO E DELETAR
+// ==========================================
+
+async function gerarBackupNuvemGeral() {
+    mostrarIndicador("Gerando backup geral...", "saving");
+    try {
+        let bkp = {
+            tipo: "geral",
+            timestamp: new Date().toISOString(),
+            data_formatada: new Date().toLocaleString('pt-BR'),
+            config: db.config || {},
+            meses: db.meses || {},
+            membros: db.membros || [],
+            links: db.links || [],
+            eventos: db.eventos || [],
+            arquivos: db.arquivos || [],
+            meta_anual: db.meta_anual || 0,
+            aviso_ticker: db.aviso_ticker || ""
+        };
+        await fs.collection("backups_sistema").add(bkp);
+        mostrarIndicador("Backup Geral salvo com sucesso!", "saved");
+    } catch(e) {
+        console.error(e);
+        alert("Erro ao salvar backup geral.");
+    }
+}
+
+async function gerarBackupNuvemCartoes() {
+    mostrarIndicador("Gerando backup dos cartões...", "saving");
+    try {
+        let bkp = {
+            tipo: "cartoes",
+            timestamp: new Date().toISOString(),
+            data_formatada: new Date().toLocaleString('pt-BR'),
+            cartaoUnidade: db.cartaoUnidade || {},
+            unidadesAcao: db.unidadesAcao || []
+        };
+        await fs.collection("backups_sistema").add(bkp);
+        mostrarIndicador("Backup dos Cartões salvo com sucesso!", "saved");
+    } catch(e) {
+        console.error(e);
+        alert("Erro ao salvar backup dos cartões.");
+    }
+}
+
+async function abrirPopBackups(tipo) {
+    let titulo = tipo === 'cartoes' ? "RESTAURAR BACKUP CARTÕES" : "RESTAURAR BACKUP GERAL";
+    document.getElementById('tituloPopBackups').innerText = titulo;
+    
+    let lista = document.getElementById("listaBackupsNuvem");
+    lista.innerHTML = "<p style='color:white; text-align:center;'>Carregando...</p>";
+    document.getElementById('popBackups').style.display = 'flex';
+
+    try {
+        let snap = await fs.collection("backups_sistema")
+                             .where("tipo", "==", tipo)
+                             .orderBy("timestamp", "desc")
+                             .limit(15)
+                             .get();
+        
+        lista.innerHTML = "";
+        if(snap.empty) {
+            lista.innerHTML = "<p style='color:gray; text-align:center;'>Nenhum backup deste tipo encontrado.</p>";
+            return;
+        }
+
+        snap.forEach(doc => {
+            let data = doc.data();
+            lista.innerHTML += `
+                <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                    <span style="color:white; font-size:0.85rem;">📅 ${data.data_formatada}</span>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-modern" style="border-color:var(--green); color:var(--green); padding:4px 10px; font-size:0.75rem;" onclick="restaurarBackupSeparado('${doc.id}', '${tipo}')">Restaurar</button>
+                        <button class="btn-modern" style="border-color:var(--red); color:var(--red); padding:4px 10px; font-size:0.75rem;" onclick="deletarBackupNuvem('${doc.id}', '${tipo}')">🗑️ Apagar</button>
+                    </div>
+                </div>
+            `;
+        });
+    } catch(e) {
+        console.error(e);
+        lista.innerHTML = "<p style='color:red; text-align:center;'>Erro ao carregar backups.</p>";
+    }
+}
+
+async function restaurarBackupSeparado(id, tipo) {
+    if(!confirm("Tem certeza que deseja restaurar este backup? Os dados atuais deste módulo serão substituídos!")) return;
+    
+    mostrarIndicador("Restaurando dados...", "saving");
+    try {
+        let doc = await fs.collection("backups_sistema").doc(id).get();
+        if(!doc.exists) {
+            alert("Backup não encontrado.");
+            return;
+        }
+        
+        let backupData = doc.data();
+
+        if (tipo === 'cartoes') {
+            db.cartaoUnidade = backupData.cartaoUnidade || {};
+            db.unidadesAcao = backupData.unidadesAcao || [];
+            mostrarIndicador("Cartões Restaurados! Gravando...", "saving");
+        } else if (tipo === 'geral') {
+            db.config = backupData.config || {};
+            db.meses = backupData.meses || {};
+            db.membros = backupData.membros || [];
+            db.links = backupData.links || [];
+            db.eventos = backupData.eventos || [];
+            db.arquivos = backupData.arquivos || [];
+            db.meta_anual = backupData.meta_anual || 0;
+            db.aviso_ticker = backupData.aviso_ticker || "";
+            mostrarIndicador("Estrutura Geral Restaurada! Gravando...", "saving");
+        }
+
+        await fs.collection("igreja").doc("dados").set(db);
+        mostrarIndicador("Restauração concluída!", "saved");
+        setTimeout(() => { location.reload(); }, 1500);
+    } catch(e) {
+        console.error(e);
+        alert("Erro crítico ao restaurar dados.");
+    }
+}
 
 async function deletarBackupNuvem(id, tipo) {
-    // 1. Pede confirmação de segurança para evitar cliques acidentais
     if (!confirm("⚠️ Tem certeza ABSOLUTA que deseja apagar permanentemente este registro de backup da nuvem? Esta ação não pode ser desfeita!")) {
         return;
     }
-
     mostrarIndicador("Excluindo backup...", "saving");
-
+    try {
+        await fs.collection("backups_sistema").doc(id).delete();
+        mostrarIndicador("Backup excluído com sucesso!", "saved");
+        abrirPopBackups(tipo);
+    } catch (e) {
+        console.error("Erro ao deletar: ", e);
+        alert("Erro ao apagar o backup da nuvem.");
+    }
+}
     try {
         // 2. Acessa a coleção de backups e deleta o documento pelo ID único dele
         await fs.collection("backups_sistema").doc(id).delete();
