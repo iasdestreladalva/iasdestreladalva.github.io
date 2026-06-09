@@ -969,3 +969,83 @@
 </script>
 </body>
 </html>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Injeta cirurgicamente o seletor HTML no cabeçalho sem romper o layout original
+    const containerConfig = document.querySelector("#wrapperBlocoCartaoCompleto > div");
+    if (containerConfig) {
+        // Encontra o bloco de texto interno da unidade atual
+        const txtUnidade = document.getElementById("txtInfoUnidadeAtual");
+        if (txtUnidade && !document.getElementById("wrapperSeletorAdminUnidade")) {
+            // Cria a estrutura visual inline com os mesmos estilos nativos do sistema
+            const seletorDiv = document.createElement("div");
+            seletorDiv.id = "wrapperSeletorAdminUnidade";
+            seletorDiv.style.cssText = "display: none; align-items: center; gap: 8px; margin-left: 15px;";
+            seletorDiv.innerHTML = `
+                <label style="color: var(--gold); font-weight: bold; font-size: 0.9rem;">🏫 ALTERAR UNIDADE:</label>
+                <select id="selUnidadeAdminVisual" class="input-dark" style="width: 180px; border-color: var(--gold); font-size: 0.9rem;" onchange="alternarUnidadePorAdmin(this.value)"></select>
+            `;
+            // Encaixa o seletor logo ao lado do texto informativo da unidade
+            txtUnidade.parentNode.insertBefore(seletorDiv, txtUnidade.nextSibling);
+            if (txtUnidade.parentNode) {
+                txtUnidade.parentNode.style.display = "flex";
+                txtUnidade.parentNode.style.alignItems = "center";
+            }
+        }
+    }
+
+    // 2. Intercepta e estende a função nativa de login para exibir o seletor automaticamente
+    if (typeof window.login === "function") {
+        const loginOriginal = window.login;
+        window.login = function() {
+            // Executa primeiro a sua rotina original de validação do Firebase
+            loginOriginal.apply(this, arguments);
+            
+            // Aguarda um milissegundo para a validação do tipoUser terminar e ativa os controles
+            setTimeout(function() {
+                if (window.usuarioLogado && (window.usuarioLogado.tipo === 'admin' || window.usuarioLogado.tipo === 'ger' || window.usuarioLogado.tipo === 'sabatina')) {
+                    const painelES = document.getElementById('secCartaoUnidade');
+                    const seletorAdmin = document.getElementById('wrapperSeletorAdminUnidade');
+                    
+                    if (painelES) painelES.style.display = 'block';
+                    if (seletorAdmin) seletorAdmin.style.display = 'flex';
+                    
+                    carregarSeletorUnidadesAdmin();
+                    
+                    const combo = document.getElementById('selUnidadeAdminVisual');
+                    if (combo && window.usuarioLogado.unidade) {
+                        combo.value = window.usuarioLogado.unidade;
+                    }
+                }
+            }, 800);
+        };
+    }
+});
+
+// 3. Função que monta dinamicamente as opções lendo o objeto db.unidades ativo
+function carregarSeletorUnidadesAdmin() {
+    const combo = document.getElementById('selUnidadeAdminVisual');
+    if (!combo) return;
+    combo.innerHTML = '';
+    
+    if (typeof db !== 'undefined' && db.unidades) {
+        Object.keys(db.unidades).sort().forEach(chave => {
+            let opt = document.createElement('option');
+            opt.value = chave;
+            opt.textContent = db.unidades[chave].nome || chave;
+            combo.appendChild(opt);
+        });
+    }
+}
+
+// 4. Função disparada ao alterar o select; recarrega os gráficos e dados da unidade escolhida
+function alternarUnidadePorAdmin(unidadeChave) {
+    if (!unidadeChave) return;
+    if (window.usuarioLogado) {
+        window.usuarioLogado.unidade = unidadeChave;
+        if (typeof initCartaoUnidade === 'function') {
+            initCartaoUnidade();
+        }
+    }
+}
+</script>
