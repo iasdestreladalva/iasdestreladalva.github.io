@@ -146,6 +146,26 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--neon);
         }
+
+/* Estilos para o botão e animação de minimizar o popup */
+.panel-minimizado-popup {
+    transform: translateY(calc(100vh - 100px)) !important;
+    max-height: 50px !important;
+    overflow: hidden !important;
+    border-color: var(--neon) !important;
+}
+.header-actions-popup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.panel-minimizado-popup .header-actions-popup {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+}
     </style>
 </head>
 <body>
@@ -378,27 +398,36 @@
     </div>
 </div>
 
-<div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
-    <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
-        <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
-        <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+<div id="popRelatorioSabatina" class="overlay" onclick="document.getElementById('popRelatorioSabatina').style.display='none'">
+    <div id="popRelatorioSabatinaContent" class="pop-content" style="max-width:850px; transition: all 0.3s ease-in-out;" onclick="event.stopPropagation()">
         
-        <div style="max-height: 450px; overflow-y: auto;">
-            <table class="tabla-secre">
-                <thead>
-                    <tr>
-                        <th>SÁBADO</th>
-                        <th>MEMBROS ATIVOS</th>
-                        <th>PRESENTES</th>
-                        <th>% PRESENÇA</th>
-                        <th>VISITAS RECOLHIDAS (P7)</th>
-                        <th>OFERTAS DO DIA</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoRelatorioSecretaria"></tbody>
-            </table>
+        <div class="header-actions-popup">
+            <h2 style="color:var(--neon); text-align:left; margin:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
+            <button type="button" onclick="toggleMinimizarPopupSabatina()" style="background: rgba(0,210,255,0.1); border: 1px solid var(--neon); color: var(--neon); padding: 4px 12px; cursor: pointer; border-radius: 4px; font-size: 12px; font-weight: bold;">
+                <span id="btnMinPopupText">➖ Minimizar</span>
+            </button>
         </div>
-        <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
+
+        <div id="corpoConteudoPopupSabatina">
+            <p style="color:#cbd5e1; font-size:0.85rem; text-align:center; margin-top:0;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
+            
+            <div style="max-height: 450px; overflow-y: auto;">
+                <table class="tabla-secre">
+                    <thead>
+                        <tr>
+                            <th>SÁBADO</th>
+                            <th>MEMBROS ATIVOS</th>
+                            <th>PRESENTES</th>
+                            <th>% PRESENÇA</th>
+                            <th>VISITAS RECOLHIDAS (P7)</th>
+                            <th>OFERTAS DO DIA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoRelatorioSecretaria"></tbody>
+                </table>
+            </div>
+            <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
+        </div>
     </div>
 </div>
 
@@ -954,7 +983,16 @@
        COMPILADOR DA SECRETARIA DA ESCOLA SABATINA (RELATÓRIOS GERAIS)
        ========================================================================= */
     function abrirRelatorioSabatina() {
-        document.getElementById('popRelatorioSabatina').style.display = 'flex';
+    const modalContent = document.getElementById('popRelatorioSabatinaContent');
+    const corpoConteudo = document.getElementById('corpoConteudoPopupSabatina');
+    const botaoTexto = document.getElementById('btnMinPopupText');
+    if(modalContent) modalContent.classList.remove('panel-minimizado-popup');
+    if(corpoConteudo) corpoConteudo.style.display = 'block';
+    if(botaoTexto) botaoTexto.textContent = '➖ Minimizar';
+    // --------------------------------------------------
+
+    document.getElementById('popRelatorioSabatina').style.display = 'flex';        
+document.getElementById('popRelatorioSabatina').style.display = 'flex';
         const corpo = document.getElementById('corpoRelatorioSecretaria');
         corpo.innerHTML = "";
 
@@ -1037,6 +1075,28 @@ window.addEventListener('unhandledrejection', function(event) {
     }
     event.preventDefault();
 });
+// Função para Minimizar / Maximizar o Relatório sem fechar a sessão
+function toggleMinimizarPopupSabatina() {
+    const modalContent = document.getElementById('popRelatorioSabatinaContent');
+    const corpoConteudo = document.getElementById('corpoConteudoPopupSabatina');
+    const botaoTexto = document.getElementById('btnMinPopupText');
+    const modalFundo = document.getElementById('popRelatorioSabatina');
+
+    if (modalContent.classList.contains('panel-minimizado-popup')) {
+        modalContent.classList.remove('panel-minimizado-popup');
+        corpoConteudo.style.display = 'block';
+        botaoTexto.textContent = '➖ Minimizar';
+        modalFundo.style.background = 'rgba(0,0,0,0.9)'; 
+        modalFundo.style.pointerEvents = 'auto';
+    } else {
+        modalContent.classList.add('panel-minimizado-popup');
+        corpoConteudo.style.display = 'none';
+        botaoTexto.textContent = '🔳 Maximizar';
+        modalFundo.style.background = 'transparent'; 
+        modalFundo.style.pointerEvents = 'none'; 
+        modalContent.style.pointerEvents = 'auto'; 
+    }
+}
 </script>
 </body>
 </html>
