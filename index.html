@@ -99,73 +99,6 @@
             #headerAnciao { background: var(--blue) !important; color: var(--gold) !important; display: table-cell !important; padding: 0 15px 15px 15px !important; }
             .hoje { outline: none !important; box-shadow: none !important; }
         }
-/* ==========================================================================
-           MELHORIA 1: UPGRADE VISUAL E FLUIDEZ (CSS SEGURO)
-           ========================================================================== */
-        
-        /* Transições globais em botões e inputs para suavidade */
-        .btn-modern, .btn-min, .input-dark, .section-header {
-            transition: all 0.25s ease-in-out !important;
-        }
-
-        /* Efeito sutil de foco nos inputs */
-        .input-dark:focus {
-            border-color: var(--neon) !important;
-            box-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
-            background: #050b14 !important;
-        }
-
-        /* Melhoria visual nos cabeçalhos recolhíveis (Sanfona) */
-        .section-header:hover {
-            background: rgba(255, 255, 255, 0.08) !important;
-            border-color: var(--neon) !important;
-        }
-
-        /* Rolagem suave na página */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Ajuste fino nas tabelas para não esmagar em telas menores */
-        #areaEscalaPrincipal, .card-bege {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Estilização elegante da barra de rolagem (Scrollbar) */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--neon);
-        }
-
-/* Estilos para o botão e animação de minimizar o popup */
-.panel-minimizado-popup {
-    transform: translateY(calc(100vh - 100px)) !important;
-    max-height: 50px !important;
-    overflow: hidden !important;
-    border-color: var(--neon) !important;
-}
-.header-actions-popup {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-.panel-minimizado-popup .header-actions-popup {
-    border-bottom: none !important;
-    margin-bottom: 0 !important;
-}
     </style>
 </head>
 <body>
@@ -198,17 +131,8 @@
         <button id="btnDados" class="btn-modern" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPop()">📊 TERMÔMETRO</button>
     </div>
 
-    <div id="adminPanel" class="admin-box no-print" style="transition: all 0.3s ease-in-out;">
-    <div class="admin-panel-header">
-        <h3 style="margin: 0; color: var(--orange); letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px;">
-            ⚙️ PAINEL ADMINISTRATIVO GERAL
-        </h3>
-        <button type="button" onclick="toggleMinimizarAdmin()" style="background: rgba(255, 127, 80, 0.1); border: 1px solid var(--orange); color: var(--orange); padding: 4px 12px; cursor: pointer; border-radius: 4px; font-size: 12px; font-weight: bold;">
-            <span id="btnMinAdminText">➖ Minimizar Painel</span>
-        </button>
-    </div>
-
-    <div id="adminPanelGridWrapper">
+    <div id="adminPanel" class="admin-box no-print">
+        <div class="admin-grid">
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
@@ -245,9 +169,7 @@
                 <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
             </div>
         </div>
-    </div> </div> ```
-
----
+    </div>
 
     <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
@@ -409,36 +331,27 @@
     </div>
 </div>
 
-<div id="popRelatorioSabatina" class="overlay" onclick="document.getElementById('popRelatorioSabatina').style.display='none'">
-    <div id="popRelatorioSabatinaContent" class="pop-content" style="max-width:850px; transition: all 0.3s ease-in-out;" onclick="event.stopPropagation()">
+<div id="popRelatorioSabatina" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
+        <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
+        <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
         
-        <div class="header-actions-popup">
-            <h2 style="color:var(--neon); text-align:left; margin:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
-            <button type="button" onclick="toggleMinimizarPopupSabatina()" style="background: rgba(0,210,255,0.1); border: 1px solid var(--neon); color: var(--neon); padding: 4px 12px; cursor: pointer; border-radius: 4px; font-size: 12px; font-weight: bold;">
-                <span id="btnMinPopupText">➖ Minimizar</span>
-            </button>
+        <div style="max-height: 450px; overflow-y: auto;">
+            <table class="tabla-secre">
+                <thead>
+                    <tr>
+                        <th>SÁBADO</th>
+                        <th>MEMBROS ATIVOS</th>
+                        <th>PRESENTES</th>
+                        <th>% PRESENÇA</th>
+                        <th>VISITAS RECOLHIDAS (P7)</th>
+                        <th>OFERTAS DO DIA</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoRelatorioSecretaria"></tbody>
+            </table>
         </div>
-
-        <div id="corpoConteudoPopupSabatina">
-            <p style="color:#cbd5e1; font-size:0.85rem; text-align:center; margin-top:0;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
-            
-            <div style="max-height: 450px; overflow-y: auto;">
-                <table class="tabla-secre">
-                    <thead>
-                        <tr>
-                            <th>SÁBADO</th>
-                            <th>MEMBROS ATIVOS</th>
-                            <th>PRESENTES</th>
-                            <th>% PRESENÇA</th>
-                            <th>VISITAS RECOLHIDAS (P7)</th>
-                            <th>OFERTAS DO DIA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpoRelatorioSecretaria"></tbody>
-                </table>
-            </div>
-            <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
-        </div>
+        <button onclick="document.getElementById('popRelatorioSabatina').style.display='none'" class="btn-fechar">FECHAR RELATÓRIO</button>
     </div>
 </div>
 
@@ -994,16 +907,7 @@
        COMPILADOR DA SECRETARIA DA ESCOLA SABATINA (RELATÓRIOS GERAIS)
        ========================================================================= */
     function abrirRelatorioSabatina() {
-    const modalContent = document.getElementById('popRelatorioSabatinaContent');
-    const corpoConteudo = document.getElementById('corpoConteudoPopupSabatina');
-    const botaoTexto = document.getElementById('btnMinPopupText');
-    if(modalContent) modalContent.classList.remove('panel-minimizado-popup');
-    if(corpoConteudo) corpoConteudo.style.display = 'block';
-    if(botaoTexto) botaoTexto.textContent = '➖ Minimizar';
-    // --------------------------------------------------
-
-    document.getElementById('popRelatorioSabatina').style.display = 'flex';        
-document.getElementById('popRelatorioSabatina').style.display = 'flex';
+        document.getElementById('popRelatorioSabatina').style.display = 'flex';
         const corpo = document.getElementById('corpoRelatorioSecretaria');
         corpo.innerHTML = "";
 
@@ -1062,89 +966,6 @@ document.getElementById('popRelatorioSabatina').style.display = 'flex';
     }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-// ==========================================================================
-// MELHORIA 4: TRATAMENTO GLOBAL DE ERROS (ANTI-TRAVAMENTO)
-// ==========================================================================
-
-// Captura erros comuns de execução sem interromper o fluxo do sistema
-window.onerror = function(message, source, lineno, colno, error) {
-    console.warn(`[Aviso do Sistema]: Erro tratado de forma segura -> ${message} (Linha: ${lineno})`);
-    // Retornar true impede que o erro suba e quebre a interface do usuário
-    return true; 
-};
-
-// Captura falhas de rede/banco invisíveis (ex: Promessas rejeitadas do Firebase se a internet oscilar)
-window.addEventListener('unhandledrejection', function(event) {
-    console.warn('[Aviso de Rede/Firebase]: Falha na requisição assíncrona tratada.', event.reason);
-    
-    // Se o indicador de salvamento estiver ativo, remove para não travar na tela
-    const indicador = document.getElementById('saveIndicator');
-    if (indicador && indicador.style.display !== 'none') {
-        indicador.textContent = "⏳ Instabilidade na rede... tentando reconectar";
-        indicador.className = "saving";
-        setTimeout(() => { indicador.style.display = 'none'; }, 4000);
-    }
-    event.preventDefault();
-});
-// Função para Minimizar / Maximizar o Relatório sem fechar a sessão
-function toggleMinimizarPopupSabatina() {
-    const modalContent = document.getElementById('popRelatorioSabatinaContent');
-    const corpoConteudo = document.getElementById('corpoConteudoPopupSabatina');
-    const botaoTexto = document.getElementById('btnMinPopupText');
-    const modalFundo = document.getElementById('popRelatorioSabatina');
-
-    if (modalContent.classList.contains('panel-minimizado-popup')) {
-        modalContent.classList.remove('panel-minimizado-popup');
-        corpoConteudo.style.display = 'block';
-        botaoTexto.textContent = '➖ Minimizar';
-        modalFundo.style.background = 'rgba(0,0,0,0.9)'; 
-        modalFundo.style.pointerEvents = 'auto';
-    } else {
-        modalContent.classList.add('panel-minimizado-popup');
-        corpoConteudo.style.display = 'none';
-        botaoTexto.textContent = '🔳 Maximizar';
-        modalFundo.style.background = 'transparent'; 
-        modalFundo.style.pointerEvents = 'none'; 
-        modalContent.style.pointerEvents = 'auto'; 
-    }
-}
-/* Estilos para colapsar suavemente o painel administrativo */
-.admin-panel-minimizado {
-    height: 42px !important;
-    overflow: hidden !important;
-    padding-top: 8px !important;
-    padding-bottom: 0 !important;
-    border-color: var(--neon) !important;
-}
-.admin-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--orange);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-.admin-panel-minimizado .admin-panel-header {
-    border-bottom: none !important;
-    margin-bottom: 0 !important;
-}
-```javascript
-// Função para Minimizar / Maximizar o painel administrativo e economizar espaço
-function toggleMinimizarAdmin() {
-    const painel = document.getElementById('adminPanel');
-    const gridConteudo = document.getElementById('adminPanelGridWrapper');
-    const botaoTexto = document.getElementById('btnMinAdminText');
-    
-    if (painel.classList.contains('admin-panel-minimizado')) {
-        painel.classList.remove('admin-panel-minimizado');
-        gridConteudo.style.display = 'block';
-        botaoTexto.textContent = '➖ Minimizar Painel';
-    } else {
-        painel.classList.add('admin-panel-minimizado');
-        gridConteudo.style.display = 'none';
-        botaoTexto.textContent = '🔳 Maximizar Painel';
-    }
-}
 </script>
 </body>
 </html>
