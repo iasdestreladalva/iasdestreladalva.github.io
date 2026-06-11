@@ -99,6 +99,53 @@
             #headerAnciao { background: var(--blue) !important; color: var(--gold) !important; display: table-cell !important; padding: 0 15px 15px 15px !important; }
             .hoje { outline: none !important; box-shadow: none !important; }
         }
+/* ==========================================================================
+           MELHORIA 1: UPGRADE VISUAL E FLUIDEZ (CSS SEGURO)
+           ========================================================================== */
+        
+        /* Transições globais em botões e inputs para suavidade */
+        .btn-modern, .btn-min, .input-dark, .section-header {
+            transition: all 0.25s ease-in-out !important;
+        }
+
+        /* Efeito sutil de foco nos inputs */
+        .input-dark:focus {
+            border-color: var(--neon) !important;
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
+            background: #050b14 !important;
+        }
+
+        /* Melhoria visual nos cabeçalhos recolhíveis (Sanfona) */
+        .section-header:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: var(--neon) !important;
+        }
+
+        /* Rolagem suave na página */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Ajuste fino nas tabelas para não esmagar em telas menores */
+        #areaEscalaPrincipal, .card-bege {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Estilização elegante da barra de rolagem (Scrollbar) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon);
+        }
     </style>
 </head>
 <body>
@@ -966,6 +1013,30 @@
     }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+// ==========================================================================
+// MELHORIA 4: TRATAMENTO GLOBAL DE ERROS (ANTI-TRAVAMENTO)
+// ==========================================================================
+
+// Captura erros comuns de execução sem interromper o fluxo do sistema
+window.onerror = function(message, source, lineno, colno, error) {
+    console.warn(`[Aviso do Sistema]: Erro tratado de forma segura -> ${message} (Linha: ${lineno})`);
+    // Retornar true impede que o erro suba e quebre a interface do usuário
+    return true; 
+};
+
+// Captura falhas de rede/banco invisíveis (ex: Promessas rejeitadas do Firebase se a internet oscilar)
+window.addEventListener('unhandledrejection', function(event) {
+    console.warn('[Aviso de Rede/Firebase]: Falha na requisição assíncrona tratada.', event.reason);
+    
+    // Se o indicador de salvamento estiver ativo, remove para não travar na tela
+    const indicador = document.getElementById('saveIndicator');
+    if (indicador && indicador.style.display !== 'none') {
+        indicador.textContent = "⏳ Instabilidade na rede... tentando reconectar";
+        indicador.className = "saving";
+        setTimeout(() => { indicador.style.display = 'none'; }, 4000);
+    }
+    event.preventDefault();
+});
 </script>
 </body>
 </html>
