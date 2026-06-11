@@ -198,8 +198,17 @@
         <button id="btnDados" class="btn-modern" style="border-color:var(--orange); color:var(--orange); display:none;" onclick="abrirPop()">📊 TERMÔMETRO</button>
     </div>
 
-    <div id="adminPanel" class="admin-box no-print">
-        <div class="admin-grid">
+    <div id="adminPanel" class="admin-box no-print" style="transition: all 0.3s ease-in-out;">
+    <div class="admin-panel-header">
+        <h3 style="margin: 0; color: var(--orange); letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px;">
+            ⚙️ PAINEL ADMINISTRATIVO GERAL
+        </h3>
+        <button type="button" onclick="toggleMinimizarAdmin()" style="background: rgba(255, 127, 80, 0.1); border: 1px solid var(--orange); color: var(--orange); padding: 4px 12px; cursor: pointer; border-radius: 4px; font-size: 12px; font-weight: bold;">
+            <span id="btnMinAdminText">➖ Minimizar Painel</span>
+        </button>
+    </div>
+
+    <div id="adminPanelGridWrapper">
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
                 <div id="listaMinisterios"></div>
@@ -236,7 +245,9 @@
                 <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
             </div>
         </div>
-    </div>
+    </div> </div> ```
+
+---
 
     <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
@@ -1095,6 +1106,43 @@ function toggleMinimizarPopupSabatina() {
         modalFundo.style.background = 'transparent'; 
         modalFundo.style.pointerEvents = 'none'; 
         modalContent.style.pointerEvents = 'auto'; 
+    }
+}
+/* Estilos para colapsar suavemente o painel administrativo */
+.admin-panel-minimizado {
+    height: 42px !important;
+    overflow: hidden !important;
+    padding-top: 8px !important;
+    padding-bottom: 0 !important;
+    border-color: var(--neon) !important;
+}
+.admin-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--orange);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.admin-panel-minimizado .admin-panel-header {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+}
+```javascript
+// Função para Minimizar / Maximizar o painel administrativo e economizar espaço
+function toggleMinimizarAdmin() {
+    const painel = document.getElementById('adminPanel');
+    const gridConteudo = document.getElementById('adminPanelGridWrapper');
+    const botaoTexto = document.getElementById('btnMinAdminText');
+    
+    if (painel.classList.contains('admin-panel-minimizado')) {
+        painel.classList.remove('admin-panel-minimizado');
+        gridConteudo.style.display = 'block';
+        botaoTexto.textContent = '➖ Minimizar Painel';
+    } else {
+        painel.classList.add('admin-panel-minimizado');
+        gridConteudo.style.display = 'none';
+        botaoTexto.textContent = '🔳 Maximizar Painel';
     }
 }
 </script>
