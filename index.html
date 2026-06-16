@@ -479,16 +479,18 @@
     }
 
     function verificarViradaTrimestre() {
-        const tAtual = obterTrimestreAtual();
-        if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
-            if(Object.keys(db.historico_cartoes || {}).length > 0) {
-                document.getElementById('popAlertaTrimestre').style.display = 'flex';
-            } else {
-                db.trimestre_atual = tAtual;
-                save();
-            }
-        }
+    const tAtual = obterTrimestreAtual();
+    // Se o trimestre guardado for diferente do atual, apenas atualiza a string de controle
+    // SEM disparar modais automáticos que forçam o salvamento de estados voláteis/vazios sobre a escala
+    if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
+        db.trimestre_atual = tAtual;
+        // Certifica-se de manter as estruturas fundamentais intactas se por acaso sumirem
+        if(!db.escalas) db.escalas = {};
+        if(!db.regras_manuais) db.regras_manuais = {};
+        if(!db.historico_cartoes) db.historico_cartoes = {};
+        save();
     }
+}
 
     function confirmarLimpezaTrimestre() {
         if(confirm("Você confirma que já baixou os PDFs e deseja APAGAR os cartões deste trimestre?")) {
