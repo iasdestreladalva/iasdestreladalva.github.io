@@ -132,6 +132,14 @@
     </div>
 
     <div id="adminPanel" class="admin-box no-print">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--orange); padding-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--gold); font-size: 1.3rem;">⚙️ Painel Administrativo</h3>
+            <button id="btnMinimizarAdmin" onclick="toggleAdminPanel()" style="background: var(--dark); color: var(--neon); border: 1px solid var(--neon); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 0.8rem; transition: 0.3s; display: flex; align-items: center; gap: 5px;">
+                Minimizar ➖
+            </button>
+        </div>
+
+        <div id="conteudoAdmin">
         <div class="admin-grid">
             <div class="admin-section">
                 <h4>1. MINISTÉRIO DO DIA</h4>
@@ -171,7 +179,8 @@
         </div>
     </div>
 
-    <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
+    </div>
+    </div> </div> <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
             <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
             <div class="no-print" id="modelosCronograma" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
@@ -968,6 +977,23 @@
     }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
+// Função para recolher e expandir o Painel Administrativo
+function toggleAdminPanel() {
+    const conteudo = document.getElementById('conteudoAdmin');
+    const botao = document.getElementById('btnMinimizarAdmin');
+    
+    if (conteudo.style.display === 'none') {
+        conteudo.style.display = 'block';
+        botao.innerHTML = 'Minimizar ➖';
+        botao.style.borderColor = 'var(--neon)';
+        botao.style.color = 'var(--neon)';
+    } else {
+        conteudo.style.display = 'none';
+        botao.innerHTML = 'Expandir ➕';
+        botao.style.borderColor = 'var(--gold)';
+        botao.style.color = 'var(--gold)';
+    }
+}
 </script>
 </body>
 </html>
