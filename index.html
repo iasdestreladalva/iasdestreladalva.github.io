@@ -140,47 +140,47 @@
         </div>
 
         <div id="conteudoAdmin">
-        <div class="admin-grid">
-            <div class="admin-section">
-                <h4>1. MINISTÉRIO DO DIA</h4>
-                <div id="listaMinisterios"></div>
-                <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
-            </div>
-            <div class="admin-section">
-                <h4>2. ANCIÃO DO MÊS</h4>
-                <div id="gridMeses"></div>
-            </div>
-            <div class="admin-section">
-                <h4>3. LOGINS & SENHAS</h4>
-                <small style="color:var(--gold)">AVISO NO TOPO:</small>
-                <input type="text" id="inputTicker" class="input-dark" placeholder="Texto rolante..." onchange="db.aviso_ticker=this.value; save(); renderAvisos();" style="margin-bottom:10px;">
-                
-                <div style="border:1px solid var(--gold); padding:10px; border-radius:8px; margin-bottom:15px;">
-                    <small style="color:var(--gold); font-weight:bold;">META ANUAL DE BATISMOS</small>
-                    <input type="number" id="metaBatismos" class="input-dark" onchange="db.meta_anual=this.value; updateProgresso(); save();" style="margin-top:5px; font-size:1.1rem; text-align:center;">
-                    <div class="progress-container">
-                        <div id="progressoMeta" class="progress-bar"></div>
-                        <div id="textoMeta" class="progress-text">0/0</div>
-                    </div>
+            <div class="admin-grid">
+                <div class="admin-section">
+                    <h4>1. MINISTÉRIO DO DIA</h4>
+                    <div id="listaMinisterios"></div>
+                    <button class="btn-min" style="border-color:red; color:red; margin-top:10px;" onclick="window.minSelecionado=null; renderAdmin();">LIMPAR SELEÇÃO</button>
                 </div>
-                <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
-                    <tbody id="corpoCreds"></tbody>
-                </table>
-            </div>
-            <div class="admin-section">
-                <h4>4. APOIO ANCIÃO</h4>
-                <div id="gridApoioAnciao"></div>
-                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
-                <h4 style="color:var(--gold)">5. NUVEM / PDF / BACKUP</h4>
-                <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
-                <button class="btn-min" onclick="exportarRelatorioPDF()" style="border-color:var(--green); color:var(--green)">📄 GERAR PDF MÊS</button>
-                <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
+                <div class="admin-section">
+                    <h4>2. ANCIÃO DO MÊS</h4>
+                    <div id="gridMeses"></div>
+                </div>
+                <div class="admin-section">
+                    <h4>3. LOGINS & SENHAS</h4>
+                    <small style="color:var(--gold)">AVISO NO TOPO:</small>
+                    <input type="text" id="inputTicker" class="input-dark" placeholder="Texto rolante..." onchange="db.aviso_ticker=this.value; save(); renderAvisos();" style="margin-bottom:10px;">
+                    
+                    <div style="border:1px solid var(--gold); padding:10px; border-radius:8px; margin-bottom:15px;">
+                        <small style="color:var(--gold); font-weight:bold;">META ANUAL DE BATISMOS</small>
+                        <input type="number" id="metaBatismos" class="input-dark" onchange="db.meta_anual=this.value; updateProgresso(); save();" style="margin-top:5px; font-size:1.1rem; text-align:center;">
+                        <div class="progress-container">
+                            <div id="progressoMeta" class="progress-bar"></div>
+                            <div id="textoMeta" class="progress-text">0/0</div>
+                        </div>
+                    </div>
+                    <table style="width:100%; font-size:0.75rem; color:white; border-collapse: collapse;">
+                        <tbody id="corpoCreds"></tbody>
+                    </table>
+                </div>
+                <div class="admin-section">
+                    <h4>4. APOIO ANCIÃO</h4>
+                    <div id="gridApoioAnciao"></div>
+                    <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+                    <h4 style="color:var(--gold)">5. NUVEM / PDF / BACKUP</h4>
+                    <button class="btn-min" onclick="gerarBackupNuvem()" style="border-color:var(--gold); color:var(--gold)">💾 SALVAR NA NUVEM</button>
+                    <button class="btn-min" onclick="exportarRelatorioPDF()" style="border-color:var(--green); color:var(--green)">📄 GERAR PDF MÊS</button>
+                    <button class="btn-min" onclick="abrirPopBackups()" style="border-color:var(--neon); color:var(--neon)">📂 BUSCAR BACKUPS</button>
+                </div>
             </div>
         </div>
     </div>
 
-    </div>
-    </div> </div> <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
+    <div id="modalCronograma" class="cron-overlay" onclick="this.style.display='none'">
         <div id="areaCronograma" class="cron-container" onclick="event.stopPropagation()">
             <h2 style="text-align: center; color: var(--blue); margin-top:0;">ORDEM DO CULTO</h2>
             <div class="no-print" id="modelosCronograma" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
@@ -199,16 +199,19 @@
     </div>
 
     <div id="secCartaoUnidade" class="no-print" style="display:none; margin-top: 10px; margin-bottom: 20px;">
-        
         <div class="section-header" id="headerToggleCartaoAdmin" style="margin-top: 0; margin-bottom: 10px; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);" onclick="toggleSection('wrapperBlocoCartaoCompleto', 'btnToggleCartao ES')">
-            <h3 style="color: var(--gold);">🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
+            <h3>🏫 MÓDULO DE LANÇAMENTO DA ESCOLA SABATINA</h3>
             <button class="section-toggle-btn" id="btnToggleCartao ES" style="border-color: var(--gold); color: var(--gold); font-weight: 900;">-</button>
         </div>
 
         <div id="wrapperBlocoCartaoCompleto">
             <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px;">
-                <div style="text-align: left;">
-                    <span id="txtInfoUnidadeAtual" style="font-size: 1rem; color: #fff;"></span>
+                <div style="text-align: left; display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="color: var(--gold); font-weight: bold; font-size: 0.9rem;">🏫 UNIDADE:</label>
+                        <select id="selUnidadeCartao" class="input-dark" style="width: 180px; border-color: var(--gold); font-size: 0.9rem; font-weight: bold; background: #000; color: #fff;" onchange="initCartaoUnidade()"></select>
+                    </div>
+                    <span id="txtInfoUnidadeAtual" style="font-size: 1rem; color: #fff; display: none;"></span>
                 </div>
                 
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -270,7 +273,6 @@
                                 <input type="number" step="0.01" id="inputOfertas" value="0.00" min="0" oninput="forçarCalculoProf()" style="width: 70px; padding: 4px; text-align: center; font-weight:bold; color:#1b5e20;">
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -282,7 +284,6 @@
     </div>
 
     <div id="areaGeralSistemaComAbas">
-        
         <div class="busca-container no-print" id="wrapperBuscaRapida" style="text-align:center; margin-top:20px; margin-bottom:15px;">
             <input type="text" id="buscaRapida" class="input-dark" placeholder="🔍 Buscar nome na escala..." style="width:100%; max-width:450px; border-color:var(--neon); height:40px; font-size:1rem;" oninput="renderTodo()">
         </div>
@@ -336,7 +337,6 @@
         <div id="secLinksPublicos" style="margin-bottom: 50px; background: rgba(255,255,255,0.01); padding: 20px; border: 1px solid #334155; border-top:none; border-radius: 0 0 12px 12px;" class="no-print">
             <div id="gridLinksPublicos" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
         </div>
-
     </div>
 </div>
 
@@ -344,17 +344,11 @@
     <div class="pop-content" style="max-width:850px;" onclick="event.stopPropagation()">
         <h2 style="color:var(--neon); text-align:center; margin-top:0;">📈 RELATÓRIO GLOBAL DA ESCOLA SABATINA</h2>
         <p style="color:#cbd5e1; font-size:0.85rem; text-align:center;">Resultados agregados de todas as Unidades de Ação por Sábado.</p>
-        
         <div style="max-height: 450px; overflow-y: auto;">
             <table class="tabla-secre">
                 <thead>
                     <tr>
-                        <th>SÁBADO</th>
-                        <th>MEMBROS ATIVOS</th>
-                        <th>PRESENTES</th>
-                        <th>% PRESENÇA</th>
-                        <th>VISITAS RECOLHIDAS (P7)</th>
-                        <th>OFERTAS DO DIA</th>
+                        <th>SÁBADO</th><th>MEMBROS ATIVOS</th><th>PRESENTES</th><th>% PRESENÇA</th><th>VISITAS RECOLHIDAS (P7)</th><th>OFERTAS DO DIA</th>
                     </tr>
                 </thead>
                 <tbody id="corpoRelatorioSecretaria"></tbody>
@@ -414,7 +408,6 @@
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
     let g1, g2; const TOTAL_ALUNOS = 20;
 
-    // Gerenciador de visibilidade de painéis (Collapse)
     function toggleSection(sectionId, buttonId) {
         const target = document.getElementById(sectionId);
         const btn = document.getElementById(buttonId);
@@ -488,18 +481,15 @@
     }
 
     function verificarViradaTrimestre() {
-    const tAtual = obterTrimestreAtual();
-    // Se o trimestre guardado for diferente do atual, apenas atualiza a string de controle
-    // SEM disparar modais automáticos que forçam o salvamento de estados voláteis/vazios sobre a escala
-    if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
-        db.trimestre_atual = tAtual;
-        // Certifica-se de manter as estruturas fundamentais intactas se por acaso sumirem
-        if(!db.escalas) db.escalas = {};
-        if(!db.regras_manuais) db.regras_manuais = {};
-        if(!db.historico_cartoes) db.historico_cartoes = {};
-        save();
+        const tAtual = obterTrimestreAtual();
+        if(db.trimestre_atual && db.trimestre_atual !== tAtual) {
+            db.trimestre_atual = tAtual;
+            if(!db.escalas) db.escalas = {};
+            if(!db.regras_manuais) db.regras_manuais = {};
+            if(!db.historico_cartoes) db.historico_cartoes = {};
+            save();
+        }
     }
-}
 
     function confirmarLimpezaTrimestre() {
         if(confirm("Você confirma que já baixou os PDFs e deseja APAGAR os cartões deste trimestre?")) {
@@ -537,14 +527,13 @@
             document.getElementById('areaGeralSistemaComAbas').style.display = 'none';
             document.getElementById('btnSairProfessor').style.display = 'block';
             document.getElementById('userWelcomeBar').style.display = 'none';
-            document.getElementById('headerToggleCartaoAdmin').style.display = 'none'; // Some barra de fechar p/ professor
+            document.getElementById('headerToggleCartaoAdmin').style.display = 'none';
         } else {
             document.getElementById('headerTopo').style.display = 'flex';
             document.getElementById('menuNavegacaoGeral').style.display = 'flex';
             document.getElementById('areaGeralSistemaComAbas').style.display = 'block';
             document.getElementById('btnSairProfessor').style.display = 'none';
             
-            // Controle da barra minimizável do Cartão para os Admins
             const isAdminSabatina = ['admin','ger','sabatina'].includes(curUser);
             document.getElementById('headerToggleCartaoAdmin').style.display = isAdminSabatina ? 'flex' : 'none';
 
@@ -640,7 +629,7 @@
                 { horario: "10:45 AS 11:45", titulo: "SERMÃO", corBg: "#dbeafe", corTxt: "#1d4ed8", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}
             ];
         }
-        carregarCronograma(structure);
+        carregarCronograma(estrutura);
     }
     
     function exportarRelatorioPDF() { const m = document.getElementById('selMes').value; const opt = { margin: 0.5, filename: `Escala_IASD_${MESES[m]}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' } }; html2pdf().set(opt).from(document.getElementById('areaEscalaPrincipal')).save(); }
@@ -756,7 +745,26 @@
         if(!isUnidade && !isAdminSabatina) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
 
         document.getElementById('secCartaoUnidade').style.display = 'block';
-        let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
+        
+        const seletorUnidade = document.getElementById('selUnidadeCartao');
+        if (seletorUnidade) {
+            const unidadesDisponiveis = Object.keys(db.unidades_acao || {});
+            const valorAtual = seletorUnidade.value;
+            seletorUnidade.innerHTML = "";
+            unidadesDisponiveis.forEach(un => {
+                let op = document.createElement('option');
+                op.value = un;
+                op.innerText = un.toUpperCase();
+                seletorUnidade.appendChild(op);
+            });
+            if (valorAtual && unidadesDisponiveis.includes(valorAtual)) {
+                seletorUnidade.value = valorAtual;
+            } else if (isUnidade) {
+                seletorUnidade.value = curUser;
+            }
+        }
+
+        let unAlvo = seletorUnidade ? seletorUnidade.value : (isUnidade ? curUser : Object.keys(db.unidades_acao)[0]);
         if(!unAlvo) { document.getElementById('secCartaoUnidade').style.display = 'none'; return; }
 
         const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
@@ -821,7 +829,7 @@
 
     function forçarCalculoProf() {
         const isUnidade = db.unidades_acao && db.unidades_acao[curUser];
-        let unAlvo = isUnidade ? curUser : Object.keys(db.unidades_acao)[0];
+        let unAlvo = isUnidade ? curUser : (document.getElementById('selUnidadeCartao') ? document.getElementById('selUnidadeCartao').value : Object.keys(db.unidades_acao)[0]);
         const sabKey = document.getElementById('selSabadoCartao').value || obterDataSabadoAtual();
         sincronizarEGuardarCartao(unAlvo, sabKey);
     }
@@ -914,9 +922,6 @@
         });
     }
 
-    /* =========================================================================
-       COMPILADOR DA SECRETARIA DA ESCOLA SABATINA (RELATÓRIOS GERAIS)
-       ========================================================================= */
     function abrirRelatorioSabatina() {
         document.getElementById('popRelatorioSabatina').style.display = 'flex';
         const corpo = document.getElementById('corpoRelatorioSecretaria');
@@ -977,23 +982,23 @@
     }
 
     const sM = document.getElementById('selMes'); MESES.forEach((m, i) => sM.innerHTML += `<option value="${i}" ${i==new Date().getMonth()?'selected':''}>${m}</option>`);
-// Função para recolher e expandir o Painel Administrativo
-function toggleAdminPanel() {
-    const conteudo = document.getElementById('conteudoAdmin');
-    const botao = document.getElementById('btnMinimizarAdmin');
-    
-    if (conteudo.style.display === 'none') {
-        conteudo.style.display = 'block';
-        botao.innerHTML = 'Minimizar ➖';
-        botao.style.borderColor = 'var(--neon)';
-        botao.style.color = 'var(--neon)';
-    } else {
-        conteudo.style.display = 'none';
-        botao.innerHTML = 'Expandir ➕';
-        botao.style.borderColor = 'var(--gold)';
-        botao.style.color = 'var(--gold)';
+
+    function toggleAdminPanel() {
+        const conteudo = document.getElementById('conteudoAdmin');
+        const botao = document.getElementById('btnMinimizarAdmin');
+        
+        if (conteudo.style.display === 'none') {
+            conteudo.style.display = 'block';
+            botao.innerHTML = 'Minimizar ➖';
+            botao.style.borderColor = 'var(--neon)';
+            botao.style.color = 'var(--neon)';
+        } else {
+            conteudo.style.display = 'none';
+            botao.innerHTML = 'Expandir ➕';
+            botao.style.borderColor = 'var(--gold)';
+            botao.style.color = 'var(--gold)';
+        }
     }
-}
 </script>
 </body>
 </html>
