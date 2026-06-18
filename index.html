@@ -240,6 +240,17 @@
                     <tbody id="corpoAlunos"></tbody>
                 </table>
 
+                <h3 style="margin: 25px 0 10px 0; border-bottom: 2px solid #795548; font-size: 1rem; color: #5d4037;">👥 VISITANTES DO SÁBADO</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:60%;">NOME DO VISITANTE</th>
+                            <th style="width:40%;">TELEFONE / CONTATO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoVisitantes"></tbody>
+                </table>
+
                 <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:20px;">
                     <div class="crm-oficial">
                         <h3 style="margin:0 0 10px 0; border-bottom: 2px solid #795548; font-size: 0.9rem; text-align: center;">REGISTRO DE ATIVIDADES (CRM)</h3>
@@ -406,7 +417,7 @@
     const MINS = { admin: "Administrador", ger: "Gerência", pastor: "Pastor", diaconato: "Diaconato", musica: "Música", sonoplastia: "Sonoplastia", mulher: "M. Mulher", sabatina: "Escola Sabatina", pessoal: "M. Pessoal", mordomia: "Mordomia", saude: "Saúde", homens: "M. Homens", familia: "M. Família", adolescentes: "Adolescentes", aventureiros: "Aventureiros", desbravadores: "Desbravadores", jovem: "M. Jovem" };
     const LISTA_ANCIAOS = ["Wesley", "Jesuino", "Ester", "Marcilio", "Albert", "Manoel"]; 
     let db = {}; let curUser = localStorage.getItem('iasd_curUser') || 'visitante'; let missionChart;
-    let g1, g2; const TOTAL_ALUNOS = 20;
+    let g1, g2; const TOTAL_ALUNOS = 20; const TOTAL_VISITANTES = 5;
 
     function toggleSection(sectionId, buttonId) {
         const target = document.getElementById(sectionId);
@@ -430,6 +441,7 @@
         if(doc.exists) { 
             db = doc.data(); 
             if(!db.unidades_acao) db.unidades_acao = {};
+            if(!db.lista_alunos_fixos) db.lista_alunos_fixos = {};
             if(!db.historico_cartoes) db.historico_cartoes = {};
             if(!db.trimestre_atual) db.trimestre_atual = obterTrimestreAtual();
             
@@ -441,7 +453,7 @@
             if(db.cronograma) carregarCronograma(db.cronograma);
             initCartaoUnidade();
         } 
-        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15, unidades_acao: {}, historico_cartoes: {}, trimestre_atual: obterTrimestreAtual() }; save(); }
+        else { db = { senhas:{admin:'123456'}, anciaos:{}, apoio_anciao:{}, eventos_especiais:{}, docs:{}, escalas:{}, mis_v3:{}, regras_manuais:{}, plan_anual:{}, links_externos:[], meta_anual: 15, unidades_acao: {}, lista_alunos_fixos: {}, historico_cartoes: {}, trimestre_atual: obterTrimestreAtual() }; save(); }
     });
 
     function showStatus(txt, classe) { const el = document.getElementById('saveIndicator'); el.innerText = txt; el.className = classe; el.style.display = "block"; if(classe === 'saved') setTimeout(() => { el.style.display = "none"; }, 2000); }
@@ -622,7 +634,7 @@
         if(tipo === 'quarta') { estrutura = [{ horario: "CULTO", titulo: "CRONOGRAMA DO CULTO DE QUARTA", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "GRUPO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "PED. E AGRA.", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
         else if(tipo === 'domingo') { estrutura = [{ horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO INICIAL", tempo: "" }, { nome: "MOMENTO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "OFERTORIO", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
         else if(tipo === 'sabado') {
-            structure = [
+            estrutura = [
                 { horario: "8:45 AS 9:00", titulo: "LOUVOR", corBg: "#fef9c3", corTxt: "#713f12", itens: [{ nome: "1º Hino", tempo: "" }, { nome: "2º Hino", tempo: "" }, { nome: "3º Hino", tempo: "" }]},
                 { horario: "9:00 AS 10:20", titulo: "ESCOLA SABATINA", corBg: "#ffedd5", corTxt: "#c2410c", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "ANUNCIO ESCOLA SABATINA", tempo: "" }, { nome: "HINO INICIAL", tempo: "" }, { nome: "CARTA MISSIONARIA", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "RECAPITULAÇÃO ESCOLA SABATINA", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }]},
                 { horario: "10:20 AS 10:45", titulo: "OFERTORIO E LOUVOR", corBg: "#fef08a", corTxt: "#854d0e", itens: [{ nome: "VIDEO: PROVAI E VEDE", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }]},
@@ -735,7 +747,7 @@
     function renderUnidadesAdmin() {
         const list = document.getElementById('listaUnidadesCadastradas'); list.innerHTML = "";
         Object.keys(db.unidades_acao || {}).forEach(k => {
-            list.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
+            list.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:8px; margin-bottom:5px; border-radius:5px;"><span><b>${k.toUpperCase()}</b> - Prof: ${db.unidades_acao[k].professor}</span><button onclick="if(confirm('Remover Unidade?')){delete db.unidades_acao['${k}']; delete db.lista_alunos_fixos['${k}']; save(); renderUnidadesAdmin();}" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></div>`;
         });
     }
 
@@ -776,11 +788,20 @@
         document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sabKey.replace(/_/g, '/')}`;
         document.getElementById('txtInfoUnidadeAtual').innerHTML = `Unidade Visualizada/Logada: <b>${unAlvo.toUpperCase()}</b>.`;
 
+        // Inicializar banco de Alunos Fixos vinculados à Unidade (independente de sábado)
+        if(!db.lista_alunos_fixos) db.lista_alunos_fixos = {};
+        if(!db.lista_alunos_fixos[unAlvo]) {
+            db.lista_alunos_fixos[unAlvo] = Array(TOTAL_ALUNOS).fill("");
+        }
+
+        // Inicializar histórico do sábado específico
         if(!db.historico_cartoes) db.historico_cartoes = {};
         if(!db.historico_cartoes[sabKey]) db.historico_cartoes[sabKey] = {};
         if(!db.historico_cartoes[sabKey][unAlvo]) {
             db.historico_cartoes[sabKey][unAlvo] = {
-                alunos: Array(TOTAL_ALUNOS).fill().map(() => ({ nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
+                // Salva apenas os estados dos vistos (checkboxes) para este sábado
+                vistos: Array(TOTAL_ALUNOS).fill().map(() => ({ p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
+                visitantes: Array(TOTAL_VISITANTES).fill().map(() => ({ nome: "", telefone: "" })),
                 instrutores: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
                 duplas: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
                 batismos: 0,
@@ -789,14 +810,32 @@
         }
 
         const payload = db.historico_cartoes[sabKey][unAlvo];
+        const listagemAlunosFixos = db.lista_alunos_fixos[unAlvo];
+
+        // Se por ventura a estrutura antiga existir, migrar ou garantir array estruturado
+        if(!payload.visitantes) payload.visitantes = Array(TOTAL_VISITANTES).fill().map(() => ({ nome: "", telefone: "" }));
+        if(!payload.vistos) {
+            payload.vistos = Array(TOTAL_ALUNOS).fill().map(() => ({ p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false }));
+        }
+
         const corpo = document.getElementById('corpoAlunos'); corpo.innerHTML = "";
-        
         for(let i=0; i<TOTAL_ALUNOS; i++) {
-            let al = payload.alunos[i] || { nome: "", p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
+            let nomeFixo = listagemAlunosFixos[i] || "";
+            let ck = payload.vistos[i] || { p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false };
             corpo.innerHTML += `<tr>
-                <td><input type="text" class="input-aluno" id="nome_${i}" placeholder="Nome do Aluno..." value="${al.nome}" onkeydown="handleNomeEnter(event, ${i}, '${unAlvo}', '${sabKey}')" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
-                <td><input type="checkbox" id="p_${i}" ${al.p?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
-                ${[1,2,3,5,6,7,8].map(n => `<td><input type="checkbox" id="c${n}_${i}" ${al['c'+n]?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>`).join('')}
+                <td><input type="text" class="input-aluno" id="nome_${i}" placeholder="Nome do Aluno..." value="${nomeFixo}" onkeydown="handleNomeEnter(event, ${i}, '${unAlvo}', '${sabKey}')" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                <td><input type="checkbox" id="p_${i}" ${ck.p?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                ${[1,2,3,5,6,7,8].map(n => `<td><input type="checkbox" id="c${n}_${i}" ${ck['c'+n]?'checked':''} onchange="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>`).join('')}
+            </tr>`;
+        }
+
+        // Renderização dos campos de Visitantes do Sábado
+        const corpoVis = document.getElementById('corpoVisitantes'); corpoVis.innerHTML = "";
+        for(let i=0; i<TOTAL_VISITANTES; i++) {
+            let vis = payload.visitantes[i] || { nome: "", telefone: "" };
+            corpoVis.innerHTML += `<tr>
+                <td><input type="text" class="input-aluno" style="text-align:left; padding-left:10px;" id="vis_nome_${i}" placeholder="Nome do Visitante..." value="${vis.nome}" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
+                <td><input type="text" class="input-aluno" id="vis_tel_${i}" placeholder="(00) 00000-0000" value="${vis.telefone}" onblur="sincronizarEGuardarCartao('${unAlvo}', '${sabKey}')"></td>
             </tr>`;
         }
 
@@ -837,12 +876,14 @@
     function sincronizarEGuardarCartao(unAlvo, sabKey) {
         if(!db.historico_cartoes[sabKey] || !db.historico_cartoes[sabKey][unAlvo]) return;
         let payload = db.historico_cartoes[sabKey][unAlvo];
+        
         payload.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
         payload.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
 
+        // Salvar nomes na lista de alunos fixos da Unidade e os vistos no sábado específico
         for(let i=0; i<TOTAL_ALUNOS; i++) {
-            payload.alunos[i] = {
-                nome: document.getElementById(`nome_${i}`).value,
+            db.lista_alunos_fixos[unAlvo][i] = document.getElementById(`nome_${i}`).value;
+            payload.vistos[i] = {
                 p: document.getElementById(`p_${i}`).checked,
                 c1: document.getElementById(`c1_${i}`).checked,
                 c2: document.getElementById(`c2_${i}`).checked,
@@ -851,6 +892,14 @@
                 c6: document.getElementById(`c6_${i}`).checked,
                 c7: document.getElementById(`c7_${i}`).checked,
                 c8: document.getElementById(`c8_${i}`).checked,
+            };
+        }
+
+        // Guardar Visitantes
+        for(let i=0; i<TOTAL_VISITANTES; i++) {
+            payload.visitantes[i] = {
+                nome: document.getElementById(`vis_nome_${i}`).value,
+                telefone: document.getElementById(`vis_tel_${i}`).value
             };
         }
 
@@ -866,7 +915,12 @@
 
         Object.keys(db.historico_cartoes[sabKey] || {}).forEach(unKey => {
             let pUn = db.historico_cartoes[sabKey][unKey];
-            pUn.alunos.forEach(a => { if(a.nome && a.c3) totalEstudosGerais++; });
+            let fixosUn = db.lista_alunos_fixos[unKey] || [];
+            
+            (pUn.vistos || []).forEach((ck, idx) => {
+                let nomeAl = fixosUn[idx] || "";
+                if(nomeAl && ck.c3) totalEstudosGerais++;
+            });
             pUn.instrutores.forEach(i => { if(i.s) totalEstudosGerais += i.q; });
             pUn.duplas.forEach(d => { if(d.s) { totalEstudosGerais += d.q; totalDuplasGerais++; } });
             totalBatismosGerais += pUn.batismos || 0;
@@ -891,7 +945,7 @@
         for(let i=0; i<TOTAL_ALUNOS; i++) {
             let elNome = document.getElementById(`nome_${i}`);
             if(elNome && elNome.value.trim() !== "") {
-                d.whitespaces = false; d.ativos++;
+                d.ativos++;
                 if(document.getElementById(`p_${i}`).checked) d.pres++;
                 [1,2,3,5,6,7,8].forEach(n => { if(document.getElementById(`c${n}_${i}`).checked) d['v'+n]++; });
             }
@@ -938,14 +992,17 @@
 
             Object.keys(sabDados).forEach(unKey => {
                 let un = sabDados[unKey];
+                let fixosUn = db.lista_alunos_fixos?.[unKey] || [];
                 temRegistro = true;
                 sOfertas += parseFloat(un.ofertas || 0);
                 
-                un.alunos.forEach(al => {
-                    if(al.nome && al.nome.trim() !== "") {
+                let tabelaVistos = un.vistos || [];
+                tabelaVistos.forEach((ck, idx) => {
+                    let nomeAl = fixosUn[idx] || "";
+                    if(nomeAl && nomeAl.trim() !== "") {
                         sAtivos++;
-                        if(al.p) sPres++;
-                        if(al.c7) sVisitas++; 
+                        if(ck.p) sPres++;
+                        if(ck.c7) sVisitas++; 
                     }
                 });
             });
