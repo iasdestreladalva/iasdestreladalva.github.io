@@ -6,8 +6,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --blue: #1a365d; --bg: #0d1b2a; --neon: #00d2ff; --gold: #ffd700; --orange: #ff7f50; --dark: #16213e; --green: #2ecc71; --red: #ff4757; }
@@ -343,7 +341,7 @@
             <div style="height: 280px;"><canvas id="missionaryChart"></canvas></div>
         </div>
 
-        <div class="section-header no-print" onclick="toggleSection('secLinksPublicos', 'btnToggleLinks')">
+        <div class="section-header no-print" id="gridLinksPublicosWrapper" onclick="toggleSection('secLinksPublicos', 'btnToggleLinks')">
             <h3>🔗 LINKS ÚTEIS E MATERIAIS</h3>
             <button class="section-toggle-btn" id="btnToggleLinks">-</button>
         </div>
@@ -378,11 +376,11 @@
 <div id="popEventos" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--red); text-align:center;">EVENTOS</h3><input type="text" id="evtNome" class="input-dark" placeholder="Título"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;"><input type="date" id="evtInicio" class="input-dark"><input type="date" id="evtFim" class="input-dark"></div><button class="btn-min" style="background:var(--red); color:white; border:none; margin-top:15px;" onclick="salvarEventoEspecial()">CRIAR</button><div id="listaEventosAtivos" style="margin-top:15px;"></div><button onclick="document.getElementById('popEventos').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popTesouraria" class="overlay" onclick="this.style.display='none'"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--green);text-align:center;">UPLOAD DOCS</h3><select id="docDestinatario" class="input-dark" style="margin-bottom:10px;"></select><input type="file" id="fileInput" style="display:none" onchange="uploadArquivo()"><button onclick="document.getElementById('fileInput').click()" class="btn-min">ENVIAR</button><div id="listaAdminArquivos" style="margin-top:20px;"></div><button onclick="document.getElementById('popTesouraria').style.display='none'" class="btn-fechar">FECHAR</button></div></div>
 <div id="popOverlay" class="overlay" onclick="fecharPop()"><div class="pop-content" onclick="event.stopPropagation()"><h3 style="color:var(--orange);text-align:center;">DADOS MISSIONÁRIOS</h3><div id="camposMissionarios"></div><button onclick="fecharPop()" class="btn-fechar">FECHAR</button></div></div>
-<div id="popViewImg" class="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center;">
-    <div class="overlay-content" style="max-width:95%; width:900px; max-height:90vh; background:var(--dark); border:2px solid var(--neon); border-radius:12px; padding:20px; position:relative; display:flex; flex-direction:column; align-items:center; box-shadow:0 0 30px rgba(0,210,255,0.3);">
-        <button class="btn-excluir" onclick="document.getElementById('popViewImg').style.display='none'; document.getElementById('iframeView').src='';" style="position:absolute; top:10px; right:10px; padding:8px 15px; font-weight:bold; cursor:pointer;">FECHAR</button>
-        <div id="pdfCanvasContainer" style="width:100%; max-height:75vh; overflow-y:auto; display:none; margin-top:30px; gap:15px; flex-direction:column; align-items:center;"></div>
-        <iframe id="iframeView" src="" style="width:100%; height:75vh; border:none; border-radius:6px; margin-top:30px; display:block;"></iframe>
+
+<div id="popViewImg" class="overlay" onclick="this.style.display='none'">
+    <div class="pop-content" style="max-width:95%; width:900px; height:85vh; display:flex; flex-direction:column; padding:15px; background:var(--bg); border:3px solid var(--orange);" onclick="event.stopPropagation()">
+        <div style="flex:1; width:100%; height:100%; overflow:auto; display:flex; align-items:center; justify-content:center; background:#000; border-radius:6px;" id="viewContainer"></div>
+        <button onclick="document.getElementById('popViewImg').style.display='none'" class="btn-fechar" style="margin-top:10px; padding:12px;">FECHAR ARQUIVO</button>
     </div>
 </div>
 
@@ -637,7 +635,7 @@
     function salvarCronograma() { db.cronograma = Array.from(document.querySelectorAll('.bloco')).map(b => ({ horario: b.querySelector('.cron-horario').value, titulo: b.querySelector('.cron-titulo').value, corBg: b.querySelector('.cron-bg').value, corTxt: b.querySelector('.cron-txt').value, itens: Array.from(b.querySelectorAll('tbody tr')).map(tr => ({ nome: tr.querySelector('.it-n').value, tempo: tr.querySelector('.it-t').value })) })); save(); }
 
     function carregarModeloFixo(tipo) {
-        if(!confirm("Carregar este modelo irá substituir o cronograma atual da tela. Deseja continuar?")) return;
+        if(!confirm("Carregar este modelo irá substituir o cronograma actual da tela. Deseja continuar?")) return;
         let estrutura = [];
         if(tipo === 'quarta') { estrutura = [{ horario: "CULTO", titulo: "CRONOGRAMA DO CULTO DE QUARTA", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO", tempo: "" }, { nome: "GRUPO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "PED. E AGRA.", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
         else if(tipo === 'domingo') { estrutura = [{ horario: "DOMINGO", titulo: "CRONOGRAMA DO CULTO DE DOMINGO", corBg: "#f8fafc", corTxt: "#0f172a", itens: [{ nome: "ORAÇÃO INICIAL", tempo: "" }, { nome: "MOMENTO DE LOUVOR", tempo: "" }, { nome: "HINO INICIAL (DE PÉ)", tempo: "" }, { nome: "OFERTORIO", tempo: "" }, { nome: "ORAÇÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }, { nome: "SERMÃO", tempo: "" }, { nome: "MUSICA ESPECIAL", tempo: "" }]}]; } 
@@ -727,7 +725,27 @@
         const reader = new FileReader(); reader.onload = function(e) { const m = document.getElementById('selMes').value; if(!db.docs[m]) db.docs[m]=[]; db.docs[m].push({ nome: file.name, data: e.target.result, para: dest, ext: file.name.split('.').pop().toLowerCase() }); save(); renderAdminDocs(); }; reader.readAsDataURL(file); }
     function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
-    function verArquivo(src, ext, nome) { if(['ppt','pptx'].includes(ext)) { const a = document.createElement('a'); a.href = src; a.download = nome; a.click(); return; } const c = document.getElementById('viewContainer'); c.innerHTML = src.includes("pdf") ? `<iframe src="${src}" style="width:100%; height:80vh;"></iframe>` : `<img src="${src}" style="max-width:100%; max-height:80vh;">`; document.getElementById('popViewImg').style.display='flex'; }
+    
+    // FUNÇÃO REESCRITA E OTIMIZADA PARA CELULAR E COMPUTADOR (SUPORTA BASE64 INTERNAMENTE NO POPUP)
+    function verArquivo(src, ext, nome) { 
+        if(['ppt','pptx'].includes(ext)) { 
+            const a = document.createElement('a'); 
+            a.href = src; 
+            a.download = nome; 
+            a.click(); 
+            return; 
+        } 
+        const c = document.getElementById('viewContainer'); 
+        c.innerHTML = "";
+        
+        if (src.includes("pdf") || ext === "pdf") { 
+            // Usa tag object ou embed que renderiza base64 no mobile com melhor compatibilidade em scroll
+            c.innerHTML = `<object data="${src}" type="application/pdf" style="width:100%; height:80vh;"><embed src="${src}" type="application/pdf" style="width:100%; height:80vh;"/><p style="color:white; padding:20px; text-align:center;">Seu dispositivo não suporta pré-visualização de PDFs de forma nativa. <a href="${src}" download="${nome}" style="color:var(--neon); text-decoration:underline;">Clique aqui para baixar</a>.</p></object>`; 
+        } else {
+            c.innerHTML = `<img src="${src}" style="max-width:100%; max-height:80vh; object-fit:contain; border-radius:4px;">`;
+        }
+        document.getElementById('popViewImg').style.display='flex'; 
+    }
     
     function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
     function abrirPop() { const m = document.getElementById('selMes').value, c = document.getElementById('camposMissionarios'); c.innerHTML = ""; ["Encontros","Classes","Estudos","Ministrantes","Duplas","Batismos"].forEach((l, i) => { c.innerHTML += `<div><label style="color:white">${l}</label><input type="number" class="input-dark" value="${db.mis_v3?.[m]?.[i]||0}" onchange="if(!db.mis_v3[${m}])db.mis_v3[${m}]=[0,0,0,0,0,0]; db.mis_v3[${m}][${i}]=this.value; save();"></div>`; }); document.getElementById('popOverlay').style.display='flex'; }
