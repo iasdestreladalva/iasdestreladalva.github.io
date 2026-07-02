@@ -43,9 +43,15 @@
         .progress-bar { background: linear-gradient(90deg, var(--gold), #ffa500); height: 100%; transition: width 0.6s; width: 0%; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; line-height: 25px; color: white; text-shadow: 1px 1px 2px black; z-index: 1; }
 
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; }
-        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; }
+        /* CSS DO POPUP CORRIGIDO PARA NÃO DAR TELA BRANCA */
+        .overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100000; align-items:center; justify-content:center; }
+        .pop-content { background:var(--bg); border:3px solid var(--orange); padding:25px; border-radius:15px; width:95%; max-width:600px; max-height: 90vh; overflow-y: auto; box-sizing: border-box; }
         .btn-fechar { width:100%; padding:15px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; }
+
+        /* Ajustes específicos de visualização */
+        #viewContainer { width: 100%; height: 100%; min-height: 60vh; display: flex; align-items: center; justify-content: center; overflow: auto; }
+        #viewContainer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        #viewContainer iframe { width: 100%; height: 100%; border: none; min-height: 65vh; }
 
         .row-especial { background-color: #fff4e6 !important; }
         .row-especial td { border-color: #ffd8a8 !important; }
@@ -379,7 +385,7 @@
 
 <div id="popViewImg" class="overlay" onclick="this.style.display='none'">
     <div class="pop-content" style="max-width:95%; width:900px; height:85vh; display:flex; flex-direction:column; padding:15px; background:var(--bg); border:3px solid var(--orange);" onclick="event.stopPropagation()">
-        <div style="flex:1; width:100%; height:100%; overflow:auto; display:flex; align-items:center; justify-content:center; background:#000; border-radius:6px;" id="viewContainer"></div>
+        <div id="viewContainer" style="background:#000; border-radius:6px; flex:1;"></div>
         <button onclick="document.getElementById('popViewImg').style.display='none'" class="btn-fechar" style="margin-top:10px; padding:12px;">FECHAR ARQUIVO</button>
     </div>
 </div>
@@ -726,7 +732,7 @@
     function renderAdminDocs() { const m = document.getElementById('selMes').value, lista = document.getElementById('listaAdminArquivos'); lista.innerHTML = ""; (db.docs?.[m] || []).forEach((doc, i) => { lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><small>[${doc.para}] ${doc.nome}</small><button onclick="if(confirm('Excluir documento?')){db.docs[${m}].splice(${i},1); save(); renderAdminDocs();}" style="color:red; background:none; border:none; cursor:pointer;">X</button></div>`; }); }
     function renderArquivosPublicos() { const m = document.getElementById('selMes').value, grid = document.getElementById('gridArquivosPublicos'); grid.innerHTML = ""; (db.docs?.[m] || []).forEach(doc => { if(doc.para === 'todos' || doc.para === curUser || ['admin','ger'].includes(curUser)) grid.innerHTML += `<div style="text-align:center; background:#0f172a; padding:10px; border:1px solid #334155; border-radius:8px; cursor:pointer" onclick="verArquivo('${doc.data}', '${doc.ext}', '${doc.nome}')">📄<br><small>${doc.nome}</small></div>`; }); }
     
-    // FUNÇÃO REESCRITA E OTIMIZADA PARA CELULAR E COMPUTADOR (SUPORTA BASE64 INTERNAMENTE NO POPUP)
+    // FUNÇÃO CORRIGIDA PARA EVITAR TELA EM BRANCO NO CELULAR E PC
     function verArquivo(src, ext, nome) { 
         if(['ppt','pptx'].includes(ext)) { 
             const a = document.createElement('a'); 
@@ -738,13 +744,13 @@
         const c = document.getElementById('viewContainer'); 
         c.innerHTML = "";
         
+        document.getElementById('popViewImg').style.display = 'flex'; 
+        
         if (src.includes("pdf") || ext === "pdf") { 
-            // Usa tag object ou embed que renderiza base64 no mobile com melhor compatibilidade em scroll
-            c.innerHTML = `<object data="${src}" type="application/pdf" style="width:100%; height:80vh;"><embed src="${src}" type="application/pdf" style="width:100%; height:80vh;"/><p style="color:white; padding:20px; text-align:center;">Seu dispositivo não suporta pré-visualização de PDFs de forma nativa. <a href="${src}" download="${nome}" style="color:var(--neon); text-decoration:underline;">Clique aqui para baixar</a>.</p></object>`; 
+            c.innerHTML = `<iframe src="${src}" title="${nome}"></iframe>`; 
         } else {
-            c.innerHTML = `<img src="${src}" style="max-width:100%; max-height:80vh; object-fit:contain; border-radius:4px;">`;
+            c.innerHTML = `<img src="${src}" alt="${nome}">`;
         }
-        document.getElementById('popViewImg').style.display='flex'; 
     }
     
     function updateChart(mIdx) { const ctx = document.getElementById('missionaryChart').getContext('2d'); if(missionChart) missionChart.destroy(); missionChart = new Chart(ctx, { type:'bar', data: { labels:["Enc.","Clas.","Est.R","Minis.","Duplas","Bat."], datasets:[{ data:db.mis_v3?.[mIdx]||[0,0,0,0,0,0], backgroundColor:['#00d2ff','#ffd700','#ff7f50','#2ecc71','#ff4757','#9b59b6'] }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} } }); }
@@ -814,18 +820,15 @@
         document.getElementById('lblCardSabado').innerText = `SÁBADO: ${sabKey.replace(/_/g, '/')}`;
         document.getElementById('txtInfoUnidadeAtual').innerHTML = `Unidade Visualizada/Logada: <b>${unAlvo.toUpperCase()}</b>.`;
 
-        // Inicializar banco de Alunos Fixos vinculados à Unidade (independente de sábado)
         if(!db.lista_alunos_fixos) db.lista_alunos_fixos = {};
         if(!db.lista_alunos_fixos[unAlvo]) {
             db.lista_alunos_fixos[unAlvo] = Array(TOTAL_ALUNOS).fill("");
         }
 
-        // Inicializar histórico do sábado específico
         if(!db.historico_cartoes) db.historico_cartoes = {};
         if(!db.historico_cartoes[sabKey]) db.historico_cartoes[sabKey] = {};
         if(!db.historico_cartoes[sabKey][unAlvo]) {
             db.historico_cartoes[sabKey][unAlvo] = {
-                // Salva apenas os estados dos vistos (checkboxes) para este sábado
                 vistos: Array(TOTAL_ALUNOS).fill().map(() => ({ p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false })),
                 visitantes: Array(TOTAL_VISITANTES).fill().map(() => ({ nome: "", telefone: "" })),
                 instrutores: Array(5).fill().map(() => ({ nome: "", s: false, q: 0 })),
@@ -838,7 +841,6 @@
         const payload = db.historico_cartoes[sabKey][unAlvo];
         const listagemAlunosFixos = db.lista_alunos_fixos[unAlvo];
 
-        // Se por ventura a estrutura antiga existir, migrar ou garantir array estruturado
         if(!payload.visitantes) payload.visitantes = Array(TOTAL_VISITANTES).fill().map(() => ({ nome: "", telefone: "" }));
         if(!payload.vistos) {
             payload.vistos = Array(TOTAL_ALUNOS).fill().map(() => ({ p: false, c1: false, c2: false, c3: false, c5: false, c6: false, c7: false, c8: false }));
@@ -855,7 +857,6 @@
             </tr>`;
         }
 
-        // Renderização dos campos de Visitantes do Sábado
         const corpoVis = document.getElementById('corpoVisitantes'); corpoVis.innerHTML = "";
         for(let i=0; i<TOTAL_VISITANTES; i++) {
             let vis = payload.visitantes[i] || { nome: "", telefone: "" };
@@ -906,7 +907,6 @@
         payload.batismos = parseInt(document.getElementById('inputBatismos').value) || 0;
         payload.ofertas = parseFloat(document.getElementById('inputOfertas').value) || 0;
 
-        // Salvar nomes na lista de alunos fixos da Unidade e os vistos no sábado específico
         for(let i=0; i<TOTAL_ALUNOS; i++) {
             db.lista_alunos_fixos[unAlvo][i] = document.getElementById(`nome_${i}`).value;
             payload.vistos[i] = {
@@ -921,7 +921,6 @@
             };
         }
 
-        // Guardar Visitantes
         for(let i=0; i<TOTAL_VISITANTES; i++) {
             payload.visitantes[i] = {
                 nome: document.getElementById(`vis_nome_${i}`).value,
